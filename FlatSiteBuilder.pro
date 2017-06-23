@@ -38,4 +38,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     generator.h
 
+DISTFILES += \
+    README.md
+
 
