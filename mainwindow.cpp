@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDebug>
+#include <QDir>
 
 #include "generator.h"
 #include "PythonQt.h"
@@ -36,15 +37,9 @@ MainWindow::MainWindow()
     readSettings();
     initPython();
 
-    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
-    context.evalFile(":/python.py");
-    QVariantMap vars;
-    vars.insert("name", "Hans");
-    vars.insert("nachname", "Meiser");
-    QVariantList args;
-    args << "Hallo {{ name }} {{ nachname }}." << vars;
-    QVariant rc = context.call("translate", args);
-    qDebug() << rc;
+    Generator gen;
+
+    gen.generateSite("/home/olaf/testsite");
 }
 
 void MainWindow::initPython()

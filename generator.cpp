@@ -19,6 +19,8 @@
 ****************************************************************************/
 
 #include "generator.h"
+#include "PythonQt.h"
+#include "PythonQt_QtAll.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -26,33 +28,38 @@
 #include <QStringList>
 
 Generator::Generator()
-{
+{   
+    vars.insert("name", "Hans");
+    vars.insert("nachname", "Meiser");
 }
 
 void Generator::generateSite(QString path)
 {
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(":/python.py");
+
+    QDir old(path + "/site");
+    old.removeRecursively();
+
     QDir dir(path);
-    dir.mkdir("_site");
+    dir.mkdir("site");
+
     QStringList filter;
     filter << "*.md";
     filter << "*.html";
     foreach (QString filename, dir.entryList(filter, QDir::Files))
     {
-        QFile in(path + "/" + filename);
-        if(in.open(QFile::ReadOnly))
+        QString name = path + "/site/" + filename.replace(".md", ".html");
+        QFile out(name);
+        if(out.open(QFile::WriteOnly))
         {
-            QString name = path + "/_site/" + filename.replace(".md", ".html");
-            QFile out(name);
-            if(out.open(QFile::WriteOnly))
-            {
-                //out.write(translate(QString::fromLatin1(in.readAll())).toLatin1());
-                out.close();
-                in.close();
-            }
-            else
-                qDebug() << "Unable to create file " +  name;
+            QVariantList args;
+            args << path << filename << vars;
+            QVariant rc = context.call("translate", args);
+            out.write(rc.toByteArray());
+            out.close();
         }
         else
-            qDebug() << "Unable to open file " + path + "/" + filename;
+            qDebug() << "Unable to create file " +  name;
     }
 }

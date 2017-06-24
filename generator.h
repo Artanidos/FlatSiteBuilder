@@ -32,6 +32,9 @@ public:
     Generator();
 
     void generateSite(QString path);
+
+private:
+    QVariantMap vars;
 };
 
 #endif // GENERATOR_H
