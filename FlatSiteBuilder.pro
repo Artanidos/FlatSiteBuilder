@@ -26,6 +26,7 @@ QT += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
 TEMPLATE = app
 target.path += /bin
@@ -41,4 +42,22 @@ HEADERS  += mainwindow.h \
 DISTFILES += \
     README.md
 
+linux-g++ {
+    LIBS += -L$$PWD/lib/
+    LIBS += -lm
+    LIBS += -ldl
 
+    LIBS += -L$$PWD/dependencies/PythonQt3.1/lib/
+    LIBS += -lPythonQt
+    LIBS += -lPythonQt_QtAll
+
+    LIBS += $$system(python$${PYTHON_VERSION}-config --libs)
+    QMAKE_CXXFLAGS += $$system(python$${PYTHON_VERSION}-config --includes)
+
+
+    INCLUDEPATH += $$PWD/dependencies/PythonQt3.1/include
+    DEPENDPATH += $$PWD/dependencies/PythonQt3.1/include
+}
+
+RESOURCES += \
+    flatsitebuilder.qrc

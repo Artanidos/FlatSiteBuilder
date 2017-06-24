@@ -19,11 +19,13 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
+#include "generator.h"
+#include <QDebug>
 #include <QApplication>
 #include <QStyleFactory>
 
 int main(int argc, char *argv[])
-{
+{   
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");

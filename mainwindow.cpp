@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-#include "generator.h"
+
 #include <QCloseEvent>
 #include <QSettings>
 #include <QCoreApplication>
@@ -27,16 +27,33 @@
 #include <QDesktopWidget>
 #include <QDebug>
 
+#include "generator.h"
+#include "PythonQt.h"
+#include "PythonQt_QtAll.h"
+
 MainWindow::MainWindow()
 {
     readSettings();
+    initPython();
 
-    Generator *gen = new Generator();
-    gen->addVariable("name", "Hans");
-    gen->addVariable("nachname", "Meier");
-    QString out = gen->translate("Guten Tag {{ name }} {{ nachname }} {% for a in list %}.");
-    qDebug() << out;
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(":/python.py");
+    QVariantMap vars;
+    vars.insert("name", "Hans");
+    vars.insert("nachname", "Meiser");
+    QVariantList args;
+    args << "Hallo {{ name }} {{ nachname }}." << vars;
+    QVariant rc = context.call("translate", args);
+    qDebug() << rc;
+}
 
+void MainWindow::initPython()
+{
+    PythonQt::init();
+    PythonQt_QtAll::init();
+    connect(PythonQt::self(), SIGNAL(pythonStdOut(QString)), this, SLOT(OnPythonQtStdOut(QString)));
+    connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(OnPythonQtStdErr(QString)));
+    PythonQt::self()->addSysPath("/home/olaf/.local/lib/python2.7/site-packages/");
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -67,4 +84,14 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
+}
+
+void MainWindow::OnPythonQtStdOut(QString str)
+{
+    qDebug() << "Python:" << str;
+}
+
+void MainWindow::OnPythonQtStdErr(QString str)
+{
+    qDebug() << "PythonErr:" << str;
 }

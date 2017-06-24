@@ -31,11 +31,7 @@ class Generator : QObject
 public:
     Generator();
 
-    QString translate(QString source);
-    void addVariable(QString name, QString value);
-
-private:
-    QHash<QString, QString> variables;
+    void generateSite(QString path);
 };
 
 #endif // GENERATOR_H

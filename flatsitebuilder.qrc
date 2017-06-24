@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>python.py</file>
+    </qresource>
+</RCC>

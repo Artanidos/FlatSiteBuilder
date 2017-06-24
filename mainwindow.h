@@ -35,6 +35,11 @@ protected:
 private:
     void writeSettings();
     void readSettings();
+    void initPython();
+
+private slots:
+    void OnPythonQtStdOut(QString str);
+    void OnPythonQtStdErr(QString str);
 };
 
 #endif // MAINWINDOW_H

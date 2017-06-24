@@ -22,102 +22,37 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QDir>
+#include <QStringList>
 
 Generator::Generator()
 {
 }
 
-void Generator::addVariable(QString name, QString value)
+void Generator::generateSite(QString path)
 {
-    variables.insert(name, value);
-}
-
-/*
- * Syntax comes from Django
- *
- * Variable
- * {{ varname }}
- *
- * Includes
- * {% include filename %}
- *
- * Loop
- * {% for page in pages %}
- *     {{ page.title }}
- * {% endfor %}
- *
- */
-
-QString Generator::translate(QString source)
-{
-    QChar ch;
-    QString code = "";
-    QString varname = "";
-    QString output = "";
-    bool inCode = false;
-    bool inVar = false;
-
-    for(int pos = 0; pos < source.length(); pos++)
+    QDir dir(path);
+    dir.mkdir("_site");
+    QStringList filter;
+    filter << "*.md";
+    filter << "*.html";
+    foreach (QString filename, dir.entryList(filter, QDir::Files))
     {
-        ch = source.at(pos);
-        if (ch == '{')
+        QFile in(path + "/" + filename);
+        if(in.open(QFile::ReadOnly))
         {
-            if(pos + 1 < source.length())
+            QString name = path + "/_site/" + filename.replace(".md", ".html");
+            QFile out(name);
+            if(out.open(QFile::WriteOnly))
             {
-                QChar next = source.at(pos + 1);
-                if(next == "{")
-                {
-                    inVar = true;
-                    pos++;
-                }
-                else if(next == "%")
-                {
-                    inCode = true;
-                    pos++;
-                }
-            }
-        }
-        else if (ch == '}')
-        {
-            if(pos + 1 < source.length())
-            {
-                QChar next = source.at(pos + 1);
-                if(next == "}")
-                {
-                    inVar = false;
-                    pos++;
-                    output += variables.value(varname.trimmed());
-                    varname = "";
-                }
-            }
-        }
-        else if(ch == "%")
-        {
-            if(pos + 1 < source.length())
-            {
-                QChar next = source.at(pos + 1);
-                if(next == "}")
-                {
-                    inCode = false;
-                    pos++;
-                    output += "todo";
-                    code = "";
-                }
-            }
-        }
-        else
-        {
-            if(inVar)
-            {
-                varname += ch;
-            }
-            else if(inCode)
-            {
-                code += ch;
+                //out.write(translate(QString::fromLatin1(in.readAll())).toLatin1());
+                out.close();
+                in.close();
             }
             else
-                output += ch;
+                qDebug() << "Unable to create file " +  name;
         }
+        else
+            qDebug() << "Unable to open file " + path + "/" + filename;
     }
-    return output;
 }
