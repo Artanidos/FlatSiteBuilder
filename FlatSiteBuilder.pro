@@ -40,7 +40,16 @@ HEADERS  += mainwindow.h \
     generator.h
 
 DISTFILES += \
-    README.md
+    README.md \
+    testsite/config.yaml \
+    testsite/about.md \
+    testsite/index.md \
+    testsite/themes/default/layouts/default.html \
+    testsite/themes/default/includes/footer.html \
+    testsite/themes/default/includes/head.html \
+    testsite/themes/default/includes/header.html \
+    testsite/themes/default/includes/nav.html \
+    testsite/themes/default/assets/css/style.css
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
