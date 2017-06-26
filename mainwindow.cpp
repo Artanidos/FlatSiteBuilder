@@ -39,7 +39,7 @@ MainWindow::MainWindow()
 
     Generator gen;
 
-    gen.generateSite("/home/olaf/testsite");
+    gen.generateSite("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
 }
 
 void MainWindow::initPython()
