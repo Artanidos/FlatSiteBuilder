@@ -1,0 +1,12 @@
+theme: default
+title: Testsite
+description: This is just a demo site
+owner_name: Artanidos
+owner_url: https://github.com/Artanidos
+repository_url: https://github.com/Artanidos/testsite
+
+pages:
+  - title: Home
+    url: index.html
+  - title: About
+    url: about.html  
