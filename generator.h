@@ -21,9 +21,13 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include "PythonQt.h"
+#include "PythonQt_QtAll.h"
+
 #include <QObject>
 #include <QHash>
 #include <QVariant>
+#include <QMap>
 
 class Generator : QObject
 {
@@ -34,7 +38,16 @@ public:
     void generateSite(QString path);
 
 private:
-    QVariantMap vars;
+    QVariantMap globals;
+    QVariantMap pagevars;
+    QVariantMap sitevars;
+    PythonQtObjectPtr context;
+
+    void parseFront(QString content);
+    QString translateContent(QString content);
+    QString translateMarkdown(QString content);
+    QVariantMap parseYaml(QString code);
+    void copyPath(QString src, QString dst);
 };
 
 #endif // GENERATOR_H

@@ -49,6 +49,7 @@ void MainWindow::initPython()
     connect(PythonQt::self(), SIGNAL(pythonStdOut(QString)), this, SLOT(OnPythonQtStdOut(QString)));
     connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(OnPythonQtStdErr(QString)));
     PythonQt::self()->addSysPath("/home/olaf/.local/lib/python2.7/site-packages/");
+    PythonQt::self()->addSysPath("/usr/local/lib/python2.7/dist-packages/");
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

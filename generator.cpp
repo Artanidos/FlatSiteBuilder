@@ -19,8 +19,7 @@
 ****************************************************************************/
 
 #include "generator.h"
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
+
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -29,15 +28,16 @@
 
 Generator::Generator()
 {   
-    vars.insert("name", "Hans");
-    vars.insert("nachname", "Meiser");
+    context = PythonQt::self()->getMainModule();
+    context.evalFile(":/python.py");
 }
 
+/*
+ * Parses all *.md and *.html files for a gives path
+ * and translates them to html into a directory named "site".
+ */
 void Generator::generateSite(QString path)
 {
-    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
-    context.evalFile(":/python.py");
-
     QDir old(path + "/site");
     old.removeRecursively();
 
@@ -47,19 +47,114 @@ void Generator::generateSite(QString path)
     QStringList filter;
     filter << "*.md";
     filter << "*.html";
+
+    QFile config(path + "/config.yaml");
+    if(config.open(QFile::ReadOnly))
+    {
+        QString data = QString::fromLatin1(config.readAll());
+        sitevars = parseYaml(data);
+        if(sitevars["theme"] == QVariant())
+            sitevars["theme"] = "default";
+        config.close();
+    }
+    globals.insert("site", sitevars);
+
+    copyPath(path + "/themes/" + sitevars["theme"].toString() + "/assets", path + "/site/assets");
+
     foreach (QString filename, dir.entryList(filter, QDir::Files))
     {
-        QString name = path + "/site/" + filename.replace(".md", ".html");
-        QFile out(name);
-        if(out.open(QFile::WriteOnly))
+        QFile in(path + "/" + filename);
+        if(in.open(QFile::ReadOnly))
         {
-            QVariantList args;
-            args << path << filename << vars;
-            QVariant rc = context.call("translate", args);
-            out.write(rc.toByteArray());
-            out.close();
+            pagevars.clear();
+            parseFront(QString::fromLatin1(in.readAll()));
+            QString layout = pagevars["layout"].toString();
+            if(layout == "")
+                layout = "default";
+            layout = "layouts/" + layout + ".html";
+
+            if(filename.endsWith(".md"))
+            {
+                QString content = translateMarkdown(pagevars["content"].toString());
+                pagevars["content"] = content;
+            }
+            QString name = path + "/site/" + filename.replace(".md", ".html");
+            pagevars["url"] = filename.replace(".md", ".html");
+            globals.insert("page", pagevars);
+
+            QString content = translateContent(pagevars["content"].toString());
+            pagevars["content"] = content;
+
+            QFile out(name);
+            if(out.open(QFile::WriteOnly))
+            {
+                QVariantList args;
+                args << path << layout << globals << pagevars;
+                QVariant rc = context.call("translateTemplate", args);
+                out.write(rc.toByteArray());
+                out.close();
+                qInfo() << "Created file " + name;
+            }
+            else
+                qWarning() << "Unable to create file " +  name;
         }
         else
-            qDebug() << "Unable to create file " +  name;
+            qWarning() << "Unable to open file " + filename;
+    }
+}
+
+void Generator::parseFront(QString content)
+{
+    if(content.startsWith("---"))
+    {
+        int end = content.indexOf("---", 5);
+        if(end < 0)
+            return;
+        QString code = content.mid(4, end - 5);
+        pagevars = parseYaml(code);
+        pagevars.insert("content", content.mid(end + 4));
+    }
+}
+
+QVariantMap Generator::parseYaml(QString code)
+{
+    QVariantList args;
+    args << code;
+    QVariant rc = context.call("parseYaml", args);
+    return rc.toMap();
+}
+
+QString Generator::translateContent(QString content)
+{
+    QVariantList args;
+    args << content << globals << pagevars;
+    QVariant rc = context.call("translateContent", args);
+    return rc.toString();
+}
+
+QString Generator::translateMarkdown(QString content)
+{
+    QVariantList args;
+    args << content;
+    QVariant rc = context.call("translateMarkdown", args);
+    return rc.toString();
+}
+
+void Generator::copyPath(QString src, QString dst)
+{
+    QDir dir(src);
+    if (! dir.exists())
+        return;
+
+    foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+    {
+        QString dst_path = dst + QDir::separator() + d;
+        dir.mkpath(dst_path);
+        copyPath(src+ QDir::separator() + d, dst_path);
+    }
+
+    foreach (QString f, dir.entryList(QDir::Files))
+    {
+        QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f);
     }
 }
