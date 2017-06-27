@@ -18,36 +18,44 @@
 **
 ****************************************************************************/
 
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef EXPANDER_H
+#define EXPANDER_H
 
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QToolButton>
+#include <QScrollArea>
+#include "hyperlink.h"
 
-#include <QObject>
-#include <QHash>
-#include <QVariant>
-#include <QMap>
-
-class Generator : QObject
+class Expander : public QWidget
 {
     Q_OBJECT
 public:
-    Generator();
+    Expander(QString header, QString normalIcon = "", QString hoveredIcon = "", QString selectedIcon = "");
 
-    void generateSite(QString path);
+    void addLayout(QLayout *l);
+    void enterEvent(QEvent * event);
+    void leaveEvent(QEvent * event);
+    void setExpanded(bool value);
+
+public slots:
+    void buttonClicked();
+
+signals:
+    void expanded(bool value);
 
 private:
-    QVariantMap globals;
-    QVariantMap pagevars;
-    QVariantMap sitevars;
-    PythonQtObjectPtr context;
-
-    void parseFront(QString content);
-    QString translateContent(QString content);
-    QString translateMarkdown(QString content);
-    QVariantMap parseYaml(QString code);
-    void copyPath(QString src, QString dst);
+    QWidget *m_content;
+    QLabel *m_icon;
+    QLabel *m_hyper;
+    QString m_labelNormalColor;
+    QString m_labelHoveredColor;
+    QString m_labelSelectedColor;
+    QImage m_normalIcon;
+    QImage m_hoveredIcon;
+    QImage m_selectedIcon;
+    QString m_text;
+    bool m_isExpanded;
 };
 
-#endif // GENERATOR_H
+#endif // EXPANDER_H

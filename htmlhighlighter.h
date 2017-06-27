@@ -18,36 +18,50 @@
 **
 ****************************************************************************/
 
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef HTMLHIGHLIGHTER_H
+#define HTMLHIGHLIGHTER_H
 
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
+#include <QSyntaxHighlighter>
+#include <QTextCharFormat>
 
-#include <QObject>
-#include <QHash>
-#include <QVariant>
-#include <QMap>
+QT_BEGIN_NAMESPACE
+class QTextDocument;
+QT_END_NAMESPACE
 
-class Generator : QObject
+class HtmlHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
-public:
-    Generator();
 
-    void generateSite(QString path);
+public:
+    enum Construct
+    {
+        Entity,
+        Tag,
+        Comment,
+        LastConstruct = Comment
+    };
+
+    HtmlHighlighter(QTextDocument *document);
+
+    void setFormatFor(Construct construct, const QTextCharFormat &format);
+    QTextCharFormat formatFor(Construct construct) const
+    {
+        return m_formats[construct];
+    }
+
+protected:
+    enum State
+    {
+        NormalState = -1,
+        InComment,
+        InTag,
+        InYaml
+    };
+
+    void highlightBlock(const QString &text);
 
 private:
-    QVariantMap globals;
-    QVariantMap pagevars;
-    QVariantMap sitevars;
-    PythonQtObjectPtr context;
-
-    void parseFront(QString content);
-    QString translateContent(QString content);
-    QString translateMarkdown(QString content);
-    QVariantMap parseYaml(QString code);
-    void copyPath(QString src, QString dst);
+    QTextCharFormat m_formats[LastConstruct + 1];
 };
 
-#endif // GENERATOR_H
+#endif // HTMLHIGHLIGHTER_H

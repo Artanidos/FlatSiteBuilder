@@ -18,36 +18,29 @@
 **
 ****************************************************************************/
 
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef HYPERLINK_H
+#define HYPERLINK_H
 
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
+#include <QEvent>
+#include <QLabel>
 
-#include <QObject>
-#include <QHash>
-#include <QVariant>
-#include <QMap>
-
-class Generator : QObject
+class Hyperlink : public QLabel
 {
     Q_OBJECT
 public:
-    Generator();
+    Hyperlink(QString text);
 
-    void generateSite(QString path);
+    void enterEvent (QEvent *event);
+    void leaveEvent (QEvent *event);
+
+    void setColor(QString color);
+    void setHovered(bool value);
+    void setAutohover(bool value);
 
 private:
-    QVariantMap globals;
-    QVariantMap pagevars;
-    QVariantMap sitevars;
-    PythonQtObjectPtr context;
-
-    void parseFront(QString content);
-    QString translateContent(QString content);
-    QString translateMarkdown(QString content);
-    QVariantMap parseYaml(QString code);
-    void copyPath(QString src, QString dst);
+    QString m_text;
+    QString m_color;
+    bool m_autohover;
 };
 
-#endif // GENERATOR_H
+#endif // HYPERLINK_H

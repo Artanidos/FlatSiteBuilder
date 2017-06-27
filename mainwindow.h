@@ -3,18 +3,18 @@
 **
 ** This file is part of FlatSiteBuilder.
 **
-**  AnimationMaker is free software: you can redistribute it and/or modify
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
 **
-**  AnimationMaker is distributed in the hope that it will be useful,
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
 **
 **  You should have received a copy of the GNU General Public License
-**  along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
 
@@ -22,6 +22,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTextEdit>
+#include <QTreeWidget>
+#include "htmlhighlighter.h"
+#include "expander.h"
 
 class MainWindow : public QMainWindow
 {
@@ -36,10 +40,31 @@ private:
     void writeSettings();
     void readSettings();
     void initPython();
+    void initGui();
+    void loadProject();
+
+    QTextEdit *editor;
+    HtmlHighlighter *highlighter;
+    QTreeWidget *treeview;
+    QTreeWidgetItem *root;
+    Expander *m_dashboard;
+    Expander *m_posts;
+    Expander *m_media;
+    Expander *m_pages;
+    Expander *m_appearance;
+    Expander *m_plugins;
+    Expander *m_settings;
 
 private slots:
     void OnPythonQtStdOut(QString str);
     void OnPythonQtStdErr(QString str);
+    void dashboardExpanded(bool value);
+    void postsExpanded(bool value);
+    void pagesExpanded(bool value);
+    void mediaExpanded(bool value);
+    void apearanceExpanded(bool value);
+    void pluginsExpanded(bool value);
+    void settingsExpanded(bool value);
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,26 @@
 <RCC>
     <qresource prefix="/">
         <file>python.py</file>
+        <file>images/pages_hover.png</file>
+        <file>images/pages_normal.png</file>
+        <file>images/pages_selected.png</file>
+        <file>images/settings_hover.png</file>
+        <file>images/settings_normal.png</file>
+        <file>images/settings_selected.png</file>
+        <file>images/post_hover.png</file>
+        <file>images/post_normal.png</file>
+        <file>images/post_selected.png</file>
+        <file>images/media_hover.png</file>
+        <file>images/media_normal.png</file>
+        <file>images/media_selected.png</file>
+        <file>images/plugin_hover.png</file>
+        <file>images/plugin_normal.png</file>
+        <file>images/plugin_selected.png</file>
+        <file>images/appearance_hover.png</file>
+        <file>images/appearance_normal.png</file>
+        <file>images/appearance_selected.png</file>
+        <file>images/dashboard_hover.png</file>
+        <file>images/dashboard_normal.png</file>
+        <file>images/dashboard_selected.png</file>
     </qresource>
 </RCC>
