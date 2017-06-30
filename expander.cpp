@@ -30,9 +30,14 @@ Expander::Expander(QString header, QString normalIcon, QString hoveredIcon, QStr
 {
     m_isExpanded = false;
     m_text = header;
-    m_labelNormalColor = "#eee";
-    m_labelHoveredColor = "#45bbe6";
-    m_labelSelectedColor = "#fff";
+    m_labelNormalColor = palette().link().color().name();
+    m_labelHoveredColor = palette().highlight().color().name();
+    m_labelSelectedColor = palette().highlightedText().color().name();
+    m_normalColor = palette().base().color().name();
+    m_selectedColor = palette().highlight().color();
+    m_hoveredColor = palette().alternateBase().color();
+
+    setCursor(Qt::PointingHandCursor);
 
     if(normalIcon != "")
         m_normalIcon = QImage(normalIcon);
@@ -42,10 +47,9 @@ Expander::Expander(QString header, QString normalIcon, QString hoveredIcon, QStr
         m_selectedIcon = QImage(selectedIcon);
 
     setAttribute(Qt::WA_Hover, true);
-    QPalette pal = palette();
-    pal.setColor(QPalette::Background, QColor(64, 66, 68));
+
+    setColor(m_normalColor);
     this->setAutoFillBackground(true);
-    this->setPalette(pal);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox = new QHBoxLayout();
@@ -60,13 +64,36 @@ Expander::Expander(QString header, QString normalIcon, QString hoveredIcon, QStr
     hbox->setMargin(8);
     vbox->addLayout(hbox);
     m_content = new QWidget();
-    m_content->setStyleSheet("background-color: #4c4e50");
-    m_content->setHidden(true);
+    m_content->setStyleSheet("background-color: " + palette().base().color().name());
+    m_content->setMaximumHeight(0);
+
     vbox->addWidget(m_content);
     vbox->setMargin(0);
     this->setLayout(vbox);
 
     connect(m_hyper, SIGNAL(linkActivated(QString)), this, SLOT(buttonClicked()));
+
+    anim = new QParallelAnimationGroup();
+    heightAnim = new QPropertyAnimation(m_content, "maximumHeight");
+    colorAnim = new QPropertyAnimation(this, "color");
+    heightAnim->setDuration(200);
+    colorAnim->setDuration(200);
+    anim->addAnimation(heightAnim);
+    anim->addAnimation(colorAnim);
+}
+
+void Expander::setColor(QColor color)
+{
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, color);
+    setPalette(pal);
+}
+
+void Expander::mouseReleaseEvent(QMouseEvent*)
+{
+    setExpanded(!m_isExpanded);
+    if(m_isExpanded)
+        emit clicked();
 }
 
 void Expander::setExpanded(bool value)
@@ -77,7 +104,7 @@ void Expander::setExpanded(bool value)
     {
         m_isExpanded = true;
         QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(255,127,42));
+        pal.setColor(QPalette::Background, m_selectedColor);
         this->setPalette(pal);
         m_icon->setPixmap(QPixmap::fromImage(m_selectedIcon));
         m_hyper->setText("<a style=\"color: " + m_labelSelectedColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
@@ -86,67 +113,76 @@ void Expander::setExpanded(bool value)
     {
         m_isExpanded = false;
         QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(53,53,53));
+        pal.setColor(QPalette::Background, m_normalColor);
         this->setPalette(pal);
         m_icon->setPixmap(QPixmap::fromImage(m_normalIcon));
         m_hyper->setText("<a style=\"color: " + m_labelNormalColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
     }
-    m_content->setHidden(!m_isExpanded);
+    if(m_isExpanded)
+        expandContent();
+    else
+        collapseContent();
+    emit expanded(m_isExpanded);
+}
+
+void Expander::collapseContent()
+{
+    if(m_content->layout())
+        heightAnim->setStartValue(m_content->layout()->sizeHint().height());
+    else
+        heightAnim->setStartValue(0);
+    heightAnim->setEndValue(0);
+    colorAnim->setStartValue(m_selectedColor);
+    colorAnim->setEndValue(m_normalColor);
+    anim->start();
+}
+
+void Expander::expandContent()
+{
+    if(m_content->layout())
+        heightAnim->setEndValue(m_content->layout()->sizeHint().height());
+    else
+        heightAnim->setEndValue(0);
+    heightAnim->setStartValue(0);
+    colorAnim->setStartValue(m_normalColor);
+    colorAnim->setEndValue(m_selectedColor);
+    anim->start();
 }
 
 void Expander::buttonClicked()
 {
-    if(m_isExpanded)
-    {
-        m_isExpanded = false;
-        QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(53,53,53));
-        this->setPalette(pal);
-        m_icon->setPixmap(QPixmap::fromImage(m_hoveredIcon));
-        m_hyper->setText("<a style=\"color: " + m_labelHoveredColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
-    }
-    else
-    {
-        m_isExpanded = true;
-        QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(255,127,42));
-        this->setPalette(pal);
-        m_icon->setPixmap(QPixmap::fromImage(m_selectedIcon));
-        m_hyper->setText("<a style=\"color: " + m_labelSelectedColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
-
-    }
-    m_content->setHidden(!m_isExpanded);
-    emit expanded(m_isExpanded);
+   setExpanded(!m_isExpanded);
+   if(m_isExpanded)
+    emit clicked();
 }
 
- void Expander::addLayout(QLayout *l)
- {
+void Expander::addLayout(QLayout *l)
+{
     m_content->setLayout(l);
- }
+}
 
- void Expander::enterEvent(QEvent * event)
- {
-     if(!m_isExpanded)
-     {
+void Expander::enterEvent(QEvent * event)
+{
+    if(!m_isExpanded)
+    {
         QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(53,53,53));
+        pal.setColor(QPalette::Background, m_hoveredColor);
         this->setPalette(pal);
         m_icon->setPixmap(QPixmap::fromImage(m_hoveredIcon));
         m_hyper->setText("<a style=\"color: " + m_labelHoveredColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
+    }
+    QWidget::enterEvent(event);
+}
 
-     }
-     QWidget::enterEvent(event);
- }
-
- void Expander::leaveEvent(QEvent * event)
- {
-     if(!m_isExpanded)
-     {
+void Expander::leaveEvent(QEvent * event)
+{
+    if(!m_isExpanded)
+    {
         QPalette pal = palette();
-        pal.setColor(QPalette::Background, QColor(64, 66, 68));
+        pal.setColor(QPalette::Background, m_normalColor);
         this->setPalette(pal);
         m_icon->setPixmap(QPixmap::fromImage(m_normalIcon));
         m_hyper->setText("<a style=\"color: " + m_labelNormalColor + "; text-decoration: none;\" href=\"#\">" + m_text + "</a>");
-     }
-     QWidget::leaveEvent(event);
- }
+    }
+    QWidget::leaveEvent(event);
+}

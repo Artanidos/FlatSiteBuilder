@@ -26,6 +26,8 @@
 #include <QTreeWidget>
 #include "htmlhighlighter.h"
 #include "expander.h"
+#include "posts.h"
+#include "pages.h"
 
 class MainWindow : public QMainWindow
 {
@@ -48,23 +50,26 @@ private:
     QTreeWidget *treeview;
     QTreeWidgetItem *root;
     Expander *m_dashboard;
-    Expander *m_posts;
     Expander *m_media;
-    Expander *m_pages;
+    Expander *m_content;
     Expander *m_appearance;
     Expander *m_plugins;
     Expander *m_settings;
+    Posts *m_postsDialog;
+    Pages *m_pagesDialog;
 
 private slots:
     void OnPythonQtStdOut(QString str);
     void OnPythonQtStdErr(QString str);
     void dashboardExpanded(bool value);
-    void postsExpanded(bool value);
-    void pagesExpanded(bool value);
+    void contentExpanded(bool value);
     void mediaExpanded(bool value);
     void apearanceExpanded(bool value);
     void pluginsExpanded(bool value);
     void settingsExpanded(bool value);
+    void showDashboard();
+    void showPosts();
+    void showPages();
 };
 
 #endif // MAINWINDOW_H

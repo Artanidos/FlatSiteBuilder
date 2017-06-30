@@ -24,7 +24,8 @@ Hyperlink::Hyperlink(QString text)
 {
     m_autohover = true;
     m_text = text;
-    m_color = "#bbb";
+    m_color = palette().link().color().name();
+    m_hover = palette().highlight().color().name();
     setText("<a style=\"color: " + m_color + "; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
     setTextFormat(Qt::RichText);
     setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -33,7 +34,7 @@ Hyperlink::Hyperlink(QString text)
 void Hyperlink::enterEvent (QEvent *)
 {
     if(m_autohover)
-        setText("<a style=\"color: #45bbe6; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
+        setText("<a style=\"color: " + m_hover + "; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
 }
 
 void Hyperlink::leaveEvent (QEvent *)
@@ -50,7 +51,7 @@ void Hyperlink::setColor(QString color)
 
 void Hyperlink::setHovered(bool hovered)
 {
-    setText("<a style=\"color: " + (hovered ? "#45bbe6" : m_color) + "; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
+    setText("<a style=\"color: " + (hovered ? m_hover : m_color) + "; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
 }
 
 void Hyperlink::setAutohover(bool value)

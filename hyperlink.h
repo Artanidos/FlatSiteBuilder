@@ -40,6 +40,7 @@ public:
 private:
     QString m_text;
     QString m_color;
+    QString m_hover;
     bool m_autohover;
 };
 

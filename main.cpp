@@ -19,10 +19,9 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-#include "generator.h"
-#include <QDebug>
 #include <QApplication>
 #include <QStyleFactory>
+#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {   
@@ -32,6 +31,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion("1.0");
 
     a.setStyle(QStyleFactory::create("Fusion"));
+    a.setStyleSheet("QPushButton:hover { color: #45bbe6 }");
     QPalette p = a.palette();
 
     p.setColor(QPalette::Window, QColor(53,53,53));
@@ -44,13 +44,14 @@ int main(int argc, char *argv[])
     p.setColor(QPalette::Button, QColor(53,53,53));
     p.setColor(QPalette::ButtonText, Qt::white);
     p.setColor(QPalette::BrightText, Qt::red);
-
-    p.setColor(QPalette::Highlight, QColor(255,127,42));
+    p.setColor(QPalette::Highlight, QColor("#45bbe6"));
     p.setColor(QPalette::HighlightedText, Qt::black);
-
     p.setColor(QPalette::Disabled, QPalette::Text, Qt::darkGray);
     p.setColor(QPalette::Disabled, QPalette::ButtonText, Qt::darkGray);
+    p.setColor(QPalette::Link, QColor("#bbb"));
     a.setPalette(p);
+
+    QQuickStyle::setStyle("Material");
 
     MainWindow w;
     w.show();

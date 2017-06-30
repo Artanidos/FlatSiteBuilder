@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>python.py</file>
         <file>images/pages_hover.png</file>
         <file>images/pages_normal.png</file>
         <file>images/pages_selected.png</file>
@@ -22,5 +21,8 @@
         <file>images/dashboard_hover.png</file>
         <file>images/dashboard_normal.png</file>
         <file>images/dashboard_selected.png</file>
+        <file>python/python.py</file>
+        <file>qml/Dashboard.qml</file>
+        <file>qml/PageModel.qml</file>
     </qresource>
 </RCC>

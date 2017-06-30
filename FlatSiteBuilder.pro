@@ -21,10 +21,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT += core gui
+QT += core gui qml quickwidgets quickcontrols2 quick
 QT += testlib 
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
 
 unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
@@ -37,13 +36,17 @@ SOURCES += main.cpp\
     generator.cpp \
     htmlhighlighter.cpp \
     expander.cpp \
-    hyperlink.cpp
+    hyperlink.cpp \
+    pages.cpp \
+    posts.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
     htmlhighlighter.h \
     expander.h \
-    hyperlink.h
+    hyperlink.h \
+    pages.h \
+    posts.h
 
 DISTFILES += \
     README.md \
@@ -55,7 +58,12 @@ DISTFILES += \
     testsite/themes/default/includes/head.html \
     testsite/themes/default/includes/header.html \
     testsite/themes/default/includes/nav.html \
-    testsite/themes/default/assets/css/style.css
+    testsite/themes/default/assets/css/style.css \
+    dashboard.qml \
+    PageModel.qml \
+    qml/Dashboard.qml \
+    qml/PageModel.qml \
+    python/python.py
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

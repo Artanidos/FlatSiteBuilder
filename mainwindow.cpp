@@ -30,10 +30,11 @@
 #include <QSplitter>
 #include <QHeaderView>
 #include <QToolBox>
+#include <QPalette>
 #include <QAction>
 #include <QDockWidget>
+#include <QQuickWidget>
 #include "hyperlink.h"
-
 #include "generator.h"
 #include "PythonQt.h"
 #include "PythonQt_QtAll.h"
@@ -69,44 +70,50 @@ void MainWindow::initGui()
 
     editor = new QTextEdit;
     editor->setFont(font);
-
     highlighter = new HtmlHighlighter(editor->document());
 
     m_dashboard = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
-    m_posts = new Expander("Posts", ":/images/post_normal.png", ":/images/post_hover.png", ":/images/post_selected.png");
     m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
-    m_pages = new Expander("Pages", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
+    m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
     m_appearance = new Expander("Appearance", ":/images/appearance_normal.png", ":/images/appearance_hover.png", ":/images/appearance_selected.png");
     m_plugins = new Expander("Plugins", ":/images/plugin_normal.png", ":/images/plugin_hover.png", ":/images/plugin_selected.png");
     m_settings = new Expander("Settings", ":/images/settings_normal.png", ":/images/settings_hover.png", ":/images/settings_selected.png");
 
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addWidget(m_dashboard);
-    vbox->addWidget(m_posts);
     vbox->addWidget(m_media);
-    vbox->addWidget(m_pages);
+    vbox->addWidget(m_content);
     vbox->addWidget(m_appearance);
     vbox->addWidget(m_plugins);
     vbox->addWidget(m_settings);
     vbox->addStretch();
 
     QVBoxLayout *dashBox = new QVBoxLayout();
-    Hyperlink *homeButton = new Hyperlink("Home");
-    Hyperlink *updatesButton = new Hyperlink("Updates");
+    Hyperlink *generateButton = new Hyperlink("Generate Site");
+    Hyperlink *homeButton = new Hyperlink("Documentation");
+    dashBox->addWidget(generateButton);
     dashBox->addWidget(homeButton);
-    dashBox->addWidget(updatesButton);
     m_dashboard->addLayout(dashBox);
 
-    QVBoxLayout *postsBox = new QVBoxLayout();
-    Hyperlink *allPostsButton = new Hyperlink("All posts");
-    Hyperlink *addNewButton = new Hyperlink("Add new");
+    QVBoxLayout *contentBox = new QVBoxLayout();
+    Hyperlink *postsButton = new Hyperlink("Posts");
+    Hyperlink *pagesButton = new Hyperlink("Pages");
     Hyperlink *categoriesButton = new Hyperlink("Categories");
     Hyperlink *tagsButton = new Hyperlink("Tags");
-    postsBox->addWidget(allPostsButton);
-    postsBox->addWidget(addNewButton);
-    postsBox->addWidget(categoriesButton);
-    postsBox->addWidget(tagsButton);
-    m_posts->addLayout(postsBox);
+    contentBox->addWidget(postsButton);
+    contentBox->addWidget(pagesButton);
+    contentBox->addWidget(categoriesButton);
+    contentBox->addWidget(tagsButton);
+    m_content->addLayout(contentBox);
+
+    QVBoxLayout *appBox = new QVBoxLayout();
+    Hyperlink *themesButton = new Hyperlink("Themes");
+    Hyperlink *widgetsButton = new Hyperlink("Widgets");
+    Hyperlink *menusButton = new Hyperlink("Menus");
+    appBox->addWidget(themesButton);
+    appBox->addWidget(widgetsButton);
+    appBox->addWidget(menusButton);
+    m_appearance->addLayout(appBox);
 
     QWidget *scrollContent = new QWidget();
     scrollContent->setLayout(vbox);
@@ -125,37 +132,28 @@ void MainWindow::initGui()
 
     addDockWidget(Qt::LeftDockWidgetArea, navigationdock);
 
-    setCentralWidget(editor);
-
     connect(m_dashboard, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
-    connect(m_posts, SIGNAL(expanded(bool)), this, SLOT(postsExpanded(bool)));
     connect(m_media, SIGNAL(expanded(bool)), this, SLOT(mediaExpanded(bool)));
-    connect(m_pages, SIGNAL(expanded(bool)), this, SLOT(pagesExpanded(bool)));
+    connect(m_content, SIGNAL(expanded(bool)), this, SLOT(contentExpanded(bool)));
     connect(m_appearance, SIGNAL(expanded(bool)), this, SLOT(apearanceExpanded(bool)));
     connect(m_plugins, SIGNAL(expanded(bool)), this, SLOT(pluginsExpanded(bool)));
     connect(m_settings, SIGNAL(expanded(bool)), this, SLOT(settingsExpanded(bool)));
+
+    connect(pagesButton, SIGNAL(linkActivated(QString)), this, SLOT(showPages()));
+    connect(postsButton, SIGNAL(linkActivated(QString)), this, SLOT(showPosts()));
+    connect(m_dashboard, SIGNAL(clicked()), this, SLOT(showDashboard()));
+    connect(m_content, SIGNAL(clicked()), this, SLOT(showPosts()));
+
+    m_dashboard->setExpanded(true);
+    showDashboard();
 }
 
 void MainWindow::dashboardExpanded(bool value)
 {
     if(value)
     {
-        m_posts->setExpanded(false);
         m_media->setExpanded(false);
-        m_pages->setExpanded(false);
-        m_appearance->setExpanded(false);
-        m_plugins->setExpanded(false);
-        m_settings->setExpanded(false);
-    }
-}
-
-void MainWindow::postsExpanded(bool value)
-{
-    if(value)
-    {
-        m_dashboard->setExpanded(false);
-        m_media->setExpanded(false);
-        m_pages->setExpanded(false);
+        m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
@@ -167,20 +165,18 @@ void MainWindow::mediaExpanded(bool value)
     if(value)
     {
         m_dashboard->setExpanded(false);
-        m_posts->setExpanded(false);
-        m_pages->setExpanded(false);
+        m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
     }
 }
 
-void MainWindow::pagesExpanded(bool value)
+void MainWindow::contentExpanded(bool value)
 {
     if(value)
     {
         m_dashboard->setExpanded(false);
-        m_posts->setExpanded(false);
         m_media->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -193,9 +189,8 @@ void MainWindow::apearanceExpanded(bool value)
     if(value)
     {
         m_dashboard->setExpanded(false);
-        m_posts->setExpanded(false);
         m_media->setExpanded(false);
-        m_pages->setExpanded(false);
+        m_content->setExpanded(false);
         m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
     }
@@ -206,9 +201,8 @@ void MainWindow::pluginsExpanded(bool value)
     if(value)
     {
         m_dashboard->setExpanded(false);
-        m_posts->setExpanded(false);
         m_media->setExpanded(false);
-        m_pages->setExpanded(false);
+        m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_settings->setExpanded(false);
     }
@@ -219,9 +213,8 @@ void MainWindow::settingsExpanded(bool value)
     if(value)
     {
         m_dashboard->setExpanded(false);
-        m_posts->setExpanded(false);
         m_media->setExpanded(false);
-        m_pages->setExpanded(false);
+        m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
     }
@@ -285,4 +278,24 @@ void MainWindow::OnPythonQtStdOut(QString str)
 void MainWindow::OnPythonQtStdErr(QString str)
 {
     qDebug() << "PythonErr:" << str;
+}
+
+void MainWindow::showDashboard()
+{
+    QQuickWidget *view = new QQuickWidget();
+    view->setSource(QUrl("qrc:/qml/Dashboard.qml"));
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    setCentralWidget(view);
+}
+
+void MainWindow::showPosts()
+{
+    m_postsDialog = new Posts();
+    setCentralWidget(m_postsDialog);
+}
+
+void MainWindow::showPages()
+{
+    m_pagesDialog = new Pages();
+    setCentralWidget(m_pagesDialog);
 }

@@ -25,11 +25,15 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QScrollArea>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include "hyperlink.h"
 
 class Expander : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QColor color READ color WRITE setColor)
+
 public:
     Expander(QString header, QString normalIcon = "", QString hoveredIcon = "", QString selectedIcon = "");
 
@@ -37,12 +41,18 @@ public:
     void enterEvent(QEvent * event);
     void leaveEvent(QEvent * event);
     void setExpanded(bool value);
+    void setColor(QColor color);
+    QColor color() {return Qt::black;} // not really needed now,
+
+protected:
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 public slots:
     void buttonClicked();
 
 signals:
     void expanded(bool value);
+    void clicked();
 
 private:
     QWidget *m_content;
@@ -55,7 +65,16 @@ private:
     QImage m_hoveredIcon;
     QImage m_selectedIcon;
     QString m_text;
+    QPropertyAnimation *heightAnim;
+    QPropertyAnimation *colorAnim;
+    QParallelAnimationGroup *anim;
+    QColor m_normalColor;
+    QColor m_selectedColor;
+    QColor m_hoveredColor;
     bool m_isExpanded;
+
+    void expandContent();
+    void collapseContent();
 };
 
 #endif // EXPANDER_H
