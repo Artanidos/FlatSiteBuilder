@@ -1,5 +1,4 @@
 import jinja2
-import mistune
 import yaml
 
 def translateTemplate(dir, template, globals, pagevars):
@@ -12,9 +11,6 @@ def translateContent(code, globals, pagevars):
 	environment = jinja2.Environment()
 	template = environment.from_string(code, pagevars)
 	return template.render(globals)
-
-def translateMarkdown(code):
-	return mistune.markdown(code, escape=False, hard_wrap=True)
 
 def parseYaml(code):
     return yaml.load(code)

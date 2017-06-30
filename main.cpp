@@ -19,12 +19,29 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
+#include "site.h"
+#include "page.h"
+#include "section.h"
+#include "row.h"
+#include "column.h"
+#include "text.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QQuickStyle>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QTest>
 
 int main(int argc, char *argv[])
 {   
+    qmlRegisterType<Site>("FlatSiteBuilder", 1, 0, "Site");
+    qmlRegisterType<Page>("FlatSiteBuilder", 1, 0, "Page");
+    qmlRegisterType<Section>("FlatSiteBuilder", 1, 0, "Section");
+    qmlRegisterType<Row>("FlatSiteBuilder", 1, 0, "Row");
+    qmlRegisterType<Column>("FlatSiteBuilder", 1, 0, "Column");
+    qmlRegisterType<Element>("FlatSiteBuilder", 1, 0, "Element");
+    qmlRegisterType<Text>("FlatSiteBuilder", 1, 0, "Text");
+
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
@@ -52,6 +69,13 @@ int main(int argc, char *argv[])
     a.setPalette(p);
 
     QQuickStyle::setStyle("Material");
+
+
+    QQmlEngine engine;
+    QQmlComponent component(&engine, QUrl::fromLocalFile("/home/olaf/SourceCode/FlatSiteBuilder/testsite/site.qml"));
+    Site *site = dynamic_cast<Site *>(component.create());
+    qDebug() << site->title() << site->theme();
+    delete site;
 
     MainWindow w;
     w.show();

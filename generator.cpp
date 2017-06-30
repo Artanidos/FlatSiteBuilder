@@ -33,7 +33,7 @@ Generator::Generator()
 }
 
 /*
- * Parses all *.md and *.html files for a gives path
+ * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
 void Generator::generateSite(QString path)
@@ -45,7 +45,6 @@ void Generator::generateSite(QString path)
     dir.mkdir("site");
 
     QStringList filter;
-    filter << "*.md";
     filter << "*.html";
 
     QFile config(path + "/config.yaml");
@@ -73,11 +72,6 @@ void Generator::generateSite(QString path)
                 layout = "default";
             layout = "layouts/" + layout + ".html";
 
-            if(filename.endsWith(".md"))
-            {
-                QString content = translateMarkdown(pagevars["content"].toString());
-                pagevars["content"] = content;
-            }
             QString name = path + "/site/" + filename.replace(".md", ".html");
             pagevars["url"] = filename.replace(".md", ".html");
             globals.insert("page", pagevars);
@@ -129,14 +123,6 @@ QString Generator::translateContent(QString content)
     QVariantList args;
     args << content << globals << pagevars;
     QVariant rc = context.call("translateContent", args);
-    return rc.toString();
-}
-
-QString Generator::translateMarkdown(QString content)
-{
-    QVariantList args;
-    args << content;
-    QVariant rc = context.call("translateMarkdown", args);
     return rc.toString();
 }
 

@@ -36,6 +36,19 @@ Pane
             Layout.fillWidth: true
         }
 
+        Text
+        {
+            text: "Name"
+            color: "#fff"
+        }
+        Text
+        {
+            id: authorHeader
+            text: "Author"
+            color: "#fff"
+        }
+        Item{}
+        Item {}
         Rectangle
         {
             Layout.fillWidth: true
@@ -49,18 +62,37 @@ Pane
                 id: listview
                 anchors.fill: parent
                 model: PageModel {}
-                delegate: delegateList
+                delegate: itemComponent
+                highlight: highlightComponent
             }
 
             Component
             {
-                id: delegateList
+                id: highlightComponent
+
+                Rectangle
+                {
+                    width: ListView.view.width
+                    color: "#45bbe6"
+                }
+            }
+
+            Component
+            {
+                id: itemComponent
+
                 Item
                 {
                     id: delegateItem
                     width: listview.width
                     height: 40
                     clip: true
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        onClicked: listview.currentIndex = index
+                    }
 
                     Column
                     {
@@ -69,12 +101,11 @@ Pane
                         anchors
                         {
                             verticalCenter: parent.verticalCenter
-
                             margins: 10
                         }
                         Text
                         {
-                            text: 'Name: ' + name
+                            text: name
                             color: "#fff"
                         }
                     }
@@ -82,7 +113,7 @@ Pane
                     Column
                     {
                         id: column2
-                        x: 200
+                        x: 140
                         anchors
                         {
                             verticalCenter: parent.verticalCenter
@@ -91,7 +122,7 @@ Pane
 
                         Text
                         {
-                            text: 'Author: ' + author
+                            text: author
                             color: "#fff"
                         }
                     }

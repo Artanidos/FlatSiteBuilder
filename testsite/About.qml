@@ -1,0 +1,18 @@
+import FlatSiteBuilder 1.0
+
+Page {
+    layout: "default"
+    title: "About"
+    url: "about.html"
+
+    Section {
+        Row {
+            Column {
+                Text {
+                    text: "<h1>About</h1>"
+                }
+            }
+        }
+    }
+}
+

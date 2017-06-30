@@ -38,7 +38,14 @@ SOURCES += main.cpp\
     expander.cpp \
     hyperlink.cpp \
     pages.cpp \
-    posts.cpp
+    posts.cpp \
+    site.cpp \
+    page.cpp \
+    section.cpp \
+    row.cpp \
+    column.cpp \
+    text.cpp \
+    element.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -46,13 +53,17 @@ HEADERS  += mainwindow.h \
     expander.h \
     hyperlink.h \
     pages.h \
-    posts.h
+    posts.h \
+    site.h \
+    page.h \
+    section.h \
+    row.h \
+    column.h \
+    text.h \
+    element.h
 
 DISTFILES += \
     README.md \
-    testsite/config.yaml \
-    testsite/about.md \
-    testsite/index.md \
     testsite/themes/default/layouts/default.html \
     testsite/themes/default/includes/footer.html \
     testsite/themes/default/includes/head.html \
@@ -63,7 +74,10 @@ DISTFILES += \
     PageModel.qml \
     qml/Dashboard.qml \
     qml/PageModel.qml \
-    python/python.py
+    python/python.py \
+    testsite/site.qml \
+    testsite/Index.qml \
+    testsite/About.qml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
