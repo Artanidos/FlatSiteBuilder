@@ -11,24 +11,13 @@ Pane
     GridLayout
     {
         anchors.fill: parent
-        columns: 4
+        columns: 3
         Text
         {
-            text: site.title//"Dashboard"
+            text: "Dashboard"
             font.pointSize: 20
             color: "#ffffff"
-        }
-
-        Button
-        {
-            text: "Add Page"
-            Layout.margins: 10
-        }
-
-        Button
-        {
-            text: "Add Post"
-            Layout.margins: 10
+            Layout.columnSpan: 2
         }
 
         Item
@@ -36,128 +25,31 @@ Pane
             Layout.fillWidth: true
         }
 
-        Text
-        {
-            text: "Name"
+        Text {
+            text: "Title:"
             color: "#fff"
         }
-        Text
-        {
-            id: authorHeader
-            text: "Author"
+
+        Text {
+            text: "<b>" + site.title + "</b>"
             color: "#fff"
         }
-        Item{}
-        Item {}
-        Rectangle
-        {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.columnSpan: 4
-            clip: true
-            color: "#404244"
 
-            ListView
-            {
-                id: listview
-                anchors.fill: parent
-                model: site.pages//PageModel {}
-                delegate: itemComponent
-                highlight: highlightComponent
-            }
+        Text {}
 
-            Component
-            {
-                id: highlightComponent
-
-                Rectangle
-                {
-                    width: ListView.view.width
-                    color: "#45bbe6"
-                }
-            }
-
-            Component
-            {
-                id: itemComponent
-
-                Item
-                {
-                    id: delegateItem
-                    width: listview.width
-                    height: 40
-                    clip: true
-
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: listview.currentIndex = index
-                    }
-
-                    Column
-                    {
-                        id: column
-                        x: 5
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            margins: 10
-                        }
-                        Text
-                        {
-                            text: title
-                            color: "#fff"
-                        }
-                    }
-
-                    Column
-                    {
-                        id: column2
-                        x: 140
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            margins: 10
-                        }
-
-                        Text
-                        {
-                            text: author
-                            color: "#fff"
-                        }
-                    }
-
-                    Column
-                    {
-                        id: column3
-                        x: 400
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.right
-                            leftMargin: -140
-                            margins: 10
-                        }
-                        Button { text: 'Edit'; height: 30}
-
-                    }
-                    Column
-                    {
-                        id: column4
-
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.right
-                            leftMargin: -70
-                            margins: 10
-                        }
-
-                        Button { text: 'Delete'; height: 30 }
-                    }
-                }
-            }
-
+        Text {
+            text: "Theme:"
+            color: "#fff"
         }
+
+        Text {
+            text: "<b>" + site.theme + "</b>"
+            color: "#fff"
+        }
+
+        Text {}
+
+        Item { Layout.fillHeight: true}
+
     }
 }

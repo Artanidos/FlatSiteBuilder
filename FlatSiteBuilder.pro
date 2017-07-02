@@ -37,7 +37,6 @@ SOURCES += main.cpp\
     htmlhighlighter.cpp \
     expander.cpp \
     hyperlink.cpp \
-    pages.cpp \
     posts.cpp \
     site.cpp \
     page.cpp \
@@ -52,8 +51,6 @@ HEADERS  += mainwindow.h \
     htmlhighlighter.h \
     expander.h \
     hyperlink.h \
-    pages.h \
-    posts.h \
     site.h \
     page.h \
     section.h \
@@ -70,14 +67,14 @@ DISTFILES += \
     testsite/themes/default/includes/header.html \
     testsite/themes/default/includes/nav.html \
     testsite/themes/default/assets/css/style.css \
-    dashboard.qml \
-    PageModel.qml \
     qml/Dashboard.qml \
     python/python.py \
     testsite/site.qml \
     testsite/Index.qml \
     testsite/About.qml \
-    testsite/News.qml
+    testsite/News.qml \
+    qml/Pages.qml \
+    qml/Posts.qml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

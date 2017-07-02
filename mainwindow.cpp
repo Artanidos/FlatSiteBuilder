@@ -283,12 +283,20 @@ void MainWindow::showDashboard()
 
 void MainWindow::showPosts()
 {
-    m_postsDialog = new Posts();
-    setCentralWidget(m_postsDialog);
+    QQuickWidget *view = new QQuickWidget();
+    QQmlContext *ctx = view->rootContext();
+    ctx->setContextProperty("site", QVariant::fromValue(m_site));
+    view->setSource(QUrl("qrc:/qml/Posts.qml"));
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    setCentralWidget(view);
 }
 
 void MainWindow::showPages()
 {
-    m_pagesDialog = new Pages();
-    setCentralWidget(m_pagesDialog);
+    QQuickWidget *view = new QQuickWidget();
+    QQmlContext *ctx = view->rootContext();
+    ctx->setContextProperty("site", QVariant::fromValue(m_site));
+    view->setSource(QUrl("qrc:/qml/Pages.qml"));
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    setCentralWidget(view);
 }

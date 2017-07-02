@@ -23,6 +23,7 @@
         <file>images/dashboard_selected.png</file>
         <file>python/python.py</file>
         <file>qml/Dashboard.qml</file>
-        <file>qml/PageModel.qml</file>
+        <file>qml/Pages.qml</file>
+        <file>qml/Posts.qml</file>
     </qresource>
 </RCC>

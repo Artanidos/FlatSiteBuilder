@@ -10,7 +10,7 @@
 class Site : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString theme READ theme WRITE setTheme)
+    Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(QQmlListProperty<Page> pages READ pages NOTIFY pagesChanged)
 
@@ -39,6 +39,7 @@ private:
     QVector<Page *> m_pages;
 
 signals:
+    void themeChanged();
     void titleChanged();
     void pagesChanged();
 };
