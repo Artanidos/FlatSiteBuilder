@@ -73,11 +73,11 @@ DISTFILES += \
     dashboard.qml \
     PageModel.qml \
     qml/Dashboard.qml \
-    qml/PageModel.qml \
     python/python.py \
     testsite/site.qml \
     testsite/Index.qml \
-    testsite/About.qml
+    testsite/About.qml \
+    testsite/News.qml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
