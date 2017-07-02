@@ -12,7 +12,7 @@ class Page : public QObject
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
     Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
-    Q_PROPERTY(QString layout READ layout WRITE setLayout)
+    Q_PROPERTY(QString layout READ layout WRITE setLayout NOTIFY layoutChanged)
     Q_PROPERTY(QQmlListProperty<Section> sections READ sections)
     Q_CLASSINFO("DefaultProperty", "sections")
 
@@ -54,6 +54,7 @@ signals:
     void authorChanged();
     void titleChanged();
     void urlChanged();
+    void layoutChanged();
 };
 
 #endif // PAGE_H

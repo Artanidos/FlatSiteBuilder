@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     row.cpp \
     column.cpp \
     text.cpp \
-    element.cpp
+    element.cpp \
+    image.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     row.h \
     column.h \
     text.h \
-    element.h
+    element.h \
+    image.h
 
 DISTFILES += \
     README.md \
@@ -69,12 +71,12 @@ DISTFILES += \
     testsite/themes/default/assets/css/style.css \
     qml/Dashboard.qml \
     python/python.py \
-    testsite/site.qml \
     testsite/Index.qml \
     testsite/About.qml \
     testsite/News.qml \
     qml/Pages.qml \
-    qml/Posts.qml
+    qml/Posts.qml \
+    testsite/Site.qml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -25,6 +25,7 @@
 #include "row.h"
 #include "column.h"
 #include "text.h"
+#include "image.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QQuickStyle>
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Column>("FlatSiteBuilder", 1, 0, "Column");
     qmlRegisterType<Element>("FlatSiteBuilder", 1, 0, "Element");
     qmlRegisterType<Text>("FlatSiteBuilder", 1, 0, "Text");
+    qmlRegisterType<Image>("FlatSiteBuilder", 1, 0, "Image");
 
     QApplication a(argc, argv);
 

@@ -19,6 +19,12 @@ Page {
     Section {
         Row {
             Column {
+                Image {
+                    source: "images/logo.png"
+                }
+            }
+
+            Column {
                 Text {
                     text: "<p>How are you</p>"
                 }

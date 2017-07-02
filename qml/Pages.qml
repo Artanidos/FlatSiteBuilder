@@ -1,157 +1,166 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.1
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
 
-Pane
-{
+Pane {
     Material.theme: Material.Dark
     Material.accent: Material.Teal
 
-    GridLayout
-    {
+    ColumnLayout {
         anchors.fill: parent
-        columns: 3
-        Text
-        {
-            text: "Pages"
-            font.pointSize: 20
-            color: "#ffffff"
-        }
-
-        Button
-        {
-            text: "Add Page"
-            Layout.margins: 10
-        }
-
-        Item
-        {
-            Layout.fillWidth: true
-        }
-
-        Text
-        {
-            text: "Name"
-            color: "#fff"
-        }
-        Text
-        {
-            id: authorHeader
-            text: "Author"
-            color: "#fff"
-        }
-        Item{}
-        Item {}
-        Rectangle
-        {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.columnSpan: 3
-            clip: true
-            color: "#404244"
-
-            ListView
-            {
-                id: listview
-                anchors.fill: parent
-                model: site.pages
-                delegate: itemComponent
-                highlight: highlightComponent
+        RowLayout {
+            Text {
+                text: "Pages"
+                font.pointSize: 20
+                color: "#ffffff"
             }
 
-            Component
-            {
-                id: highlightComponent
+            Button {
+                text: "Add Page"
+                Layout.margins: 10
+            }
+        }
+        RowLayout {
+            Text {
+                text: "Name"
+                color: "#fff"
+                Layout.leftMargin: 5
+                Layout.preferredWidth: 140
+            }
+            Text {
+                text: "Author"
+                color: "#fff"
+                Layout.preferredWidth: 140
+            }
+            Text {
+                text: "Url"
+                color: "#fff"
+                Layout.preferredWidth: 140
+            }
 
-                Rectangle
-                {
-                    width: ListView.view.width
-                    color: "#45bbe6"
+            Text {
+                text: "Layout"
+                color: "#fff"
+                Layout.preferredWidth: 140
+            }
+        }
+        RowLayout {
+            Rectangle {
+                clip: true
+                color: "#404244"
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                ListView {
+                    id: listview
+                    anchors.fill: parent
+                    model: site.pages
+                    delegate: itemComponent
+                    highlight: highlightComponent
                 }
-            }
 
-            Component
-            {
-                id: itemComponent
+                Component {
+                    id: highlightComponent
 
-                Item
-                {
-                    id: delegateItem
-                    width: listview.width
-                    height: 40
-                    clip: true
-
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: listview.currentIndex = index
-                    }
-
-                    Column
-                    {
-                        id: column
-                        x: 5
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            margins: 10
-                        }
-                        Text
-                        {
-                            text: title
-                            color: "#fff"
-                        }
-                    }
-
-                    Column
-                    {
-                        id: column2
-                        x: 140
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            margins: 10
-                        }
-
-                        Text
-                        {
-                            text: author
-                            color: "#fff"
-                        }
-                    }
-
-                    Column
-                    {
-                        id: column3
-                        x: 400
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.right
-                            leftMargin: -140
-                            margins: 10
-                        }
-                        Button { text: 'Edit'; height: 30}
-
-                    }
-                    Column
-                    {
-                        id: column4
-
-                        anchors
-                        {
-                            verticalCenter: parent.verticalCenter
-                            left: parent.right
-                            leftMargin: -70
-                            margins: 10
-                        }
-
-                        Button { text: 'Delete'; height: 30 }
+                    Rectangle {
+                        width: ListView.view.width
+                        color: "#45bbe6"
                     }
                 }
-            }
 
+                Component {
+                    id: itemComponent
+
+                    Item {
+                        id: delegateItem
+                        width: listview.width
+                        height: 40
+                        clip: true
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: listview.currentIndex = index
+                        }
+                        RowLayout {
+                            Column {
+                                id: column
+                                Layout.preferredWidth: 140
+                                Layout.leftMargin: 5
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+                                Text {
+                                    text: title
+                                    color: "#fff"
+                                }
+                            }
+
+                            Column {
+                                id: columnAuthor
+                                Layout.preferredWidth: 140
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+
+                                Text {
+                                    text: author
+                                    color: "#fff"
+                                }
+                            }
+
+                            Column {
+                                id: columnUrl
+                                Layout.preferredWidth: 140
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+
+                                Text {
+                                    text: url
+                                    color: "#fff"
+                                }
+                            }
+
+                            Column {
+                                id: columnLayout
+                                Layout.preferredWidth: 140
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+
+                                Text {
+                                    text: layout
+                                    color: "#fff"
+                                }
+                            }
+
+                            Column {
+                                id: column3
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+                                Button { text: 'Edit'; height: 30}
+
+                            }
+                            Column {
+                                id: column4
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    margins: 10
+                                }
+
+                                Button { text: 'Delete'; height: 30 }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
