@@ -21,6 +21,8 @@ public:
     Row *row(int) const;
     void clearRows();
 
+    QString getHtml();
+
 private:
     static void appendRow(QQmlListProperty<Row>*, Row*);
     static int rowsCount(QQmlListProperty<Row>*);

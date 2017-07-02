@@ -70,13 +70,6 @@ int main(int argc, char *argv[])
 
     QQuickStyle::setStyle("Material");
 
-
-    QQmlEngine engine;
-    QQmlComponent component(&engine, QUrl::fromLocalFile("/home/olaf/SourceCode/FlatSiteBuilder/testsite/site.qml"));
-    Site *site = dynamic_cast<Site *>(component.create());
-    qDebug() << site->title() << site->theme();
-    delete site;
-
     MainWindow w;
     w.show();
 

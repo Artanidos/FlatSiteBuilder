@@ -21,6 +21,8 @@ public:
     Element *element(int) const;
     void clearElements();
 
+    QString getHtml();
+
 private:
     static void appendElement(QQmlListProperty<Element>*, Element*);
     static int elementsCount(QQmlListProperty<Element>*);

@@ -36,8 +36,10 @@ Generator::Generator()
  * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(QString path)
+void Generator::generateSite(Site *site, QString path)
 {
+    m_site = site;
+
     QDir old(path + "/site");
     old.removeRecursively();
 

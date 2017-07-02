@@ -4,6 +4,7 @@ Page {
     layout: "default"
 	title: "Home"
     url: "index.html"
+    author: "Olaf Japp"
 
     Section {
         Row {
@@ -18,7 +19,9 @@ Page {
     Section {
         Row {
             Column {
-
+                Text {
+                    text: "<p>How are you</p>"
+                }
             }
         }
     }

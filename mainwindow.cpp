@@ -34,21 +34,24 @@
 #include <QAction>
 #include <QDockWidget>
 #include <QQuickWidget>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QQuickItem>
+#include <QQmlContext>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
 #include "PythonQt_QtAll.h"
 #include "expander.h"
+#include "site.h"
+#include "page.h"
 
 MainWindow::MainWindow()
 {
+    loadProject();
     initPython();
     initGui();
-    readSettings();
-    loadProject();
-
-    //Generator gen;
-    //gen.generateSite("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
+    readSettings();   
 }
 
 void MainWindow::initPython()
@@ -222,22 +225,10 @@ void MainWindow::settingsExpanded(bool value)
 
 void MainWindow::loadProject()
 {
-    /*
-    QStringList filter;
-    filter << "*.md";
-    filter << "*.html";
-    filter << "*.yaml";
-    filter << "*.css";
-    QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
-
-    foreach (QString filename, dir.entryList(filter, QDir::Files))
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setText(0, filename);
-        root->addChild(item);
-    }
-    treeview->expandAll();
-    */
+    QQmlEngine engine;
+    engine.setOutputWarningsToStandardError(true);;
+    QQmlComponent component(&engine, QUrl::fromLocalFile("/home/olaf/SourceCode/FlatSiteBuilder/testsite/site.qml"));
+    m_site = dynamic_cast<Site *>(component.create());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -283,6 +274,8 @@ void MainWindow::OnPythonQtStdErr(QString str)
 void MainWindow::showDashboard()
 {
     QQuickWidget *view = new QQuickWidget();
+    QQmlContext *ctx = view->rootContext();
+    ctx->setContextProperty("site", QVariant::fromValue(m_site));
     view->setSource(QUrl("qrc:/qml/Dashboard.qml"));
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     setCentralWidget(view);

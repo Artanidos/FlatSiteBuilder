@@ -4,3 +4,8 @@ Element::Element()
 {
 
 }
+
+QString Element::getHtml()
+{
+    return "";
+}

@@ -5,6 +5,16 @@ Column::Column()
 
 }
 
+QString Column::getHtml()
+{
+    QString html = "<column>\n";
+    for(int i = 0; i < elementsCount(); i++)
+    {
+        html += element(i)->getHtml();
+    }
+    return html + "\n</column>\n";
+}
+
 QQmlListProperty<Element> Column::elements()
 {
     return QQmlListProperty<Element>(this, this,

@@ -21,6 +21,8 @@ public:
     Column *column(int) const;
     void clearColumns();
 
+    QString getHtml();
+
 private:
     static void appendColumn(QQmlListProperty<Column>*, Column*);
     static int columnsCount(QQmlListProperty<Column>*);

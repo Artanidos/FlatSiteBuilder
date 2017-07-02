@@ -28,6 +28,7 @@
 #include "expander.h"
 #include "posts.h"
 #include "pages.h"
+#include "site.h"
 
 class MainWindow : public QMainWindow
 {
@@ -57,6 +58,7 @@ private:
     Expander *m_settings;
     Posts *m_postsDialog;
     Pages *m_pagesDialog;
+    Site *m_site;
 
 private slots:
     void OnPythonQtStdOut(QString str);

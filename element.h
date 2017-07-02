@@ -9,6 +9,8 @@ class Element : public QObject
 
 public:
     Element();
+
+    virtual QString getHtml();
 };
 
 #endif // ELEMENT_H

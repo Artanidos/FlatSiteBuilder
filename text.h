@@ -15,6 +15,8 @@ public:
     QString text() {return m_text;}
     void setText(QString text) {m_text = text;}
 
+    QString getHtml();
+
 private:
     QString m_text;
 };

@@ -11,8 +11,8 @@ class Site : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString theme READ theme WRITE setTheme)
-    Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(QQmlListProperty<Page> pages READ pages)
+    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+    Q_PROPERTY(QQmlListProperty<Page> pages READ pages NOTIFY pagesChanged)
 
 public:
     Site();
@@ -37,6 +37,10 @@ private:
     QString m_theme;
     QString m_title;
     QVector<Page *> m_pages;
+
+signals:
+    void titleChanged();
+    void pagesChanged();
 };
 
 #endif // SITE_H

@@ -5,6 +5,17 @@ Section::Section()
 
 }
 
+QString Section::getHtml()
+{
+    QString html = "<section>\n";
+
+    for(int i = 0; i < rowsCount(); i++)
+    {
+        html += row(i)->getHtml();
+    }
+    return html + "\n</section>\n";
+}
+
 QQmlListProperty<Row> Section::rows()
 {
     return QQmlListProperty<Row>(this, this,

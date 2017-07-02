@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QVariant>
 #include <QMap>
+#include "site.h"
 
 class Generator : QObject
 {
@@ -35,9 +36,10 @@ class Generator : QObject
 public:
     Generator();
 
-    void generateSite(QString path);
+    void generateSite(Site *site, QString path);
 
 private:
+    Site *m_site;
     QVariantMap globals;
     QVariantMap pagevars;
     QVariantMap sitevars;

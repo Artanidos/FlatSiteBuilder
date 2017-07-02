@@ -14,7 +14,7 @@ Pane
         columns: 4
         Text
         {
-            text: "Dashboard"
+            text: site.title//"Dashboard"
             font.pointSize: 20
             color: "#ffffff"
         }
@@ -61,7 +61,7 @@ Pane
             {
                 id: listview
                 anchors.fill: parent
-                model: PageModel {}
+                model: site.pages//PageModel {}
                 delegate: itemComponent
                 highlight: highlightComponent
             }
@@ -105,7 +105,7 @@ Pane
                         }
                         Text
                         {
-                            text: name
+                            text: title
                             color: "#fff"
                         }
                     }

@@ -5,6 +5,17 @@ Page::Page()
 
 }
 
+QString Page::getHtml()
+{
+    QString html = "<page>\n";
+
+    for(int i = 0; i < sectionsCount(); i++)
+    {
+        html += section(i)->getHtml();
+    }
+    return html + "\n</page>\n";
+}
+
 QQmlListProperty<Section> Page::sections()
 {
     return QQmlListProperty<Section>(this, this,
