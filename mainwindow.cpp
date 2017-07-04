@@ -38,6 +38,7 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 #include <QQmlContext>
+#include <QDomDocument>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
@@ -52,6 +53,9 @@ MainWindow::MainWindow()
     initPython();
     initGui();
     readSettings();   
+
+    m_dashboard->setExpanded(true);
+    showDashboard();
 }
 
 void MainWindow::initPython()
@@ -146,9 +150,6 @@ void MainWindow::initGui()
     connect(postsButton, SIGNAL(linkActivated(QString)), this, SLOT(showPosts()));
     connect(m_dashboard, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPosts()));
-
-    m_dashboard->setExpanded(true);
-    showDashboard();
 }
 
 void MainWindow::dashboardExpanded(bool value)
@@ -225,10 +226,42 @@ void MainWindow::settingsExpanded(bool value)
 
 void MainWindow::loadProject()
 {
-    QQmlEngine engine;
-    engine.setOutputWarningsToStandardError(true);;
-    QQmlComponent component(&engine, QUrl::fromLocalFile("/home/olaf/SourceCode/FlatSiteBuilder/testsite/site.qml"));
-    m_site = dynamic_cast<Site *>(component.create());
+    m_site = new Site();
+
+    QDomDocument doc;
+    QFile file("/home/olaf/SourceCode/FlatSiteBuilder/testsite/Site.xml");
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Unable to open Site.xml";
+        return;
+    }
+    if (!doc.setContent(&file))
+    {
+        qDebug() << "Unable to the Site content from XML";
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomElement site = doc.documentElement();
+
+    m_site->setTheme(site.attribute("theme", "defaultTheme"));
+    m_site->setTitle(site.attribute("title", "defaultTitle"));
+    QDomElement pages = site.firstChildElement("Pages");
+    if(!pages.isNull())
+    {
+        QDomElement page = pages.firstChildElement("Page");
+        while(!page.isNull())
+        {
+            Page *p = new Page();
+            p->setTitle(page.attribute("title"));
+            p->setUrl(page.attribute("url"));
+            p->setAuthor(page.attribute("author"));
+            p->setLayout(page.attribute("layout", "default"));
+            m_site->appendPage(p);
+            page = page.nextSiblingElement("Page");
+        }
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -271,32 +304,27 @@ void MainWindow::OnPythonQtStdErr(QString str)
     qDebug() << "PythonErr:" << str;
 }
 
-void MainWindow::showDashboard()
+void MainWindow::loadDialog(QString name)
 {
     QQuickWidget *view = new QQuickWidget();
     QQmlContext *ctx = view->rootContext();
     ctx->setContextProperty("site", QVariant::fromValue(m_site));
-    view->setSource(QUrl("qrc:/qml/Dashboard.qml"));
+    view->setSource(QUrl("qrc:/qml/" + name + ".qml"));
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     setCentralWidget(view);
+}
+
+void MainWindow::showDashboard()
+{
+    loadDialog("Dashboard");
 }
 
 void MainWindow::showPosts()
 {
-    QQuickWidget *view = new QQuickWidget();
-    QQmlContext *ctx = view->rootContext();
-    ctx->setContextProperty("site", QVariant::fromValue(m_site));
-    view->setSource(QUrl("qrc:/qml/Posts.qml"));
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    setCentralWidget(view);
+    loadDialog("Posts");
 }
 
 void MainWindow::showPages()
 {
-    QQuickWidget *view = new QQuickWidget();
-    QQmlContext *ctx = view->rootContext();
-    ctx->setContextProperty("site", QVariant::fromValue(m_site));
-    view->setSource(QUrl("qrc:/qml/Pages.qml"));
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    setCentralWidget(view);
+    loadDialog("Pages");
 }

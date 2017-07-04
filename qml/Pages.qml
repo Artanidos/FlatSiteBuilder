@@ -11,6 +11,7 @@ Pane {
         anchors.fill: parent
         RowLayout {
             Text {
+                id: title
                 text: "Pages"
                 font.pointSize: 20
                 color: "#ffffff"
@@ -19,6 +20,7 @@ Pane {
             Button {
                 text: "Add Page"
                 Layout.margins: 10
+                onClicked: site.addPage("Test")
             }
         }
         RowLayout {

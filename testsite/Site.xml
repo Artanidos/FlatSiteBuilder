@@ -1,0 +1,10 @@
+<Site theme="default" title="Testsite">
+    <Pages>
+	    <Page source="index.html" title="Index" author="Olaf Japp"/>
+		<Page source="about.html" title="About" author="Olaf Japp"/>
+		<Page source="news.html" title="News" author="Olaf Japp"/>
+    </Pages>
+	<Posts>
+	    <Post source="posts/2017/July/hello.html" title="Hello" author="Olaf Japp"/>
+	</Posts>
+</Site>

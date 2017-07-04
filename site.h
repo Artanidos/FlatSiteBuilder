@@ -17,6 +17,7 @@ class Site : public QObject
 public:
     Site();
 
+    Q_INVOKABLE void addPage(QString title);
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
 

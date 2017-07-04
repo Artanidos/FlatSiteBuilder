@@ -43,6 +43,7 @@ private:
     void initPython();
     void initGui();
     void loadProject();
+    void loadDialog(QString name);
 
     QTextEdit *editor;
     HtmlHighlighter *highlighter;

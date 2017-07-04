@@ -23,7 +23,7 @@
 
 QT += core gui qml quickwidgets quickcontrols2 quick
 QT += testlib 
-QT += widgets
+QT += widgets xml
 
 unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
@@ -63,20 +63,21 @@ HEADERS  += mainwindow.h \
 
 DISTFILES += \
     README.md \
-    testsite/themes/default/layouts/default.html \
-    testsite/themes/default/includes/footer.html \
-    testsite/themes/default/includes/head.html \
-    testsite/themes/default/includes/header.html \
-    testsite/themes/default/includes/nav.html \
-    testsite/themes/default/assets/css/style.css \
+    themes/default/layouts/default.html \
+    themes/default/includes/footer.html \
+    themes/default/includes/head.html \
+    themes/default/includes/header.html \
+    themes/default/includes/nav.html \
+    themes/default/assets/css/style.css \
     qml/Dashboard.qml \
     python/python.py \
-    testsite/Index.qml \
-    testsite/About.qml \
-    testsite/News.qml \
     qml/Pages.qml \
     qml/Posts.qml \
-    testsite/Site.qml
+    testsite/Site.xml \
+    testsite/index.html \
+    testsite/posts/2017/July/hello.html \
+    testsite/about.html \
+    testsite/news.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

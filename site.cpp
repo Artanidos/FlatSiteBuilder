@@ -1,8 +1,17 @@
 #include "site.h"
+#include <QTest>
 
 Site::Site()
 {
 
+}
+
+void Site::addPage(QString title)
+{
+    Page *p = new Page();
+    p->setTitle(title);
+    m_pages.append(p);
+    emit pagesChanged();
 }
 
 QQmlListProperty<Page> Site::pages()
