@@ -18,19 +18,18 @@
 **
 ****************************************************************************/
 
-#include "row.h"
+#ifndef POSTS_H
+#define POSTS_H
 
-Row::Row()
+#include <QWidget>
+
+
+class Posts : public QWidget
 {
+    Q_OBJECT
 
-}
+public:
+    Posts();
+};
 
-QString Row::getHtml()
-{
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
-    {
-        html += columns().at(i)->getHtml();
-    }
-    return html + "\n</row>\n";
-}
+#endif // POSTS_H

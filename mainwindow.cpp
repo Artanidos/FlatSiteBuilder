@@ -33,11 +33,6 @@
 #include <QPalette>
 #include <QAction>
 #include <QDockWidget>
-#include <QQuickWidget>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QQuickItem>
-#include <QQmlContext>
 #include <QDomDocument>
 #include "hyperlink.h"
 #include "generator.h"
@@ -46,6 +41,10 @@
 #include "expander.h"
 #include "site.h"
 #include "page.h"
+#include "dashboard.h"
+#include "posts.h"
+#include "pages.h"
+#include "pageeditor.h"
 
 MainWindow::MainWindow()
 {
@@ -54,7 +53,7 @@ MainWindow::MainWindow()
     initGui();
     readSettings();   
 
-    m_dashboard->setExpanded(true);
+    m_dashboardExpander->setExpanded(true);
     showDashboard();
 }
 
@@ -79,7 +78,7 @@ void MainWindow::initGui()
     editor->setFont(font);
     highlighter = new HtmlHighlighter(editor->document());
 
-    m_dashboard = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
+    m_dashboardExpander = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
     m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
     m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
     m_appearance = new Expander("Appearance", ":/images/appearance_normal.png", ":/images/appearance_hover.png", ":/images/appearance_selected.png");
@@ -87,7 +86,7 @@ void MainWindow::initGui()
     m_settings = new Expander("Settings", ":/images/settings_normal.png", ":/images/settings_hover.png", ":/images/settings_selected.png");
 
     QVBoxLayout *vbox = new QVBoxLayout();
-    vbox->addWidget(m_dashboard);
+    vbox->addWidget(m_dashboardExpander);
     vbox->addWidget(m_media);
     vbox->addWidget(m_content);
     vbox->addWidget(m_appearance);
@@ -100,7 +99,7 @@ void MainWindow::initGui()
     Hyperlink *homeButton = new Hyperlink("Documentation");
     dashBox->addWidget(generateButton);
     dashBox->addWidget(homeButton);
-    m_dashboard->addLayout(dashBox);
+    m_dashboardExpander->addLayout(dashBox);
 
     QVBoxLayout *contentBox = new QVBoxLayout();
     Hyperlink *postsButton = new Hyperlink("Posts");
@@ -139,7 +138,7 @@ void MainWindow::initGui()
 
     addDockWidget(Qt::LeftDockWidgetArea, navigationdock);
 
-    connect(m_dashboard, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
+    connect(m_dashboardExpander, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
     connect(m_media, SIGNAL(expanded(bool)), this, SLOT(mediaExpanded(bool)));
     connect(m_content, SIGNAL(expanded(bool)), this, SLOT(contentExpanded(bool)));
     connect(m_appearance, SIGNAL(expanded(bool)), this, SLOT(apearanceExpanded(bool)));
@@ -148,7 +147,7 @@ void MainWindow::initGui()
 
     connect(pagesButton, SIGNAL(linkActivated(QString)), this, SLOT(showPages()));
     connect(postsButton, SIGNAL(linkActivated(QString)), this, SLOT(showPosts()));
-    connect(m_dashboard, SIGNAL(clicked()), this, SLOT(showDashboard()));
+    connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPosts()));
 }
 
@@ -168,7 +167,7 @@ void MainWindow::mediaExpanded(bool value)
 {
     if(value)
     {
-        m_dashboard->setExpanded(false);
+        m_dashboardExpander->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -180,7 +179,7 @@ void MainWindow::contentExpanded(bool value)
 {
     if(value)
     {
-        m_dashboard->setExpanded(false);
+        m_dashboardExpander->setExpanded(false);
         m_media->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -192,7 +191,7 @@ void MainWindow::apearanceExpanded(bool value)
 {
     if(value)
     {
-        m_dashboard->setExpanded(false);
+        m_dashboardExpander->setExpanded(false);
         m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -204,7 +203,7 @@ void MainWindow::pluginsExpanded(bool value)
 {
     if(value)
     {
-        m_dashboard->setExpanded(false);
+        m_dashboardExpander->setExpanded(false);
         m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
@@ -216,7 +215,7 @@ void MainWindow::settingsExpanded(bool value)
 {
     if(value)
     {
-        m_dashboard->setExpanded(false);
+        m_dashboardExpander->setExpanded(false);
         m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
@@ -258,7 +257,7 @@ void MainWindow::loadProject()
             p->setUrl(page.attribute("url"));
             p->setAuthor(page.attribute("author"));
             p->setLayout(page.attribute("layout", "default"));
-            m_site->appendPage(p);
+            m_site->pages().append(p);
             page = page.nextSiblingElement("Page");
         }
     }
@@ -304,27 +303,24 @@ void MainWindow::OnPythonQtStdErr(QString str)
     qDebug() << "PythonErr:" << str;
 }
 
-void MainWindow::loadDialog(QString name)
-{
-    QQuickWidget *view = new QQuickWidget();
-    QQmlContext *ctx = view->rootContext();
-    ctx->setContextProperty("site", QVariant::fromValue(m_site));
-    view->setSource(QUrl("qrc:/qml/" + name + ".qml"));
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    setCentralWidget(view);
-}
-
 void MainWindow::showDashboard()
 {
-    loadDialog("Dashboard");
+    setCentralWidget(new Dashboard());
 }
 
 void MainWindow::showPosts()
 {
-    loadDialog("Posts");
+    setCentralWidget(new Posts());
 }
 
 void MainWindow::showPages()
 {
-    loadDialog("Pages");
+    Pages *pages = new Pages();
+    connect(pages, SIGNAL(addPage()), this, SLOT(addPage()));
+    setCentralWidget(pages);
+}
+
+void MainWindow::addPage()
+{
+    setCentralWidget(new PageEditor());
 }

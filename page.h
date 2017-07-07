@@ -1,20 +1,32 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #ifndef PAGE_H
 #define PAGE_H
 
 #include <QObject>
-#include <QVector>
-#include <QQmlListProperty>
 #include "section.h"
 
 class Page : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
-    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
-    Q_PROPERTY(QString layout READ layout WRITE setLayout NOTIFY layoutChanged)
-    Q_PROPERTY(QQmlListProperty<Section> sections READ sections)
-    Q_CLASSINFO("DefaultProperty", "sections")
 
 public:
     Page();
@@ -31,30 +43,16 @@ public:
     QString author() {return m_author;}
     void setAuthor(QString author) {m_author = author;}
 
-    QQmlListProperty<Section> sections();
-    void appendSection(Section*);
-    int sectionsCount() const;
-    Section *section(int) const;
-    void clearSections();
+    QList<Section *> sections() {return m_sections;}
 
     QString getHtml();
 
 private:
-    static void appendSection(QQmlListProperty<Section>*, Section*);
-    static int sectionsCount(QQmlListProperty<Section>*);
-    static Section* section(QQmlListProperty<Section>*, int);
-    static void clearSections(QQmlListProperty<Section>*);
     QString m_title;
     QString m_url;
     QString m_layout;
     QString m_author;
-    QVector<Section *> m_sections;
-
-signals:
-    void authorChanged();
-    void titleChanged();
-    void urlChanged();
-    void layoutChanged();
+    QList<Section *> m_sections;
 };
 
 #endif // PAGE_H

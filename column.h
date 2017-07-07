@@ -1,36 +1,44 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #ifndef COLUMN_H
 #define COLUMN_H
 
 #include <QObject>
-#include <QQmlListProperty>
-#include <QVector>
 #include "element.h"
 
 class Column : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Element> elements READ elements)
-    Q_CLASSINFO("DefaultProperty", "elements")
 
 public:
     Column();
 
-    QQmlListProperty<Element> elements();
-    void appendElement(Element*);
-    int elementsCount() const;
-    Element *element(int) const;
-    void clearElements();
+    QList<Element *> elements() {return m_elements;}
 
     QString getHtml();
 
 private:
-    static void appendElement(QQmlListProperty<Element>*, Element*);
-    static int elementsCount(QQmlListProperty<Element>*);
-    static Element* element(QQmlListProperty<Element>*, int);
-    static void clearElements(QQmlListProperty<Element>*);
     QString m_theme;
     QString m_title;
-    QVector<Element *> m_elements;
+    QList<Element *> m_elements;
 };
 
 #endif // COLUMN_H

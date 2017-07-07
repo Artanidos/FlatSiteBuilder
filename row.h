@@ -1,34 +1,43 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #ifndef ROW_H
 #define ROW_H
 
 #include <QObject>
-#include <QQmlListProperty>
 #include <QVector>
 #include "column.h"
 
 class Row : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Column> columns READ columns)
-    Q_CLASSINFO("DefaultProperty", "columns")
 
 public:
     Row();
 
-    QQmlListProperty<Column> columns();
-    void appendColumn(Column*);
-    int columnsCount() const;
-    Column *column(int) const;
-    void clearColumns();
+    QList<Column *> columns() {return m_columns;}
 
     QString getHtml();
 
 private:
-    static void appendColumn(QQmlListProperty<Column>*, Column*);
-    static int columnsCount(QQmlListProperty<Column>*);
-    static Column* column(QQmlListProperty<Column>*, int);
-    static void clearColumns(QQmlListProperty<Column>*);
-    QVector<Column *> m_columns;
+    QList<Column *> m_columns;
 };
 
 #endif // ROW_H

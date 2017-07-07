@@ -5,6 +5,6 @@
 		<Page source="news.html" title="News" author="Olaf Japp"/>
     </Pages>
 	<Posts>
-	    <Post source="posts/2017/July/hello.html" title="Hello" author="Olaf Japp"/>
+	    <Post source="posts/2017/july/hello.html" title="Hello" author="Olaf Japp"/>
 	</Posts>
 </Site>

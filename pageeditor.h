@@ -18,19 +18,16 @@
 **
 ****************************************************************************/
 
-#include "row.h"
+#ifndef PAGEEDITOR_H
+#define PAGEEDITOR_H
 
-Row::Row()
+#include <QWidget>
+#include "page.h"
+
+class PageEditor : public QWidget
 {
+public:
+    PageEditor(Page *page = NULL);
+};
 
-}
-
-QString Row::getHtml()
-{
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
-    {
-        html += columns().at(i)->getHtml();
-    }
-    return html + "\n</row>\n";
-}
+#endif // PAGEEDITOR_H

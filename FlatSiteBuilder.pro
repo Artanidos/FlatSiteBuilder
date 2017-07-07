@@ -21,11 +21,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT += core gui qml quickwidgets quickcontrols2 quick
+QT += core gui
 QT += testlib 
 QT += widgets xml
 
-unix:PYTHON_VERSION=2.7
+#unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
 TEMPLATE = app
 target.path += /bin
@@ -37,7 +37,6 @@ SOURCES += main.cpp\
     htmlhighlighter.cpp \
     expander.cpp \
     hyperlink.cpp \
-    posts.cpp \
     site.cpp \
     page.cpp \
     section.cpp \
@@ -45,7 +44,11 @@ SOURCES += main.cpp\
     column.cpp \
     text.cpp \
     element.cpp \
-    image.cpp
+    image.cpp \
+    dashboard.cpp \
+    posts.cpp \
+    pages.cpp \
+    pageeditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -59,7 +62,11 @@ HEADERS  += mainwindow.h \
     column.h \
     text.h \
     element.h \
-    image.h
+    image.h \
+    dashboard.h \
+    posts.h \
+    pages.h \
+    pageeditor.h
 
 DISTFILES += \
     README.md \
@@ -69,13 +76,10 @@ DISTFILES += \
     themes/default/includes/header.html \
     themes/default/includes/nav.html \
     themes/default/assets/css/style.css \
-    qml/Dashboard.qml \
     python/python.py \
-    qml/Pages.qml \
-    qml/Posts.qml \
     testsite/Site.xml \
     testsite/index.html \
-    testsite/posts/2017/July/hello.html \
+    testsite/posts/2017/july/hello.html \
     testsite/about.html \
     testsite/news.html
 

@@ -18,19 +18,44 @@
 **
 ****************************************************************************/
 
-#include "posts.h"
+#include "pages.h"
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QHeaderView>
+#include <QTest>
 
-Posts::Posts()
+Pages::Pages()
 {
     QVBoxLayout *vbox = new QVBoxLayout();
     QGridLayout *layout = new QGridLayout();
     QLabel *title = new QLabel();
-    title->setText("Posts");
+    QPushButton *button = new QPushButton();
+    button->setText("Add Page");
+    title->setText("Pages");
+    QTableWidget *list = new QTableWidget(3, 3, this);
+    list->verticalHeader()->hide();
+    QStringList labels;
+    labels << "Name" << "Author" << "Actions";
+    list->setHorizontalHeaderLabels(labels);
+    list->setItem(0, 0, new QTableWidgetItem("Home"));
+    list->setItem(0, 1, new QTableWidgetItem("Olaf Japp"));
+    list->setItem(1, 0, new QTableWidgetItem("About"));
+    list->setItem(1, 1, new QTableWidgetItem("Olaf Japp"));
+    list->setItem(2, 0, new QTableWidgetItem("News"));
+    list->setItem(2, 1, new QTableWidgetItem("Olaf Japp"));
     layout->addWidget(title, 0, 0);
+    layout->addWidget(button, 1, 0);
+    layout->addWidget(list, 2, 0, 1, 3);
     vbox->addLayout(layout);
-    vbox->addStretch();
     setLayout(vbox);
+
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
+}
+
+void Pages::buttonClicked()
+{
+    emit addPage();
 }

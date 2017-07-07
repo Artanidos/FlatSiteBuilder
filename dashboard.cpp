@@ -18,19 +18,19 @@
 **
 ****************************************************************************/
 
-#include "row.h"
+#include "dashboard.h"
 
-Row::Row()
+#include <QGridLayout>
+#include <QLabel>
+
+Dashboard::Dashboard()
 {
-
-}
-
-QString Row::getHtml()
-{
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
-    {
-        html += columns().at(i)->getHtml();
-    }
-    return html + "\n</row>\n";
+    QVBoxLayout *vbox = new QVBoxLayout();
+    QGridLayout *layout = new QGridLayout();
+    QLabel *title = new QLabel();
+    title->setText("Dashboard");
+    layout->addWidget(title, 0, 0);
+    vbox->addLayout(layout);
+    vbox->addStretch();
+    setLayout(vbox);
 }

@@ -18,19 +18,17 @@
 **
 ****************************************************************************/
 
-#include "row.h"
+#ifndef DASHBOARD_H
+#define DASHBOARD_H
 
-Row::Row()
+#include <QWidget>
+
+class Dashboard : public QWidget
 {
+    Q_OBJECT
 
-}
+public:
+    Dashboard();
+};
 
-QString Row::getHtml()
-{
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
-    {
-        html += columns().at(i)->getHtml();
-    }
-    return html + "\n</row>\n";
-}
+#endif // DASHBOARD_H

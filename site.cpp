@@ -1,60 +1,27 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "site.h"
 #include <QTest>
 
 Site::Site()
 {
 
-}
-
-void Site::addPage(QString title)
-{
-    Page *p = new Page();
-    p->setTitle(title);
-    m_pages.append(p);
-    emit pagesChanged();
-}
-
-QQmlListProperty<Page> Site::pages()
-{
-    return QQmlListProperty<Page>(this, this,
-             &Site::appendPage,
-             &Site::pagesCount,
-             &Site::page,
-             &Site::clearPages);
-}
-
-void Site::appendPage(Page* p)
-{
-    m_pages.append(p);
-}
-
-int Site::pagesCount() const
-{
-    return m_pages.count();
-}
-
-Page *Site::page(int index) const
-{
-    return m_pages.at(index);
-}
-
-void Site::clearPages()
-{
-    return m_pages.clear();
-}
-
-void Site::appendPage(QQmlListProperty<Page>* list, Page* p) {
-    reinterpret_cast< Site* >(list->data)->appendPage(p);
-}
-
-void Site::clearPages(QQmlListProperty<Page>* list) {
-    reinterpret_cast< Site* >(list->data)->clearPages();
-}
-
-Page* Site::page(QQmlListProperty<Page>* list, int i) {
-    return reinterpret_cast< Site* >(list->data)->page(i);
-}
-
-int Site::pagesCount(QQmlListProperty<Page>* list) {
-    return reinterpret_cast< Site* >(list->data)->pagesCount();
 }

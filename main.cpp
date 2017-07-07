@@ -28,22 +28,10 @@
 #include "image.h"
 #include <QApplication>
 #include <QStyleFactory>
-#include <QQuickStyle>
-#include <QQmlEngine>
-#include <QQmlComponent>
 #include <QTest>
 
 int main(int argc, char *argv[])
 {   
-    qmlRegisterType<Site>("FlatSiteBuilder", 1, 0, "Site");
-    qmlRegisterType<Page>("FlatSiteBuilder", 1, 0, "Page");
-    qmlRegisterType<Section>("FlatSiteBuilder", 1, 0, "Section");
-    qmlRegisterType<Row>("FlatSiteBuilder", 1, 0, "Row");
-    qmlRegisterType<Column>("FlatSiteBuilder", 1, 0, "Column");
-    qmlRegisterType<Element>("FlatSiteBuilder", 1, 0, "Element");
-    qmlRegisterType<Text>("FlatSiteBuilder", 1, 0, "Text");
-    qmlRegisterType<Image>("FlatSiteBuilder", 1, 0, "Image");
-
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
@@ -69,8 +57,6 @@ int main(int argc, char *argv[])
     p.setColor(QPalette::Disabled, QPalette::ButtonText, Qt::darkGray);
     p.setColor(QPalette::Link, QColor("#bbb"));
     a.setPalette(p);
-
-    QQuickStyle::setStyle("Material");
 
     MainWindow w;
     w.show();

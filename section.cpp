@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "section.h"
 
 Section::Section()
@@ -9,54 +29,9 @@ QString Section::getHtml()
 {
     QString html = "<section>\n";
 
-    for(int i = 0; i < rowsCount(); i++)
+    for(int i = 0; i < rows().count(); i++)
     {
-        html += row(i)->getHtml();
+        html += rows().at(i)->getHtml();
     }
     return html + "\n</section>\n";
-}
-
-QQmlListProperty<Row> Section::rows()
-{
-    return QQmlListProperty<Row>(this, this,
-             &Section::appendRow,
-             &Section::rowsCount,
-             &Section::row,
-             &Section::clearRows);
-}
-
-void Section::appendRow(Row* p)
-{
-    m_rows.append(p);
-}
-
-int Section::rowsCount() const
-{
-    return m_rows.count();
-}
-
-Row *Section::row(int index) const
-{
-    return m_rows.at(index);
-}
-
-void Section::clearRows()
-{
-    return m_rows.clear();
-}
-
-void Section::appendRow(QQmlListProperty<Row>* list, Row* p) {
-    reinterpret_cast< Section* >(list->data)->appendRow(p);
-}
-
-void Section::clearRows(QQmlListProperty<Row>* list) {
-    reinterpret_cast< Section* >(list->data)->clearRows();
-}
-
-Row* Section::row(QQmlListProperty<Row>* list, int i) {
-    return reinterpret_cast< Section* >(list->data)->row(i);
-}
-
-int Section::rowsCount(QQmlListProperty<Row>* list) {
-    return reinterpret_cast< Section* >(list->data)->rowsCount();
 }

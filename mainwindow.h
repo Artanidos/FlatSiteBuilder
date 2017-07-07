@@ -43,13 +43,12 @@ private:
     void initPython();
     void initGui();
     void loadProject();
-    void loadDialog(QString name);
 
     QTextEdit *editor;
     HtmlHighlighter *highlighter;
     QTreeWidget *treeview;
     QTreeWidgetItem *root;
-    Expander *m_dashboard;
+    Expander *m_dashboardExpander;
     Expander *m_media;
     Expander *m_content;
     Expander *m_appearance;
@@ -69,6 +68,7 @@ private slots:
     void showDashboard();
     void showPosts();
     void showPages();
+    void addPage();
 };
 
 #endif // MAINWINDOW_H

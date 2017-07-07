@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "column.h"
 
 Column::Column()
@@ -8,54 +28,9 @@ Column::Column()
 QString Column::getHtml()
 {
     QString html = "<column>\n";
-    for(int i = 0; i < elementsCount(); i++)
+    for(int i = 0; i < elements().count(); i++)
     {
-        html += element(i)->getHtml();
+        html += elements().at(i)->getHtml();
     }
     return html + "\n</column>\n";
-}
-
-QQmlListProperty<Element> Column::elements()
-{
-    return QQmlListProperty<Element>(this, this,
-             &Column::appendElement,
-             &Column::elementsCount,
-             &Column::element,
-             &Column::clearElements);
-}
-
-void Column::appendElement(Element* p)
-{
-    m_elements.append(p);
-}
-
-int Column::elementsCount() const
-{
-    return m_elements.count();
-}
-
-Element *Column::element(int index) const
-{
-    return m_elements.at(index);
-}
-
-void Column::clearElements()
-{
-    return m_elements.clear();
-}
-
-void Column::appendElement(QQmlListProperty<Element>* list, Element* p) {
-    reinterpret_cast< Column* >(list->data)->appendElement(p);
-}
-
-void Column::clearElements(QQmlListProperty<Element>* list) {
-    reinterpret_cast< Column* >(list->data)->clearElements();
-}
-
-Element* Column::element(QQmlListProperty<Element>* list, int i) {
-    return reinterpret_cast< Column* >(list->data)->element(i);
-}
-
-int Column::elementsCount(QQmlListProperty<Element>* list) {
-    return reinterpret_cast< Column* >(list->data)->elementsCount();
 }

@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "page.h"
 
 Page::Page()
@@ -9,54 +29,9 @@ QString Page::getHtml()
 {
     QString html = "<page>\n";
 
-    for(int i = 0; i < sectionsCount(); i++)
+    for(int i = 0; i < sections().count(); i++)
     {
-        html += section(i)->getHtml();
+        html += sections().at(i)->getHtml();
     }
     return html + "\n</page>\n";
-}
-
-QQmlListProperty<Section> Page::sections()
-{
-    return QQmlListProperty<Section>(this, this,
-             &Page::appendSection,
-             &Page::sectionsCount,
-             &Page::section,
-             &Page::clearSections);
-}
-
-void Page::appendSection(Section* p)
-{
-    m_sections.append(p);
-}
-
-int Page::sectionsCount() const
-{
-    return m_sections.count();
-}
-
-Section *Page::section(int index) const
-{
-    return m_sections.at(index);
-}
-
-void Page::clearSections()
-{
-    return m_sections.clear();
-}
-
-void Page::appendSection(QQmlListProperty<Section>* list, Section* p) {
-    reinterpret_cast< Page* >(list->data)->appendSection(p);
-}
-
-void Page::clearSections(QQmlListProperty<Section>* list) {
-    reinterpret_cast< Page* >(list->data)->clearSections();
-}
-
-Section* Page::section(QQmlListProperty<Section>* list, int i) {
-    return reinterpret_cast< Page* >(list->data)->section(i);
-}
-
-int Page::sectionsCount(QQmlListProperty<Section>* list) {
-    return reinterpret_cast< Page* >(list->data)->sectionsCount();
 }

@@ -1,48 +1,48 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #ifndef SITE_H
 #define SITE_H
 
 #include <QObject>
-#include <QVariant>
-#include <QVector>
-#include <QQmlListProperty>
 #include "page.h"
 
 class Site : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged)
-    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(QQmlListProperty<Page> pages READ pages NOTIFY pagesChanged)
 
 public:
     Site();
 
-    Q_INVOKABLE void addPage(QString title);
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
 
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
-    QQmlListProperty<Page> pages();
-    void appendPage(Page*);
-    int pagesCount() const;
-    Page *page(int) const;
-    void clearPages();
+    QList<Page *> pages() {return m_pages;}
 
 private:
-    static void appendPage(QQmlListProperty<Page>*, Page*);
-    static int pagesCount(QQmlListProperty<Page>*);
-    static Page* page(QQmlListProperty<Page>*, int);
-    static void clearPages(QQmlListProperty<Page>*);
     QString m_theme;
     QString m_title;
-    QVector<Page *> m_pages;
-
-signals:
-    void themeChanged();
-    void titleChanged();
-    void pagesChanged();
+    QList<Page *> m_pages;
 };
 
 #endif // SITE_H

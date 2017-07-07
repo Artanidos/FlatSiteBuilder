@@ -18,19 +18,23 @@
 **
 ****************************************************************************/
 
-#include "row.h"
+#ifndef PAGES_H
+#define PAGES_H
 
-Row::Row()
+#include <QWidget>
+
+class Pages  : public QWidget
 {
+    Q_OBJECT
 
-}
+public:
+    Pages();
 
-QString Row::getHtml()
-{
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
-    {
-        html += columns().at(i)->getHtml();
-    }
-    return html + "\n</row>\n";
-}
+private slots:
+    void buttonClicked();
+
+signals:
+    void addPage();
+};
+
+#endif // PAGES_H
