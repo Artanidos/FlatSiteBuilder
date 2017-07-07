@@ -40,15 +40,14 @@
 #include "PythonQt_QtAll.h"
 #include "expander.h"
 #include "site.h"
-#include "page.h"
+#include "content.h"
 #include "dashboard.h"
-#include "posts.h"
-#include "pages.h"
-#include "pageeditor.h"
+#include "contentlist.h"
+#include "contenteditor.h"
 
 MainWindow::MainWindow()
 {
-    loadProject();
+    loadProject("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
     initPython();
     initGui();
     readSettings();   
@@ -69,15 +68,6 @@ void MainWindow::initPython()
 
 void MainWindow::initGui()
 {
-    QFont font;
-    font.setFamily("Courier");
-    font.setFixedPitch(true);
-    font.setPointSize(13);
-
-    editor = new QTextEdit;
-    editor->setFont(font);
-    highlighter = new HtmlHighlighter(editor->document());
-
     m_dashboardExpander = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
     m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
     m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
@@ -223,12 +213,12 @@ void MainWindow::settingsExpanded(bool value)
     }
 }
 
-void MainWindow::loadProject()
+void MainWindow::loadProject(QString path)
 {
-    m_site = new Site();
+    m_site = new Site(path);
 
     QDomDocument doc;
-    QFile file("/home/olaf/SourceCode/FlatSiteBuilder/testsite/Site.xml");
+    QFile file(path + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "Unable to open Site.xml";
@@ -252,12 +242,12 @@ void MainWindow::loadProject()
         QDomElement page = pages.firstChildElement("Page");
         while(!page.isNull())
         {
-            Page *p = new Page();
+            Content *p = new Content(ContentType::Page);
             p->setTitle(page.attribute("title"));
-            p->setUrl(page.attribute("url"));
+            p->setSource(page.attribute("source"));
             p->setAuthor(page.attribute("author"));
             p->setLayout(page.attribute("layout", "default"));
-            m_site->pages().append(p);
+            m_site->addContent(p);
             page = page.nextSiblingElement("Page");
         }
     }
@@ -310,17 +300,32 @@ void MainWindow::showDashboard()
 
 void MainWindow::showPosts()
 {
-    setCentralWidget(new Posts());
+    ContentList *list = new ContentList(m_site, ContentType::Post);
+    connect(list, SIGNAL(addContent()), this, SLOT(addPost()));
+    connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    setCentralWidget(list);
 }
 
 void MainWindow::showPages()
 {
-    Pages *pages = new Pages();
-    connect(pages, SIGNAL(addPage()), this, SLOT(addPage()));
-    setCentralWidget(pages);
+    ContentList *list = new ContentList(m_site, ContentType::Page);
+    connect(list, SIGNAL(addContent()), this, SLOT(addPage()));
+    connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    setCentralWidget(list);
+}
+
+void MainWindow::addPost()
+{
+    setCentralWidget(new ContentEditor(m_site, new Content(ContentType::Post)));
 }
 
 void MainWindow::addPage()
 {
-    setCentralWidget(new PageEditor());
+    setCentralWidget(new ContentEditor(m_site, new Content(ContentType::Page)));
 }
+
+void MainWindow::editContent(Content *content)
+{
+    setCentralWidget(new ContentEditor(m_site, content));
+}
+

@@ -18,18 +18,30 @@
 **
 ****************************************************************************/
 
-#ifndef POSTS_H
-#define POSTS_H
+#ifndef CONTENTLIST_H
+#define CONTENTLIST_H
 
 #include <QWidget>
+#include "site.h"
 
-
-class Posts : public QWidget
+class ContentList  : public QWidget
 {
     Q_OBJECT
 
 public:
-    Posts();
+    ContentList(Site *site, ContentType type);
+
+private slots:
+    void buttonClicked();
+    void tableDoubleClicked(int, int);
+
+signals:
+    void addContent();
+    void editContent(Content *page);
+
+private:
+    Site *m_site;
+    ContentType m_type;
 };
 
-#endif // POSTS_H
+#endif // CONTENTLIST_H

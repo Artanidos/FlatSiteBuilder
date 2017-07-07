@@ -29,6 +29,10 @@ Dashboard::Dashboard()
     QGridLayout *layout = new QGridLayout();
     QLabel *title = new QLabel();
     title->setText("Dashboard");
+    QFont fnt = title->font();
+    fnt.setPointSize(20);
+    fnt.setBold(true);
+    title->setFont(fnt);
     layout->addWidget(title, 0, 0);
     vbox->addLayout(layout);
     vbox->addStretch();

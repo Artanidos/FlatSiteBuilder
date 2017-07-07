@@ -18,19 +18,31 @@
 **
 ****************************************************************************/
 
-#include "posts.h"
+#ifndef CONTENTEDITOR_H
+#define CONTENTEDITOR_H
 
-#include <QGridLayout>
+#include <QWidget>
+#include <QPushButton>
 #include <QLabel>
+#include "content.h"
+#include "site.h"
 
-Posts::Posts()
+class ContentEditor : public QWidget
 {
-    QVBoxLayout *vbox = new QVBoxLayout();
-    QGridLayout *layout = new QGridLayout();
-    QLabel *title = new QLabel();
-    title->setText("Posts");
-    layout->addWidget(title, 0, 0);
-    vbox->addLayout(layout);
-    vbox->addStretch();
-    setLayout(vbox);
-}
+    Q_OBJECT
+
+public:
+    ContentEditor(Site *site, Content *content = NULL);
+
+private slots:
+    void save();
+    void editChanged();
+
+private:
+    Site *m_site;
+    Content *m_content;
+    QPushButton *m_save;
+    QLabel *m_titleLabel;
+};
+
+#endif // CONTENTEDITOR_H

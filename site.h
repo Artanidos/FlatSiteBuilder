@@ -22,14 +22,14 @@
 #define SITE_H
 
 #include <QObject>
-#include "page.h"
+#include "content.h"
 
 class Site : public QObject
 {
     Q_OBJECT
 
 public:
-    Site();
+    Site(QString path);
 
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
@@ -37,12 +37,16 @@ public:
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
-    QList<Page *> pages() {return m_pages;}
+    QList<Content *> contents() {return m_contents;}
+    void addContent(Content *cotent) {m_contents.append(cotent);}
+
+    QString path() {return m_path;}
 
 private:
+    QString m_path;
     QString m_theme;
     QString m_title;
-    QList<Page *> m_pages;
+    QList<Content *> m_contents;
 };
 
 #endif // SITE_H

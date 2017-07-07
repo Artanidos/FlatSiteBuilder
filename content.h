@@ -18,24 +18,26 @@
 **
 ****************************************************************************/
 
-#ifndef PAGE_H
-#define PAGE_H
+#ifndef CONTENT_H
+#define CONTENT_H
 
 #include <QObject>
 #include "section.h"
 
-class Page : public QObject
+enum ContentType{Page, Post};
+
+class Content : public QObject
 {
     Q_OBJECT
 
 public:
-    Page();
+    Content(ContentType type);
 
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
-    QString url() {return m_url;}
-    void setUrl(QString url) {m_url = url;}
+    QString source() {return m_source;}
+    void setSource(QString source) {m_source = source;}
 
     QString layout() {return m_layout;}
     void setLayout(QString layout) {m_layout = layout;}
@@ -47,12 +49,15 @@ public:
 
     QString getHtml();
 
+    ContentType contentType() {return m_type;}
+
 private:
     QString m_title;
-    QString m_url;
+    QString m_source;
     QString m_layout;
     QString m_author;
     QList<Section *> m_sections;
+    ContentType m_type;
 };
 
-#endif // PAGE_H
+#endif // CONTENT_H

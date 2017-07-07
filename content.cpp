@@ -18,16 +18,20 @@
 **
 ****************************************************************************/
 
-#ifndef PAGEEDITOR_H
-#define PAGEEDITOR_H
+#include "content.h"
 
-#include <QWidget>
-#include "page.h"
-
-class PageEditor : public QWidget
+Content::Content(ContentType type)
 {
-public:
-    PageEditor(Page *page = NULL);
-};
+    m_type = type;
+}
 
-#endif // PAGEEDITOR_H
+QString Content::getHtml()
+{
+    QString html = "<page>\n";
+
+    for(int i = 0; i < sections().count(); i++)
+    {
+        html += sections().at(i)->getHtml();
+    }
+    return html + "\n</page>\n";
+}

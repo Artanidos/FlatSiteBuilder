@@ -20,7 +20,7 @@
 
 #include "mainwindow.h"
 #include "site.h"
-#include "page.h"
+#include "content.h"
 #include "section.h"
 #include "row.h"
 #include "column.h"

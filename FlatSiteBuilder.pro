@@ -38,7 +38,6 @@ SOURCES += main.cpp\
     expander.cpp \
     hyperlink.cpp \
     site.cpp \
-    page.cpp \
     section.cpp \
     row.cpp \
     column.cpp \
@@ -46,9 +45,9 @@ SOURCES += main.cpp\
     element.cpp \
     image.cpp \
     dashboard.cpp \
-    posts.cpp \
-    pages.cpp \
-    pageeditor.cpp
+    content.cpp \
+    contenteditor.cpp \
+    contentlist.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -56,7 +55,6 @@ HEADERS  += mainwindow.h \
     expander.h \
     hyperlink.h \
     site.h \
-    page.h \
     section.h \
     row.h \
     column.h \
@@ -64,9 +62,9 @@ HEADERS  += mainwindow.h \
     element.h \
     image.h \
     dashboard.h \
-    posts.h \
-    pages.h \
-    pageeditor.h
+    content.h \
+    contenteditor.h \
+    contentlist.h
 
 DISTFILES += \
     README.md \

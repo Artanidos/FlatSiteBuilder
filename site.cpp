@@ -21,7 +21,7 @@
 #include "site.h"
 #include <QTest>
 
-Site::Site()
+Site::Site(QString path)
 {
-
+    m_path = path;
 }
