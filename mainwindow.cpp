@@ -34,6 +34,7 @@
 #include <QAction>
 #include <QDockWidget>
 #include <QDomDocument>
+#include <QDate>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
@@ -50,7 +51,7 @@ MainWindow::MainWindow()
     loadProject("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
     initPython();
     initGui();
-    readSettings();   
+    readSettings();
 
     m_dashboardExpander->setExpanded(true);
     showDashboard();
@@ -236,20 +237,22 @@ void MainWindow::loadProject(QString path)
 
     m_site->setTheme(site.attribute("theme", "defaultTheme"));
     m_site->setTitle(site.attribute("title", "defaultTitle"));
-    QDomElement pages = site.firstChildElement("Pages");
-    if(!pages.isNull())
+
+    QDomElement content = site.firstChildElement("Content");
+    while(!content.isNull())
     {
-        QDomElement page = pages.firstChildElement("Page");
-        while(!page.isNull())
-        {
-            Content *p = new Content(ContentType::Page);
-            p->setTitle(page.attribute("title"));
-            p->setSource(page.attribute("source"));
-            p->setAuthor(page.attribute("author"));
-            p->setLayout(page.attribute("layout", "default"));
-            m_site->addContent(p);
-            page = page.nextSiblingElement("Page");
-        }
+        Content *p;
+        if(content.attribute("type", "page") == "page")
+            p = new Content(ContentType::Page);
+        else
+            p = new Content(ContentType::Post);
+        p->setTitle(content.attribute("title"));
+        p->setSource(content.attribute("source"));
+        p->setAuthor(content.attribute("author"));
+        p->setLayout(content.attribute("layout", "default"));
+        p->setDate(QDate::fromString(content.attribute("date"), "dd.MM.yyyy"));
+        m_site->addContent(p);
+        content = content.nextSiblingElement("Content");
     }
 }
 

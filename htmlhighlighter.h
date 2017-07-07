@@ -37,6 +37,7 @@ public:
     {
         Entity,
         Tag,
+        Code,
         Comment,
         LastConstruct = Comment
     };
@@ -55,7 +56,8 @@ protected:
         NormalState = -1,
         InComment,
         InTag,
-        InYaml
+        InVar,
+        InLoop
     };
 
     void highlightBlock(const QString &text);

@@ -42,43 +42,49 @@ ContentList::ContentList(Site *site, ContentType type)
     fnt.setPointSize(20);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
-    QTableWidget *list = new QTableWidget(0, 3, this);
-    list->verticalHeader()->hide();
-    list->setSelectionMode(QAbstractItemView::SingleSelection);
-    list->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_list = new QTableWidget(0, 4, this);
+    m_list->verticalHeader()->hide();
+    m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch );
     QStringList labels;
-    labels << "Name"  << "Layout" << "Author";
-    list->setHorizontalHeaderLabels(labels);
+    labels << "Name"  << "Layout" << "Author" << "Date";
+    m_list->setHorizontalHeaderLabels(labels);
     int rows = 0;
     for(int i = 0; i < site->contents().count(); i++)
     {
         Content *content = site->contents().at(i);
         if(content->contentType() == m_type)
         {
-            list->setRowCount(rows + 1);
+            m_list->setRowCount(rows + 1);
             QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
             titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
-            list->setItem(rows, 0, titleItem);
+            titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
+            m_list->setItem(rows, 0, titleItem);
 
             QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
             layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
-            list->setItem(rows, 1, layoutItem);
+            m_list->setItem(rows, 1, layoutItem);
 
             QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
             authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
-            list->setItem(rows, 2, authorItem);
+            m_list->setItem(rows, 2, authorItem);
+
+            QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
+            dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
+            m_list->setItem(rows, 3, dateItem);
             rows++;
         }
     }
 
     layout->addWidget(titleLabel, 0, 0);
     layout->addWidget(button, 1, 0);
-    layout->addWidget(list, 2, 0, 1, 3);
+    layout->addWidget(m_list, 2, 0, 1, 3);
     vbox->addLayout(layout);
     setLayout(vbox);
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
-    connect(list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
+    connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
 }
 
 void ContentList::buttonClicked()
@@ -86,7 +92,8 @@ void ContentList::buttonClicked()
     emit addContent();
 }
 
-void ContentList::tableDoubleClicked(int row, int)
+void ContentList::tableDoubleClicked(int r, int)
 {
-    emit editContent(m_site->contents().at(row));
+    QTableWidgetItem *item = m_list->item(r, 0);
+    emit editContent(qvariant_cast<Content*>(item->data(Qt::UserRole)));
 }

@@ -22,6 +22,7 @@
 #define CONTENT_H
 
 #include <QObject>
+#include <QDate>
 #include "section.h"
 
 enum ContentType{Page, Post};
@@ -45,6 +46,9 @@ public:
     QString author() {return m_author;}
     void setAuthor(QString author) {m_author = author;}
 
+    QDate date() {return m_date;}
+    void setDate(QDate date) {m_date = date;}
+
     QList<Section *> sections() {return m_sections;}
 
     QString getHtml();
@@ -58,6 +62,8 @@ private:
     QString m_author;
     QList<Section *> m_sections;
     ContentType m_type;
+    QDate m_date;
+    bool m_published;
 };
 
 #endif // CONTENT_H

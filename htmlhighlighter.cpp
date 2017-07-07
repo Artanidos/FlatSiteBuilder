@@ -37,6 +37,10 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *document)
     commentFormat.setForeground(QColor("#87ceeb"));
     commentFormat.setFontItalic(true);
     setFormatFor(Comment, commentFormat);
+
+    QTextCharFormat codeFormat;
+    codeFormat.setForeground(QColor("#ff9e00"));
+    setFormatFor(Code, codeFormat);
 }
 
 void HtmlHighlighter::setFormatFor(Construct construct, const QTextCharFormat &format)
@@ -81,20 +85,57 @@ void HtmlHighlighter::highlightBlock(const QString &text)
                             ;
                         setFormat(start, pos - start, m_formats[Entity]);
                     }
-                    else if(ch == "-")
+                    else if(ch == "{")
                     {
-                        if(text.mid(pos, 3) == "---")
+                        if(text.mid(pos, 2) == "{{")
                         {
-                            state = InYaml;
+                            state = InVar;
+                            break;
                         }
-                        ++pos;
+                        else if(text.mid(pos, 2) == "{%")
+                        {
+                            state = InLoop;
+                            break;
+                        }
+                        pos++;
                         break;
                     }
                     else
                     {
-                        ++pos;
+                        pos++;
                     }
                 }
+                break;
+            case InVar:
+                start = pos;
+                while (pos < len)
+                {
+                    if(text.mid(pos, 2) == "}}")
+                    {
+                        pos += 2;
+                        state = NormalState;
+                        break;
+                    }
+                    else
+                        pos++;
+                }
+                setFormat(start, pos - start, m_formats[Code]);
+                break;
+
+            case InLoop:
+                start = pos;
+                while (pos < len)
+                {
+                    if(text.mid(pos, 2) == "%}")
+                    {
+                        pos += 2;
+                        state = NormalState;
+                        break;
+                    }
+                    else
+                        pos++;
+                }
+                setFormat(start, pos - start, m_formats[Code]);
                 break;
 
             case InComment:
@@ -109,28 +150,10 @@ void HtmlHighlighter::highlightBlock(const QString &text)
                     }
                     else
                     {
-                        ++pos;
+                        pos++;
                     }
                 }
                 setFormat(start, pos - start, m_formats[Comment]);
-                break;
-
-            case InYaml:
-                start = pos;
-                while (pos < len)
-                {
-                    if (text.mid(pos, 3) == "---")
-                    {
-                        pos += 3;
-                        state = NormalState;
-                        break;
-                    }
-                    else
-                    {
-                        ++pos;
-                    }
-                }
-                setFormat(start, pos - start, m_formats[Tag]);
                 break;
 
             case InTag:
@@ -147,7 +170,7 @@ void HtmlHighlighter::highlightBlock(const QString &text)
                         }
                         else if (ch == '>')
                         {
-                            ++pos;
+                            pos++;
                             state = NormalState;
                             break;
                         }
@@ -156,7 +179,7 @@ void HtmlHighlighter::highlightBlock(const QString &text)
                     {
                         quote = QChar::Null;
                     }
-                    ++pos;
+                    pos++;
                 }
                 setFormat(start, pos - start, m_formats[Tag]);
                 break;

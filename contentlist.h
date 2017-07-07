@@ -22,6 +22,7 @@
 #define CONTENTLIST_H
 
 #include <QWidget>
+#include <QTableWidget>
 #include "site.h"
 
 class ContentList  : public QWidget
@@ -42,6 +43,7 @@ signals:
 private:
     Site *m_site;
     ContentType m_type;
+    QTableWidget *m_list;
 };
 
 #endif // CONTENTLIST_H
