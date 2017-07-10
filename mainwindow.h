@@ -67,6 +67,7 @@ private slots:
     void addPost();
     void addPage();
     void editContent(Content *page);
+    void saveProject();
 };
 
 #endif // MAINWINDOW_H

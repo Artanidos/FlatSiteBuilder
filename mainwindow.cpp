@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDebug>
+#include <QTextStream>
 #include <QDir>
 #include <QSplitter>
 #include <QHeaderView>
@@ -256,6 +257,36 @@ void MainWindow::loadProject(QString path)
     }
 }
 
+void MainWindow::saveProject()
+{
+    QDomDocument doc;
+    QDomElement root;
+    QFile file(m_site->path() + "/Site.xml");
+    if(!file.open(QFile::WriteOnly))
+    {
+        qDebug() << "Unable to open file " + m_site->path() + "/Site.xml";
+        return;
+    }
+    root = doc.createElement("Site");
+    root.setAttribute("theme", m_site->theme());
+    root.setAttribute("title", m_site->title());
+    doc.appendChild(root);
+    foreach(Content *content, m_site->contents())
+    {
+        QDomElement c = doc.createElement("Content");
+        c.setAttribute("type", content->contentType() == ContentType::Page ? "page" : "post");
+        c.setAttribute("source", content->source());
+        c.setAttribute("title", content->title());
+        c.setAttribute("author", content->author());
+        c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
+        root.appendChild(c);
+    }
+
+    QTextStream stream(&file);
+    stream << doc.toString();
+    file.close();
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     writeSettings();
@@ -319,16 +350,22 @@ void MainWindow::showPages()
 
 void MainWindow::addPost()
 {
-    setCentralWidget(new ContentEditor(m_site, new Content(ContentType::Post)));
+    ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Post));
+    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    setCentralWidget(edit);
 }
 
 void MainWindow::addPage()
 {
-    setCentralWidget(new ContentEditor(m_site, new Content(ContentType::Page)));
+    ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Page));
+    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    setCentralWidget(edit);
 }
 
 void MainWindow::editContent(Content *content)
 {
-    setCentralWidget(new ContentEditor(m_site, content));
+    ContentEditor *edit = new ContentEditor(m_site, content);
+    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    setCentralWidget(edit);
 }
 

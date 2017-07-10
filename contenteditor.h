@@ -24,6 +24,8 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QTextEdit>
+#include <QLineEdit>
 #include "content.h"
 #include "site.h"
 
@@ -38,11 +40,17 @@ private slots:
     void save();
     void editChanged();
 
+signals:
+    void contentUpdated();
+
 private:
     Site *m_site;
     Content *m_content;
     QPushButton *m_save;
     QLabel *m_titleLabel;
+    QTextEdit *m_text;
+    QString m_filename;
+    QLineEdit *m_title;
 };
 
 #endif // CONTENTEDITOR_H

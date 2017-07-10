@@ -51,45 +51,66 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     fnt.setPointSize(20);
     fnt.setBold(true);
     m_titleLabel->setFont(fnt);
-    QLineEdit *title = new QLineEdit();
-    QTextEdit *text = new QTextEdit;
-    text->setFont(font);
+    m_title = new QLineEdit();
+    m_text = new QTextEdit;
+    m_text->setFont(font);
     QFontMetrics metrics(font);
-    text->setTabStopWidth(4 * metrics.width(' '));
-    new HtmlHighlighter(text->document());
+    m_text->setTabStopWidth(4 * metrics.width(' '));
+    new HtmlHighlighter(m_text->document());
     layout->addWidget(m_titleLabel, 0, 0);
-    layout->addWidget(title, 1, 0, 1, 2);
+    layout->addWidget(m_title, 1, 0, 1, 2);
     layout->addWidget(m_save, 1, 2);
-    layout->addWidget(text, 2, 0, 1, 3);
+    layout->addWidget(m_text, 2, 0, 1, 3);
     vbox->addLayout(layout);
     setLayout(vbox);
 
-    title->setText(m_content->title());
+    m_title->setText(m_content->title());
+    m_filename = m_site->path() + "/" + m_content->source();
     if(!m_content->source().isEmpty())
     {
-        QFile file(m_site->path() + "/" + m_content->source());
+        QFile file(m_filename);
         if(file.open(QFile::ReadOnly))
         {
             QByteArray c = file.readAll();
-            text->insertPlainText(QString::fromLatin1(c));
+            m_text->insertPlainText(QString::fromLatin1(c));
             file.close();
         }
         else
-            qDebug() << "Unable to open file " + m_site->path() + "/" + m_content->source();
+            qDebug() << "Unable to open file " + m_filename;
     }
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    connect(text, SIGNAL(textChanged()), this, SLOT(editChanged()));
+    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
+    connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
 }
 
 void ContentEditor::save()
 {
+    QFile file(m_filename);
+    if(!file.open(QFile::WriteOnly))
+    {
+        qDebug() << "Unable to open file " + m_filename;
+        return;
+    }
+    qint64 bytes = file.write(m_text->toPlainText().toLatin1());
+    if(bytes == -1)
+    {
+        file.close();
+        qDebug() << "An error occured while writing to file " + m_filename;
+        return;
+    }
+    file.close();
+
+    m_content->setDate(QDate::currentDate());
+    m_content->setTitle(m_title->text());
+
     m_save->setText("Update");
     m_save->setEnabled(false);
     if(m_content->contentType() == ContentType::Page)
         m_titleLabel->setText("Edit Page");
     else
         m_titleLabel->setText("Edit Post");
+
+    emit contentUpdated();
 }
 
 void ContentEditor::editChanged()
