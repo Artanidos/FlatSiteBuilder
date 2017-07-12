@@ -79,7 +79,9 @@ DISTFILES += \
     testsite/index.html \
     testsite/posts/2017/july/hello.html \
     testsite/about.html \
-    testsite/news.html
+    testsite/news.html \
+    themes/default/layouts/post.html \
+    themes/default/includes/posthead.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -281,6 +281,7 @@ void MainWindow::saveProject()
         c.setAttribute("source", content->source());
         c.setAttribute("title", content->title());
         c.setAttribute("author", content->author());
+        c.setAttribute("layout", content->layout());
         c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
         root.appendChild(c);
     }

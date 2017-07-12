@@ -38,6 +38,7 @@ Generator::Generator()
  */
 void Generator::generateSite(Site *site)
 {
+    // TODO: themes should be deployed and we should use the app path
     QString theme_path = "/home/olaf/SourceCode/FlatSiteBuilder/themes/";
     m_site = site;
 
@@ -71,6 +72,18 @@ void Generator::generateSite(Site *site)
 
             pagevars["content"] = translateContent(cnt);
 
+            if(content->source().contains("/"))
+            {
+                QDir dir (temp + "/" + m_site->title());
+                QStringList list = content->source().split("/");
+                foreach(QString d, list)
+                {
+                    if(d.contains(".html"))
+                        break;
+                    dir.mkdir(d);
+                    dir.cd(d);
+                }
+            }
             QFile out(name);
             if(out.open(QFile::WriteOnly))
             {
