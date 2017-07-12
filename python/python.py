@@ -1,4 +1,5 @@
 import jinja2
+from PythonQt.flatsitebuilder import Content
 
 def translateTemplate(dir, template, globals, pagevars):
 	loader = jinja2.FileSystemLoader([dir + globals["site"]["theme"] + "/layouts", dir + globals["site"]["theme"] + "/includes"])

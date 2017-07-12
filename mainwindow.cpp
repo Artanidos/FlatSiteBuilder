@@ -36,6 +36,7 @@
 #include <QDockWidget>
 #include <QDomDocument>
 #include <QDate>
+#include <QDesktopServices>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
@@ -55,6 +56,15 @@ MainWindow::MainWindow()
     initGui();
     readSettings();
 
+    if(m_defaultPath.isEmpty())
+        m_defaultPath = QDir::homePath();
+    else
+    {
+        loadProject(m_defaultPath + "/Site.xml");
+        Generator *gen = new Generator();
+        gen->generateSite(m_site);
+    }
+
     m_dashboardExpander->setExpanded(true);
     showDashboard();
 }
@@ -67,6 +77,9 @@ void MainWindow::initPython()
     connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(OnPythonQtStdErr(QString)));
     PythonQt::self()->addSysPath("/home/olaf/.local/lib/python2.7/site-packages/");
     PythonQt::self()->addSysPath("/usr/local/lib/python2.7/dist-packages/");
+
+    PythonQt::self()->registerCPPClass("Content", "", "flatsitebuilder", PythonQtCreateObject<ContentWrapper>);
+
 }
 
 void MainWindow::initGui()
@@ -326,8 +339,6 @@ void MainWindow::readSettings()
         restoreState(settings.value("state").toByteArray());
     }
     m_defaultPath = settings.value("lastSite").toString();
-    if(m_defaultPath.isEmpty())
-        m_defaultPath = QDir::homePath();
 }
 
 void MainWindow::OnPythonQtStdOut(QString str)
@@ -344,6 +355,7 @@ void MainWindow::showDashboard()
 {
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
     connect(db, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
+    connect(db, SIGNAL(previewSite()), this, SLOT(previewSite()));
     connect(this, SIGNAL(siteLoaded(Site*)), db, SLOT(siteLoaded(Site*)));
     setCentralWidget(db);
 }
@@ -385,3 +397,9 @@ void MainWindow::editContent(Content *content)
     setCentralWidget(edit);
 }
 
+void MainWindow::previewSite()
+{
+    QString temp = QDir::tempPath();
+    QDir path(temp + "/" + m_site->title());
+    QDesktopServices::openUrl(QUrl(path.absoluteFilePath("index.html")));
+}

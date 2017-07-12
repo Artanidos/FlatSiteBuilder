@@ -1,2 +1,10 @@
-<h1>News</h1>
-<p>no news today</p>
+<h1>{{page.title}}</h1>
+
+<ul>
+  {% for post in site.posts %}
+    <li>
+	  <a href="{{ post.url() }}">{{ post.title() }}</a>
+      {{ post.excerpt }}
+    </li>
+  {% endfor %}
+</ul>

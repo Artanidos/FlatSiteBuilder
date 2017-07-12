@@ -32,6 +32,7 @@ class Content : public QObject
     Q_OBJECT
 
 public:
+    Content() {}
     Content(ContentType type);
 
     QString title() {return m_title;}
@@ -64,6 +65,19 @@ private:
     ContentType m_type;
     QDate m_date;
     bool m_published;
+};
+
+class ContentWrapper : public QObject
+{
+    Q_OBJECT
+
+public Q_SLOTS:
+    Content* new_Content() {return new Content();}
+    void delete_Content(Content* o) { delete o; }
+    QString url(Content *o) {return o->source();}
+    QString title(Content *o) {return o->title();}
+    void setUrl(Content *o, const QString& url) {o->setSource(url);}
+    void setTitle(Content *o, const QString& title) {o->setTitle(title);}
 };
 
 #endif // CONTENT_H

@@ -7,13 +7,17 @@
 
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
-        {% include "header.html" %}
+        {% include "postheader.html" %}
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        {{ content }}
+		<div class='post'>
+		<h1>{{ page.title }}</h1>
+		<div class='date'>posted {{ page.date }} by {{ page.author }}</div>
+  		<div class='body'>{{ content }}</div>
+		</div>
       </section>
     </div>
 

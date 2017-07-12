@@ -49,6 +49,17 @@ void Generator::generateSite(Site *site)
     QDir dir(temp);
     dir.mkdir(m_site->title());
 
+    QVariantList pages;
+    QVariantList posts;
+    foreach (Content *content, m_site->contents())
+    {
+        if(content->contentType() == ContentType::Page)
+            pages.append(QVariant::fromValue(content));
+        else
+            posts.append(QVariant::fromValue(content));
+    }
+    sitevars["pages"] = pages;
+    sitevars["posts"] = posts;
     sitevars["theme"] = m_site->theme();
     globals.insert("site", sitevars);
 
@@ -68,6 +79,10 @@ void Generator::generateSite(Site *site)
 
             QString name = temp + "/" + m_site->title() + "/" + content->source().replace(".md", ".html");
             pagevars["url"] = content->source().replace(".md", ".html");
+            pagevars["title"] = content->title();
+            pagevars["date"] = content->date();
+            pagevars["author"] = content->author();
+
             globals.insert("page", pagevars);
 
             pagevars["content"] = translateContent(cnt);
@@ -84,6 +99,7 @@ void Generator::generateSite(Site *site)
                     dir.cd(d);
                 }
             }
+
             QFile out(name);
             if(out.open(QFile::WriteOnly))
             {

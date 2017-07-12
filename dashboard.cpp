@@ -87,7 +87,7 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     connect(m_loadButton, SIGNAL(clicked(bool)), this, SLOT(loadClicked()));
     connect(m_createButton, SIGNAL(clicked(bool)), this, SLOT(createClicked()));
     connect(m_publishButton, SIGNAL(clicked(bool)), this, SLOT(publishClicked()));
-    connect(m_previewButton, SIGNAL(clicked(bool)), this, SLOT(preeviewClicked()));
+    connect(m_previewButton, SIGNAL(clicked(bool)), this, SLOT(previewClicked()));
 }
 
 bool Dashboard::eventFilter(QObject * watched, QEvent * event)
@@ -177,9 +177,9 @@ void Dashboard::publishClicked()
     qDebug() << "publish";
 }
 
-void Dashboard::preeviewClicked()
+void Dashboard::previewClicked()
 {
-    qDebug() << "preview";
+    emit previewSite();
 }
 
 void Dashboard::siteLoaded(Site *site)

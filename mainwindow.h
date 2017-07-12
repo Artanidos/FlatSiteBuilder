@@ -72,6 +72,7 @@ private slots:
     void editContent(Content *page);
     void saveProject();
     void loadProject(QString path);
+    void previewSite();
 };
 
 #endif // MAINWINDOW_H
