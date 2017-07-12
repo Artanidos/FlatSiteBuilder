@@ -49,7 +49,8 @@
 
 MainWindow::MainWindow()
 {
-    loadProject("/home/olaf/SourceCode/FlatSiteBuilder/testsite");
+    m_site = NULL;
+
     initPython();
     initGui();
     readSettings();
@@ -215,12 +216,12 @@ void MainWindow::settingsExpanded(bool value)
     }
 }
 
-void MainWindow::loadProject(QString path)
+void MainWindow::loadProject(QString filename)
 {
-    m_site = new Site(path);
+    m_site = new Site(filename);
 
     QDomDocument doc;
-    QFile file(path + "/Site.xml");
+    QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "Unable to open Site.xml";
@@ -255,6 +256,8 @@ void MainWindow::loadProject(QString path)
         m_site->addContent(p);
         content = content.nextSiblingElement("Content");
     }
+
+    emit siteLoaded(m_site);
 }
 
 void MainWindow::saveProject()
@@ -298,6 +301,8 @@ void MainWindow::writeSettings()
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
+    if(m_site)
+        settings.setValue("lastSite", m_site->path());
 }
 
 void MainWindow::readSettings()
@@ -315,6 +320,9 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
+    m_defaultPath = settings.value("lastSite").toString();
+    if(m_defaultPath.isEmpty())
+        m_defaultPath = QDir::homePath();
 }
 
 void MainWindow::OnPythonQtStdOut(QString str)
@@ -329,7 +337,10 @@ void MainWindow::OnPythonQtStdErr(QString str)
 
 void MainWindow::showDashboard()
 {
-    setCentralWidget(new Dashboard());
+    Dashboard *db = new Dashboard(m_site, m_defaultPath);
+    connect(db, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
+    connect(this, SIGNAL(siteLoaded(Site*)), db, SLOT(siteLoaded(Site*)));
+    setCentralWidget(db);
 }
 
 void MainWindow::showPosts()

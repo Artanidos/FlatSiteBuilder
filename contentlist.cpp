@@ -51,32 +51,34 @@ ContentList::ContentList(Site *site, ContentType type)
     labels << "Name"  << "Layout" << "Author" << "Date";
     m_list->setHorizontalHeaderLabels(labels);
     int rows = 0;
-    for(int i = 0; i < site->contents().count(); i++)
+    if(m_site)
     {
-        Content *content = site->contents().at(i);
-        if(content->contentType() == m_type)
+        for(int i = 0; i < m_site->contents().count(); i++)
         {
-            m_list->setRowCount(rows + 1);
-            QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
-            titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
-            titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
-            m_list->setItem(rows, 0, titleItem);
+            Content *content = m_site->contents().at(i);
+            if(content->contentType() == m_type)
+            {
+                m_list->setRowCount(rows + 1);
+                QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
+                titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
+                titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
+                m_list->setItem(rows, 0, titleItem);
 
-            QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
-            layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
-            m_list->setItem(rows, 1, layoutItem);
+                QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
+                layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
+                m_list->setItem(rows, 1, layoutItem);
 
-            QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
-            authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
-            m_list->setItem(rows, 2, authorItem);
+                QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
+                authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
+                m_list->setItem(rows, 2, authorItem);
 
-            QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
-            dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
-            m_list->setItem(rows, 3, dateItem);
-            rows++;
+                QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
+                dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
+                m_list->setItem(rows, 3, dateItem);
+                rows++;
+            }
         }
     }
-
     layout->addWidget(titleLabel, 0, 0);
     layout->addWidget(button, 1, 0);
     layout->addWidget(m_list, 2, 0, 1, 3);

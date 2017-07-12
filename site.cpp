@@ -21,7 +21,9 @@
 #include "site.h"
 #include <QTest>
 
-Site::Site(QString path)
+Site::Site(QString filename)
 {
-    m_path = path;
+    QFileInfo info(filename);
+    m_filename = info.fileName();
+    m_path = info.path();
 }

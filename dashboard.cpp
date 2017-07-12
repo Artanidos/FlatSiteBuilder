@@ -22,9 +22,15 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QTest>
+#include <QPushButton>
+#include <QFileDialog>
 
-Dashboard::Dashboard()
+Dashboard::Dashboard(Site *site, QString defaultPath)
 {
+    m_site = site;
+    m_defaultPath = defaultPath;
+
     QVBoxLayout *vbox = new QVBoxLayout();
     QGridLayout *layout = new QGridLayout();
     QLabel *title = new QLabel();
@@ -33,8 +39,127 @@ Dashboard::Dashboard()
     fnt.setPointSize(20);
     fnt.setBold(true);
     title->setFont(fnt);
-    layout->addWidget(title, 0, 0);
+    m_loadButton = new QPushButton();
+    m_loadButton->setIcon(QIcon(":/images/load_normal.png"));
+    m_loadButton->setIconSize(QSize(100, 100));
+    m_loadButton->setFlat(true);
+    m_loadButton->installEventFilter(this);
+
+    m_createButton = new QPushButton();
+    m_createButton->setIcon(QIcon(":/images/create_normal.png"));
+    m_createButton->setIconSize(QSize(100, 100));
+    m_createButton->setFlat(true);
+    m_createButton->installEventFilter(this);
+
+    m_publishButton = new QPushButton();
+    m_publishButton->setIcon(QIcon(":/images/publish_normal.png"));
+    m_publishButton->setIconSize(QSize(100, 100));
+    m_publishButton->setFlat(true);
+    m_publishButton->installEventFilter(this);
+
+    m_info = new QLabel();
+    if(m_site)
+        m_info->setText(m_site->title() + " loaded...");
+    else
+        m_info->setText("No site loaded yet...");
+    QWidget *space = new QWidget();
+    space->setMinimumHeight(30);
+    layout->addWidget(title, 0, 0, 1, 3);
+    layout->addWidget(m_info, 1, 0);
+    layout->addWidget(space, 2, 0);
+    layout->addWidget(m_loadButton, 3, 0, 1, 1, Qt::AlignCenter);
+    layout->addWidget(m_createButton, 3, 1, 1, 1, Qt::AlignCenter);
+    layout->addWidget(m_publishButton, 3, 2, 1, 1, Qt::AlignCenter);
     vbox->addLayout(layout);
     vbox->addStretch();
     setLayout(vbox);
+
+    connect(m_loadButton, SIGNAL(clicked(bool)), this, SLOT(loadClicked()));
+    connect(m_createButton, SIGNAL(clicked(bool)), this, SLOT(createClicked()));
+    connect(m_publishButton, SIGNAL(clicked(bool)), this, SLOT(publishClicked()));
+}
+
+bool Dashboard::eventFilter(QObject * watched, QEvent * event)
+{
+    QPushButton * button = qobject_cast<QPushButton*>(watched);
+    if (!button)
+        return false;
+
+    if (event->type() == QEvent::Enter)
+    {
+        if(button == m_loadButton)
+            button->setIcon(QIcon(":/images/load_hover.png"));
+        else if(button == m_createButton)
+            button->setIcon(QIcon(":/images/create_hover.png"));
+        else if(button == m_publishButton)
+            button->setIcon(QIcon(":/images/publish_hover.png"));
+        return true;
+    }
+
+    else if (event->type() == QEvent::Leave)
+    {
+        if(button == m_loadButton)
+            button->setIcon(QIcon(":/images/load_normal.png"));
+        else if(button == m_createButton)
+            button->setIcon(QIcon(":/images/create_normal.png"));
+        else if(button == m_publishButton)
+            button->setIcon(QIcon(":/images/publish_normal.png"));
+        return true;
+    }
+
+    else if(event->type() == QEvent::MouseButtonPress)
+    {
+        if(button == m_loadButton)
+            button->setIcon(QIcon(":/images/load_pressed.png"));
+        else if(button == m_createButton)
+            button->setIcon(QIcon(":/images/create_pressed.png"));
+        else if(button == m_publishButton)
+            button->setIcon(QIcon(":/images/publish_pressed.png"));
+    }
+
+    else if(event->type() == QEvent::MouseButtonRelease)
+    {
+        if(button == m_loadButton)
+            button->setIcon(QIcon(":/images/load_hover.png"));
+        else if(button == m_createButton)
+            button->setIcon(QIcon(":/images/create_hover.png"));
+        else if(button == m_publishButton)
+            button->setIcon(QIcon(":/images/publish_hover.png"));
+    }
+
+    return false;
+}
+
+void Dashboard::loadClicked()
+{
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("FlatSiteBuilder (*.xml);;All (*)"));
+    dialog->setWindowTitle(tr("Load Site"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    dialog->setDirectory(m_defaultPath);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if (fileName.isEmpty())
+        return;
+    emit loadSite(fileName);
+}
+
+void Dashboard::createClicked()
+{
+    qDebug() << "create";
+}
+
+void Dashboard::publishClicked()
+{
+    qDebug() << "publish";
+}
+
+void Dashboard::siteLoaded(Site *site)
+{
+    m_site = site;
+    m_info->setText(m_site->title() + " loaded...");
 }

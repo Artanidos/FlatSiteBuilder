@@ -22,5 +22,15 @@
         <file>images/dashboard_normal.png</file>
         <file>images/dashboard_selected.png</file>
         <file>python/python.py</file>
+        <file>images/bigButton.png</file>
+        <file>images/load_hover.png</file>
+        <file>images/load_normal.png</file>
+        <file>images/load_pressed.png</file>
+        <file>images/create_hover.png</file>
+        <file>images/create_normal.png</file>
+        <file>images/create_pressed.png</file>
+        <file>images/publish_hover.png</file>
+        <file>images/publish_normal.png</file>
+        <file>images/publish_pressed.png</file>
     </qresource>
 </RCC>

@@ -1,6 +1,6 @@
 <Site theme="default" title="Testsite">
- <Content source="index.html" type="page" date="07.02.2017" author="Olaf Japp" title="Index"/>
- <Content source="about.html" type="page" date="23.03.2017" author="Olaf Japp" title="About"/>
- <Content source="news.html" type="page" date="10.07.2017" author="Olaf Japp" title="News"/>
- <Content source="posts/2017/july/hello.html" type="post" date="10.07.2017" author="Olaf Japp" title="Hello"/>
+ <Content author="Olaf Japp" title="Index" source="index.html" type="page" date="12.07.2017"/>
+ <Content author="Olaf Japp" title="About" source="about.html" type="page" date="23.03.2017"/>
+ <Content author="Olaf Japp" title="News" source="news.html" type="page" date="10.07.2017"/>
+ <Content author="Olaf Japp" title="Hello" source="posts/2017/july/hello.html" type="post" date="10.07.2017"/>
 </Site>

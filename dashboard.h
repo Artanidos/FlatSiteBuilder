@@ -22,13 +22,35 @@
 #define DASHBOARD_H
 
 #include <QWidget>
+#include <QPushButton>
+#include <QLabel>
+#include "site.h"
 
 class Dashboard : public QWidget
 {
     Q_OBJECT
 
 public:
-    Dashboard();
+    Dashboard(Site *site, QString defaultPath);
+
+    bool eventFilter(QObject * watched, QEvent * event);
+
+signals:
+    void loadSite(QString filename);
+
+private slots:
+    void loadClicked();
+    void createClicked();
+    void publishClicked();
+    void siteLoaded(Site *site);
+
+private:
+    QPushButton *m_loadButton;
+    QPushButton *m_createButton;
+    QPushButton *m_publishButton;
+    QLabel *m_info;
+    Site *m_site;
+    QString m_defaultPath;
 };
 
 #endif // DASHBOARD_H

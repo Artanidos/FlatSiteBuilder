@@ -37,12 +37,14 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
+signals:
+    void siteLoaded(Site *site);
+
 private:
     void writeSettings();
     void readSettings();
     void initPython();
     void initGui();
-    void loadProject(QString path);
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -51,6 +53,7 @@ private:
     Expander *m_plugins;
     Expander *m_settings;
     Site *m_site;
+    QString m_defaultPath;
 
 private slots:
     void OnPythonQtStdOut(QString str);
@@ -68,6 +71,7 @@ private slots:
     void addPage();
     void editContent(Content *page);
     void saveProject();
+    void loadProject(QString path);
 };
 
 #endif // MAINWINDOW_H

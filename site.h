@@ -29,7 +29,7 @@ class Site : public QObject
     Q_OBJECT
 
 public:
-    Site(QString path);
+    Site(QString filename);
 
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
@@ -43,6 +43,7 @@ public:
     QString path() {return m_path;}
 
 private:
+    QString m_filename;
     QString m_path;
     QString m_theme;
     QString m_title;
