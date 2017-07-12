@@ -57,19 +57,29 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     m_publishButton->setFlat(true);
     m_publishButton->installEventFilter(this);
 
+    m_previewButton = new QPushButton();
+    m_previewButton->setIcon(QIcon(":/images/preview_normal.png"));
+    m_previewButton->setIconSize(QSize(100, 100));
+    m_previewButton->setFlat(true);
+    m_previewButton->installEventFilter(this);
+
     m_info = new QLabel();
     if(m_site)
         m_info->setText(m_site->title() + " loaded...");
     else
         m_info->setText("No site loaded yet...");
     QWidget *space = new QWidget();
+    QWidget *space2 = new QWidget();
     space->setMinimumHeight(30);
+    space2->setMinimumHeight(30);
     layout->addWidget(title, 0, 0, 1, 3);
-    layout->addWidget(m_info, 1, 0);
+    layout->addWidget(m_info, 1, 0, 1, 3);
     layout->addWidget(space, 2, 0);
     layout->addWidget(m_loadButton, 3, 0, 1, 1, Qt::AlignCenter);
     layout->addWidget(m_createButton, 3, 1, 1, 1, Qt::AlignCenter);
     layout->addWidget(m_publishButton, 3, 2, 1, 1, Qt::AlignCenter);
+    layout->addWidget(space2, 4, 0);
+    layout->addWidget(m_previewButton, 5, 0, 1, 1, Qt::AlignCenter);
     vbox->addLayout(layout);
     vbox->addStretch();
     setLayout(vbox);
@@ -77,6 +87,7 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     connect(m_loadButton, SIGNAL(clicked(bool)), this, SLOT(loadClicked()));
     connect(m_createButton, SIGNAL(clicked(bool)), this, SLOT(createClicked()));
     connect(m_publishButton, SIGNAL(clicked(bool)), this, SLOT(publishClicked()));
+    connect(m_previewButton, SIGNAL(clicked(bool)), this, SLOT(preeviewClicked()));
 }
 
 bool Dashboard::eventFilter(QObject * watched, QEvent * event)
@@ -93,6 +104,8 @@ bool Dashboard::eventFilter(QObject * watched, QEvent * event)
             button->setIcon(QIcon(":/images/create_hover.png"));
         else if(button == m_publishButton)
             button->setIcon(QIcon(":/images/publish_hover.png"));
+        else if(button == m_previewButton)
+            button->setIcon(QIcon(":/images/preview_hover.png"));
         return true;
     }
 
@@ -104,6 +117,8 @@ bool Dashboard::eventFilter(QObject * watched, QEvent * event)
             button->setIcon(QIcon(":/images/create_normal.png"));
         else if(button == m_publishButton)
             button->setIcon(QIcon(":/images/publish_normal.png"));
+        else if(button == m_previewButton)
+            button->setIcon(QIcon(":/images/preview_normal.png"));
         return true;
     }
 
@@ -115,6 +130,8 @@ bool Dashboard::eventFilter(QObject * watched, QEvent * event)
             button->setIcon(QIcon(":/images/create_pressed.png"));
         else if(button == m_publishButton)
             button->setIcon(QIcon(":/images/publish_pressed.png"));
+        else if(button == m_previewButton)
+            button->setIcon(QIcon(":/images/preview_pressed.png"));
     }
 
     else if(event->type() == QEvent::MouseButtonRelease)
@@ -125,6 +142,8 @@ bool Dashboard::eventFilter(QObject * watched, QEvent * event)
             button->setIcon(QIcon(":/images/create_hover.png"));
         else if(button == m_publishButton)
             button->setIcon(QIcon(":/images/publish_hover.png"));
+        else if(button == m_previewButton)
+            button->setIcon(QIcon(":/images/preview_hover.png"));
     }
 
     return false;
@@ -156,6 +175,11 @@ void Dashboard::createClicked()
 void Dashboard::publishClicked()
 {
     qDebug() << "publish";
+}
+
+void Dashboard::preeviewClicked()
+{
+    qDebug() << "preview";
 }
 
 void Dashboard::siteLoaded(Site *site)

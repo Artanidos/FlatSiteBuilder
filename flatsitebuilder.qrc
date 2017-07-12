@@ -32,5 +32,8 @@
         <file>images/publish_hover.png</file>
         <file>images/publish_normal.png</file>
         <file>images/publish_pressed.png</file>
+        <file>images/preview_hover.png</file>
+        <file>images/preview_normal.png</file>
+        <file>images/preview_pressed.png</file>
     </qresource>
 </RCC>

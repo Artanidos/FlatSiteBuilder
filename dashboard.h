@@ -42,12 +42,14 @@ private slots:
     void loadClicked();
     void createClicked();
     void publishClicked();
+    void preeviewClicked();
     void siteLoaded(Site *site);
 
 private:
     QPushButton *m_loadButton;
     QPushButton *m_createButton;
     QPushButton *m_publishButton;
+    QPushButton *m_previewButton;
     QLabel *m_info;
     Site *m_site;
     QString m_defaultPath;

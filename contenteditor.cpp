@@ -85,6 +85,24 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 
 void ContentEditor::save()
 {
+    if(m_content->source().isEmpty())
+    {
+        if(m_content->contentType() == ContentType::Page)
+        {
+            m_content->setSource(m_title->text().toLower() + ".html");
+            m_content->setLayout("default");
+        }
+        else // TODO: real date here
+        {
+            m_content->setSource("posts/2017/july/" + m_title->text().toLower() + ".html");
+            m_content->setLayout("post");
+        }
+        // TODO: real author here
+        m_content->setAuthor("Olaf Japp");
+        m_content->setDate(QDate());
+        m_site->addContent(m_content);
+    }
+    m_filename = m_site->path() + "/" + m_content->source();
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
