@@ -288,6 +288,10 @@ void MainWindow::saveProject()
     QTextStream stream(&file);
     stream << doc.toString();
     file.close();
+
+    // TODO: start generate in background
+    Generator *gen = new Generator();
+    gen->generateSite(m_site);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

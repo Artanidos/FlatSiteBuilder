@@ -36,7 +36,7 @@ class Generator : QObject
 public:
     Generator();
 
-    void generateSite(Site *site, QString path);
+    void generateSite(Site *site);
 
 private:
     Site *m_site;

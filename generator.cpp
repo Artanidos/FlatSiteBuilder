@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "generator.h"
-
+#include "content.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -29,63 +29,53 @@
 Generator::Generator()
 {   
     context = PythonQt::self()->getMainModule();
-    context.evalFile(":/python.py");
+    context.evalFile(":/python/python.py");
 }
 
 /*
  * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(Site *site, QString path)
+void Generator::generateSite(Site *site)
 {
+    QString theme_path = "/home/olaf/SourceCode/FlatSiteBuilder/themes/";
     m_site = site;
 
-    QDir old(path + "/site");
+    QString temp = QDir::tempPath();
+    QDir old(temp + "/" + m_site->title());
     old.removeRecursively();
 
-    QDir dir(path);
-    dir.mkdir("site");
+    QDir dir(temp);
+    dir.mkdir(m_site->title());
 
-    QStringList filter;
-    filter << "*.html";
-
-    QFile config(path + "/config.yaml");
-    if(config.open(QFile::ReadOnly))
-    {
-        QString data = QString::fromLatin1(config.readAll());
-        sitevars = parseYaml(data);
-        if(sitevars["theme"] == QVariant())
-            sitevars["theme"] = "default";
-        config.close();
-    }
+    sitevars["theme"] = m_site->theme();
     globals.insert("site", sitevars);
 
-    copyPath(path + "/themes/" + sitevars["theme"].toString() + "/assets", path + "/site/assets");
+    copyPath(theme_path + sitevars["theme"].toString() + "/assets", temp + "/" + m_site->title() + "/assets");
 
-    foreach (QString filename, dir.entryList(filter, QDir::Files))
+    foreach (Content *content, m_site->contents())
     {
-        QFile in(path + "/" + filename);
+        QFile in(m_site->path() + "/" + content->source());
         if(in.open(QFile::ReadOnly))
         {
             pagevars.clear();
-            parseFront(QString::fromLatin1(in.readAll()));
-            QString layout = pagevars["layout"].toString();
+            QString cnt = QString::fromLatin1(in.readAll());
+            QString layout = content->layout();
             if(layout == "")
                 layout = "default";
-            layout = "layouts/" + layout + ".html";
+            layout = layout + ".html";
 
-            QString name = path + "/site/" + filename.replace(".md", ".html");
-            pagevars["url"] = filename.replace(".md", ".html");
+            QString name = temp + "/" + m_site->title() + "/" + content->source().replace(".md", ".html");
+            pagevars["url"] = content->source().replace(".md", ".html");
             globals.insert("page", pagevars);
 
-            QString content = translateContent(pagevars["content"].toString());
-            pagevars["content"] = content;
+            pagevars["content"] = translateContent(cnt);
 
             QFile out(name);
             if(out.open(QFile::WriteOnly))
             {
                 QVariantList args;
-                args << path << layout << globals << pagevars;
+                args << theme_path << layout << globals << pagevars;
                 QVariant rc = context.call("translateTemplate", args);
                 out.write(rc.toByteArray());
                 out.close();
@@ -95,29 +85,8 @@ void Generator::generateSite(Site *site, QString path)
                 qWarning() << "Unable to create file " +  name;
         }
         else
-            qWarning() << "Unable to open file " + filename;
+            qWarning() << "Unable to open file " + content->source();
     }
-}
-
-void Generator::parseFront(QString content)
-{
-    if(content.startsWith("---"))
-    {
-        int end = content.indexOf("---", 5);
-        if(end < 0)
-            return;
-        QString code = content.mid(4, end - 5);
-        pagevars = parseYaml(code);
-        pagevars.insert("content", content.mid(end + 4));
-    }
-}
-
-QVariantMap Generator::parseYaml(QString code)
-{
-    QVariantList args;
-    args << code;
-    QVariant rc = context.call("parseYaml", args);
-    return rc.toMap();
 }
 
 QString Generator::translateContent(QString content)

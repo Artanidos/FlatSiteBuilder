@@ -25,7 +25,7 @@ QT += core gui
 QT += testlib 
 QT += widgets xml
 
-#unix:PYTHON_VERSION=2.7
+unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
 TEMPLATE = app
 target.path += /bin
