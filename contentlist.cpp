@@ -19,13 +19,14 @@
 ****************************************************************************/
 
 #include "contentlist.h"
-
+#include "tablecheckbox.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QTest>
+#include <QComboBox>
 
 ContentList::ContentList(Site *site, ContentType type)
 {
@@ -37,19 +38,26 @@ ContentList::ContentList(Site *site, ContentType type)
     QPushButton *button = new QPushButton();
     button->setText(m_type == ContentType::Page ? "Add Page" : "Add Post");
     button->setMaximumWidth(120);
+    m_deleteButton = new QPushButton();
+    m_deleteButton->setText("Delete");
+    m_deleteButton->setMaximumWidth(120);
+    m_deleteButton->setEnabled(false);
+    m_deleteButton->setToolTip("Delete all marked items");
     titleLabel->setText(m_type == ContentType::Page ? "Pages" : "Posts");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(20);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
-    m_list = new QTableWidget(0, 4, this);
+    m_list = new QTableWidget(0, 5, this);
     m_list->verticalHeader()->hide();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
     m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch );
+    m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch );
+    m_list->setToolTip("Double click to edit item");
     QStringList labels;
-    labels << "Name"  << "Layout" << "Author" << "Date";
+    labels << "" << "Name"  << "Layout" << "Author" << "Date";
     m_list->setHorizontalHeaderLabels(labels);
+
     int rows = 0;
     if(m_site)
     {
@@ -59,22 +67,27 @@ ContentList::ContentList(Site *site, ContentType type)
             if(content->contentType() == m_type)
             {
                 m_list->setRowCount(rows + 1);
+
+                TableCheckbox *checkBox = new TableCheckbox();
+                connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
+                m_list->setCellWidget(rows, 0, checkBox);
+                m_list->setRowHeight(rows, checkBox->sizeHint().height());
                 QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
                 titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
                 titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
-                m_list->setItem(rows, 0, titleItem);
+                m_list->setItem(rows, 1, titleItem);
 
                 QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
                 layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 1, layoutItem);
+                m_list->setItem(rows, 2, layoutItem);
 
                 QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
                 authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 2, authorItem);
+                m_list->setItem(rows, 3, authorItem);
 
                 QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
                 dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 3, dateItem);
+                m_list->setItem(rows, 4, dateItem);
                 rows++;
             }
         }
@@ -82,11 +95,28 @@ ContentList::ContentList(Site *site, ContentType type)
     layout->addWidget(titleLabel, 0, 0);
     layout->addWidget(button, 1, 0);
     layout->addWidget(m_list, 2, 0, 1, 3);
+    layout->addWidget(m_deleteButton, 3, 0);
     vbox->addLayout(layout);
     setLayout(vbox);
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
+    connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
+}
+
+void ContentList::checkStateChanged(bool)
+{
+    int numberChecked = 0;
+    for(int row = 0; row < m_list->rowCount(); row++)
+    {
+        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
+        if(cb->checked() == Qt::Checked)
+        {
+            numberChecked++;
+            break;
+        }
+    }
+    m_deleteButton->setEnabled(numberChecked > 0);
 }
 
 void ContentList::buttonClicked()
@@ -94,8 +124,33 @@ void ContentList::buttonClicked()
     emit addContent();
 }
 
+void ContentList::deleteButtonClicked()
+{
+    QString filename;
+    for(int row = m_list->rowCount() - 1; row >= 0; row--)
+    {
+        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
+        if(cb->checked() == Qt::Checked)
+        {
+            QTableWidgetItem *item = m_list->item(row, 1);
+            Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
+            if(content->contentType() == ContentType::Page)
+                filename = m_site->path() + "/pages/" + content->source();
+            else
+                filename = m_site->path() + "/posts/" + content->source();
+            QFile file(filename);
+            file.remove();
+
+            m_site->removeContent(content);
+            m_list->removeRow(row);
+        }
+    }
+    m_deleteButton->setEnabled(false);
+    emit contentUpdated();
+}
+
 void ContentList::tableDoubleClicked(int r, int)
 {
-    QTableWidgetItem *item = m_list->item(r, 0);
+    QTableWidgetItem *item = m_list->item(r, 1);
     emit editContent(qvariant_cast<Content*>(item->data(Qt::UserRole)));
 }

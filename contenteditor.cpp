@@ -52,6 +52,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     fnt.setBold(true);
     m_titleLabel->setFont(fnt);
     m_title = new QLineEdit();
+    m_excerpt = new QLineEdit();
     m_text = new QTextEdit;
     m_text->setFont(font);
     QFontMetrics metrics(font);
@@ -65,7 +66,15 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     setLayout(vbox);
 
     m_title->setText(m_content->title());
-    m_filename = m_site->path() + "/" + m_content->source();
+    if(m_content->contentType() == ContentType::Page)
+        m_filename = m_site->path() + "/pages/" + m_content->source();
+    else
+    {
+        layout->addWidget(new QLabel("Excerpt"), 3, 0);
+        layout->addWidget(m_excerpt, 4, 0, 1, 3);
+        m_excerpt->setText(m_content->excerpt());
+        m_filename = m_site->path() + "/posts/" + m_content->source();
+    }
     if(!m_content->source().isEmpty())
     {
         QFile file(m_filename);
@@ -81,6 +90,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
+    connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
 }
 
 void ContentEditor::save()
@@ -89,20 +99,21 @@ void ContentEditor::save()
     {
         if(m_content->contentType() == ContentType::Page)
         {
-            m_content->setSource(m_title->text().toLower() + ".html");
             m_content->setLayout("default");
+            m_filename = m_site->path() + "/pages/" + m_title->text().toLower() + ".html";
         }
         else // TODO: real date here
         {
-            m_content->setSource("posts/2017/july/" + m_title->text().toLower() + ".html");
             m_content->setLayout("post");
+            m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".html";
         }
         // TODO: real author here
         m_content->setAuthor("Olaf Japp");
-        m_content->setDate(QDate());
+        m_content->setSource(m_title->text().toLower() + ".html");
+        m_content->setDate(QDate());   
         m_site->addContent(m_content);
     }
-    m_filename = m_site->path() + "/" + m_content->source();
+
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
@@ -118,6 +129,8 @@ void ContentEditor::save()
     }
     file.close();
 
+    if(m_content->contentType() == ContentType::Post)
+        m_content->setExcerpt(m_excerpt->text());
     m_content->setDate(QDate::currentDate());
     m_content->setTitle(m_title->text());
 

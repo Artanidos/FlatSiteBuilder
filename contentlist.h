@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QPushButton>
 #include "site.h"
 
 class ContentList  : public QWidget
@@ -34,16 +35,20 @@ public:
 
 private slots:
     void buttonClicked();
+    void deleteButtonClicked();
     void tableDoubleClicked(int, int);
+    void checkStateChanged(bool);
 
 signals:
     void addContent();
-    void editContent(Content *page);
+    void contentUpdated();
+    void editContent(Content *content);
 
 private:
     Site *m_site;
     ContentType m_type;
     QTableWidget *m_list;
+    QPushButton *m_deleteButton;
 };
 
 #endif // CONTENTLIST_H

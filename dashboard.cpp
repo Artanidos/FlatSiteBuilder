@@ -44,24 +44,28 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     m_loadButton->setIconSize(QSize(100, 100));
     m_loadButton->setFlat(true);
     m_loadButton->installEventFilter(this);
+    m_loadButton->setToolTip("Load an existing website project");
 
     m_createButton = new QPushButton();
     m_createButton->setIcon(QIcon(":/images/create_normal.png"));
     m_createButton->setIconSize(QSize(100, 100));
     m_createButton->setFlat(true);
     m_createButton->installEventFilter(this);
+    m_createButton->setToolTip("Create a new website project");
 
     m_publishButton = new QPushButton();
     m_publishButton->setIcon(QIcon(":/images/publish_normal.png"));
     m_publishButton->setIconSize(QSize(100, 100));
     m_publishButton->setFlat(true);
     m_publishButton->installEventFilter(this);
+    m_publishButton->setToolTip("Upload the website to your web space provider");
 
     m_previewButton = new QPushButton();
     m_previewButton->setIcon(QIcon(":/images/preview_normal.png"));
     m_previewButton->setIconSize(QSize(100, 100));
     m_previewButton->setFlat(true);
     m_previewButton->installEventFilter(this);
+    m_previewButton->setToolTip("Load the website in your browser locally");
 
     m_info = new QLabel();
     if(m_site)

@@ -51,6 +51,7 @@ private:
     QTextEdit *m_text;
     QString m_filename;
     QLineEdit *m_title;
+    QLineEdit *m_excerpt;
 };
 
 #endif // CONTENTEDITOR_H

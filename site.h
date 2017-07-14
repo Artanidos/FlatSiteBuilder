@@ -38,7 +38,8 @@ public:
     void setTitle(QString title) {m_title = title;}
 
     QList<Content *> contents() {return m_contents;}
-    void addContent(Content *cotent) {m_contents.append(cotent);}
+    void addContent(Content *content) {m_contents.append(content);}
+    void removeContent(Content *content) {m_contents.removeOne(content);}
 
     QString path() {return m_path;}
 

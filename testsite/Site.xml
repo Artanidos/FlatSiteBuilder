@@ -1,9 +1,7 @@
-<Site theme="default" title="Testsite">
- <Content source="index.html" author="Olaf Japp" layout="default" title="Index" type="page" date="12.07.2017"/>
- <Content source="about.html" author="Olaf Japp" layout="default" title="About" type="page" date="23.03.2017"/>
- <Content source="news.html" author="Olaf Japp" layout="default" title="News" type="page" date="12.07.2017"/>
- <Content source="posts/2017/july/hello.html" author="Olaf Japp" layout="post" title="Hello" type="post" date="12.07.2017"/>
- <Content source="posts/2017/july/test.html" author="Olaf Japp" layout="post" title="Test" type="post" date="12.07.2017"/>
- <Content source="posts/2017/july/bla.html" author="Olaf Japp" layout="post" title="Bla" type="post" date="12.07.2017"/>
- <Content source="blog.html" author="Olaf Japp" layout="default" title="Blog" type="page" date="12.07.2017"/>
+<Site theme="atropos" title="Crowdware">
+ <Content source="index.html" author="Olaf Japp" layout="default" date="14.07.2017" title="Index" type="page"/>
+ <Content source="about.html" author="Olaf Japp" layout="default" date="14.07.2017" title="About" type="page"/>
+ <Content source="news.html" author="Olaf Japp" layout="default" date="14.07.2017" title="News" type="page"/>
+ <Content source="hello.html" excerpt="This is my first blog post..." author="Olaf Japp" layout="post" date="14.07.2017" title="Hello" type="post"/>
+ <Content source="second.html" excerpt="This is my second post..." author="Olaf Japp" layout="post" date="14.07.2017" title="Second" type="post"/>
 </Site>

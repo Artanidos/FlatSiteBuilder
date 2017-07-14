@@ -260,7 +260,10 @@ void MainWindow::loadProject(QString filename)
         if(content.attribute("type", "page") == "page")
             p = new Content(ContentType::Page);
         else
+        {
             p = new Content(ContentType::Post);
+            p->setExcerpt(content.attribute("excerpt", ""));
+        }
         p->setTitle(content.attribute("title"));
         p->setSource(content.attribute("source"));
         p->setAuthor(content.attribute("author"));
@@ -295,6 +298,8 @@ void MainWindow::saveProject()
         c.setAttribute("title", content->title());
         c.setAttribute("author", content->author());
         c.setAttribute("layout", content->layout());
+        if(content->contentType() == ContentType::Post)
+            c.setAttribute("excerpt", content->excerpt());
         c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
         root.appendChild(c);
     }
@@ -365,6 +370,7 @@ void MainWindow::showPosts()
     ContentList *list = new ContentList(m_site, ContentType::Post);
     connect(list, SIGNAL(addContent()), this, SLOT(addPost()));
     connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    connect(list, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
     setCentralWidget(list);
 }
 
@@ -373,6 +379,7 @@ void MainWindow::showPages()
     ContentList *list = new ContentList(m_site, ContentType::Page);
     connect(list, SIGNAL(addContent()), this, SLOT(addPage()));
     connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    connect(list, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
     setCentralWidget(list);
 }
 

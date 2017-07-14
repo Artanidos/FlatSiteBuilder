@@ -50,6 +50,9 @@ public:
     QDate date() {return m_date;}
     void setDate(QDate date) {m_date = date;}
 
+    QString excerpt() {return m_excerpt;}
+    void setExcerpt(QString excerpt) {m_excerpt = excerpt;}
+
     QList<Section *> sections() {return m_sections;}
 
     QString getHtml();
@@ -61,6 +64,7 @@ private:
     QString m_source;
     QString m_layout;
     QString m_author;
+    QString m_excerpt;
     QList<Section *> m_sections;
     ContentType m_type;
     QDate m_date;
@@ -72,12 +76,11 @@ class ContentWrapper : public QObject
     Q_OBJECT
 
 public Q_SLOTS:
-    Content* new_Content() {return new Content();}
-    void delete_Content(Content* o) { delete o; }
     QString url(Content *o) {return o->source();}
     QString title(Content *o) {return o->title();}
-    void setUrl(Content *o, const QString& url) {o->setSource(url);}
-    void setTitle(Content *o, const QString& title) {o->setTitle(title);}
+    QString date(Content *o) {return o->date().toString("dd.MM.yyyy");}
+    QString excerpt(Content *o) {return o->excerpt();}
+    QString author(Content *o) {return o->author();}
 };
 
 #endif // CONTENT_H

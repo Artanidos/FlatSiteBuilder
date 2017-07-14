@@ -63,11 +63,18 @@ void Generator::generateSite(Site *site)
     sitevars["theme"] = m_site->theme();
     globals.insert("site", sitevars);
 
+    // first copy assets from site, they will not be overridden by theme assets
+    copyPath(m_site->path() + "/assets", temp + "/" + m_site->title() + "/assets");
     copyPath(theme_path + sitevars["theme"].toString() + "/assets", temp + "/" + m_site->title() + "/assets");
 
     foreach (Content *content, m_site->contents())
     {
-        QFile in(m_site->path() + "/" + content->source());
+        QString subdir;
+        if(content->contentType() == ContentType::Page)
+            subdir = "pages";
+        else
+            subdir = "posts";
+        QFile in(m_site->path() + "/" + subdir + "/" + content->source());
         if(in.open(QFile::ReadOnly))
         {
             pagevars.clear();
@@ -82,11 +89,13 @@ void Generator::generateSite(Site *site)
             pagevars["title"] = content->title();
             pagevars["date"] = content->date();
             pagevars["author"] = content->author();
+            pagevars["excerpt"] = content->excerpt();
 
             globals.insert("page", pagevars);
 
             pagevars["content"] = translateContent(cnt);
 
+            /*
             if(content->source().contains("/"))
             {
                 QDir dir (temp + "/" + m_site->title());
@@ -99,6 +108,7 @@ void Generator::generateSite(Site *site)
                     dir.cd(d);
                 }
             }
+            */
 
             QFile out(name);
             if(out.open(QFile::WriteOnly))

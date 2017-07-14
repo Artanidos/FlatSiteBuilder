@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     dashboard.cpp \
     content.cpp \
     contenteditor.cpp \
-    contentlist.cpp
+    contentlist.cpp \
+    tablecheckbox.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -64,7 +65,8 @@ HEADERS  += mainwindow.h \
     dashboard.h \
     content.h \
     contenteditor.h \
-    contentlist.h
+    contentlist.h \
+    tablecheckbox.h
 
 DISTFILES += \
     README.md \
@@ -76,10 +78,10 @@ DISTFILES += \
     themes/default/assets/css/style.css \
     python/python.py \
     testsite/Site.xml \
-    testsite/index.html \
-    testsite/posts/2017/july/hello.html \
-    testsite/about.html \
-    testsite/news.html \
+    testsite/pages/index.html \
+    testsite/posts/hello.html \
+    testsite/pages/about.html \
+    testsite/pages/news.html \
     themes/default/layouts/post.html \
     themes/default/includes/posthead.html
 
