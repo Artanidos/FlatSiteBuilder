@@ -27,6 +27,7 @@
 #include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"
+#include "PythonQt.h"
 
 class MainWindow : public QMainWindow
 {
@@ -54,6 +55,7 @@ private:
     Expander *m_settings;
     Site *m_site;
     QString m_defaultPath;
+    PythonQtObjectPtr m_context;
 
 private slots:
     void OnPythonQtStdOut(QString str);
@@ -72,7 +74,8 @@ private slots:
     void editContent(Content *page);
     void saveProject();
     void loadProject(QString path);
-    void previewSite();
+    void previewSite(Content *content);
+    void publishSite();
 };
 
 #endif // MAINWINDOW_H

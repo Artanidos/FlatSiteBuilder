@@ -37,7 +37,8 @@ public:
 
 signals:
     void loadSite(QString filename);
-    void previewSite();
+    void previewSite(Content *);
+    void publishSite();
 
 private slots:
     void loadClicked();

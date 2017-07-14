@@ -1,7 +1,7 @@
-<Site theme="atropos" title="Crowdware">
- <Content source="index.html" author="Olaf Japp" layout="default" date="14.07.2017" title="Index" type="page"/>
- <Content source="about.html" author="Olaf Japp" layout="default" date="14.07.2017" title="About" type="page"/>
- <Content source="news.html" author="Olaf Japp" layout="default" date="14.07.2017" title="News" type="page"/>
- <Content source="hello.html" excerpt="This is my first blog post..." author="Olaf Japp" layout="post" date="14.07.2017" title="Hello" type="post"/>
- <Content source="second.html" excerpt="This is my second post..." author="Olaf Japp" layout="post" date="14.07.2017" title="Second" type="post"/>
+<Site theme="atropos" title="Crowdware" github="https://github.com/CrowdWare/web.git">
+ <Content source="index.html" author="Olaf Japp" layout="default" type="page" title="Index" date="14.07.2017"/>
+ <Content source="about.html" author="Olaf Japp" layout="default" type="page" title="About" date="14.07.2017"/>
+ <Content source="news.html" author="Olaf Japp" layout="default" type="page" title="News" date="14.07.2017"/>
+ <Content source="hello.html" author="Olaf Japp" excerpt="This is my first blog post..." layout="post" type="post" title="Hello" date="14.07.2017"/>
+ <Content source="second.html" author="Olaf Japp" excerpt="This is my second post..." layout="post" type="post" title="Second" date="14.07.2017"/>
 </Site>

@@ -37,6 +37,9 @@ public:
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
+    QString github() {return m_github;}
+    void setGithub(QString github) {m_github = github;}
+
     QList<Content *> contents() {return m_contents;}
     void addContent(Content *content) {m_contents.append(content);}
     void removeContent(Content *content) {m_contents.removeOne(content);}
@@ -48,6 +51,7 @@ private:
     QString m_path;
     QString m_theme;
     QString m_title;
+    QString m_github;
     QList<Content *> m_contents;
 };
 

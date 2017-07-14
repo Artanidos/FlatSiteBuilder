@@ -178,12 +178,12 @@ void Dashboard::createClicked()
 
 void Dashboard::publishClicked()
 {
-    qDebug() << "publish";
+    emit publishSite();
 }
 
 void Dashboard::previewClicked()
 {
-    emit previewSite();
+    emit previewSite(NULL);
 }
 
 void Dashboard::siteLoaded(Site *site)

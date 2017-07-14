@@ -36,6 +36,7 @@
 #include <QDockWidget>
 #include <QDomDocument>
 #include <QDate>
+#include <QProcess>
 #include <QDesktopServices>
 #include "hyperlink.h"
 #include "generator.h"
@@ -61,7 +62,7 @@ MainWindow::MainWindow()
     else
     {
         loadProject(m_defaultPath + "/Site.xml");
-        Generator *gen = new Generator();
+        Generator *gen = new Generator(m_context);
         gen->generateSite(m_site);
     }
 
@@ -78,8 +79,10 @@ void MainWindow::initPython()
     PythonQt::self()->addSysPath("/home/olaf/.local/lib/python2.7/site-packages/");
     PythonQt::self()->addSysPath("/usr/local/lib/python2.7/dist-packages/");
 
-    PythonQt::self()->registerCPPClass("Content", "", "flatsitebuilder", PythonQtCreateObject<ContentWrapper>);
+    PythonQt::self()->registerCPPClass("Content", "", "FlatSiteBuilder", PythonQtCreateObject<ContentWrapper>);
 
+    m_context = PythonQt::self()->getMainModule();
+    m_context.evalFile(":/python/python.py");
 }
 
 void MainWindow::initGui()
@@ -250,8 +253,9 @@ void MainWindow::loadProject(QString filename)
 
     QDomElement site = doc.documentElement();
 
-    m_site->setTheme(site.attribute("theme", "defaultTheme"));
-    m_site->setTitle(site.attribute("title", "defaultTitle"));
+    m_site->setTheme(site.attribute("theme", ""));
+    m_site->setTitle(site.attribute("title", ""));
+    m_site->setGithub(site.attribute("github", ""));
 
     QDomElement content = site.firstChildElement("Content");
     while(!content.isNull())
@@ -289,6 +293,7 @@ void MainWindow::saveProject()
     root = doc.createElement("Site");
     root.setAttribute("theme", m_site->theme());
     root.setAttribute("title", m_site->title());
+    root.setAttribute("github", m_site->github());
     doc.appendChild(root);
     foreach(Content *content, m_site->contents())
     {
@@ -309,8 +314,9 @@ void MainWindow::saveProject()
     file.close();
 
     // TODO: start generate in background
-    Generator *gen = new Generator();
+    Generator *gen = new Generator(m_context);
     gen->generateSite(m_site);
+    delete gen;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -360,7 +366,8 @@ void MainWindow::showDashboard()
 {
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
     connect(db, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
-    connect(db, SIGNAL(previewSite()), this, SLOT(previewSite()));
+    connect(db, SIGNAL(previewSite(Content *)), this, SLOT(previewSite(Content *)));
+    connect(db, SIGNAL(publishSite()), this, SLOT(publishSite()));
     connect(this, SIGNAL(siteLoaded(Site*)), db, SLOT(siteLoaded(Site*)));
     setCentralWidget(db);
 }
@@ -387,6 +394,7 @@ void MainWindow::addPost()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Post));
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
 }
 
@@ -394,6 +402,7 @@ void MainWindow::addPage()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Page));
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
 }
 
@@ -401,12 +410,36 @@ void MainWindow::editContent(Content *content)
 {
     ContentEditor *edit = new ContentEditor(m_site, content);
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
 }
 
-void MainWindow::previewSite()
+void MainWindow::previewSite(Content *content)
 {
+    QString file;
     QString temp = QDir::tempPath();
     QDir path(temp + "/" + m_site->title());
-    QDesktopServices::openUrl(QUrl(path.absoluteFilePath("index.html")));
+    if(content)
+        file = content->source();
+    else
+        file = "index.html";
+    QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));
+}
+
+void MainWindow::publishSite()
+{   
+    // initial
+    // cd /tmp
+    // git clone https://github.com/CrowdWare/web.git Crowdware
+    // git checkout --orphan gh-pages
+    // echo "We are still working on it!" >> index.html
+    // git add index.html
+    // git commit -m "initial"
+    // git push origin gh-pages
+    // git branch -u origin/gh-pages
+    // then on github in settings change to gh-pages
+
+    Generator::runGit("add *", m_site);
+    Generator::runGit("commit -m 'updated with FlatSiteBuilder'", m_site);
+    Generator::runGit("push", m_site);
 }

@@ -25,11 +25,11 @@
 #include <QDebug>
 #include <QDir>
 #include <QStringList>
+#include <QProcess>
 
-Generator::Generator()
+Generator::Generator(PythonQtObjectPtr ctx)
 {   
-    context = PythonQt::self()->getMainModule();
-    context.evalFile(":/python/python.py");
+    context = ctx;
 }
 
 /*
@@ -43,11 +43,14 @@ void Generator::generateSite(Site *site)
     m_site = site;
 
     QString temp = QDir::tempPath();
-    QDir old(temp + "/" + m_site->title());
+    QDir old;
+    old.setPath(temp + "/" + m_site->title() + "/assets");
     old.removeRecursively();
 
-    QDir dir(temp);
-    dir.mkdir(m_site->title());
+    foreach(QString file, old.entryList())
+    {
+        old.remove(file);
+    }
 
     QVariantList pages;
     QVariantList posts;
@@ -153,4 +156,18 @@ void Generator::copyPath(QString src, QString dst)
     {
         QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f);
     }
+}
+
+void Generator::runGit(QString cmd, Site *site)
+{
+    qDebug() << "git " + cmd;
+    QProcess *proc = new QProcess();
+    proc->setWorkingDirectory(QDir::tempPath() + "/" + site->title());
+    proc->start("git " + cmd);
+    proc->waitForFinished(-1);
+    QByteArray out = proc->readAllStandardOutput();
+    QByteArray err = proc->readAllStandardError();
+    qDebug() << "gitout:" << out;
+    qDebug() << "giterr:" << err;
+    delete proc;
 }

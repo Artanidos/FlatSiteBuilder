@@ -20,6 +20,7 @@
 
 #include "contenteditor.h"
 #include "htmlhighlighter.h"
+#include "hyperlink.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QTextEdit>
@@ -36,6 +37,12 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     font.setFixedPitch(true);
     font.setPointSize(13);
 
+    QString txt = "preview ";
+    if(m_content->contentType() == ContentType::Page)
+        txt += "page";
+    else
+        txt += "post";
+    Hyperlink *previewLink = new Hyperlink(txt);
     QVBoxLayout *vbox = new QVBoxLayout();
     QGridLayout *layout = new QGridLayout();
     m_save = new QPushButton();
@@ -54,11 +61,14 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_title = new QLineEdit();
     m_excerpt = new QLineEdit();
     m_text = new QTextEdit;
+    m_text->setAcceptRichText(false);
     m_text->setFont(font);
+    m_text->setLineWrapMode(QTextEdit::NoWrap);
     QFontMetrics metrics(font);
     m_text->setTabStopWidth(4 * metrics.width(' '));
     new HtmlHighlighter(m_text->document());
     layout->addWidget(m_titleLabel, 0, 0);
+    layout->addWidget(previewLink, 0, 1);
     layout->addWidget(m_title, 1, 0, 1, 2);
     layout->addWidget(m_save, 1, 2);
     layout->addWidget(m_text, 2, 0, 1, 3);
@@ -91,6 +101,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
+    connect(previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
 }
 
 void ContentEditor::save()
@@ -147,4 +158,10 @@ void ContentEditor::save()
 void ContentEditor::editChanged()
 {
     m_save->setEnabled(true);
+}
+
+void ContentEditor::preview()
+{
+    save();
+    emit preview(m_content);
 }

@@ -39,9 +39,11 @@ public:
 private slots:
     void save();
     void editChanged();
+    void preview();
 
 signals:
     void contentUpdated();
+    void preview(Content *);
 
 private:
     Site *m_site;
