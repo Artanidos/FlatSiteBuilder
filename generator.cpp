@@ -42,9 +42,9 @@ void Generator::generateSite(Site *site)
     QString theme_path = "/home/olaf/SourceCode/FlatSiteBuilder/themes/";
     m_site = site;
 
-    QString temp = QDir::tempPath();
+    QString dir = QDir::homePath() + "/FlatSiteBuilder";
     QDir old;
-    old.setPath(temp + "/" + m_site->title() + "/assets");
+    old.setPath(dir + "/" + m_site->title() + "/assets");
     old.removeRecursively();
 
     foreach(QString file, old.entryList())
@@ -67,8 +67,8 @@ void Generator::generateSite(Site *site)
     globals.insert("site", sitevars);
 
     // first copy assets from site, they will not be overridden by theme assets
-    copyPath(m_site->path() + "/assets", temp + "/" + m_site->title() + "/assets");
-    copyPath(theme_path + sitevars["theme"].toString() + "/assets", temp + "/" + m_site->title() + "/assets");
+    copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
+    copyPath(theme_path + sitevars["theme"].toString() + "/assets", dir + "/" + m_site->title() + "/assets");
 
     foreach (Content *content, m_site->contents())
     {
@@ -87,7 +87,7 @@ void Generator::generateSite(Site *site)
                 layout = "default";
             layout = layout + ".html";
 
-            QString name = temp + "/" + m_site->title() + "/" + content->source().replace(".md", ".html");
+            QString name = dir + "/" + m_site->title() + "/" + content->source().replace(".md", ".html");
             pagevars["url"] = content->source().replace(".md", ".html");
             pagevars["title"] = content->title();
             pagevars["date"] = content->date();
@@ -156,18 +156,4 @@ void Generator::copyPath(QString src, QString dst)
     {
         QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f);
     }
-}
-
-void Generator::runGit(QString cmd, Site *site)
-{
-    qDebug() << "git " + cmd;
-    QProcess *proc = new QProcess();
-    proc->setWorkingDirectory(QDir::tempPath() + "/" + site->title());
-    proc->start("git " + cmd);
-    proc->waitForFinished(-1);
-    QByteArray out = proc->readAllStandardOutput();
-    QByteArray err = proc->readAllStandardError();
-    qDebug() << "gitout:" << out;
-    qDebug() << "giterr:" << err;
-    delete proc;
 }

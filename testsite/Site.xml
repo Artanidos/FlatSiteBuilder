@@ -1,7 +1,6 @@
-<Site theme="atropos" title="Crowdware" github="https://github.com/CrowdWare/web.git">
- <Content source="index.html" author="Olaf Japp" layout="default" type="page" title="Index" date="14.07.2017"/>
- <Content source="about.html" author="Olaf Japp" layout="default" type="page" title="About" date="14.07.2017"/>
- <Content source="news.html" author="Olaf Japp" layout="default" type="page" title="News" date="14.07.2017"/>
- <Content source="hello.html" author="Olaf Japp" excerpt="This is my first blog post..." layout="post" type="post" title="Hello" date="14.07.2017"/>
- <Content source="second.html" author="Olaf Japp" excerpt="This is my second post..." layout="post" type="post" title="Second" date="14.07.2017"/>
+<Site github="https://github.com/CrowdWare/web.git" theme="atropos" title="Crowdware">
+ <Content author="Olaf Japp" layout="default" source="index.html" date="14.07.2017" title="Index" type="page"/>
+ <Content author="Olaf Japp" layout="default" source="about.html" date="14.07.2017" title="About" type="page"/>
+ <Content author="Olaf Japp" layout="default" source="news.html" date="14.07.2017" title="News" type="page"/>
+ <Content author="Olaf Japp" excerpt="Thanks to FlateSiteBuilder our new website is now online." layout="post" source="hello.html" date="15.07.2017" title="Website Online" type="post"/>
 </Site>

@@ -46,6 +46,7 @@ private:
     void readSettings();
     void initPython();
     void initGui();
+    void runCommand(QString cmd, QString path);
 
     Expander *m_dashboardExpander;
     Expander *m_media;

@@ -37,7 +37,6 @@ public:
     Generator(PythonQtObjectPtr ctx);
 
     void generateSite(Site *site);
-    static void runGit(QString cmd, Site *site);
 
 private:
     Site *m_site;

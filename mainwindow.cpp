@@ -417,8 +417,8 @@ void MainWindow::editContent(Content *content)
 void MainWindow::previewSite(Content *content)
 {
     QString file;
-    QString temp = QDir::tempPath();
-    QDir path(temp + "/" + m_site->title());
+    QString dir = QDir::homePath() + "/FlatSiteBuilder";
+    QDir path(dir + "/" + m_site->title());
     if(content)
         file = content->source();
     else
@@ -428,18 +428,41 @@ void MainWindow::previewSite(Content *content)
 
 void MainWindow::publishSite()
 {   
+    qDebug() << "publish";
     // initial
     // cd /tmp
     // git clone https://github.com/CrowdWare/web.git Crowdware
+    // cd Crowdware
     // git checkout --orphan gh-pages
+    // git remote add origin git@github.com:CrowdWare/web.git
+    // git rm -rf .
     // echo "We are still working on it!" >> index.html
     // git add index.html
     // git commit -m "initial"
     // git push origin gh-pages
     // git branch -u origin/gh-pages
     // then on github in settings change to gh-pages
+    // and add a public key to your settings
 
-    Generator::runGit("add *", m_site);
-    Generator::runGit("commit -m 'updated with FlatSiteBuilder'", m_site);
-    Generator::runGit("push", m_site);
+    // after
+    // git clone -b gh-pages https://github.com/CrowdWare/web.git Crowdware
+
+    QString path = QDir::homePath() + "/FlatSiteBuilder" + "/" + m_site->title();
+    runCommand("git add .", path);
+    runCommand("git commit -m \"updated with FlatSiteBuilder\"", path);
+    runCommand("git push", path);
+}
+
+void MainWindow::runCommand(QString cmd, QString path)
+{
+    qDebug() << cmd;
+    QProcess *proc = new QProcess();
+    proc->setWorkingDirectory(path);
+    proc->start(cmd);
+    proc->waitForFinished(-1);
+    QByteArray out = proc->readAllStandardOutput();
+    QByteArray err = proc->readAllStandardError();
+    qDebug() << "gitout:" << out;
+    qDebug() << "giterr:" << err;
+    delete proc;
 }
