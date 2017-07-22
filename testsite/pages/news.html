@@ -1,33 +1,10 @@
-<div id="blog">
-<header id="page-title">
-	<div class="container">
-		<h1>CrowdWare News</h1>
-		<ul class="breadcrumb">
-			<li><a href="news.html">News</a></li>
-			<li class="active">{{ page.title }}</li>
-		</ul>
-	</div>
-</header>
-<section class="container">
+<h1>News</h1>
+<ul>
 {% for post in site.posts %}
-<!-- blog item -->
-<div class="item">
-	<!-- article title -->
-	<div class="item-title">
-	<h2><a href="{{ post.url() }}">{{ post.title() }}</a></h2>
-	<a href="#" class="scrollTo label label-default light"><i class="fa fa-user"></i> {{ post.author() }}</a>
-	<span class="label label-default light">{{ post.date() }}</span> 
-</div>
-
-<!-- blog short preview -->
-<p>
-{{ post.excerpt() }}.
-</p>
-
-<!-- read more button -->
-<a href="{{ post.url() }}" class="btn btn-xs"><i class="fa fa-sign-out"></i> READ MORE</a>
-</div>
-<!-- /blog item -->
+	<li><a href="{{ post.url() }}">{{ post.title() }}</a>
+	{{ post.author() }}
+	{{ post.date() }}<br/>
+	{{ post.excerpt() }}
+	</li>
 {% endfor %}
-</section>
-</div>
+</ul>

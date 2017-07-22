@@ -37,6 +37,7 @@ public:
     Generator(PythonQtObjectPtr ctx);
 
     void generateSite(Site *site);
+    void testScript(Site *site);
 
 private:
     Site *m_site;

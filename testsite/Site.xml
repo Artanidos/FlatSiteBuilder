@@ -1,6 +1,10 @@
-<Site github="https://github.com/CrowdWare/web.git" theme="atropos" title="Crowdware">
- <Content author="Olaf Japp" layout="default" source="index.html" date="14.07.2017" title="Index" type="page"/>
- <Content author="Olaf Japp" layout="default" source="about.html" date="14.07.2017" title="About" type="page"/>
- <Content author="Olaf Japp" layout="default" source="news.html" date="14.07.2017" title="News" type="page"/>
- <Content author="Olaf Japp" excerpt="Thanks to FlateSiteBuilder our new website is now online." layout="post" source="hello.html" date="15.07.2017" title="Website Online" type="post"/>
+<Site 
+	github="https://github.com/yourname/yoursite.git" 
+	theme="default" 
+	title="Yourtitle" 
+	copyright="&amp;copy; Your Copyright">
+ <Content author="admin" layout="default" source="index.html" date="01.01.2017" title="Index" type="page"/>
+ <Content author="admin" layout="default" source="about.html" date="01.01.2017" title="About" type="page"/>
+ <Content author="admin" layout="default" source="news.html" date="01.01.2017" title="News" type="page"/>
+ <Content author="admin" excerpt="Thanks to FlateSiteBuilder our new website is now online." layout="post" source="hello.html" date="01.01.2017" title="Website Online" type="post"/>
 </Site>

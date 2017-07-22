@@ -1,0 +1,13 @@
+<Page>
+	<Section>
+		<Row>
+			<Column>
+				<Html>
+					<![CDATA[
+					<h1>Welcome</h1>
+					]]>
+				</Html>
+			</Column>
+		</Row>
+	</Section>
+</Page>

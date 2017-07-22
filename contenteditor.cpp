@@ -21,6 +21,10 @@
 #include "contenteditor.h"
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
+#include "pageeditor.h"
+#include "sectioneditor.h"
+#include "roweditor.h"
+#include "columneditor.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QTextEdit>
@@ -60,6 +64,21 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_titleLabel->setFont(fnt);
     m_title = new QLineEdit();
     m_excerpt = new QLineEdit();
+
+    PageEditor *pe = new PageEditor();
+    SectionEditor *se = new SectionEditor();
+    RowEditor *re = new RowEditor();
+    ColumnEditor *ce0 = new ColumnEditor();
+    re->addColumn(ce0, 0);
+    ColumnEditor *ce1 = new ColumnEditor();
+    re->addColumn(ce1, 1);
+    ColumnEditor *ce2 = new ColumnEditor();
+    re->addColumn(ce2, 2);
+    ColumnEditor *ce3 = new ColumnEditor();
+    re->addColumn(ce3, 3);
+    se->addRow(re);
+    pe->addSection(se);
+    /*
     m_text = new QTextEdit;
     m_text->setAcceptRichText(false);
     m_text->setFont(font);
@@ -67,11 +86,12 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     QFontMetrics metrics(font);
     m_text->setTabStopWidth(4 * metrics.width(' '));
     new HtmlHighlighter(m_text->document());
+    */
     layout->addWidget(m_titleLabel, 0, 0);
     layout->addWidget(previewLink, 0, 1);
     layout->addWidget(m_title, 1, 0, 1, 2);
     layout->addWidget(m_save, 1, 2);
-    layout->addWidget(m_text, 2, 0, 1, 3);
+    layout->addWidget(pe, 2, 0, 1, 3);
     vbox->addLayout(layout);
     setLayout(vbox);
 
@@ -85,6 +105,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         m_excerpt->setText(m_content->excerpt());
         m_filename = m_site->path() + "/posts/" + m_content->source();
     }
+    /*
     if(!m_content->source().isEmpty())
     {
         QFile file(m_filename);
@@ -97,9 +118,10 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         else
             qDebug() << "Unable to open file " + m_filename;
     }
+    */
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
+    //connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
 }

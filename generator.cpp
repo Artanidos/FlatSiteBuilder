@@ -26,9 +26,12 @@
 #include <QDir>
 #include <QStringList>
 #include <QProcess>
+#include "text.h"
+
+Q_DECLARE_METATYPE(QFile*)
 
 Generator::Generator(PythonQtObjectPtr ctx)
-{   
+{
     context = ctx;
 }
 
@@ -64,6 +67,8 @@ void Generator::generateSite(Site *site)
     sitevars["pages"] = pages;
     sitevars["posts"] = posts;
     sitevars["theme"] = m_site->theme();
+    sitevars["copyright"] = m_site->copyright();
+    sitevars["source"] = m_site->path();
     globals.insert("site", sitevars);
 
     // first copy assets from site, they will not be overridden by theme assets
@@ -97,21 +102,6 @@ void Generator::generateSite(Site *site)
             globals.insert("page", pagevars);
 
             pagevars["content"] = translateContent(cnt);
-
-            /*
-            if(content->source().contains("/"))
-            {
-                QDir dir (temp + "/" + m_site->title());
-                QStringList list = content->source().split("/");
-                foreach(QString d, list)
-                {
-                    if(d.contains(".html"))
-                        break;
-                    dir.mkdir(d);
-                    dir.cd(d);
-                }
-            }
-            */
 
             QFile out(name);
             if(out.open(QFile::WriteOnly))

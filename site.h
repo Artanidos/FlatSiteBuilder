@@ -27,8 +27,10 @@
 class Site : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString title READ title WRITE setTitle)
 
 public:
+    Site(QObject *) {}
     Site(QString filename);
 
     QString theme() {return m_theme;}
@@ -39,6 +41,9 @@ public:
 
     QString github() {return m_github;}
     void setGithub(QString github) {m_github = github;}
+
+    QString copyright() {return m_copyright;}
+    void setCopyright(QString copyright) {m_copyright = copyright;}
 
     QList<Content *> contents() {return m_contents;}
     void addContent(Content *content) {m_contents.append(content);}
@@ -52,6 +57,7 @@ private:
     QString m_theme;
     QString m_title;
     QString m_github;
+    QString m_copyright;
     QList<Content *> m_contents;
 };
 

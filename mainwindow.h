@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTreeWidget>
+#include <QGraphicsView>
 #include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"

@@ -21,7 +21,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT += core gui
+QT += core gui script
 QT += testlib 
 QT += widgets xml
 
@@ -48,7 +48,11 @@ SOURCES += main.cpp\
     content.cpp \
     contenteditor.cpp \
     contentlist.cpp \
-    tablecheckbox.cpp
+    tablecheckbox.cpp \
+    sectioneditor.cpp \
+    pageeditor.cpp \
+    roweditor.cpp \
+    columneditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -66,7 +70,11 @@ HEADERS  += mainwindow.h \
     content.h \
     contenteditor.h \
     contentlist.h \
-    tablecheckbox.h
+    tablecheckbox.h \
+    sectioneditor.h \
+    pageeditor.h \
+    roweditor.h \
+    columneditor.h
 
 DISTFILES += \
     README.md \
@@ -83,7 +91,9 @@ DISTFILES += \
     testsite/pages/about.html \
     testsite/pages/news.html \
     themes/default/layouts/post.html \
-    themes/default/includes/posthead.html
+    themes/default/includes/posthead.html \
+    test.js \
+    testsite/pages/index.xml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

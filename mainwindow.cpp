@@ -103,12 +103,14 @@ void MainWindow::initGui()
     vbox->addWidget(m_settings);
     vbox->addStretch();
 
+    /*
     QVBoxLayout *dashBox = new QVBoxLayout();
     Hyperlink *generateButton = new Hyperlink("Generate Site");
     Hyperlink *homeButton = new Hyperlink("Documentation");
     dashBox->addWidget(generateButton);
     dashBox->addWidget(homeButton);
     m_dashboardExpander->addLayout(dashBox);
+    */
 
     QVBoxLayout *contentBox = new QVBoxLayout();
     Hyperlink *postsButton = new Hyperlink("Posts");
@@ -256,6 +258,7 @@ void MainWindow::loadProject(QString filename)
     m_site->setTheme(site.attribute("theme", ""));
     m_site->setTitle(site.attribute("title", ""));
     m_site->setGithub(site.attribute("github", ""));
+    m_site->setCopyright(site.attribute("copyright"));
 
     QDomElement content = site.firstChildElement("Content");
     while(!content.isNull())
@@ -294,6 +297,7 @@ void MainWindow::saveProject()
     root.setAttribute("theme", m_site->theme());
     root.setAttribute("title", m_site->title());
     root.setAttribute("github", m_site->github());
+    root.setAttribute("copyright", m_site->copyright());
     doc.appendChild(root);
     foreach(Content *content, m_site->contents())
     {
