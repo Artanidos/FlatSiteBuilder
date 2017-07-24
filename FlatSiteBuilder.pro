@@ -52,7 +52,9 @@ SOURCES += main.cpp\
     sectioneditor.cpp \
     pageeditor.cpp \
     roweditor.cpp \
-    columneditor.cpp
+    columneditor.cpp \
+    droparea.cpp \
+    widgetmimedata.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -74,7 +76,9 @@ HEADERS  += mainwindow.h \
     sectioneditor.h \
     pageeditor.h \
     roweditor.h \
-    columneditor.h
+    columneditor.h \
+    droparea.h \
+    widgetmimedata.h
 
 DISTFILES += \
     README.md \

@@ -1,9 +1,12 @@
 #include "columneditor.h"
+#include "droparea.h"
+#include "widgetmimedata.h"
 #include <QMimeData>
 #include <QDrag>
 #include <QMouseEvent>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QTest>
 
 ColumnEditor::ColumnEditor()
 {
@@ -11,9 +14,9 @@ ColumnEditor::ColumnEditor()
     pal.setColor(QPalette::Background, QColor(palette().base().color().name()));
     setPalette(pal);
     setAutoFillBackground(true);
-    setMinimumWidth(60);
-    setMinimumHeight(160);
-    setMaximumHeight(160);
+    setMinimumWidth(120);
+    setMinimumHeight(50);
+    setMaximumHeight(50);
 
     QVBoxLayout *layout= new QVBoxLayout();
     layout->addWidget(new QLabel("Text"));
@@ -22,11 +25,11 @@ ColumnEditor::ColumnEditor()
 
 void ColumnEditor::mousePressEvent(QMouseEvent *event)
 {
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << 13;
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QStringLiteral("FlatSiteBuilder/ColumnEditor"), itemData);
+    DropArea *a = new DropArea();
+    parentWidget()->layout()->replaceWidget(this, a);
+
+    WidgetMimeData *mimeData = new WidgetMimeData();
+    mimeData->setData(this);
 
     QPixmap pixmap(this->size());
     this->render(&pixmap);
@@ -37,6 +40,7 @@ void ColumnEditor::mousePressEvent(QMouseEvent *event)
 
     if (!(drag->exec(Qt::MoveAction) == Qt::MoveAction))
     {
-
+        delete this;
+        return;
     }
 }

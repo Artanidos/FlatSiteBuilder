@@ -11,6 +11,7 @@ public:
     ColumnEditor();
 
     void mousePressEvent(QMouseEvent *event) override;
+
 };
 
 #endif // COLUMNEDITOR_H

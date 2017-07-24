@@ -68,14 +68,6 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     PageEditor *pe = new PageEditor();
     SectionEditor *se = new SectionEditor();
     RowEditor *re = new RowEditor();
-    ColumnEditor *ce0 = new ColumnEditor();
-    re->addColumn(ce0, 0);
-    ColumnEditor *ce1 = new ColumnEditor();
-    re->addColumn(ce1, 1);
-    ColumnEditor *ce2 = new ColumnEditor();
-    re->addColumn(ce2, 2);
-    ColumnEditor *ce3 = new ColumnEditor();
-    re->addColumn(ce3, 3);
     se->addRow(re);
     pe->addSection(se);
     /*

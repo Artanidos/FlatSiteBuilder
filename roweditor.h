@@ -14,14 +14,9 @@ public:
 
     void addColumn(ColumnEditor *ce, int column);
 
-protected:
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragLeaveEvent(QDragLeaveEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
-
 private:
     QGridLayout *m_layout;
+    QRect m_highlightedRect;
 };
 
 #endif // ROWEDITOR_H
