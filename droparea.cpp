@@ -1,8 +1,7 @@
 #include "droparea.h"
 #include "columneditor.h"
-#include "widgetmimedata.h"
+#include "columneditormimedata.h"
 #include "hyperlink.h"
-#include <QVBoxLayout>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
 #include <QDragMoveEvent>
@@ -11,9 +10,9 @@
 
 DropArea::DropArea()
 {
-    m_layout = new QVBoxLayout();
+    m_layout = new QHBoxLayout();
     m_link = new Hyperlink("(+) Insert Module");
-    m_layout->addWidget(m_link, 0, Qt::AlignCenter);
+    m_layout->addWidget(m_link, 1, Qt::AlignCenter);
     setLayout(m_layout);
     setMinimumWidth(120);
     setMinimumHeight(50);
@@ -34,7 +33,7 @@ void DropArea::setColor(QString name)
 
 void DropArea::dragEnterEvent(QDragEnterEvent *event)
 {
-    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
     if(myData)
     {
         event->accept();
@@ -51,7 +50,7 @@ void DropArea::dragLeaveEvent(QDragLeaveEvent *event)
 
 void DropArea::dragMoveEvent(QDragMoveEvent *event)
 {
-    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
     if(myData)
     {
         setColor(m_highlightColor);
@@ -67,13 +66,15 @@ void DropArea::dragMoveEvent(QDragMoveEvent *event)
 
 void DropArea::dropEvent(QDropEvent *event)
 {
-    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
     if (myData)
     {
-        QWidget *widget = myData->getData();
-        parentWidget()->layout()->replaceWidget(this, widget);
+        ColumnEditor *ce = myData->getData();
+        m_container->replaceWidget(this, ce);
+        ce->setContainer(m_container);
+
         this->hide();
-        widget->show();
+        ce->show();
         event->setDropAction(Qt::MoveAction);
         event->accept();
         delete this;

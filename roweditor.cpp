@@ -17,9 +17,18 @@ RowEditor::RowEditor()
     m_highlightedRect = QRect();
     m_layout = new QGridLayout();
     ColumnEditor *ce = new ColumnEditor();
-    m_layout->addWidget(ce, 0, 0);
+    QVBoxLayout *l = new QVBoxLayout();
+    m_layout->addLayout(l, 0, 0);
+    l->addWidget(ce);
+    ce->setContainer(l);
     for(int i = 1; i < 4; i++)
-        m_layout->addWidget(new DropArea(), 0, i);
+    {
+        QVBoxLayout *l = new QVBoxLayout();
+        DropArea *a = new DropArea();
+        m_layout->addLayout(l, 0, i);
+        l->addWidget(a);
+        a->setContainer(l);
+    }
     layout->addWidget(widget);
     layout->addLayout(m_layout);
     setLayout(layout);
@@ -27,5 +36,5 @@ RowEditor::RowEditor()
 
 void RowEditor::addColumn(ColumnEditor *ce, int column)
 {
-    m_layout->addWidget(ce, 0, column);
+    //m_layout->addWidget(ce, 0, column);
 }

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "hyperlink.h"
 
 class DropArea : public QWidget
@@ -12,6 +12,7 @@ class DropArea : public QWidget
 
 public:
     DropArea();
+    void setContainer(QLayout *layout) {m_container = layout;}
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -20,11 +21,12 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
 private:
-    QVBoxLayout *m_layout;
+    QHBoxLayout *m_layout;
     Hyperlink *m_link;
     QString m_normalColor;
     QString m_highlightColor;
     void setColor(QString name);
+    QLayout *m_container;
 };
 
 #endif // DROPAREA_H

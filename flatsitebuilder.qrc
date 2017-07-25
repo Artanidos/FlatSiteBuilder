@@ -36,5 +36,11 @@
         <file>images/preview_normal.png</file>
         <file>images/preview_pressed.png</file>
         <file>test.js</file>
+        <file>images/close_hover.png</file>
+        <file>images/close_normal.png</file>
+        <file>images/copy_hover.png</file>
+        <file>images/copy_normal.png</file>
+        <file>images/edit_hover.png</file>
+        <file>images/edit_normal.png</file>
     </qresource>
 </RCC>

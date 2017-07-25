@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     roweditor.cpp \
     columneditor.cpp \
     droparea.cpp \
-    widgetmimedata.cpp
+    flatbutton.cpp \
+    columneditormimedata.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -78,7 +79,8 @@ HEADERS  += mainwindow.h \
     roweditor.h \
     columneditor.h \
     droparea.h \
-    widgetmimedata.h
+    flatbutton.h \
+    columneditormimedata.h
 
 DISTFILES += \
     README.md \
