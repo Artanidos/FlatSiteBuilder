@@ -52,10 +52,11 @@ SOURCES += main.cpp\
     sectioneditor.cpp \
     pageeditor.cpp \
     roweditor.cpp \
-    columneditor.cpp \
     droparea.cpp \
     flatbutton.cpp \
-    columneditormimedata.cpp
+    elementeditor.cpp \
+    elementeditormimedata.cpp \
+    columneditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -77,10 +78,11 @@ HEADERS  += mainwindow.h \
     sectioneditor.h \
     pageeditor.h \
     roweditor.h \
-    columneditor.h \
     droparea.h \
     flatbutton.h \
-    columneditormimedata.h
+    elementeditor.h \
+    elementeditormimedata.h \
+    columneditor.h
 
 DISTFILES += \
     README.md \

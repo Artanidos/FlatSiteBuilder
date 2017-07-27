@@ -2,6 +2,7 @@
 #define COLUMNEDITOR_H
 
 #include <QWidget>
+#include <QVBoxLayout>
 
 class ColumnEditor : public QWidget
 {
@@ -10,16 +11,17 @@ class ColumnEditor : public QWidget
 public:
     ColumnEditor();
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void setContainer(QLayout *layout) {m_container = layout;}
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
-private slots:
-    void close();
-    void edit();
-    void copy();
+public slots:
+    void addElement();
 
 private:
-    QLayout *m_container;
+    QVBoxLayout *m_layout;
 };
 
 #endif // COLUMNEDITOR_H

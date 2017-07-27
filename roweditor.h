@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QGridLayout>
-#include "columneditor.h"
+#include "elementeditor.h"
 
 class RowEditor : public QWidget
 {

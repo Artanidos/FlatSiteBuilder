@@ -12,7 +12,7 @@ class DropArea : public QWidget
 
 public:
     DropArea();
-    void setContainer(QLayout *layout) {m_container = layout;}
+    void setContainer(QVBoxLayout *layout) {m_container = layout;}
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -26,7 +26,7 @@ private:
     QString m_normalColor;
     QString m_highlightColor;
     void setColor(QString name);
-    QLayout *m_container;
+    QVBoxLayout *m_container;
 };
 
 #endif // DROPAREA_H

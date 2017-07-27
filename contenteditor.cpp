@@ -24,7 +24,7 @@
 #include "pageeditor.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
-#include "columneditor.h"
+#include "elementeditor.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QTextEdit>

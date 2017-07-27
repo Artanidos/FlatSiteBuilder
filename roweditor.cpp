@@ -1,5 +1,6 @@
 #include "roweditor.h"
 #include "droparea.h"
+#include "columneditor.h"
 
 #include <QTest>
 
@@ -16,20 +17,11 @@ RowEditor::RowEditor()
 
     m_highlightedRect = QRect();
     m_layout = new QGridLayout();
-    ColumnEditor *ce = new ColumnEditor();
-    QVBoxLayout *l = new QVBoxLayout();
-    m_layout->addLayout(l, 0, 0);
-    l->addWidget(ce);
-    ce->setContainer(l);
-    for(int i = 1; i < 4; i++)
+    for(int i = 0; i < 4; i++)
     {
-        QVBoxLayout *l = new QVBoxLayout();
-        DropArea *a = new DropArea();
-        m_layout->addLayout(l, 0, i);
-        l->addWidget(a);
-        a->setContainer(l);
+        ColumnEditor *ce = new ColumnEditor();
+        m_layout->addWidget(ce, 0, i);
     }
-    layout->addWidget(widget);
     layout->addLayout(m_layout);
     setLayout(layout);
 }

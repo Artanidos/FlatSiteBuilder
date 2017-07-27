@@ -1,6 +1,6 @@
 #include "droparea.h"
-#include "columneditor.h"
-#include "columneditormimedata.h"
+#include "elementeditor.h"
+#include "elementeditormimedata.h"
 #include "hyperlink.h"
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
@@ -33,24 +33,27 @@ void DropArea::setColor(QString name)
 
 void DropArea::dragEnterEvent(QDragEnterEvent *event)
 {
-    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
+    /*
+    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
     if(myData)
     {
         event->accept();
     }
     else
         event->ignore();
+        */
 }
 
 void DropArea::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    setColor(m_normalColor);
-    event->accept();
+    //setColor(m_normalColor);
+    //event->accept();
 }
 
 void DropArea::dragMoveEvent(QDragMoveEvent *event)
 {
-    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
+    /*
+    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
     if(myData)
     {
         setColor(m_highlightColor);
@@ -62,25 +65,26 @@ void DropArea::dragMoveEvent(QDragMoveEvent *event)
     {
         event->ignore();
     }
+    */
 }
 
 void DropArea::dropEvent(QDropEvent *event)
 {
-    const ColumnEditorMimeData *myData = qobject_cast<const ColumnEditorMimeData *>(event->mimeData());
+    /*
+    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
     if (myData)
     {
         ColumnEditor *ce = myData->getData();
-        m_container->replaceWidget(this, ce);
+        m_container->insertWidget(0, ce);
         ce->setContainer(m_container);
-
-        this->hide();
         ce->show();
+        setColor(m_normalColor);
         event->setDropAction(Qt::MoveAction);
         event->accept();
-        delete this;
     }
     else
     {
         event->ignore();
     }
+    */
 }
