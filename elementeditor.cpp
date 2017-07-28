@@ -1,5 +1,4 @@
 #include "elementeditor.h"
-#include "droparea.h"
 #include "elementeditormimedata.h"
 #include "flatbutton.h"
 #include "roweditor.h"
@@ -134,7 +133,5 @@ void ElementEditor::edit()
 
 void ElementEditor::copy()
 {
-    //ElementEditor *ee = new ElementEditor();
-    //m_container->insertWidget(m_container->count() - 1, ee, 0, Qt::AlignTop);
-    //ee->setContainer(m_container);
+   emit elementCopied(this);
 }

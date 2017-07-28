@@ -1,5 +1,4 @@
 #include "roweditor.h"
-#include "droparea.h"
 #include "columneditor.h"
 
 #include <QTest>
@@ -24,9 +23,4 @@ RowEditor::RowEditor()
     }
     layout->addLayout(m_layout);
     setLayout(layout);
-}
-
-void RowEditor::addColumn(ColumnEditor *ce, int column)
-{
-    //m_layout->addWidget(ce, 0, column);
 }

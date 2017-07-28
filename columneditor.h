@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+class ElementEditor;
 class ColumnEditor : public QWidget
 {
     Q_OBJECT
@@ -19,6 +20,7 @@ protected:
 
 public slots:
     void addElement();
+    void copyElement(ElementEditor*);
 
 private:
     QVBoxLayout *m_layout;

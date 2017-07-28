@@ -32,6 +32,7 @@ private slots:
 signals:
     void elementEnabled();
     void elementDragged();
+    void elementCopied(ElementEditor*);
 
 private:
     Hyperlink *m_link;

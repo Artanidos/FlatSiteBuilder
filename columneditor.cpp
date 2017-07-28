@@ -20,6 +20,7 @@ ColumnEditor::ColumnEditor()
 
     connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
 }
 
 void ColumnEditor::addElement()
@@ -29,6 +30,17 @@ void ColumnEditor::addElement()
 
     connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+}
+
+void ColumnEditor::copyElement(ElementEditor *e)
+{
+    ElementEditor *ee = new ElementEditor();
+    ee->setMode(e->mode());
+    m_layout->insertWidget(m_layout->count() - 1, ee, 0, Qt::AlignTop);
+    connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
 }
 
 void ColumnEditor::dragEnterEvent(QDragEnterEvent *event)
@@ -119,6 +131,12 @@ void ColumnEditor::dropEvent(QDropEvent *event)
         m_layout->insertWidget(0, ee, 0, Qt::AlignTop);
         ee->dropped();
         ee->show();
+        ee->disconnect(SIGNAL(elementEnabled()));
+        ee->disconnect(SIGNAL(elementDragged()));
+        ee->disconnect(SIGNAL(elementCopied(ElementEditor*)));
+        connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+        connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+        connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
         event->setDropAction(Qt::MoveAction);
         event->accept();
     }

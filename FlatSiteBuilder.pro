@@ -52,7 +52,6 @@ SOURCES += main.cpp\
     sectioneditor.cpp \
     pageeditor.cpp \
     roweditor.cpp \
-    droparea.cpp \
     flatbutton.cpp \
     elementeditor.cpp \
     elementeditormimedata.cpp \
@@ -78,7 +77,6 @@ HEADERS  += mainwindow.h \
     sectioneditor.h \
     pageeditor.h \
     roweditor.h \
-    droparea.h \
     flatbutton.h \
     elementeditor.h \
     elementeditormimedata.h \

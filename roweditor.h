@@ -12,8 +12,6 @@ class RowEditor : public QWidget
 public:
     RowEditor();
 
-    void addColumn(ColumnEditor *ce, int column);
-
 private:
     QGridLayout *m_layout;
     QRect m_highlightedRect;
