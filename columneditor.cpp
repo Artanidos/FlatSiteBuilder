@@ -1,6 +1,6 @@
 #include "columneditor.h"
 #include "elementeditor.h"
-#include "elementeditormimedata.h"
+#include "widgetmimedata.h"
 #include <QVBoxLayout>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
@@ -10,6 +10,11 @@
 
 ColumnEditor::ColumnEditor()
 {
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, QColor(palette().base().color().name()).lighter());
+    setPalette(pal);
+    setAutoFillBackground(true);
+
     m_layout = new QVBoxLayout();
     m_layout->setAlignment(Qt::AlignTop);
     setLayout(m_layout);
@@ -45,19 +50,25 @@ void ColumnEditor::copyElement(ElementEditor *e)
 
 void ColumnEditor::dragEnterEvent(QDragEnterEvent *event)
 {
-    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
     if(myData)
     {
-        for(int i = 0; i < m_layout->count(); i++)
+        ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+        if(ee)
         {
-            ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
-            if(editor && editor->mode() == ElementEditor::Mode::Empty)
+            for(int i = 0; i < m_layout->count(); i++)
             {
-                editor->setMode(ElementEditor::Mode::Dropzone);
-                break;
+                ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                if(editor && editor->mode() == ElementEditor::Mode::Empty)
+                {
+                    editor->setMode(ElementEditor::Mode::Dropzone);
+                    break;
+                }
             }
+            event->accept();
         }
-        event->accept();
+        else
+            event->ignore();
     }
     else
         event->ignore();
@@ -82,66 +93,73 @@ void ColumnEditor::dragLeaveEvent(QDragLeaveEvent *event)
 
 void ColumnEditor::dragMoveEvent(QDragMoveEvent *event)
 {
-    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
     if(myData)
     {
-        int row = event->pos().y() / (50 + m_layout->margin());
-        for(int i = 0; i < m_layout->count(); i++)
+        ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+        if(ee)
         {
-            ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
-            if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+            int row = event->pos().y() / (50 + m_layout->margin());
+            for(int i = 0; i < m_layout->count(); i++)
             {
-                if(i != row)
+                ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
                 {
-                    // put dropzone under mouse pointer
-                    m_layout->removeWidget(editor);
-                    m_layout->insertWidget(row, editor);
+                    if(i != row)
+                    {
+                        // put dropzone under mouse pointer
+                        m_layout->removeWidget(editor);
+                        m_layout->insertWidget(row, editor);
+                    }
+                    break;
                 }
-                break;
             }
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
         }
-        event->setDropAction(Qt::MoveAction);
-        event->accept();
+        else
+            event->ignore();
     }
     else
-    {
         event->ignore();
-    }
 }
 
 void ColumnEditor::dropEvent(QDropEvent *event)
 {
-    const ElementEditorMimeData *myData = qobject_cast<const ElementEditorMimeData *>(event->mimeData());
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
     if (myData)
     {
-        for(int i = 0; i < m_layout->count(); i++)
+        ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+        if(ee)
         {
-            ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
-            if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+            for(int i = 0; i < m_layout->count(); i++)
             {
-                // put editor to the end of the list
-                editor->setMode(ElementEditor::Mode::Empty);
-                m_layout->removeWidget(editor);
-                m_layout->addWidget(editor);
-                break;
+                ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+                {
+                    // put editor to the end of the list
+                    editor->setMode(ElementEditor::Mode::Empty);
+                    m_layout->removeWidget(editor);
+                    m_layout->addWidget(editor);
+                    break;
+                }
             }
-        }
 
-        ElementEditor *ee = myData->getData();
-        m_layout->insertWidget(0, ee, 0, Qt::AlignTop);
-        ee->dropped();
-        ee->show();
-        ee->disconnect(SIGNAL(elementEnabled()));
-        ee->disconnect(SIGNAL(elementDragged()));
-        ee->disconnect(SIGNAL(elementCopied(ElementEditor*)));
-        connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
-        connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
-        connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
-        event->setDropAction(Qt::MoveAction);
-        event->accept();
+            m_layout->insertWidget(0, ee, 0, Qt::AlignTop);
+            ee->dropped();
+            ee->show();
+            ee->disconnect(SIGNAL(elementEnabled()));
+            ee->disconnect(SIGNAL(elementDragged()));
+            ee->disconnect(SIGNAL(elementCopied(ElementEditor*)));
+            connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+            connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+            connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        }
+        else
+            event->ignore();
     }
     else
-    {
         event->ignore();
-    }
 }

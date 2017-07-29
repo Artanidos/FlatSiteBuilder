@@ -7,10 +7,15 @@
 
 class PageEditor : public QWidget
 {
+    Q_OBJECT
+
 public:
     PageEditor();
 
     void addSection(SectionEditor *se);
+
+private slots:
+    void addSection();
 
 private:
     QVBoxLayout *m_layout;

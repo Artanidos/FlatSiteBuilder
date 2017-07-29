@@ -7,6 +7,7 @@ FlatButton::FlatButton(QString normalIcon, QString hoverIcon)
     m_hoverIcon = QImage(hoverIcon);
 
     setPixmap(QPixmap::fromImage(m_normalIcon));
+    setCursor(Qt::PointingHandCursor);
 }
 
 void FlatButton::mousePressEvent(QMouseEvent *event)

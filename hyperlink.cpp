@@ -29,6 +29,7 @@ Hyperlink::Hyperlink(QString text)
     setText("<a style=\"color: " + m_color + "; text-decoration: none; cursor: pointer;\" href=\"#/\">"+ m_text + "</a>");
     setTextFormat(Qt::RichText);
     setTextInteractionFlags(Qt::TextBrowserInteraction);
+    setCursor(Qt::PointingHandCursor);
 }
 
 void Hyperlink::enterEvent (QEvent *)

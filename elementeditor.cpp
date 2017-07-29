@@ -1,5 +1,5 @@
 #include "elementeditor.h"
-#include "elementeditormimedata.h"
+#include "widgetmimedata.h"
 #include "flatbutton.h"
 #include "roweditor.h"
 #include <QMimeData>
@@ -15,6 +15,7 @@ ElementEditor::ElementEditor()
     setMinimumWidth(120);
     setMinimumHeight(50);
     setMaximumHeight(50);
+
     m_mode = Mode::Empty;
     m_normalColor = QColor(palette().base().color().name()).lighter().name();
     m_enabledColor = palette().base().color().name();
@@ -31,10 +32,10 @@ ElementEditor::ElementEditor()
     m_text = new QLabel("Text");
     m_text->setVisible(false);
     QHBoxLayout *layout= new QHBoxLayout();
-    layout->addWidget(m_link);
+    layout->addWidget(m_link, 0, Qt::AlignCenter);
     layout->addWidget(m_editButton);
     layout->addWidget(m_copyButton);
-    layout->addWidget(m_text, 1);
+    layout->addWidget(m_text, 1, Qt::AlignCenter);
     layout->addWidget(m_closeButton);
     setLayout(layout);
 
@@ -59,11 +60,12 @@ void ElementEditor::mousePressEvent(QMouseEvent *event)
     {
         emit elementDragged();
     }
-    ElementEditorMimeData *mimeData = new ElementEditorMimeData();
+    WidgetMimeData *mimeData = new WidgetMimeData();
     mimeData->setData(this);
 
     QPixmap pixmap(this->size());
-    this->render(&pixmap);
+    render(&pixmap);
+
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setHotSpot(event->pos());

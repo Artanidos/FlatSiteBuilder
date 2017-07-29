@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QScrollArea>
 #include <QTest>
 
 ContentEditor::ContentEditor(Site *site, Content *content)
@@ -65,11 +66,17 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_title = new QLineEdit();
     m_excerpt = new QLineEdit();
 
+    QScrollArea *scroll = new QScrollArea();
     PageEditor *pe = new PageEditor();
     SectionEditor *se = new SectionEditor();
     RowEditor *re = new RowEditor();
     se->addRow(re);
     pe->addSection(se);
+    scroll->setWidget(pe);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setWidgetResizable(true);
+
     /*
     m_text = new QTextEdit;
     m_text->setAcceptRichText(false);
@@ -83,7 +90,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     layout->addWidget(previewLink, 0, 1);
     layout->addWidget(m_title, 1, 0, 1, 2);
     layout->addWidget(m_save, 1, 2);
-    layout->addWidget(pe, 2, 0, 1, 3);
+    layout->addWidget(scroll, 2, 0, 1, 3);
     vbox->addLayout(layout);
     setLayout(vbox);
 
