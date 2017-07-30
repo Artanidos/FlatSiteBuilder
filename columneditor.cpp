@@ -108,7 +108,6 @@ void ColumnEditor::dragMoveEvent(QDragMoveEvent *event)
                     if(i != row)
                     {
                         // put dropzone under mouse pointer
-                        m_layout->removeWidget(editor);
                         m_layout->insertWidget(row, editor);
                     }
                     break;

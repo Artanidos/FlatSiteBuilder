@@ -47,6 +47,16 @@ void SectionEditor::removeRow(RowEditor *re)
     m_layout->removeWidget(re);
 }
 
+void SectionEditor::enableColumnAcceptDrop(bool mode)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());
+        if(re)
+            re->enableColumnAcceptDrop(mode);
+    }
+}
+
 void SectionEditor::addRow()
 {
     addRow(new RowEditor());
@@ -118,6 +128,7 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
                     row++;
                 }
             }
+
             // find dropzone and replace it to new location
             for(int i = 0; i < m_layout->count(); i++)
             {
@@ -126,16 +137,12 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
                 {
                     if(i != row)
                     {
-                        m_layout->removeWidget(dz);
                         m_layout->insertWidget(row, dz);
                     }
                     break;
                 }
             }
 
-            // TODO: bug here --- items are not displayed properly
-            // force repaint here
-            repaint();
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }
@@ -160,7 +167,6 @@ void SectionEditor::dropEvent(QDropEvent *event)
                 DropZone *dz = dynamic_cast<DropZone*>(m_layout->itemAt(i)->widget());
                 if(dz)
                 {
-                    //m_layout->removeWidget(re);
                     m_layout->replaceWidget(dz, re);
                     re->show();
                     delete dz;

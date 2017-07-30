@@ -14,6 +14,10 @@ public:
     RowEditor();
 
     void mousePressEvent(QMouseEvent *event);
+    void enableColumnAcceptDrop(bool mode);
+
+signals:
+    void beginDrag();
 
 private slots:
     void close();

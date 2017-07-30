@@ -44,6 +44,16 @@ void RowEditor::close()
     delete this;
 }
 
+void RowEditor::enableColumnAcceptDrop(bool mode)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        ColumnEditor *ce = dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget());
+        if(ce)
+            ce->setAcceptDrops(mode);
+    }
+}
+
 void RowEditor::mousePressEvent(QMouseEvent *event)
 {
     WidgetMimeData *mimeData = new WidgetMimeData();
@@ -60,6 +70,7 @@ void RowEditor::mousePressEvent(QMouseEvent *event)
 
     SectionEditor *se = dynamic_cast<SectionEditor*>(parentWidget());
     se->removeRow(this);
+    se->enableColumnAcceptDrop(false);
     this->hide();
 
     if(drag->exec(Qt::MoveAction) == Qt::IgnoreAction)
@@ -67,4 +78,5 @@ void RowEditor::mousePressEvent(QMouseEvent *event)
         se->addRow(this);
         this->show();
     }
+    se->enableColumnAcceptDrop(true);
 }

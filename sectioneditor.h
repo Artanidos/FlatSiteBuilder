@@ -15,6 +15,7 @@ public:
 
     void addRow(RowEditor *re);
     void removeRow(RowEditor *re);
+    void enableColumnAcceptDrop(bool mode);
 
 private slots:
     void addRow();
