@@ -13,6 +13,7 @@ public:
     PageEditor();
 
     void addSection(SectionEditor *se);
+    void enableColumnAcceptDrop(bool mode);
 
 private slots:
     void addSection();

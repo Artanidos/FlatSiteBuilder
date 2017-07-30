@@ -27,3 +27,13 @@ void PageEditor::addSection()
 {
     addSection(new SectionEditor());
 }
+
+void PageEditor::enableColumnAcceptDrop(bool mode)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(m_layout->itemAt(i)->widget());
+        if(se)
+            se->enableColumnAcceptDrop(mode);
+    }
+}

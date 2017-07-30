@@ -2,6 +2,7 @@
 #include "columneditor.h"
 #include "widgetmimedata.h"
 #include "sectioneditor.h"
+#include "pageeditor.h"
 
 #include <QTest>
 #include <QDrag>
@@ -70,7 +71,8 @@ void RowEditor::mousePressEvent(QMouseEvent *event)
 
     SectionEditor *se = dynamic_cast<SectionEditor*>(parentWidget());
     se->removeRow(this);
-    se->enableColumnAcceptDrop(false);
+    PageEditor *pe = dynamic_cast<PageEditor*>(se->parentWidget());
+    pe->enableColumnAcceptDrop(false);
     this->hide();
 
     if(drag->exec(Qt::MoveAction) == Qt::IgnoreAction)
@@ -78,5 +80,5 @@ void RowEditor::mousePressEvent(QMouseEvent *event)
         se->addRow(this);
         this->show();
     }
-    se->enableColumnAcceptDrop(true);
+    pe->enableColumnAcceptDrop(true);
 }
