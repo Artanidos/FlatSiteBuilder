@@ -13,6 +13,7 @@ class SectionEditor : public QWidget
 public:
     SectionEditor();
 
+    void mousePressEvent(QMouseEvent *event);
     void addRow(RowEditor *re);
     void removeRow(RowEditor *re);
     void enableColumnAcceptDrop(bool mode);

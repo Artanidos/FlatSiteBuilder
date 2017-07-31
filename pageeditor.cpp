@@ -1,5 +1,10 @@
 #include "pageeditor.h"
+#include "dropzone.h"
+#include "widgetmimedata.h"
 #include <QVBoxLayout>
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
 
 PageEditor::PageEditor()
 {
@@ -14,7 +19,7 @@ PageEditor::PageEditor()
     m_layout->addLayout(hbox);
     m_layout->addStretch();
     setLayout(m_layout);
-
+    setAcceptDrops(true);
     connect(addSection, SIGNAL(linkActivated(QString)), this, SLOT(addSection()));
 }
 
@@ -28,6 +33,11 @@ void PageEditor::addSection()
     addSection(new SectionEditor());
 }
 
+void PageEditor::removeSection(SectionEditor *se)
+{
+    m_layout->removeWidget(se);
+}
+
 void PageEditor::enableColumnAcceptDrop(bool mode)
 {
     for(int i = 0; i < m_layout->count(); i++)
@@ -36,4 +46,130 @@ void PageEditor::enableColumnAcceptDrop(bool mode)
         if(se)
             se->enableColumnAcceptDrop(mode);
     }
+}
+
+void PageEditor::enableSectionAcceptDrop(bool mode)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(m_layout->itemAt(i)->widget());
+        if(se)
+            se->setAcceptDrops(mode);
+    }
+}
+
+void PageEditor::dragEnterEvent(QDragEnterEvent *event)
+{
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    if(myData)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(myData->getData());
+        if(se)
+        {
+            // insert a dropzone at the end
+            m_layout->addWidget(new DropZone(myData->width(), myData->height()));
+            event->accept();
+        }
+        else
+            event->ignore();
+    }
+    else
+        event->ignore();
+}
+
+void PageEditor::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    // remove dropzones
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        DropZone *dz = dynamic_cast<DropZone*>(m_layout->itemAt(i)->widget());
+        if(dz)
+        {
+            delete dz;
+            break;
+        }
+    }
+    event->accept();
+}
+
+void PageEditor::dragMoveEvent(QDragMoveEvent *event)
+{
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    if(myData)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(myData->getData());
+        if(se)
+        {
+            int height = 0;
+            int row = 0;
+
+            // evaluate position for the dropzone to be placed
+            for(int i = 0; i < m_layout->count(); i++)
+            {
+                SectionEditor *editor = dynamic_cast<SectionEditor*>(m_layout->itemAt(i)->widget());
+                if(editor)
+                {
+
+                    if(event->pos().y() > height && event->pos().y() < height + editor->height())
+                    {
+                        break;
+                    }
+                    height += editor->height();
+
+                    row++;
+                }
+            }
+
+            // find dropzone and replace it to new location
+            for(int i = 0; i < m_layout->count(); i++)
+            {
+                DropZone *dz = dynamic_cast<DropZone*>(m_layout->itemAt(i)->widget());
+                if(dz)
+                {
+                    if(i != row)
+                    {
+                        m_layout->insertWidget(row, dz);
+                    }
+                    break;
+                }
+            }
+
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        }
+        else
+            event->ignore();
+    }
+    else
+        event->ignore();
+}
+
+void PageEditor::dropEvent(QDropEvent *event)
+{
+    const WidgetMimeData *myData = qobject_cast<const WidgetMimeData *>(event->mimeData());
+    if (myData)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(myData->getData());
+        if(se)
+        {
+            // place the dragged SectionEditor to the place where DropZone is now
+            for(int i = 0; i < m_layout->count(); i++)
+            {
+                DropZone *dz = dynamic_cast<DropZone*>(m_layout->itemAt(i)->widget());
+                if(dz)
+                {
+                    m_layout->replaceWidget(dz, se);
+                    se->show();
+                    delete dz;
+                    break;
+                }
+            }
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        }
+        else
+            event->ignore();
+    }
+    else
+        event->ignore();
 }

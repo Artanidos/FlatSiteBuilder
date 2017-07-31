@@ -2,7 +2,9 @@
 #include "hyperlink.h"
 #include "widgetmimedata.h"
 #include "dropzone.h"
+#include "pageeditor.h"
 #include <QTest>
+#include <QDrag>
 
 SectionEditor::SectionEditor()
 {
@@ -183,3 +185,31 @@ void SectionEditor::dropEvent(QDropEvent *event)
         event->ignore();
 }
 
+void SectionEditor::mousePressEvent(QMouseEvent *event)
+{
+    WidgetMimeData *mimeData = new WidgetMimeData();
+    mimeData->setSize(size().width(), size().height());
+    mimeData->setData(this);
+
+    QPixmap pixmap(this->size());
+    render(&pixmap);
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setHotSpot(event->pos());
+    drag->setPixmap(pixmap);
+
+    PageEditor *pe = dynamic_cast<PageEditor*>(parentWidget());
+    pe->removeSection(this);
+    pe->enableColumnAcceptDrop(false);
+    pe->enableSectionAcceptDrop(false);
+    this->hide();
+
+    if(drag->exec(Qt::MoveAction) == Qt::IgnoreAction)
+    {
+        pe->addSection(this);
+        this->show();
+    }
+    pe->enableColumnAcceptDrop(true);
+    pe->enableSectionAcceptDrop(true);
+}
