@@ -25,6 +25,7 @@ protected:
 
 private slots:
     void addSection();
+    void copySection(SectionEditor *);
 
 private:
     QVBoxLayout *m_layout;

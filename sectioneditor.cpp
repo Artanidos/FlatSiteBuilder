@@ -37,16 +37,24 @@ SectionEditor::SectionEditor()
 
     connect(addRow, SIGNAL(linkActivated(QString)), this, SLOT(addRow()));
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
+    connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
 }
 
 void SectionEditor::addRow(RowEditor *re)
 {
+    connect(re, SIGNAL(rowEditorCopied(RowEditor*)), this, SLOT(copyRowEditor(RowEditor *)));
     m_layout->addWidget(re);
 }
 
 void SectionEditor::removeRow(RowEditor *re)
 {
     m_layout->removeWidget(re);
+}
+
+void SectionEditor::copyRowEditor(RowEditor *re)
+{
+    addRow(re->clone());
 }
 
 void SectionEditor::enableColumnAcceptDrop(bool mode)
@@ -67,6 +75,26 @@ void SectionEditor::addRow()
 void SectionEditor::close()
 {
     delete this;
+}
+
+void SectionEditor::copy()
+{
+    emit sectionEditorCopied(this);
+}
+
+void SectionEditor::edit()
+{
+    qDebug() << "edit";
+}
+
+SectionEditor *SectionEditor::clone()
+{
+    SectionEditor *ne = new SectionEditor();
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        ne->addRow(dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget())->clone());
+    }
+    return ne;
 }
 
 void SectionEditor::dragEnterEvent(QDragEnterEvent *event)

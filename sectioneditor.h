@@ -17,10 +17,17 @@ public:
     void addRow(RowEditor *re);
     void removeRow(RowEditor *re);
     void enableColumnAcceptDrop(bool mode);
+    SectionEditor *clone();
 
 private slots:
     void addRow();
     void close();
+    void copy();
+    void edit();
+    void copyRowEditor(RowEditor *re);
+
+signals:
+    void sectionEditorCopied(SectionEditor*);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

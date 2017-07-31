@@ -12,6 +12,9 @@ class ColumnEditor : public QWidget
 public:
     ColumnEditor();
 
+    ColumnEditor* clone();
+    void addElement(ElementEditor *);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;

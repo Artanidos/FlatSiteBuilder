@@ -7,7 +7,7 @@
 #include <QTest>
 #include <QDrag>
 
-RowEditor::RowEditor()
+RowEditor::RowEditor(bool clone)
 {
     m_editButton = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
     m_copyButton = new FlatButton(":/images/copy_normal.png", ":/images/copy_hover.png");
@@ -28,21 +28,51 @@ RowEditor::RowEditor()
 
     m_highlightedRect = QRect();
     m_layout = new QGridLayout();
-    for(int i = 0; i < 4; i++)
+    if(!clone)
     {
-        ColumnEditor *ce = new ColumnEditor();
-        m_layout->addWidget(ce, 0, i);
+        for(int i = 0; i < 4; i++)
+        {
+            ColumnEditor *ce = new ColumnEditor();
+            m_layout->addWidget(ce, 0, i);
+        }
     }
     layout->addItem(vbox);
     layout->addLayout(m_layout);
     setLayout(layout);
 
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
+    connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
 }
 
 void RowEditor::close()
 {
     delete this;
+}
+
+void RowEditor::copy()
+{
+    emit rowEditorCopied(this);
+}
+
+void RowEditor::edit()
+{
+    qDebug() << "edit";
+}
+
+void RowEditor::addColumn(ColumnEditor *ce, int column)
+{
+    m_layout->addWidget(ce, 0, column);
+}
+
+RowEditor* RowEditor::clone()
+{
+    RowEditor * nre = new RowEditor(true);
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        nre->addColumn(dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget())->clone(), i);
+    }
+    return nre;
 }
 
 void RowEditor::enableColumnAcceptDrop(bool mode)

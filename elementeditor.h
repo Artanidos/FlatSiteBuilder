@@ -16,6 +16,7 @@ public:
 
     void mousePressEvent(QMouseEvent *event) override;
 
+    ElementEditor *clone();
     enum Mode {Empty, Enabled, Dropzone};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}

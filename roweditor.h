@@ -11,16 +11,21 @@ class RowEditor : public QWidget
     Q_OBJECT
 
 public:
-    RowEditor();
+    RowEditor(bool clone = false);
 
     void mousePressEvent(QMouseEvent *event);
     void enableColumnAcceptDrop(bool mode);
+    void addColumn(ColumnEditor *, int);
+    RowEditor* clone();
 
 signals:
     void beginDrag();
+    void rowEditorCopied(RowEditor*);
 
 private slots:
     void close();
+    void copy();
+    void edit();
 
 private:
     QGridLayout *m_layout;

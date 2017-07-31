@@ -45,6 +45,13 @@ ElementEditor::ElementEditor()
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
+ElementEditor *ElementEditor::clone()
+{
+    ElementEditor *nee = new ElementEditor();
+    nee->setMode(m_mode);
+    return nee;
+}
+
 void ElementEditor::setColor(QString name)
 {
     QPalette pal = palette();

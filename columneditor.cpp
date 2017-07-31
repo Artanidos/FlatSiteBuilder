@@ -40,12 +40,27 @@ void ColumnEditor::addElement()
 
 void ColumnEditor::copyElement(ElementEditor *e)
 {
-    ElementEditor *ee = new ElementEditor();
-    ee->setMode(e->mode());
+    addElement(e->clone());
+}
+
+void ColumnEditor::addElement(ElementEditor *ee)
+{
     m_layout->insertWidget(m_layout->count() - 1, ee, 0, Qt::AlignTop);
     connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+}
+
+ColumnEditor* ColumnEditor::clone()
+{
+    ColumnEditor *nce = new ColumnEditor();
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+        if(ee->mode() != ElementEditor::Mode::Empty)
+            nce->addElement(ee->clone());
+    }
+    return nce;
 }
 
 void ColumnEditor::dragEnterEvent(QDragEnterEvent *event)

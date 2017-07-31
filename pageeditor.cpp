@@ -25,12 +25,18 @@ PageEditor::PageEditor()
 
 void PageEditor::addSection(SectionEditor *se)
 {
+    connect(se, SIGNAL(sectionEditorCopied(SectionEditor*)), this, SLOT(copySection(SectionEditor*)));
     m_layout->insertWidget(m_layout->count() - 2, se);
 }
 
 void PageEditor::addSection()
 {
     addSection(new SectionEditor());
+}
+
+void PageEditor::copySection(SectionEditor *se)
+{
+    addSection(se->clone());
 }
 
 void PageEditor::removeSection(SectionEditor *se)
