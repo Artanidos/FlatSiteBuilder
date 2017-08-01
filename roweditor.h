@@ -15,7 +15,7 @@ public:
 
     void mousePressEvent(QMouseEvent *event);
     void enableColumnAcceptDrop(bool mode);
-    void addColumn(ColumnEditor *, int);
+    void addColumn(ColumnEditor *, int column, int colspan = 1);
     RowEditor* clone();
 
 signals:
@@ -26,6 +26,7 @@ private slots:
     void close();
     void copy();
     void edit();
+    void addColumns();
 
 private:
     QGridLayout *m_layout;
@@ -33,6 +34,7 @@ private:
     FlatButton *m_editButton;
     FlatButton *m_copyButton;
     FlatButton *m_closeButton;
+    Hyperlink *m_addColumns;
 };
 
 #endif // ROWEDITOR_H

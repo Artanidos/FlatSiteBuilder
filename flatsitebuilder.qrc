@@ -42,5 +42,27 @@
         <file>images/copy_normal.png</file>
         <file>images/edit_hover.png</file>
         <file>images/edit_normal.png</file>
+        <file>images/columns1.png</file>
+        <file>images/columns2.png</file>
+        <file>images/columns3.png</file>
+        <file>images/columns4.png</file>
+        <file>images/columns5.png</file>
+        <file>images/columns6.png</file>
+        <file>images/columns7.png</file>
+        <file>images/columns8.png</file>
+        <file>images/columns9.png</file>
+        <file>images/columns10.png</file>
+        <file>images/columns11.png</file>
+        <file>images/columns1_hover.png</file>
+        <file>images/columns2_hover.png</file>
+        <file>images/columns3_hover.png</file>
+        <file>images/columns4_hover.png</file>
+        <file>images/columns5_hover.png</file>
+        <file>images/columns6_hover.png</file>
+        <file>images/columns7_hover.png</file>
+        <file>images/columns8_hover.png</file>
+        <file>images/columns9_hover.png</file>
+        <file>images/columns10_hover.png</file>
+        <file>images/columns11_hover.png</file>
     </qresource>
 </RCC>
