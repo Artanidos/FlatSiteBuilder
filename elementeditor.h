@@ -17,6 +17,7 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
 
     ElementEditor *clone();
+    void setText(QString text) {m_text->setText(text);}
     enum Mode {Empty, Enabled, Dropzone};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
@@ -45,6 +46,7 @@ private:
     QString m_enabledColor;
     QString m_dropColor;
     Mode m_mode;
+    bool m_zoom;
 
     void setColor(QString name);
 };

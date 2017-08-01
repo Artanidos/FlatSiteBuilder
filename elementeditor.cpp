@@ -1,13 +1,20 @@
 #include "elementeditor.h"
 #include "widgetmimedata.h"
 #include "flatbutton.h"
+#include "moduldialog.h"
 #include "roweditor.h"
+#include "textdialog.h"
+#include "sectioneditor.h"
+#include "pageeditor.h"
+#include "contenteditor.h"
 #include <QMimeData>
 #include <QDrag>
 #include <QMouseEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTest>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
 
 ElementEditor::ElementEditor()
 {
@@ -15,6 +22,7 @@ ElementEditor::ElementEditor()
     setMinimumWidth(120);
     setMinimumHeight(50);
     setMaximumHeight(50);
+    m_zoom = false;
 
     m_mode = Mode::Empty;
     m_normalColor = QColor(palette().base().color().name()).lighter().name();
@@ -49,6 +57,7 @@ ElementEditor *ElementEditor::clone()
 {
     ElementEditor *nee = new ElementEditor();
     nee->setMode(m_mode);
+    nee->setText(m_text->text());
     return nee;
 }
 
@@ -108,7 +117,6 @@ void ElementEditor::setMode(Mode mode)
         m_copyButton->setVisible(true);
         m_closeButton->setVisible(true);
         m_text->setVisible(true);
-        m_text->setText("Text");
         setColor(m_enabledColor);
     }
     else if(mode == Mode::Dropzone)
@@ -125,6 +133,24 @@ void ElementEditor::setMode(Mode mode)
 
 void ElementEditor::enable()
 {
+    ModulDialog *dlg = new ModulDialog();
+    dlg->exec();
+
+    switch(dlg->result())
+    {
+        case 1:
+            m_text->setText("Text");
+            break;
+        case 2:
+            m_text->setText("Image");
+            break;
+        case 3:
+            m_text->setText("Slider");
+            break;
+        default:
+            return;
+    }
+
     setMode(Mode::Enabled);
     emit elementEnabled();
 }
@@ -137,10 +163,82 @@ void ElementEditor::close()
 
 void ElementEditor::edit()
 {
-    qDebug() << "edit";
+
+    ColumnEditor *ce = dynamic_cast<ColumnEditor*>(parentWidget());
+    if(ce)
+    {
+        RowEditor *re = dynamic_cast<RowEditor*>(ce->parentWidget());
+        if(re)
+        {
+            SectionEditor *se = dynamic_cast<SectionEditor*>(re->parentWidget());
+            if(se)
+            {
+                PageEditor *pe = dynamic_cast<PageEditor*>(se->parentWidget());
+                if(pe)
+                {
+                    QWidget *sa = dynamic_cast<QWidget*>(pe->parentWidget());
+                    if(sa)
+                    {
+                        QWidget *vp = dynamic_cast<QWidget*>(sa->parentWidget());
+                        if(vp)
+                        {
+                            ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
+                            if(cee)
+                                cee->elementEdit(this);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //TextDialog *dlg = new TextDialog();
+    //dlg->exec();
+    /*
+    if(m_zoom)
+    {
+        QParallelAnimationGroup *ag = new QParallelAnimationGroup();
+        QPropertyAnimation *width = new QPropertyAnimation();
+        width->setTargetObject(this);
+        width->setDuration(300);
+        width->setEndValue(120);
+        width->setStartValue(900);
+        width->setPropertyName("minimumWidth");
+        ag->addAnimation(width);
+        QPropertyAnimation *height = new QPropertyAnimation();
+        height->setTargetObject(this);
+        height->setDuration(300);
+        height->setEndValue(50);
+        height->setStartValue(500);
+        height->setPropertyName("minimumHeight");
+        ag->addAnimation(height);
+        ag->start();
+        m_zoom = false;
+    }
+    else
+    {
+        QParallelAnimationGroup *ag = new QParallelAnimationGroup();
+        QPropertyAnimation *width = new QPropertyAnimation();
+        width->setTargetObject(this);
+        width->setDuration(300);
+        width->setEndValue(900);
+        width->setStartValue(120);
+        width->setPropertyName("minimumWidth");
+        ag->addAnimation(width);
+        QPropertyAnimation *height = new QPropertyAnimation();
+        height->setTargetObject(this);
+        height->setDuration(300);
+        height->setEndValue(500);
+        height->setStartValue(50);
+        height->setPropertyName("minimumHeight");
+        ag->addAnimation(height);
+        ag->start();
+        m_zoom = true;
+    }
+    */
 }
 
 void ElementEditor::copy()
 {
-   emit elementCopied(this);
+    emit elementCopied(this);
 }

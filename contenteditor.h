@@ -23,11 +23,13 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
 #include "content.h"
 #include "site.h"
+#include "elementeditor.h"
 
 class ContentEditor : public QWidget
 {
@@ -36,10 +38,13 @@ class ContentEditor : public QWidget
 public:
     ContentEditor(Site *site, Content *content = NULL);
 
+    void elementEdit(ElementEditor *);
+
 private slots:
     void save();
     void editChanged();
     void preview();
+    void editorClose(QWidget *);
 
 signals:
     void contentUpdated();
@@ -54,6 +59,11 @@ private:
     QString m_filename;
     QLineEdit *m_title;
     QLineEdit *m_excerpt;
+    QScrollArea *m_scroll;
+    QGridLayout *m_layout;
+    QVBoxLayout *m_vbox;
+    QLabel *m_excerptLabel;
+    Hyperlink *m_previewLink;
 };
 
 #endif // CONTENTEDITOR_H

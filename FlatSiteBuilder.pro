@@ -57,7 +57,10 @@ SOURCES += main.cpp\
     columneditor.cpp \
     widgetmimedata.cpp \
     dropzone.cpp \
-    columnsdialog.cpp
+    columnsdialog.cpp \
+    moduldialog.cpp \
+    textdialog.cpp \
+    texteditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -84,7 +87,10 @@ HEADERS  += mainwindow.h \
     columneditor.h \
     widgetmimedata.h \
     dropzone.h \
-    columnsdialog.h
+    columnsdialog.h \
+    moduldialog.h \
+    textdialog.h \
+    texteditor.h
 
 DISTFILES += \
     README.md \

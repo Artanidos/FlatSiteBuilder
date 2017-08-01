@@ -103,15 +103,6 @@ void MainWindow::initGui()
     vbox->addWidget(m_settings);
     vbox->addStretch();
 
-    /*
-    QVBoxLayout *dashBox = new QVBoxLayout();
-    Hyperlink *generateButton = new Hyperlink("Generate Site");
-    Hyperlink *homeButton = new Hyperlink("Documentation");
-    dashBox->addWidget(generateButton);
-    dashBox->addWidget(homeButton);
-    m_dashboardExpander->addLayout(dashBox);
-    */
-
     QVBoxLayout *contentBox = new QVBoxLayout();
     Hyperlink *postsButton = new Hyperlink("Posts");
     Hyperlink *pagesButton = new Hyperlink("Pages");

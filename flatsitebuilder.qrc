@@ -64,5 +64,11 @@
         <file>images/columns9_hover.png</file>
         <file>images/columns10_hover.png</file>
         <file>images/columns11_hover.png</file>
+        <file>images/image_hover.png</file>
+        <file>images/image_normal.png</file>
+        <file>images/slider_hover.png</file>
+        <file>images/slider_normal.png</file>
+        <file>images/text_hover.png</file>
+        <file>images/text_normal.png</file>
     </qresource>
 </RCC>

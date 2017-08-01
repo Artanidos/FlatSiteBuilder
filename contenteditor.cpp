@@ -21,6 +21,7 @@
 #include "contenteditor.h"
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
+#include "texteditor.h"
 #include "pageeditor.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
@@ -37,19 +38,14 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_site = site;
     m_content = content;
 
-    QFont font;
-    font.setFamily("Courier");
-    font.setFixedPitch(true);
-    font.setPointSize(13);
-
     QString txt = "preview ";
     if(m_content->contentType() == ContentType::Page)
         txt += "page";
     else
         txt += "post";
-    Hyperlink *previewLink = new Hyperlink(txt);
-    QVBoxLayout *vbox = new QVBoxLayout();
-    QGridLayout *layout = new QGridLayout();
+    m_previewLink = new Hyperlink(txt);
+    m_vbox = new QVBoxLayout();
+    m_layout = new QGridLayout();
     m_save = new QPushButton();
     m_save->setText(m_content ? "Update" : "Save");
     m_save->setEnabled(false);
@@ -66,41 +62,33 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_title = new QLineEdit();
     m_excerpt = new QLineEdit();
 
-    QScrollArea *scroll = new QScrollArea();
+    m_scroll = new QScrollArea();
     PageEditor *pe = new PageEditor();
     SectionEditor *se = new SectionEditor();
     RowEditor *re = new RowEditor();
     se->addRow(re);
     pe->addSection(se);
-    scroll->setWidget(pe);
-    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    scroll->setWidgetResizable(true);
+    m_scroll->setWidget(pe);
+    m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_scroll->setWidgetResizable(true);
 
-    /*
-    m_text = new QTextEdit;
-    m_text->setAcceptRichText(false);
-    m_text->setFont(font);
-    m_text->setLineWrapMode(QTextEdit::NoWrap);
-    QFontMetrics metrics(font);
-    m_text->setTabStopWidth(4 * metrics.width(' '));
-    new HtmlHighlighter(m_text->document());
-    */
-    layout->addWidget(m_titleLabel, 0, 0);
-    layout->addWidget(previewLink, 0, 1);
-    layout->addWidget(m_title, 1, 0, 1, 2);
-    layout->addWidget(m_save, 1, 2);
-    layout->addWidget(scroll, 2, 0, 1, 3);
-    vbox->addLayout(layout);
-    setLayout(vbox);
+    m_layout->addWidget(m_titleLabel, 0, 0);
+    m_layout->addWidget(m_previewLink, 0, 1);
+    m_layout->addWidget(m_title, 1, 0, 1, 2);
+    m_layout->addWidget(m_save, 1, 2);
+    m_layout->addWidget(m_scroll, 2, 0, 1, 3);
+    m_vbox->addLayout(m_layout);
+    setLayout(m_vbox);
 
     m_title->setText(m_content->title());
     if(m_content->contentType() == ContentType::Page)
         m_filename = m_site->path() + "/pages/" + m_content->source();
     else
     {
-        layout->addWidget(new QLabel("Excerpt"), 3, 0);
-        layout->addWidget(m_excerpt, 4, 0, 1, 3);
+        m_excerptLabel = new QLabel("Excerpt");
+        m_layout->addWidget(m_excerptLabel, 3, 0);
+        m_layout->addWidget(m_excerpt, 4, 0, 1, 3);
         m_excerpt->setText(m_content->excerpt());
         m_filename = m_site->path() + "/posts/" + m_content->source();
     }
@@ -122,7 +110,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     //connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    connect(previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
+    connect(m_previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
 }
 
 void ContentEditor::save()
@@ -185,4 +173,35 @@ void ContentEditor::preview()
 {
     save();
     emit preview(m_content);
+}
+
+void ContentEditor::elementEdit(ElementEditor *)
+{
+    TextEditor *editor = new TextEditor();
+    connect(editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
+    m_layout->replaceWidget(m_scroll, editor);
+    m_scroll->hide();
+    m_title->hide();
+    m_save->hide();
+    m_previewLink->hide();
+    if(m_content->contentType() == ContentType::Post)
+    {
+        m_excerptLabel->hide();
+        m_excerpt->hide();
+    }
+}
+
+void ContentEditor::editorClose(QWidget *w)
+{
+    m_layout->replaceWidget(w, m_scroll);
+    m_scroll->show();
+    m_title->show();
+    m_save->show();
+    m_previewLink->show();
+    if(m_content->contentType() == ContentType::Post)
+    {
+        m_excerptLabel->show();
+        m_excerpt->show();
+    }
+    delete w;
 }
