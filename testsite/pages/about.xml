@@ -1,10 +1,10 @@
 <Page>
-	<Section>
+    <Section>
 	    <Row>
 		    <Column>
 			    <Text>
-					<![CDATA[
-					<h1>Welcome</h1>
+				    <![CDATA[
+					<h1>About</h1>
 					]]>
 				</Text>
 			</Column>

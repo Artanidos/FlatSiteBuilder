@@ -16,14 +16,14 @@ TextEditor::TextEditor()
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
     QTabWidget *tab = new QTabWidget();
-    QTextEdit *text = new QTextEdit();
-    QTextEdit *html = new QTextEdit();
-    html->setFont(font);
-    html->setAcceptRichText(false);
-    html->setLineWrapMode(QTextEdit::NoWrap);
+    m_text = new QTextEdit();
+    m_html = new QTextEdit();
+    m_html->setFont(font);
+    m_html->setAcceptRichText(false);
+    m_html->setLineWrapMode(QTextEdit::NoWrap);
     QFontMetrics metrics(font);
-    html->setTabStopWidth(4 * metrics.width(' '));
-    new HtmlHighlighter(html->document());
+    m_html->setTabStopWidth(4 * metrics.width(' '));
+    new HtmlHighlighter(m_html->document());
 
     QPushButton *save = new QPushButton("Save and Exit");
     QPushButton *cancel = new QPushButton("Cancel");
@@ -38,8 +38,8 @@ TextEditor::TextEditor()
     hbox->addStretch();
     hbox->addWidget(save);
     hbox->addWidget(cancel);
-    tab->addTab(text, "Visual");
-    tab->addTab(html, "HTML");
+    tab->addTab(m_text, "Visual");
+    tab->addTab(m_html, "HTML");
     grid->addWidget(titleLabel, 0, 0);
     grid->addWidget(tab, 1, 0);
     grid->addLayout(hbox, 2, 0);

@@ -104,14 +104,13 @@ DISTFILES += \
     themes/default/assets/css/style.css \
     python/python.py \
     testsite/Site.xml \
-    testsite/pages/index.html \
-    testsite/posts/hello.html \
-    testsite/pages/about.html \
-    testsite/pages/news.html \
     themes/default/layouts/post.html \
     themes/default/includes/posthead.html \
     test.js \
-    testsite/pages/index.xml
+    testsite/pages/index.xml \
+    testsite/posts/hello.xml \
+    testsite/pages/about.xml \
+    testsite/pages/news.xml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -18,6 +18,8 @@ public:
 
     ElementEditor *clone();
     void setText(QString text) {m_text->setText(text);}
+    void setContent(QString content) {m_content = content;}
+    QString content() {return m_content;}
     enum Mode {Empty, Enabled, Dropzone};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
@@ -45,6 +47,7 @@ private:
     QString m_normalColor;
     QString m_enabledColor;
     QString m_dropColor;
+    QString m_content;
     Mode m_mode;
     bool m_zoom;
 

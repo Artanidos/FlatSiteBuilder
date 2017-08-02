@@ -34,6 +34,8 @@
 #include <QScrollArea>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QTest>
 
 ContentEditor::ContentEditor(Site *site, Content *content)
@@ -66,12 +68,12 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_excerpt = new QLineEdit();
 
     m_scroll = new QScrollArea();
-    PageEditor *pe = new PageEditor();
-    SectionEditor *se = new SectionEditor();
-    RowEditor *re = new RowEditor();
-    se->addRow(re);
-    pe->addSection(se);
-    m_scroll->setWidget(pe);
+    //PageEditor *pe = new PageEditor();
+    //SectionEditor *se = new SectionEditor();
+    //RowEditor *re = new RowEditor();
+    //se->addRow(re);
+    //pe->addSection(se);
+    //m_scroll->setWidget(pe);
     m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setWidgetResizable(true);
@@ -95,25 +97,85 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         m_excerpt->setText(m_content->excerpt());
         m_filename = m_site->path() + "/posts/" + m_content->source();
     }
-    /*
-    if(!m_content->source().isEmpty())
-    {
-        QFile file(m_filename);
-        if(file.open(QFile::ReadOnly))
-        {
-            QByteArray c = file.readAll();
-            m_text->insertPlainText(QString::fromLatin1(c));
-            file.close();
-        }
-        else
-            qDebug() << "Unable to open file " + m_filename;
-    }
-    */
+
+    load();
+
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    //connect(m_text, SIGNAL(textChanged()), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
+}
+
+void ContentEditor::load()
+{
+    QDomDocument doc;
+    QFile file(m_filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Unable to open " + m_filename;
+        return;
+    }
+    if (!doc.setContent(&file))
+    {
+        qDebug() << "Unable to the post content from XML";
+        file.close();
+        return;
+    }
+    file.close();
+
+    PageEditor *pe = new PageEditor();
+    m_scroll->setWidget(pe);
+    QDomElement post = doc.documentElement();
+    QDomElement section = post.firstChildElement("Section");
+    while(!section.isNull())
+    {
+        SectionEditor *se = new SectionEditor();
+        pe->addSection(se);
+        loadRows(section, se);
+        section = section.nextSiblingElement("Section");
+    }
+}
+
+void ContentEditor::loadRows(QDomElement section, SectionEditor *se)
+{
+    QDomElement row = section.firstChildElement("Row");
+    while(!row.isNull())
+    {
+        RowEditor *re = new RowEditor();
+        se->addRow(re);
+        loadColumns(row, re);
+        row = row.nextSiblingElement("Row");
+    }
+}
+
+void ContentEditor::loadColumns(QDomElement row, RowEditor *re)
+{
+    int i = 0;
+    QDomElement column = row.firstChildElement("Column");
+    while(!column.isNull())
+    {
+        ColumnEditor *ce = new ColumnEditor();
+        re->addColumn(ce, i, column.attribute("span", "1").toInt());
+        loadElements(column, ce);
+        column = column.nextSiblingElement("Column");
+        i++;
+    }
+}
+
+void ContentEditor::loadElements(QDomElement column, ColumnEditor *ce)
+{
+    QDomElement element = column.firstChildElement();
+    while(!element.isNull())
+    {
+        ElementEditor *ee = new ElementEditor();
+        ee->setText(element.nodeName());
+        ee->setMode(ElementEditor::Mode::Enabled);
+        QDomNode data = element.firstChild();
+        QDomCDATASection cdata = data.toCDATASection();
+        ee->setContent(cdata.data());
+        ce->addElement(ee);
+        element = element.nextSiblingElement();
+    }
 }
 
 void ContentEditor::save()
@@ -191,6 +253,7 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     m_scroll->render(&pixmapScroll);
 
     m_editor = new TextEditor();
+    m_editor->setContent(ee->content());
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
 
     m_animationPanel = new QWidget();

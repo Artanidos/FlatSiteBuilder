@@ -3,8 +3,8 @@
 	theme="default" 
 	title="Yourtitle" 
 	copyright="&amp;copy; Your Copyright">
- <Content author="admin" layout="default" source="index.html" date="01.01.2017" title="Index" type="page"/>
- <Content author="admin" layout="default" source="about.html" date="01.01.2017" title="About" type="page"/>
- <Content author="admin" layout="default" source="news.html" date="01.01.2017" title="News" type="page"/>
- <Content author="admin" excerpt="Thanks to FlateSiteBuilder our new website is now online." layout="post" source="hello.html" date="01.01.2017" title="Website Online" type="post"/>
+ <Content author="admin" layout="default" source="index.xml" date="01.01.2017" title="Index" type="page"/>
+ <Content author="admin" layout="default" source="about.xml" date="01.01.2017" title="About" type="page"/>
+ <Content author="admin" layout="default" source="news.xml" date="01.01.2017" title="News" type="page"/>
+ <Content author="admin" excerpt="Thanks to FlateSiteBuilder our new website is now online." layout="post" source="hello.xml" date="01.01.2017" title="Website Online" type="post"/>
 </Site>

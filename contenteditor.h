@@ -27,11 +27,13 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QDomElement>
 #include <QParallelAnimationGroup>
 #include "content.h"
 #include "site.h"
 #include "elementeditor.h"
 #include "texteditor.h"
+#include "sectioneditor.h"
 
 class ContentEditor : public QWidget
 {
@@ -71,6 +73,11 @@ private:
     QWidget *m_animationPanel;
     TextEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
+
+    void load();
+    void loadRows(QDomElement section, SectionEditor *se);
+    void loadColumns(QDomElement row, RowEditor *re);
+    void loadElements(QDomElement column, ColumnEditor *ce);
 };
 
 #endif // CONTENTEDITOR_H
