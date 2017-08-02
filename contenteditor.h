@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QParallelAnimationGroup>
 #include "content.h"
 #include "site.h"
 #include "elementeditor.h"
@@ -46,7 +47,8 @@ private slots:
     void editChanged();
     void preview();
     void editorClose(QWidget *);
-    void animationFineshed();
+    void animationFineshedZoomIn();
+    void animationFineshedZoomOut();
 
 signals:
     void contentUpdated();
@@ -68,6 +70,7 @@ private:
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
     TextEditor *m_editor;
+    QParallelAnimationGroup *m_animationgroup;
 };
 
 #endif // CONTENTEDITOR_H

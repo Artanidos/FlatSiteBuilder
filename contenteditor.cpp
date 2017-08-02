@@ -181,7 +181,6 @@ void ContentEditor::preview()
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     QPoint pos = ee->mapTo(m_scroll, ee->pos());
-    qDebug() << pos;
 
     // make screenprint from elementeditor
     QPixmap pixmapEe(ee->size());
@@ -212,44 +211,43 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     m_layout->replaceWidget(m_scroll, m_animationPanel);
     m_scroll->hide();
 
-
-    QParallelAnimationGroup *ag = new QParallelAnimationGroup();
+    m_animationgroup = new QParallelAnimationGroup();
     QPropertyAnimation *animx = new QPropertyAnimation();
     animx->setDuration(300);
     animx->setStartValue(pos.x());
     animx->setEndValue(0);
     animx->setTargetObject(anim);
     animx->setPropertyName("x");
-    ag->addAnimation(animx);
+    m_animationgroup->addAnimation(animx);
     QPropertyAnimation *animy = new QPropertyAnimation();
     animy->setDuration(300);
     animy->setStartValue(pos.y());
     animy->setEndValue(0);
     animy->setTargetObject(anim);
     animy->setPropertyName("y");
-    ag->addAnimation(animy);
+    m_animationgroup->addAnimation(animy);
     QPropertyAnimation *animw = new QPropertyAnimation();
     animw->setDuration(300);
     animw->setStartValue(ee->size().width());
     animw->setEndValue(m_scroll->size().width());
     animw->setTargetObject(anim);
     animw->setPropertyName("width");
-    ag->addAnimation(animw);
+    m_animationgroup->addAnimation(animw);
     QPropertyAnimation *animh = new QPropertyAnimation();
     animh->setDuration(300);
     animh->setStartValue(ee->size().height());
     animh->setEndValue(m_scroll->size().height());
     animh->setTargetObject(anim);
     animh->setPropertyName("height");
-    ag->addAnimation(animh);
-    connect(ag, SIGNAL(finished()), this, SLOT(animationFineshed()));
-    ag->start();
+    m_animationgroup->addAnimation(animh);
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    m_animationgroup->start();
 }
 
-void ContentEditor::animationFineshed()
+void ContentEditor::animationFineshedZoomIn()
 {
     m_layout->replaceWidget(m_animationPanel, m_editor);
-    delete m_animationPanel;
+    m_animationPanel->hide();
     m_title->hide();
     m_save->hide();
     m_previewLink->hide();
@@ -262,8 +260,6 @@ void ContentEditor::animationFineshed()
 
 void ContentEditor::editorClose(QWidget *w)
 {
-    m_layout->replaceWidget(w, m_scroll);
-    m_scroll->show();
     m_title->show();
     m_save->show();
     m_previewLink->show();
@@ -272,5 +268,20 @@ void ContentEditor::editorClose(QWidget *w)
         m_excerptLabel->show();
         m_excerpt->show();
     }
+    m_layout->replaceWidget(w, m_animationPanel);
+    m_animationPanel->show();
     delete w;
+    m_animationgroup->setDirection(QAbstractAnimation::Backward);
+    disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
+    m_animationgroup->start();
+}
+
+void ContentEditor::animationFineshedZoomOut()
+{
+    m_layout->replaceWidget(m_animationPanel, m_scroll);
+    m_animationPanel->hide();
+    m_scroll->show();
+    delete m_animationPanel;
+    delete m_animationgroup;
 }
