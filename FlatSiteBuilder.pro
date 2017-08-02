@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     columnsdialog.cpp \
     moduldialog.cpp \
     textdialog.cpp \
-    texteditor.cpp
+    texteditor.cpp \
+    animationlabel.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -90,7 +91,8 @@ HEADERS  += mainwindow.h \
     columnsdialog.h \
     moduldialog.h \
     textdialog.h \
-    texteditor.h
+    texteditor.h \
+    animationlabel.h
 
 DISTFILES += \
     README.md \

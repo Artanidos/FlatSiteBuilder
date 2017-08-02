@@ -30,6 +30,7 @@
 #include "content.h"
 #include "site.h"
 #include "elementeditor.h"
+#include "texteditor.h"
 
 class ContentEditor : public QWidget
 {
@@ -45,6 +46,7 @@ private slots:
     void editChanged();
     void preview();
     void editorClose(QWidget *);
+    void animationFineshed();
 
 signals:
     void contentUpdated();
@@ -64,6 +66,8 @@ private:
     QVBoxLayout *m_vbox;
     QLabel *m_excerptLabel;
     Hyperlink *m_previewLink;
+    QWidget *m_animationPanel;
+    TextEditor *m_editor;
 };
 
 #endif // CONTENTEDITOR_H

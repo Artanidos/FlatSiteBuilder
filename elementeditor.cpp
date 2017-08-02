@@ -191,51 +191,6 @@ void ElementEditor::edit()
             }
         }
     }
-
-    //TextDialog *dlg = new TextDialog();
-    //dlg->exec();
-    /*
-    if(m_zoom)
-    {
-        QParallelAnimationGroup *ag = new QParallelAnimationGroup();
-        QPropertyAnimation *width = new QPropertyAnimation();
-        width->setTargetObject(this);
-        width->setDuration(300);
-        width->setEndValue(120);
-        width->setStartValue(900);
-        width->setPropertyName("minimumWidth");
-        ag->addAnimation(width);
-        QPropertyAnimation *height = new QPropertyAnimation();
-        height->setTargetObject(this);
-        height->setDuration(300);
-        height->setEndValue(50);
-        height->setStartValue(500);
-        height->setPropertyName("minimumHeight");
-        ag->addAnimation(height);
-        ag->start();
-        m_zoom = false;
-    }
-    else
-    {
-        QParallelAnimationGroup *ag = new QParallelAnimationGroup();
-        QPropertyAnimation *width = new QPropertyAnimation();
-        width->setTargetObject(this);
-        width->setDuration(300);
-        width->setEndValue(900);
-        width->setStartValue(120);
-        width->setPropertyName("minimumWidth");
-        ag->addAnimation(width);
-        QPropertyAnimation *height = new QPropertyAnimation();
-        height->setTargetObject(this);
-        height->setDuration(300);
-        height->setEndValue(500);
-        height->setStartValue(50);
-        height->setPropertyName("minimumHeight");
-        ag->addAnimation(height);
-        ag->start();
-        m_zoom = true;
-    }
-    */
 }
 
 void ElementEditor::copy()

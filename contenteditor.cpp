@@ -22,6 +22,7 @@
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
 #include "texteditor.h"
+#include "animationlabel.h"
 #include "pageeditor.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
@@ -31,6 +32,8 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QScrollArea>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QTest>
 
 ContentEditor::ContentEditor(Site *site, Content *content)
@@ -175,12 +178,78 @@ void ContentEditor::preview()
     emit preview(m_content);
 }
 
-void ContentEditor::elementEdit(ElementEditor *)
+void ContentEditor::elementEdit(ElementEditor *ee)
 {
-    TextEditor *editor = new TextEditor();
-    connect(editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
-    m_layout->replaceWidget(m_scroll, editor);
+    QPoint pos = ee->mapTo(m_scroll, ee->pos());
+    qDebug() << pos;
+
+    // make screenprint from elementeditor
+    QPixmap pixmapEe(ee->size());
+    ee->render(&pixmapEe);
+
+    // make screenprint from scrollarea
+    QPixmap pixmapScroll(m_scroll->size());
+    m_scroll->render(&pixmapScroll);
+
+    m_editor = new TextEditor();
+    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
+
+    m_animationPanel = new QWidget();
+    QLabel *scroll = new QLabel();
+    scroll->setPixmap(pixmapScroll);
+    scroll->setParent(m_animationPanel);
+    scroll->move(0, 0);
+    AnimationLabel *anim = new AnimationLabel();
+    anim->setPixmap(pixmapEe);
+    anim->setAlignment(Qt::AlignTop);
+    anim->setAutoFillBackground(true);
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, palette().base().color());
+    anim->setPalette(pal);
+    anim->setParent(m_animationPanel);
+    m_animationPanel->setMinimumWidth(m_scroll->size().width());
+    m_animationPanel->setMinimumHeight(m_scroll->size().height());
+    m_layout->replaceWidget(m_scroll, m_animationPanel);
     m_scroll->hide();
+
+
+    QParallelAnimationGroup *ag = new QParallelAnimationGroup();
+    QPropertyAnimation *animx = new QPropertyAnimation();
+    animx->setDuration(300);
+    animx->setStartValue(pos.x());
+    animx->setEndValue(0);
+    animx->setTargetObject(anim);
+    animx->setPropertyName("x");
+    ag->addAnimation(animx);
+    QPropertyAnimation *animy = new QPropertyAnimation();
+    animy->setDuration(300);
+    animy->setStartValue(pos.y());
+    animy->setEndValue(0);
+    animy->setTargetObject(anim);
+    animy->setPropertyName("y");
+    ag->addAnimation(animy);
+    QPropertyAnimation *animw = new QPropertyAnimation();
+    animw->setDuration(300);
+    animw->setStartValue(ee->size().width());
+    animw->setEndValue(m_scroll->size().width());
+    animw->setTargetObject(anim);
+    animw->setPropertyName("width");
+    ag->addAnimation(animw);
+    QPropertyAnimation *animh = new QPropertyAnimation();
+    animh->setDuration(300);
+    animh->setStartValue(ee->size().height());
+    animh->setEndValue(m_scroll->size().height());
+    animh->setTargetObject(anim);
+    animh->setPropertyName("height");
+    ag->addAnimation(animh);
+    connect(ag, SIGNAL(finished()), this, SLOT(animationFineshed()));
+    ag->start();
+}
+
+void ContentEditor::animationFineshed()
+{
+    m_layout->replaceWidget(m_animationPanel, m_editor);
+    delete m_animationPanel;
     m_title->hide();
     m_save->hide();
     m_previewLink->hide();
