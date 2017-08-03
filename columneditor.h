@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QDomElement>
 
 class ElementEditor;
 class ColumnEditor : public QWidget
@@ -14,6 +15,7 @@ public:
 
     ColumnEditor* clone();
     void addElement(ElementEditor *);
+    void save(QDomDocument doc, QDomElement de);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

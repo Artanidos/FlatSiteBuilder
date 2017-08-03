@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QDomElement>
 #include "roweditor.h"
 #include "flatbutton.h"
 
@@ -18,6 +19,7 @@ public:
     void removeRow(RowEditor *re);
     void enableColumnAcceptDrop(bool mode);
     SectionEditor *clone();
+    void save(QDomDocument doc, QDomElement de);
 
 private slots:
     void addRow();

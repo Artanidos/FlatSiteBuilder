@@ -29,6 +29,18 @@ void PageEditor::addSection(SectionEditor *se)
     m_layout->insertWidget(m_layout->count() - 2, se);
 }
 
+QList<SectionEditor*> PageEditor::sections()
+{
+    QList<SectionEditor*> list;
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        SectionEditor *se = dynamic_cast<SectionEditor*>(m_layout->itemAt(i)->widget());
+        if(se)
+            list.append(se);
+    }
+    return list;
+}
+
 void PageEditor::addSection()
 {
     addSection(new SectionEditor());

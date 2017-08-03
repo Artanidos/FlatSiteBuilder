@@ -8,6 +8,8 @@
 
 TextEditor::TextEditor()
 {
+    m_changed = false;
+
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -15,8 +17,7 @@ TextEditor::TextEditor()
 
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
-    QTabWidget *tab = new QTabWidget();
-    m_text = new QTextEdit();
+
     m_html = new QTextEdit();
     m_html->setFont(font);
     m_html->setAcceptRichText(false);
@@ -38,23 +39,28 @@ TextEditor::TextEditor()
     hbox->addStretch();
     hbox->addWidget(save);
     hbox->addWidget(cancel);
-    tab->addTab(m_text, "Visual");
-    tab->addTab(m_html, "HTML");
     grid->addWidget(titleLabel, 0, 0);
-    grid->addWidget(tab, 1, 0);
+    grid->addWidget(m_html, 1, 0);
     grid->addLayout(hbox, 2, 0);
     setLayout(grid);
 
     connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(m_html, SIGNAL(textChanged()), this, SLOT(textChanged()));
+}
+
+void TextEditor::textChanged()
+{
+    m_changed = true;
 }
 
 void TextEditor::save()
 {
-   emit close(this);
+    emit close(this);
 }
 
 void TextEditor::cancel()
 {
+    m_changed = false;
     emit close(this);
 }

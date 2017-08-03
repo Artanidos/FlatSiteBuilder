@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGridLayout>
+#include <QDomElement>
 #include "elementeditor.h"
 #include "flatbutton.h"
 
@@ -17,6 +18,7 @@ public:
     void enableColumnAcceptDrop(bool mode);
     void addColumn(ColumnEditor *, int column, int colspan = 1);
     RowEditor* clone();
+    void save(QDomDocument doc, QDomElement de);
 
 signals:
     void beginDrag();

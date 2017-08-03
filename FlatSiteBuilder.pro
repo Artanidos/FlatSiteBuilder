@@ -23,7 +23,7 @@
 
 QT += core gui script
 QT += testlib 
-QT += widgets xml
+QT += widgets xml webenginewidgets
 
 unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder

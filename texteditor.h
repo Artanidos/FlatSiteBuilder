@@ -11,11 +11,9 @@ class TextEditor : public QWidget
 public:
     TextEditor();
 
-    void setContent(QString content)
-    {
-        m_text->setHtml(content);
-        m_html->setPlainText(content);
-    }
+    void setContent(QString content) {m_html->setPlainText(content);}
+    QString content() {return m_html->toPlainText();}
+    bool changed() {return m_changed;}
 
 signals:
     void close(QWidget*);
@@ -23,10 +21,11 @@ signals:
 private slots:
     void save();
     void cancel();
+    void textChanged();
 
 private:
     QTextEdit *m_html;
-    QTextEdit *m_text;
+    bool m_changed;
 };
 
 #endif // TEXTEDITOR_H

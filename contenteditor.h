@@ -73,6 +73,7 @@ private:
     QWidget *m_animationPanel;
     TextEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
+    ElementEditor *m_elementEditor;
 
     void load();
     void loadRows(QDomElement section, SectionEditor *se);

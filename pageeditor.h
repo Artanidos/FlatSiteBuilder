@@ -16,6 +16,7 @@ public:
     void removeSection(SectionEditor *se);
     void enableColumnAcceptDrop(bool mode);
     void enableSectionAcceptDrop(bool mode);
+    QList<SectionEditor*> sections();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

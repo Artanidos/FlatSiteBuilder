@@ -53,6 +53,16 @@ ElementEditor::ElementEditor()
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
+void ElementEditor::save(QDomDocument doc, QDomElement de)
+{
+    if(m_mode == Mode::Enabled)
+    {
+        QDomElement text = doc.createElement("Text");
+        text.appendChild(doc.createCDATASection(content()));
+        de.appendChild(text);
+    }
+}
+
 ElementEditor *ElementEditor::clone()
 {
     ElementEditor *nee = new ElementEditor();

@@ -50,6 +50,18 @@ RowEditor::RowEditor(bool clone)
     connect(m_addColumns, SIGNAL(linkActivated(QString)), this, SLOT(addColumns()));
 }
 
+void RowEditor::save(QDomDocument doc, QDomElement de)
+{
+    QDomElement row = doc.createElement("Row");
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        ColumnEditor *ce = dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget());
+        if(ce)
+            ce->save(doc, row);
+    }
+    de.appendChild(row);
+}
+
 void RowEditor::close()
 {
     delete this;

@@ -68,12 +68,6 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_excerpt = new QLineEdit();
 
     m_scroll = new QScrollArea();
-    //PageEditor *pe = new PageEditor();
-    //SectionEditor *se = new SectionEditor();
-    //RowEditor *re = new RowEditor();
-    //se->addRow(re);
-    //pe->addSection(se);
-    //m_scroll->setWidget(pe);
     m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setWidgetResizable(true);
@@ -205,13 +199,17 @@ void ContentEditor::save()
         qDebug() << "Unable to open file " + m_filename;
         return;
     }
-    qint64 bytes = file.write(m_text->toPlainText().toLatin1());
-    if(bytes == -1)
+    QDomDocument doc;
+    QDomElement root;
+    root = doc.createElement("Post");
+    doc.appendChild(root);
+    PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
+    foreach(SectionEditor *se, pe->sections())
     {
-        file.close();
-        qDebug() << "An error occured while writing to file " + m_filename;
-        return;
+        se->save(doc, root);
     }
+    QTextStream stream(&file);
+    stream << doc.toString();
     file.close();
 
     if(m_content->contentType() == ContentType::Post)
@@ -242,6 +240,8 @@ void ContentEditor::preview()
 
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
+    m_elementEditor = ee;
+
     QPoint pos = ee->mapTo(m_scroll, ee->pos());
 
     // make screenprint from elementeditor
@@ -323,6 +323,11 @@ void ContentEditor::animationFineshedZoomIn()
 
 void ContentEditor::editorClose(QWidget *w)
 {
+    if(m_editor->changed())
+    {
+        editChanged();
+        m_elementEditor->setContent(m_editor->content());
+    }
     m_title->show();
     m_save->show();
     m_previewLink->show();

@@ -41,6 +41,18 @@ SectionEditor::SectionEditor()
     connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
 }
 
+void SectionEditor::save(QDomDocument doc, QDomElement de)
+{
+    QDomElement section = doc.createElement("Section");
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());
+        if(re)
+            re->save(doc, section);
+    }
+    de.appendChild(section);
+}
+
 void SectionEditor::addRow(RowEditor *re)
 {
     connect(re, SIGNAL(rowEditorCopied(RowEditor*)), this, SLOT(copyRowEditor(RowEditor *)));

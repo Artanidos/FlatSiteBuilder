@@ -23,6 +23,7 @@ public:
     enum Mode {Empty, Enabled, Dropzone};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
+    void save(QDomDocument doc, QDomElement de);
 
 public slots:
     void dropped();
