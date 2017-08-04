@@ -1,6 +1,27 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "pageeditor.h"
 #include "dropzone.h"
 #include "widgetmimedata.h"
+#include "contenteditor.h"
 #include <QVBoxLayout>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
@@ -44,11 +65,17 @@ QList<SectionEditor*> PageEditor::sections()
 void PageEditor::addSection()
 {
     addSection(new SectionEditor());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
 }
 
 void PageEditor::copySection(SectionEditor *se)
 {
     addSection(se->clone());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
 }
 
 void PageEditor::removeSection(SectionEditor *se)
@@ -182,6 +209,9 @@ void PageEditor::dropEvent(QDropEvent *event)
                     break;
                 }
             }
+            ContentEditor *ce = getContentEditor();
+            if(ce)
+                ce->editChanged();
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }
@@ -190,4 +220,21 @@ void PageEditor::dropEvent(QDropEvent *event)
     }
     else
         event->ignore();
+}
+
+ContentEditor* PageEditor::getContentEditor()
+{
+
+    QWidget *sa = dynamic_cast<QWidget*>(parentWidget());
+    if(sa)
+    {
+        QWidget *vp = dynamic_cast<QWidget*>(sa->parentWidget());
+        if(vp)
+        {
+            ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
+            if(cee)
+                return cee;
+        }
+    }
+    return NULL;
 }

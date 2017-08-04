@@ -1,8 +1,29 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "sectioneditor.h"
 #include "hyperlink.h"
 #include "widgetmimedata.h"
 #include "dropzone.h"
 #include "pageeditor.h"
+#include "contenteditor.h"
 #include <QTest>
 #include <QDrag>
 
@@ -67,6 +88,9 @@ void SectionEditor::removeRow(RowEditor *re)
 void SectionEditor::copyRowEditor(RowEditor *re)
 {
     addRow(re->clone());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
 }
 
 void SectionEditor::enableColumnAcceptDrop(bool mode)
@@ -82,10 +106,16 @@ void SectionEditor::enableColumnAcceptDrop(bool mode)
 void SectionEditor::addRow()
 {
     addRow(new RowEditor());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
 }
 
 void SectionEditor::close()
 {
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
     delete this;
 }
 
@@ -184,7 +214,9 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
                     break;
                 }
             }
-
+            ContentEditor *ce = getContentEditor();
+            if(ce)
+                ce->editChanged();
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }
@@ -252,4 +284,26 @@ void SectionEditor::mousePressEvent(QMouseEvent *event)
     }
     pe->enableColumnAcceptDrop(true);
     pe->enableSectionAcceptDrop(true);
+}
+
+ContentEditor* SectionEditor::getContentEditor()
+{
+
+    PageEditor *pe = dynamic_cast<PageEditor*>(parentWidget());
+    if(pe)
+    {
+        QWidget *sa = dynamic_cast<QWidget*>(pe->parentWidget());
+        if(sa)
+        {
+            QWidget *vp = dynamic_cast<QWidget*>(sa->parentWidget());
+            if(vp)
+            {
+                ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
+                if(cee)
+                    return cee;
+            }
+        }
+    }
+
+    return NULL;
 }

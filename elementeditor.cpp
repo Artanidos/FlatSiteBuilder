@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "elementeditor.h"
 #include "widgetmimedata.h"
 #include "flatbutton.h"
@@ -68,6 +88,7 @@ ElementEditor *ElementEditor::clone()
     ElementEditor *nee = new ElementEditor();
     nee->setMode(m_mode);
     nee->setText(m_text->text());
+    nee->setContent(m_content);
     return nee;
 }
 
@@ -167,13 +188,22 @@ void ElementEditor::enable()
 
 void ElementEditor::close()
 {
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
     parentWidget()->layout()->removeWidget(this);
     delete this;
 }
 
 void ElementEditor::edit()
 {
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->elementEdit(this);;
+}
 
+ContentEditor* ElementEditor::getContentEditor()
+{
     ColumnEditor *ce = dynamic_cast<ColumnEditor*>(parentWidget());
     if(ce)
     {
@@ -194,13 +224,14 @@ void ElementEditor::edit()
                         {
                             ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
                             if(cee)
-                                cee->elementEdit(this);
+                                return cee;
                         }
                     }
                 }
             }
         }
     }
+    return NULL;
 }
 
 void ElementEditor::copy()
