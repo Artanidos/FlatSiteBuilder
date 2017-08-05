@@ -37,6 +37,8 @@ public:
     ColumnEditor* clone();
     void addElement(ElementEditor *);
     void save(QDomDocument doc, QDomElement de);
+    void setSpan(int s) {m_span = s;}
+    int span() {return m_span;}
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -50,6 +52,7 @@ public slots:
 
 private:
     QVBoxLayout *m_layout;
+    int m_span;
 
     ContentEditor* getContentEditor();
 };

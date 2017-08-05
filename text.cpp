@@ -25,7 +25,9 @@ Text::Text()
 
 }
 
-QString Text::getHtml()
+QString Text::getHtml(QDomElement text)
 {
-    return m_text;
+    QDomNode data = text.firstChild();
+    QDomCDATASection cdata = data.toCDATASection();
+    return cdata.data();
 }

@@ -27,10 +27,14 @@
 #include <QTest>
 #include <QDrag>
 
-SectionEditor::SectionEditor()
+SectionEditor::SectionEditor(bool fullwidth)
 {
+    m_fullwidth = fullwidth;
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, QColor(palette().base().color().name()));
+    if(m_fullwidth)
+        pal.setColor(QPalette::Background, QColor("#800080"));
+    else
+        pal.setColor(QPalette::Background, QColor(palette().base().color().name()));
     setPalette(pal);
     setAutoFillBackground(true);
     setAcceptDrops(true);
@@ -65,6 +69,8 @@ SectionEditor::SectionEditor()
 void SectionEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement section = doc.createElement("Section");
+    if(m_fullwidth)
+        section.setAttribute("fullwidth", "true");
     for(int i = 0; i < m_layout->count(); i++)
     {
         RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());

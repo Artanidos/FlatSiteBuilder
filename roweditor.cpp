@@ -108,16 +108,12 @@ void RowEditor::addColumns()
     if(dlg->result() == 0)
         return;
 
-    m_layout->removeItem(m_layout->itemAt(2));
-    m_layout->removeItem(m_layout->itemAt(0));
-    m_layout->removeWidget(m_addColumns);
-    delete m_addColumns;
-
     switch(dlg->result())
     {
         case 1: // 1/1
         {
             ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(12);
             addColumn(ce, 0);
             break;
         }
@@ -126,6 +122,7 @@ void RowEditor::addColumns()
             for(int i = 0; i < 2; i++)
             {
                 ColumnEditor *ce = new ColumnEditor();
+                ce->setSpan(6);
                 addColumn(ce, i);
             }
             break;
@@ -135,6 +132,7 @@ void RowEditor::addColumns()
             for(int i = 0; i < 3; i++)
             {
                 ColumnEditor *ce = new ColumnEditor();
+                ce->setSpan(4);
                 addColumn(ce, i);
             }
             break;
@@ -144,6 +142,7 @@ void RowEditor::addColumns()
             for(int i = 0; i < 4; i++)
             {
                 ColumnEditor *ce = new ColumnEditor();
+                ce->setSpan(3);
                 addColumn(ce, i);
             }
             break;
@@ -151,62 +150,79 @@ void RowEditor::addColumns()
         case 5: // 2/3 - 1/3
         {
             ColumnEditor *ce = new ColumnEditor();
-            addColumn(ce, 0, 2);
+            ce->setSpan(8);
+            addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
+            ce2->setSpan(4);
             addColumn(ce2, 2);
             break;
         }
         case 6: // 1/3 - 2/3
         {
             ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(4);
             addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
-            addColumn(ce2, 1, 2);
+            ce2->setSpan(8);
+            addColumn(ce2, 1);
             break;
         }
         case 7: // 1/4 - 3/4
         {
             ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(3);
             addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
-            addColumn(ce2, 1, 3);
+            ce2->setSpan(9);
+            addColumn(ce2, 1);
             break;
         }
         case 8: // 3/4 - 1/4
         {
             ColumnEditor *ce = new ColumnEditor();
-            addColumn(ce, 0, 3);
+            ce->setSpan(9);
+            addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
+            ce2->setSpan(3);
             addColumn(ce2, 1);
             break;
         }
         case 9: // 1/2 - 1/4 - 1/4
         {
             ColumnEditor *ce = new ColumnEditor();
-            addColumn(ce, 0, 2);
+            ce->setSpan(6);
+            addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
+            ce2->setSpan(3);
             addColumn(ce2, 1);
             ColumnEditor *ce3 = new ColumnEditor();
+            ce3->setSpan(3);
             addColumn(ce3, 2);
             break;
         }
         case 10: // 1/4 - 1/4 - 1/2
         {
             ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(3);
             addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
+            ce2->setSpan(3);
             addColumn(ce2, 1);
             ColumnEditor *ce3 = new ColumnEditor();
-            addColumn(ce3, 2, 2);
+            ce3->setSpan(6);
+            addColumn(ce3, 2);
             break;
         }
         case 11: // 1/4 - 1/2 - 1/4
         {
             ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(3);
             addColumn(ce, 0);
             ColumnEditor *ce2 = new ColumnEditor();
-            addColumn(ce2, 1, 2);
+            ce2->setSpan(6);
+            addColumn(ce2, 1);
             ColumnEditor *ce3 = new ColumnEditor();
+            ce3->setSpan(3);
             addColumn(ce3, 2);
             break;
         }
@@ -216,10 +232,18 @@ void RowEditor::addColumns()
         c->editChanged();
 }
 
-void RowEditor::addColumn(ColumnEditor *ce, int column, int stretch)
+void RowEditor::addColumn(ColumnEditor *ce, int column)
 {
+    if(m_addColumns)
+    {
+        m_layout->removeItem(m_layout->itemAt(2));
+        m_layout->removeItem(m_layout->itemAt(0));
+        m_layout->removeWidget(m_addColumns);
+        delete m_addColumns;
+        m_addColumns = 0;
+    }
     m_layout->addWidget(ce, 0, column);
-    m_layout->setColumnStretch(column, stretch);
+    m_layout->setColumnStretch(column, ce->span());
 }
 
 RowEditor* RowEditor::clone()

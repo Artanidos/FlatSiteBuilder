@@ -22,6 +22,7 @@
 #define ELEMENT_H
 
 #include <QObject>
+#include <QDomElement>
 
 class Element : public QObject
 {
@@ -30,7 +31,7 @@ class Element : public QObject
 public:
     Element();
 
-    virtual QString getHtml();
+    virtual QString getHtml(QDomElement ele);
 };
 
 #endif // ELEMENT_H

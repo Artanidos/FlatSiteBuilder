@@ -1,24 +1,17 @@
 <!DOCTYPE html>
-<html>
-
-	{% include "head.html" %}
-
+<html lang="en">
+  {% include "head.html" %}
   <body>
+    {% include "nav.html" %}
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        {% include "header.html" %}
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        {{ content }}
-      </section>
-    </div>
-
+    <div class="container theme-showcase" role="main">
+	    {{ content }}
+	</div>
 	{% include "footer.html" %}
-
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="assets/js/bootstrap.min.js"></script>
   </body>
 </html>
 

@@ -46,6 +46,7 @@ protected:
 
 private slots:
     void addSection();
+    void addFullSection();
     void copySection(SectionEditor *);
 
 private:

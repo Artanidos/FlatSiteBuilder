@@ -1,0 +1,8 @@
+- cascading rows / columns
+- other modules (plugins)
+- bootstrap 4 support
+- default theme should look nicer :-)
+- support all 12 columns from bootstrap
+    maybe resize column
+	editor where the columns can be selected
+

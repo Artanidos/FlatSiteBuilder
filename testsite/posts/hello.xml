@@ -1,11 +1,10 @@
 <Post>
  <Section>
   <Row>
-   <Column>
-    <Text><![CDATA[<h1>Welcome</h1>]]></Text>
+   <Column span="12">
+    <Text><![CDATA[<h1>Welcome</h1>
+<p>To my site</p>]]></Text>
    </Column>
-   <Column/>
-   <Column/>
   </Row>
  </Section>
 </Post>

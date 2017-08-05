@@ -42,6 +42,7 @@ PageEditor::PageEditor()
     setLayout(m_layout);
     setAcceptDrops(true);
     connect(addSection, SIGNAL(linkActivated(QString)), this, SLOT(addSection()));
+    connect(addFullSection, SIGNAL(linkActivated(QString)), this, SLOT(addFullSection()));
 }
 
 void PageEditor::addSection(SectionEditor *se)
@@ -65,6 +66,14 @@ QList<SectionEditor*> PageEditor::sections()
 void PageEditor::addSection()
 {
     addSection(new SectionEditor());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged();
+}
+
+void PageEditor::addFullSection()
+{
+    addSection(new SectionEditor(true));
     ContentEditor *ce = getContentEditor();
     if(ce)
         ce->editChanged();

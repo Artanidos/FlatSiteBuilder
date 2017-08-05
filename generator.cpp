@@ -26,6 +26,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QProcess>
+#include <QDomDocument>
 #include "text.h"
 
 Q_DECLARE_METATYPE(QFile*)
@@ -49,8 +50,8 @@ void Generator::generateSite(Site *site)
     QDir old;
     old.setPath(dir + "/" + m_site->title() + "/assets");
     old.removeRecursively();
-
-    foreach(QString file, old.entryList())
+    old.cdUp();
+    foreach(QString file, old.entryList(QDir::NoDotAndDotDot | QDir::Files))
     {
         old.remove(file);
     }
@@ -59,13 +60,17 @@ void Generator::generateSite(Site *site)
     QVariantList posts;
     foreach (Content *content, m_site->contents())
     {
+        qDebug() << "1" << content->source();
         if(content->contentType() == ContentType::Page)
             pages.append(QVariant::fromValue(content));
         else
             posts.append(QVariant::fromValue(content));
     }
+
     sitevars["pages"] = pages;
     sitevars["posts"] = posts;
+    sitevars["title"] = m_site->title();
+    sitevars["description"] = m_site->description();
     sitevars["theme"] = m_site->theme();
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->path();
@@ -82,42 +87,63 @@ void Generator::generateSite(Site *site)
             subdir = "pages";
         else
             subdir = "posts";
-        QFile in(m_site->path() + "/" + subdir + "/" + content->source());
-        if(in.open(QFile::ReadOnly))
+
+        QDomDocument doc;
+        qDebug() << content->source();
+        QFile file(m_site->path() + "/" + subdir + "/" + content->source());
+        if (file.open(QIODevice::ReadOnly))
         {
-            pagevars.clear();
-            QString cnt = QString::fromLatin1(in.readAll());
-            QString layout = content->layout();
-            if(layout == "")
-                layout = "default";
-            layout = layout + ".html";
-
-            QString name = dir + "/" + m_site->title() + "/" + content->source().replace(".md", ".html");
-            pagevars["url"] = content->source().replace(".md", ".html");
-            pagevars["title"] = content->title();
-            pagevars["date"] = content->date();
-            pagevars["author"] = content->author();
-            pagevars["excerpt"] = content->excerpt();
-
-            globals.insert("page", pagevars);
-
-            pagevars["content"] = translateContent(cnt);
-
-            QFile out(name);
-            if(out.open(QFile::WriteOnly))
+            if (doc.setContent(&file))
             {
-                QVariantList args;
-                args << theme_path << layout << globals << pagevars;
-                QVariant rc = context.call("translateTemplate", args);
-                out.write(rc.toByteArray());
-                out.close();
-                qInfo() << "Created file " + name;
+                file.close();
+                pagevars.clear();
+                QString cnt = "";
+                QDomElement c = doc.documentElement();
+                QDomElement section = c.firstChildElement("Section");
+                while(!section.isNull())
+                {
+                    Section *sec = new Section();
+                    QString fw = section.attribute("fullwidth", "false");
+                    if(fw == "true")
+                        sec->setFullWidth(true);
+                    cnt += sec->getHtml(section);
+                    section = section.nextSiblingElement("Section");
+                }
+
+                QString layout = content->layout();
+                if(layout == "")
+                    layout = "default";
+                layout = layout + ".html";
+
+                QString name = dir + "/" + m_site->title() + "/" + content->url();
+                pagevars["url"] = content->url();
+                pagevars["title"] = content->title();
+                pagevars["date"] = content->date();
+                pagevars["author"] = content->author();
+                pagevars["excerpt"] = content->excerpt();
+
+                globals.insert("page", pagevars);
+
+                pagevars["content"] = translateContent(cnt);
+
+                QFile out(name);
+                if(out.open(QFile::WriteOnly))
+                {
+                    QVariantList args;
+                    args << theme_path << layout << globals << pagevars;
+                    QVariant rc = context.call("translateTemplate", args);
+                    out.write(rc.toByteArray());
+                    out.close();
+                    qInfo() << "Created file " + name;
+                }
+                else
+                    qWarning() << "Generator::generateSite(): Unable to create file " +  name;
             }
             else
-                qWarning() << "Unable to create file " +  name;
+                qWarning() << "Generator::generateSite(): Unable to parse file " + content->source();
         }
         else
-            qWarning() << "Unable to open file " + content->source();
+            qWarning() << "Generator::generateSite(): Unable to open file " + content->source();
     }
 }
 

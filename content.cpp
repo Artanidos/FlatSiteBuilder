@@ -24,14 +24,3 @@ Content::Content(ContentType type)
 {
     m_type = type;
 }
-
-QString Content::getHtml()
-{
-    QString html = "<page>\n";
-
-    for(int i = 0; i < sections().count(); i++)
-    {
-        html += sections().at(i)->getHtml();
-    }
-    return html + "\n</page>\n";
-}

@@ -248,6 +248,7 @@ void MainWindow::loadProject(QString filename)
 
     m_site->setTheme(site.attribute("theme", ""));
     m_site->setTitle(site.attribute("title", ""));
+    m_site->setDescription(site.attribute("description", ""));
     m_site->setGithub(site.attribute("github", ""));
     m_site->setCopyright(site.attribute("copyright"));
 
@@ -287,6 +288,7 @@ void MainWindow::saveProject()
     root = doc.createElement("Site");
     root.setAttribute("theme", m_site->theme());
     root.setAttribute("title", m_site->title());
+    root.setAttribute("description", m_site->description());
     root.setAttribute("github", m_site->github());
     root.setAttribute("copyright", m_site->copyright());
     doc.appendChild(root);
@@ -415,7 +417,7 @@ void MainWindow::previewSite(Content *content)
     QString dir = QDir::homePath() + "/FlatSiteBuilder";
     QDir path(dir + "/" + m_site->title());
     if(content)
-        file = content->source();
+        file = content->url();
     else
         file = "index.html";
     QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));

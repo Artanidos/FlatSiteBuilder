@@ -36,7 +36,7 @@ public:
 
     void mousePressEvent(QMouseEvent *event);
     void enableColumnAcceptDrop(bool mode);
-    void addColumn(ColumnEditor *, int column, int colspan = 1);
+    void addColumn(ColumnEditor *, int column);
     RowEditor* clone();
     void save(QDomDocument doc, QDomElement de);
 

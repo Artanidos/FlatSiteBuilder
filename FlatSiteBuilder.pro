@@ -99,18 +99,17 @@ DISTFILES += \
     themes/default/layouts/default.html \
     themes/default/includes/footer.html \
     themes/default/includes/head.html \
-    themes/default/includes/header.html \
     themes/default/includes/nav.html \
     themes/default/assets/css/style.css \
     python/python.py \
     testsite/Site.xml \
     themes/default/layouts/post.html \
-    themes/default/includes/posthead.html \
     test.js \
     testsite/pages/index.xml \
     testsite/posts/hello.xml \
     testsite/pages/about.xml \
-    testsite/pages/news.xml
+    testsite/pages/news.xml \
+    todo.txt
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

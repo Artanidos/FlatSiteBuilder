@@ -32,7 +32,7 @@ class SectionEditor : public QWidget
     Q_OBJECT
 
 public:
-    SectionEditor();
+    SectionEditor(bool fullwidth = false);
 
     void mousePressEvent(QMouseEvent *event);
     void addRow(RowEditor *re);
@@ -62,6 +62,7 @@ private:
     FlatButton *m_editButton;
     FlatButton *m_copyButton;
     FlatButton *m_closeButton;
+    bool m_fullwidth;
 
     ContentEditor* getContentEditor();
 };

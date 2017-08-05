@@ -40,6 +40,11 @@ public:
 
     QString source() {return m_source;}
     void setSource(QString source) {m_source = source;}
+    QString url()
+    {
+        QString url = m_source;
+        return url.replace(".xml", ".html");
+    }
 
     QString layout() {return m_layout;}
     void setLayout(QString layout) {m_layout = layout;}
@@ -54,8 +59,6 @@ public:
     void setExcerpt(QString excerpt) {m_excerpt = excerpt;}
 
     QList<Section *> sections() {return m_sections;}
-
-    QString getHtml();
 
     ContentType contentType() {return m_type;}
 
@@ -76,7 +79,7 @@ class ContentWrapper : public QObject
     Q_OBJECT
 
 public Q_SLOTS:
-    QString url(Content *o) {return o->source();}
+    QString url(Content *o) {return o->url();}
     QString title(Content *o) {return o->title();}
     QString date(Content *o) {return o->date().toString("dd.MM.yyyy");}
     QString excerpt(Content *o) {return o->excerpt();}

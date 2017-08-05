@@ -19,19 +19,25 @@
 ****************************************************************************/
 
 #include "section.h"
+#include "row.h"
 
 Section::Section()
 {
-
+    m_fullwidth = false;
 }
 
-QString Section::getHtml()
+QString Section::getHtml(QDomElement sec)
 {
-    QString html = "<section>\n";
-
-    for(int i = 0; i < rows().count(); i++)
+    QString html = "\n<section";
+    if(!m_fullwidth)
+        html += " class=\"container\"";
+    html += ">\n";
+    QDomElement row = sec.firstChildElement("Row");
+    while(!row.isNull())
     {
-        html += rows().at(i)->getHtml();
+        Row *r = new Row();
+        html += r->getHtml(row);
+        row = row.nextSiblingElement("Row");
     }
     return html + "\n</section>\n";
 }

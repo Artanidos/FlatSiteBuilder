@@ -22,8 +22,7 @@
 #define ROW_H
 
 #include <QObject>
-#include <QVector>
-#include "column.h"
+#include <QDomElement>
 
 class Row : public QObject
 {
@@ -32,12 +31,7 @@ class Row : public QObject
 public:
     Row();
 
-    QList<Column *> columns() {return m_columns;}
-
-    QString getHtml();
-
-private:
-    QList<Column *> m_columns;
+    QString getHtml(QDomElement row);
 };
 
 #endif // ROW_H

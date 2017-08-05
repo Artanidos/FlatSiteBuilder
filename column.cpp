@@ -19,18 +19,29 @@
 ****************************************************************************/
 
 #include "column.h"
+#include "text.h"
+#include <QTest>
 
 Column::Column()
 {
 
 }
 
-QString Column::getHtml()
+QString Column::getHtml(QDomElement col)
 {
-    QString html = "<column>\n";
-    for(int i = 0; i < elements().count(); i++)
+    QString span = col.attribute("span", "1");
+    QString html = "<div class=\"col-md-" + span + "\">\n";
+    QDomElement ele = col.firstChildElement();
+    while(!ele.isNull())
     {
-        html += elements().at(i)->getHtml();
+        if(ele.nodeName() == "Text")
+        {
+            Text *t = new Text();
+            html += t->getHtml(ele);
+        }
+        else
+            qDebug() << "Undefined element " + ele.nodeName();
+        ele = ele.nextSiblingElement();
     }
-    return html + "\n</column>\n";
+    return html + "\n</div>\n";
 }

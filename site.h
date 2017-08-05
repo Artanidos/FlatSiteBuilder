@@ -27,7 +27,6 @@
 class Site : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString title READ title WRITE setTitle)
 
 public:
     Site(QObject *) {}
@@ -38,6 +37,9 @@ public:
 
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
+
+    QString description() {return m_description;}
+    void setDescription(QString desc) {m_description = desc;}
 
     QString github() {return m_github;}
     void setGithub(QString github) {m_github = github;}
@@ -56,6 +58,7 @@ private:
     QString m_path;
     QString m_theme;
     QString m_title;
+    QString m_description;
     QString m_github;
     QString m_copyright;
     QList<Content *> m_contents;

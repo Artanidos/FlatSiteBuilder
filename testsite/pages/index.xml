@@ -1,13 +1,18 @@
-<Page>
-	<Section>
-	    <Row>
-		    <Column>
-			    <Text>
-					<![CDATA[
-					<h1>Welcome</h1>
-					]]>
-				</Text>
-			</Column>
-		</Row>
-	</Section>
-</Page>
+<Post>
+ <Section>
+  <Row>
+   <Column span="12">
+    <Text><![CDATA[<h1>Welcome</h1>
+					]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="6">
+    <Text><![CDATA[<p>Left</p>]]></Text>
+   </Column>
+   <Column span="6">
+    <Text><![CDATA[<p>Right</p>]]></Text>
+   </Column>
+  </Row>
+ </Section>
+</Post>

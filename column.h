@@ -22,7 +22,7 @@
 #define COLUMN_H
 
 #include <QObject>
-#include "element.h"
+#include <QDomElement>
 
 class Column : public QObject
 {
@@ -31,14 +31,7 @@ class Column : public QObject
 public:
     Column();
 
-    QList<Element *> elements() {return m_elements;}
-
-    QString getHtml();
-
-private:
-    QString m_theme;
-    QString m_title;
-    QList<Element *> m_elements;
+    QString getHtml(QDomElement col);
 };
 
 #endif // COLUMN_H

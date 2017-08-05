@@ -19,18 +19,22 @@
 ****************************************************************************/
 
 #include "row.h"
+#include "column.h"
 
 Row::Row()
 {
 
 }
 
-QString Row::getHtml()
+QString Row::getHtml(QDomElement row)
 {
-    QString html = "<row>\n";
-    for(int i = 0; i < columns().count(); i++)
+    QString html = "<div class=\"row\">\n";
+    QDomElement col = row.firstChildElement("Column");
+    while(!col.isNull())
     {
-        html += columns().at(i)->getHtml();
+        Column *c = new Column();
+        html += c->getHtml(col);
+        col = col.nextSiblingElement("Column");
     }
-    return html + "\n</row>\n";
+    return html + "\n</div>\n";
 }

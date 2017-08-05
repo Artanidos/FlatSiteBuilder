@@ -22,24 +22,17 @@
 #define TEXT_H
 
 #include <QObject>
+#include <QDomElement>
 #include "element.h"
 
 class Text : public Element
 {
     Q_OBJECT
-    Q_PROPERTY(QString text READ text WRITE setText)
 
 public:
     Text();
-    Text(QObject *) {}
 
-    QString text() {return m_text;}
-    void setText(QString text) {m_text = text;}
-
-    QString getHtml();
-
-private:
-    QString m_text;
+    QString getHtml(QDomElement text);
 };
 
 #endif // TEXT_H

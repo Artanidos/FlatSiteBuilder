@@ -22,7 +22,7 @@
 #define SECTION_H
 
 #include <QObject>
-#include "row.h"
+#include <QDomElement>
 
 class Section : public QObject
 {
@@ -31,12 +31,11 @@ class Section : public QObject
 public:
     Section();
 
-    QList<Row *> rows() {return m_rows;}
-
-    QString getHtml();
+    QString getHtml(QDomElement sec);
+    void setFullWidth(bool val) {m_fullwidth = val;}
 
 private:
-    QList<Row*> m_rows;
+    bool m_fullwidth;
 };
 
 #endif // SECTION_H

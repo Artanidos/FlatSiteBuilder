@@ -106,12 +106,12 @@ void ContentEditor::load()
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Unable to open " + m_filename;
+        qDebug() << "ContentEditor::load(): Unable to open " + m_filename;
         return;
     }
     if (!doc.setContent(&file))
     {
-        qDebug() << "Unable to the post content from XML";
+        qDebug() << "ContentEditor::load(): Unable to the post content from XML";
         file.close();
         return;
     }
@@ -123,7 +123,8 @@ void ContentEditor::load()
     QDomElement section = post.firstChildElement("Section");
     while(!section.isNull())
     {
-        SectionEditor *se = new SectionEditor();
+        QString fw = section.attribute("fullwidth", "false");
+        SectionEditor *se = new SectionEditor(fw == "true");
         pe->addSection(se);
         loadRows(section, se);
         section = section.nextSiblingElement("Section");
@@ -149,7 +150,8 @@ void ContentEditor::loadColumns(QDomElement row, RowEditor *re)
     while(!column.isNull())
     {
         ColumnEditor *ce = new ColumnEditor();
-        re->addColumn(ce, i, column.attribute("span", "1").toInt());
+        ce->setSpan(column.attribute("span", "1").toInt());
+        re->addColumn(ce, i);
         loadElements(column, ce);
         column = column.nextSiblingElement("Column");
         i++;
@@ -196,7 +198,7 @@ void ContentEditor::save()
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
-        qDebug() << "Unable to open file " + m_filename;
+        qDebug() << "ContentEditor::save(): Unable to open file " + m_filename;
         return;
     }
     QDomDocument doc;
