@@ -50,7 +50,7 @@ TextEditor::TextEditor()
     QPushButton *cancel = new QPushButton("Cancel");
     QHBoxLayout *hbox = new QHBoxLayout();
 
-    QLabel *titleLabel = new QLabel("Edit Text Module");
+    QLabel *titleLabel = new QLabel("Text Module");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(16);
     fnt.setBold(true);

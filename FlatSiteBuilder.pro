@@ -65,7 +65,8 @@ SOURCES += main.cpp\
     imageeditor.cpp \
     abstracteditor.cpp \
     imageselector.cpp \
-    slidereditor.cpp
+    slidereditor.cpp \
+    slider.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -100,7 +101,8 @@ HEADERS  += mainwindow.h \
     imageeditor.h \
     abstracteditor.h \
     imageselector.h \
-    slidereditor.h
+    slidereditor.h \
+    slider.h
 
 DISTFILES += \
     README.md \

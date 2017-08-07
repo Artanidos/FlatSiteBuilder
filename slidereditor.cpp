@@ -22,16 +22,34 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QListWidget>
+#include <QHeaderView>
 
 SliderEditor::SliderEditor()
     : AbstractEditor()
 {
+    m_list = new QTableWidget(0, 2, this);
+    m_list->verticalHeader()->hide();
+    m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch );
+    m_list->setToolTip("Double click to edit item");
+    QStringList labels;
+    labels << "" << "Name";
+    m_list->setHorizontalHeaderLabels(labels);
+
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
+    QPushButton *addSlide = new QPushButton("Add Slide");
+    addSlide->setMaximumWidth(120);
+    m_deleteButton = new QPushButton();
+    m_deleteButton->setText("Delete");
+    m_deleteButton->setMaximumWidth(120);
+    m_deleteButton->setEnabled(false);
+    m_deleteButton->setToolTip("Delete all marked items");
     QPushButton *save = new QPushButton("Save and Exit");
     QPushButton *cancel = new QPushButton("Cancel");
     QHBoxLayout *hbox = new QHBoxLayout();
-
     QLabel *titleLabel = new QLabel("Slider Module");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(16);
@@ -41,8 +59,9 @@ SliderEditor::SliderEditor()
     hbox->addWidget(save);
     hbox->addWidget(cancel);
     grid->addWidget(titleLabel, 0, 0);
-
-
+    grid->addWidget(addSlide, 1, 0);
+    grid->addWidget(m_list, 2, 0, 1, 3);
+    grid->addWidget(m_deleteButton, 3, 0);
     grid->addLayout(hbox, 4, 0, 1, 3);
     setLayout(grid);
 

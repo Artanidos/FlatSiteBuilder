@@ -22,6 +22,8 @@
 #define SLIDEREDITOR_H
 
 #include "abstracteditor.h"
+#include <QPushButton>
+#include <QTableWidget>
 
 class SliderEditor : public AbstractEditor
 {
@@ -36,6 +38,10 @@ public:
 private slots:
     void save();
     void cancel();
+
+private:
+    QPushButton *m_deleteButton;
+    QTableWidget *m_list;
 };
 
 #endif // SLIDEREDITOR_H

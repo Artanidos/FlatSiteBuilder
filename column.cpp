@@ -21,6 +21,7 @@
 #include "column.h"
 #include "text.h"
 #include "image.h"
+#include "slider.h"
 #include <QTest>
 
 Column::Column()
@@ -44,6 +45,11 @@ QString Column::getHtml(QDomElement col)
         {
             Image *i = new Image();
             html += i->getHtml(ele);
+        }
+        else if(ele.nodeName() == "Slider")
+        {
+            Slider *s = new Slider();
+            html += s->getHtml(ele);
         }
         else
             qDebug() << "Undefined element " + ele.nodeName();
