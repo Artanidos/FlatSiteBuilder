@@ -54,13 +54,13 @@ void ColumnEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement col = doc.createElement("Column");
     col.setAttribute("span", m_span);
+    de.appendChild(col);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
         if(ee)
             ee->save(col);
     }
-    de.appendChild(col);
 }
 
 void ColumnEditor::addElement()

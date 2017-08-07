@@ -71,13 +71,13 @@ void SectionEditor::save(QDomDocument doc, QDomElement de)
     QDomElement section = doc.createElement("Section");
     if(m_fullwidth)
         section.setAttribute("fullwidth", "true");
+    de.appendChild(section);
     for(int i = 0; i < m_layout->count(); i++)
     {
         RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());
         if(re)
             re->save(doc, section);
     }
-    de.appendChild(section);
 }
 
 void SectionEditor::addRow(RowEditor *re)

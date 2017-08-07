@@ -18,21 +18,24 @@
 **
 ****************************************************************************/
 
-#include "imageselector.h"
-#include <QMouseEvent>
+#ifndef SLIDEREDITOR_H
+#define SLIDEREDITOR_H
 
-ImageSelector::ImageSelector()
-{
-    setCursor(Qt::PointingHandCursor);
-}
+#include "abstracteditor.h"
 
-void ImageSelector::mousePressEvent(QMouseEvent *event)
+class SliderEditor : public AbstractEditor
 {
-    event->accept();
-}
+    Q_OBJECT
 
-void ImageSelector::mouseReleaseEvent(QMouseEvent *event)
-{
-    event->accept();
-    emit clicked();
-}
+public:
+    SliderEditor();
+
+    void setContent(QDomElement ele);
+    QDomElement content() {return m_element;}
+
+private slots:
+    void save();
+    void cancel();
+};
+
+#endif // SLIDEREDITOR_H

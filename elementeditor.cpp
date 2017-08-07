@@ -80,6 +80,8 @@ void ElementEditor::setContent(QDomElement content)
         m_type = Type::Text;
     else if(m_content.nodeName() == "Image")
         m_type = Type::Image;
+    else if(m_content.nodeName() == "Slider")
+        m_type = Type::Slider;
     m_text->setText(m_content.nodeName());
 }
 
@@ -87,7 +89,7 @@ void ElementEditor::save(QDomElement de)
 {
     if(m_mode == Mode::Enabled)
     {
-        de.appendChild(content());
+        de.appendChild(content().cloneNode().toElement());
     }
 }
 
@@ -96,7 +98,7 @@ ElementEditor *ElementEditor::clone()
     ElementEditor *nee = new ElementEditor();
     nee->setMode(m_mode);
     nee->setText(m_text->text());
-    nee->setContent(m_content);
+    nee->setContent(content().cloneNode().toElement());
     return nee;
 }
 

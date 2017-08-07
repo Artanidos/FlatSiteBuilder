@@ -1,3 +1,5 @@
+Features
+--------
 - cascading rows / columns
 - other modules (plugins)
 - bootstrap 4 support
@@ -6,3 +8,7 @@
     maybe resize column
 	editor where the columns can be selected
 
+
+
+Bugs
+----

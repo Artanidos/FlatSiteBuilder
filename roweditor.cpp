@@ -74,13 +74,13 @@ RowEditor::RowEditor(bool clone)
 void RowEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement row = doc.createElement("Row");
+    de.appendChild(row);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ColumnEditor *ce = dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget());
         if(ce)
             ce->save(doc, row);
     }
-    de.appendChild(row);
 }
 
 void RowEditor::close()

@@ -23,6 +23,7 @@
 #include "hyperlink.h"
 #include "texteditor.h"
 #include "imageeditor.h"
+#include "slidereditor.h"
 #include "animationlabel.h"
 #include "pageeditor.h"
 #include "sectioneditor.h"
@@ -112,7 +113,7 @@ void ContentEditor::load()
     }
     if (!doc.setContent(&file))
     {
-        qDebug() << "ContentEditor::load(): Unable to the post content from XML";
+        qDebug() << "ContentEditor::load(): Unable to read the post content from XML";
         file.close();
         return;
     }
@@ -266,10 +267,9 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     }
     else if(ee->type() == ElementEditor::Type::Slider)
     {
-        //m_editor = new ImageEditor();
-        // m_editor->setSite(m_site);
-        //m_editor->setContent(ee->content());
-        return;
+        m_editor = new SliderEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
     }
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
 
