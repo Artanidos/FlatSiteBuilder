@@ -6,5 +6,11 @@
 <p>To my site</p>]]></Text>
    </Column>
   </Row>
+  <Row>
+   <Column span="4">
+    <Image src="/home/olaf/SourceCode/FlatSiteBuilder/testsite/assets/images/cropped-cropped-woman.jpg"/>
+   </Column>
+   <Column span="8"/>
+  </Row>
  </Section>
 </Post>

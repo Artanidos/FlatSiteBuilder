@@ -31,13 +31,7 @@ class Image : public Element
 public:
     Image();
 
-    QString source() {return m_source;}
-    void setSource(QString source) {m_source = source;}
-
-    QString getHtml();
-
-private:
-    QString m_source;
+    QString getHtml(QDomElement ele);
 };
 
 #endif // IMAGE_H

@@ -70,5 +70,6 @@
         <file>images/slider_normal.png</file>
         <file>images/text_hover.png</file>
         <file>images/text_normal.png</file>
+        <file>images/image_placeholder.png</file>
     </qresource>
 </RCC>

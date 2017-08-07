@@ -1,6 +1,6 @@
-<Site github="https://github.com/yourname/yoursite.git" title="Yourtitle" copyright="&amp;copy; Your Copyright" theme="default" description="Site description">
- <Content layout="default" source="index.xml" date="04.08.2017" author="admin" title="Index" type="page"/>
- <Content layout="default" source="about.xml" date="04.08.2017" author="admin" title="About" type="page"/>
- <Content layout="default" source="news.xml" date="04.08.2017" author="admin" title="News" type="page"/>
- <Content layout="post" excerpt="Thanks to FlateSiteBuilder our new website is now online." source="hello.xml" date="05.08.2017" author="admin" title="Website Online" type="post"/>
+<Site github="https://github.com/yourname/yoursite.git" copyright="&amp;copy; Your Copyright" theme="default" description="Site description" title="Yourtitle">
+ <Content type="page" author="admin" layout="default" title="Index" source="index.xml" date="04.08.2017"/>
+ <Content type="page" author="admin" layout="default" title="About" source="about.xml" date="04.08.2017"/>
+ <Content type="page" author="admin" layout="default" title="News" source="news.xml" date="04.08.2017"/>
+ <Content type="post" author="admin" layout="post" excerpt="Thanks to FlateSiteBuilder our new website is now online." title="Website Online" source="hello.xml" date="07.08.2017"/>
 </Site>

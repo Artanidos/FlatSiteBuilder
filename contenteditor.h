@@ -92,7 +92,7 @@ private:
     QLabel *m_excerptLabel;
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
-    TextEditor *m_editor;
+    AbstractEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     ElementEditor *m_elementEditor;
 

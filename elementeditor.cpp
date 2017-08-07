@@ -73,13 +73,21 @@ ElementEditor::ElementEditor()
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-void ElementEditor::save(QDomDocument doc, QDomElement de)
+void ElementEditor::setContent(QDomElement content)
+{
+    m_content = content;
+    if(m_content.nodeName() == "Text")
+        m_type = Type::Text;
+    else if(m_content.nodeName() == "Image")
+        m_type = Type::Image;
+    m_text->setText(m_content.nodeName());
+}
+
+void ElementEditor::save(QDomElement de)
 {
     if(m_mode == Mode::Enabled)
     {
-        QDomElement text = doc.createElement("Text");
-        text.appendChild(doc.createCDATASection(content()));
-        de.appendChild(text);
+        de.appendChild(content());
     }
 }
 
@@ -171,12 +179,15 @@ void ElementEditor::enable()
     {
         case 1:
             m_text->setText("Text");
+            m_type = Type::Text;
             break;
         case 2:
             m_text->setText("Image");
+            m_type = Type::Image;
             break;
         case 3:
             m_text->setText("Slider");
+            m_type = Type::Slider;
             break;
         default:
             return;

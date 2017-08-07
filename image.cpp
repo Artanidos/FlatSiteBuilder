@@ -19,13 +19,20 @@
 ****************************************************************************/
 
 #include "image.h"
+#include <QTest>
 
 Image::Image()
 {
 
 }
 
-QString Image::getHtml()
+QString Image::getHtml(QDomElement ele)
 {
-    return "<image src=\"" + m_source + "\">";
+    QString source = ele.attribute("src");
+    QString animation = ele.attribute("animation");
+    QString url = source.mid(source.indexOf("assets/images/"));
+    if(animation == "none")
+        return "<img class=\"img-responsive pull-left inner\" src=\"" + url + "\">";
+    else
+        return "<img class=\"img-responsive appear-animation pull-left inner\" src=\"" + url + "\" data-animation=\"" + animation + "\">";
 }

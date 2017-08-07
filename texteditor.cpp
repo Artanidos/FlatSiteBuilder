@@ -25,11 +25,11 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QTest>
 
 TextEditor::TextEditor()
+    : AbstractEditor()
 {
-    m_changed = false;
-
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -66,16 +66,26 @@ TextEditor::TextEditor()
 
     connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
-    connect(m_html, SIGNAL(textChanged()), this, SLOT(textChanged()));
-}
-
-void TextEditor::textChanged()
-{
-    m_changed = true;
+    connect(m_html, SIGNAL(textChanged()), this, SLOT(contentChanged()));
 }
 
 void TextEditor::save()
 {
+    if(m_changed)
+    {
+        if(m_element.isNull())
+        {
+            QDomDocument doc;
+            m_element = doc.createElement("Text");
+            m_element.appendChild(doc.createCDATASection(m_html->toPlainText()));
+        }
+        else
+        {
+            QDomNode data = m_element.firstChild();
+            QDomCDATASection cdata = data.toCDATASection();
+            cdata.setData(m_html->toPlainText());
+        }
+    }
     emit close(this);
 }
 
@@ -83,4 +93,12 @@ void TextEditor::cancel()
 {
     m_changed = false;
     emit close(this);
+}
+
+void TextEditor::setContent(QDomElement element)
+{
+    m_element = element;
+    QDomNode data = m_element.firstChild();
+    QDomCDATASection cdata = data.toCDATASection();
+    m_html->setPlainText(cdata.data());
 }

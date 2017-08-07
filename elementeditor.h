@@ -38,13 +38,14 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
 
     ElementEditor *clone();
-    void setText(QString text) {m_text->setText(text);}
-    void setContent(QString content) {m_content = content;}
-    QString content() {return m_content;}
+    void setContent(QDomElement content);
+    QDomElement content() {return m_content;}
     enum Mode {Empty, Enabled, Dropzone};
+    enum Type {Text, Image, Slider};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
-    void save(QDomDocument doc, QDomElement de);
+    Type type() {return m_type;}
+    void save(QDomElement de);
 
 public slots:
     void dropped();
@@ -69,12 +70,14 @@ private:
     QString m_normalColor;
     QString m_enabledColor;
     QString m_dropColor;
-    QString m_content;
+    QDomElement m_content;
     Mode m_mode;
+    Type m_type;
     bool m_zoom;
 
     void setColor(QString name);
     ContentEditor* getContentEditor();
+    void setText(QString text) {m_text->setText(text);}
 };
 
 #endif // ELEMENTEDITOR_H

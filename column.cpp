@@ -20,6 +20,7 @@
 
 #include "column.h"
 #include "text.h"
+#include "image.h"
 #include <QTest>
 
 Column::Column()
@@ -38,6 +39,11 @@ QString Column::getHtml(QDomElement col)
         {
             Text *t = new Text();
             html += t->getHtml(ele);
+        }
+        else if(ele.nodeName() == "Image")
+        {
+            Image *i = new Image();
+            html += i->getHtml(ele);
         }
         else
             qDebug() << "Undefined element " + ele.nodeName();

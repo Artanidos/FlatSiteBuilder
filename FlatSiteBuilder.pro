@@ -61,7 +61,10 @@ SOURCES += main.cpp\
     moduldialog.cpp \
     textdialog.cpp \
     texteditor.cpp \
-    animationlabel.cpp
+    animationlabel.cpp \
+    imageeditor.cpp \
+    abstracteditor.cpp \
+    imageselector.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -92,7 +95,10 @@ HEADERS  += mainwindow.h \
     moduldialog.h \
     textdialog.h \
     texteditor.h \
-    animationlabel.h
+    animationlabel.h \
+    imageeditor.h \
+    abstracteditor.h \
+    imageselector.h
 
 DISTFILES += \
     README.md \

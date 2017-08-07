@@ -58,7 +58,7 @@ void ColumnEditor::save(QDomDocument doc, QDomElement de)
     {
         ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
         if(ee)
-            ee->save(doc, col);
+            ee->save(col);
     }
     de.appendChild(col);
 }

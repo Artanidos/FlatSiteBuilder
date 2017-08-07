@@ -60,7 +60,6 @@ void Generator::generateSite(Site *site)
     QVariantList posts;
     foreach (Content *content, m_site->contents())
     {
-        qDebug() << "1" << content->source();
         if(content->contentType() == ContentType::Page)
             pages.append(QVariant::fromValue(content));
         else
@@ -89,7 +88,6 @@ void Generator::generateSite(Site *site)
             subdir = "posts";
 
         QDomDocument doc;
-        qDebug() << content->source();
         QFile file(m_site->path() + "/" + subdir + "/" + content->source());
         if (file.open(QIODevice::ReadOnly))
         {

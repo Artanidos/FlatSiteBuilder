@@ -22,6 +22,7 @@
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
 #include "texteditor.h"
+#include "imageeditor.h"
 #include "animationlabel.h"
 #include "pageeditor.h"
 #include "sectioneditor.h"
@@ -164,11 +165,8 @@ void ContentEditor::loadElements(QDomElement column, ColumnEditor *ce)
     while(!element.isNull())
     {
         ElementEditor *ee = new ElementEditor();
-        ee->setText(element.nodeName());
         ee->setMode(ElementEditor::Mode::Enabled);
-        QDomNode data = element.firstChild();
-        QDomCDATASection cdata = data.toCDATASection();
-        ee->setContent(cdata.data());
+        ee->setContent(element);
         ce->addElement(ee);
         element = element.nextSiblingElement();
     }
@@ -254,8 +252,25 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     QPixmap pixmapScroll(m_scroll->size());
     m_scroll->render(&pixmapScroll);
 
-    m_editor = new TextEditor();
-    m_editor->setContent(ee->content());
+    if(ee->type() == ElementEditor::Type::Text)
+    {
+        m_editor = new TextEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+    }
+    else if(ee->type() == ElementEditor::Type::Image)
+    {
+        m_editor = new ImageEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+    }
+    else if(ee->type() == ElementEditor::Type::Slider)
+    {
+        //m_editor = new ImageEditor();
+        // m_editor->setSite(m_site);
+        //m_editor->setContent(ee->content());
+        return;
+    }
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
 
     m_animationPanel = new QWidget();
