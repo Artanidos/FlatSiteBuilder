@@ -35,6 +35,7 @@
 #include <QTest>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
+#include <QDomNamedNodeMap>
 
 ElementEditor::ElementEditor()
 {
@@ -82,14 +83,34 @@ void ElementEditor::setContent(QDomElement content)
         m_type = Type::Image;
     else if(m_content.nodeName() == "Slider")
         m_type = Type::Slider;
-    m_text->setText(m_content.nodeName());
+    QString label = content.attribute("adminlabel", "");
+    if(label.isEmpty())
+        m_text->setText(m_content.nodeName());
+    else
+        m_text->setText(label);
 }
 
-void ElementEditor::save(QDomElement de)
+void ElementEditor::save(QDomDocument doc, QDomElement de)
 {
     if(m_mode == Mode::Enabled)
     {
-        de.appendChild(content().cloneNode().toElement());
+        QDomElement ele = content();
+        QDomElement e = doc.createElement(ele.nodeName());
+        if(ele.hasChildNodes())
+        {
+            QDomNode data = ele.firstChild();
+            QDomCDATASection cdata = data.toCDATASection();
+            e.appendChild(doc.createCDATASection(cdata.data()));
+        }
+        if(ele.hasAttribute("adminlabel"))
+            e.setAttribute("adminlabel", ele.attribute("adminlabel"));
+        if(ele.hasAttribute("alt"))
+            e.setAttribute("alt", ele.attribute("alt"));
+        if(ele.hasAttribute("title"))
+            e.setAttribute("title", ele.attribute("title"));
+        if(ele.hasAttribute("animation"))
+            e.setAttribute("animation", ele.attribute("animation"));
+        de.appendChild(e);
     }
 }
 

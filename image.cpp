@@ -31,8 +31,10 @@ QString Image::getHtml(QDomElement ele)
     QString source = ele.attribute("src");
     QString animation = ele.attribute("animation");
     QString url = source.mid(source.indexOf("assets/images/"));
+    QString alt = ele.attribute("alt", "");
+    QString title = ele.attribute("title", "");
     if(animation == "none")
-        return "<img class=\"img-responsive pull-left inner\" src=\"" + url + "\">";
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">";
     else
-        return "<img class=\"img-responsive appear-animation pull-left inner\" src=\"" + url + "\" data-animation=\"" + animation + "\">";
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive appear-animation pull-left inner\" src=\"" + url + "\" data-animation=\"" + animation + "\">";
 }

@@ -41,10 +41,13 @@ private slots:
     void cancel();
 
 private:
-    QString m_temp;
     QString m_animation;
     ImageSelector *m_image;
     QComboBox *m_animationCombo;
+    QLineEdit *m_source;
+    QLineEdit *m_alt;
+    QLineEdit *m_title;
+    QLineEdit *m_adminlabel;
 };
 
 #endif // IMAGEEDITOR_H

@@ -194,6 +194,9 @@ void ContentEditor::save()
         m_site->addContent(m_content);
     }
 
+    // create a versioned file prior to override the old file
+    QFile::copy(m_filename, m_filename + "." + QDate::currentDate().toString("yyyyddMM") + QTime::currentTime().toString("hhmmss"));
+
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {

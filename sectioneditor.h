@@ -40,6 +40,7 @@ public:
     void enableColumnAcceptDrop(bool mode);
     SectionEditor *clone();
     void save(QDomDocument doc, QDomElement de);
+    void setFullwidth(bool fw) {m_fullwidth = fw;}
 
 private slots:
     void addRow();

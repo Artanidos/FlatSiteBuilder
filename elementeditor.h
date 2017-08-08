@@ -45,7 +45,7 @@ public:
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
     Type type() {return m_type;}
-    void save(QDomElement de);
+    void save(QDomDocument doc, QDomElement de);
 
 public slots:
     void dropped();

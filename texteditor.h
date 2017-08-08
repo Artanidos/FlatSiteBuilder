@@ -23,6 +23,7 @@
 
 #include "abstracteditor.h"
 #include <QTextEdit>
+#include <QLineEdit>
 
 class TextEditor : public AbstractEditor
 {
@@ -40,6 +41,7 @@ private slots:
 
 private:
     QTextEdit *m_html;
+    QLineEdit *m_adminlabel;
 };
 
 #endif // TEXTEDITOR_H

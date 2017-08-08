@@ -32,20 +32,28 @@
 ImageEditor::ImageEditor()
     : AbstractEditor()
 {
-    m_temp = "";
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
     QPushButton *save = new QPushButton("Save and Exit");
     QPushButton *cancel = new QPushButton("Cancel");
     QHBoxLayout *hbox = new QHBoxLayout();
 
+    m_source = new QLineEdit();
+    m_alt = new QLineEdit();
+    m_alt->setMaximumWidth(200);
+    m_title = new QLineEdit();
+    m_title->setMaximumWidth(200);
+    m_adminlabel = new QLineEdit();
+    m_adminlabel->setMaximumWidth(200);
+    QPushButton *seek = new QPushButton("...");
+    seek->setMaximumWidth(50);
     QLabel *titleLabel = new QLabel("Image Module");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(16);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
     m_image = new ImageSelector();
-    m_image->setPixmap(QPixmap::fromImage(QImage(":/images/image_placeholder.png")));
+    m_image->setImage(QImage(":/images/image_placeholder.png"));
     QVBoxLayout *imageVBox = new QVBoxLayout();
     QHBoxLayout *imageHBox = new QHBoxLayout();
     imageHBox->addStretch();
@@ -86,14 +94,28 @@ ImageEditor::ImageEditor()
     m_animationCombo->addItem("Wobble","wobble");
     m_animationCombo->addItem("Wiggle","wiggle");
     grid->addWidget(titleLabel, 0, 0);
-    grid->addWidget(new QLabel("Animation"), 1, 0);
-    grid->addWidget(m_animationCombo, 2, 0);
-    grid->addLayout(imageVBox, 3, 0, 1, 3);
-    grid->addLayout(hbox, 4, 0, 1, 3);
+    grid->addWidget(new QLabel("Path"), 1, 0);
+    grid->addWidget(m_source, 2, 0, 1, 2);
+    grid->addWidget(seek, 2, 2);
+    grid->addWidget(new QLabel("Animation"), 3, 0);
+    grid->addWidget(m_animationCombo, 4, 0);
+    grid->addLayout(imageVBox, 5, 0, 1, 3);
+    grid->addWidget(new QLabel("Alt"), 6, 0);
+    grid->addWidget(m_alt, 7, 0);
+    grid->addWidget(new QLabel("Title"), 8, 0);
+    grid->addWidget(m_title, 9, 0);
+    grid->addWidget(new QLabel("Admin Label"), 10, 0);
+    grid->addWidget(m_adminlabel, 11, 0);
+    grid->addLayout(hbox, 12, 0, 1, 3);
     setLayout(grid);
 
     connect(m_animationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(contentChanged()));
+    connect(m_source, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_alt, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_image, SIGNAL(clicked()), this, SLOT(seek()));
+    connect(seek, SIGNAL(clicked()), this, SLOT(seek()));
     connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
 }
@@ -102,12 +124,15 @@ void ImageEditor::setContent(QDomElement element)
 {
     m_element = element;
     QString src = m_element.attribute("src", "");
-    m_temp = src;
+    m_source->setText(src);
     if(!src.isEmpty())
-        m_image->setPixmap(QPixmap::fromImage(QImage(src)));
+        m_image->setImage(QImage(src));
     QString anim = m_element.attribute("animation", "none");
     int index = m_animationCombo->findData(anim, Qt::UserRole);
     m_animationCombo->setCurrentIndex(index);
+    m_alt->setText(m_element.attribute("alt", ""));
+    m_title->setText(m_element.attribute("title", ""));
+    m_adminlabel->setText(m_element.attribute("adminlabel", ""));
 }
 
 void ImageEditor::seek()
@@ -127,9 +152,10 @@ void ImageEditor::seek()
         return;
 
     QFileInfo info(fileName);
-    m_temp = m_site->path() + "/assets/images/" + info.fileName();
-    QFile::copy(fileName, m_temp);
-    m_image->setPixmap(QPixmap::fromImage(QImage(m_temp)));
+    QString path = m_site->path() + "/assets/images/" + info.fileName();
+    m_source->setText(path);
+    QFile::copy(fileName, path);
+    m_image->setImage(QImage(path));
     contentChanged();
 }
 
@@ -142,8 +168,11 @@ void ImageEditor::save()
             QDomDocument doc;
             m_element = doc.createElement("Image");
         }
-        m_element.setAttribute("src", m_temp);
+        m_element.setAttribute("src", m_source->text());
         m_element.setAttribute("animation", m_animationCombo->currentData(Qt::UserRole).toString());
+        m_element.setAttribute("alt", m_alt->text());
+        m_element.setAttribute("title", m_title->text());
+        m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
     emit close(this);
 }

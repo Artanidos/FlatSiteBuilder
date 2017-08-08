@@ -21,20 +21,28 @@
 #ifndef IMAGESELECTOR_H
 #define IMAGESELECTOR_H
 
-#include <QLabel>
+#include <QWidget>
 
-class ImageSelector : public QLabel
+class ImageSelector : public QWidget
 {
     Q_OBJECT
 
 public:
     ImageSelector();
 
+    void paintEvent(QPaintEvent *ev);
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void setImage(QImage image);
+    QSize sizeHint() const;
 
 signals:
     void clicked();
+
+private:
+    QImage m_image;
+    qreal m_width;
+    qreal m_height;
 };
 
 #endif // IMAGESELECTOR_H

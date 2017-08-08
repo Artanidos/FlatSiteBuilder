@@ -20,10 +20,53 @@
 
 #include "imageselector.h"
 #include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QTest>
 
 ImageSelector::ImageSelector()
 {
     setCursor(Qt::PointingHandCursor);
+    m_width = 300;
+    m_height = 300;
+}
+
+QSize ImageSelector::sizeHint() const
+{
+    return QSize(m_width, m_height);
+}
+
+void ImageSelector::setImage(QImage image)
+{
+    m_image = image;
+    qreal w = image.width();
+    qreal h = image.height();
+
+    if(w > 300 || h > 300)
+    {
+        if(w > h)
+        {
+            m_width = 300;
+            m_height = 300.0 / w * h;
+        }
+        else if (h > w)
+        {
+            m_height = 300;
+            m_width = 300.0 / h * w;
+        }
+        else
+        {
+            m_width = 300;
+            m_height = 300;
+        }
+    }
+    else
+    {
+        m_width = w;
+        m_height = h;
+    }
+    updateGeometry();
+    update();
 }
 
 void ImageSelector::mousePressEvent(QMouseEvent *event)
@@ -35,4 +78,11 @@ void ImageSelector::mouseReleaseEvent(QMouseEvent *event)
 {
     event->accept();
     emit clicked();
+}
+
+void ImageSelector::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    painter.drawImage(QRectF(0, 0, m_width, m_height), m_image);
 }
