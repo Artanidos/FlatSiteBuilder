@@ -110,6 +110,8 @@ void ElementEditor::save(QDomDocument doc, QDomElement de)
             e.setAttribute("title", ele.attribute("title"));
         if(ele.hasAttribute("animation"))
             e.setAttribute("animation", ele.attribute("animation"));
+        if(ele.hasAttribute("src"))
+            e.setAttribute("src", ele.attribute("src"));
         de.appendChild(e);
     }
 }

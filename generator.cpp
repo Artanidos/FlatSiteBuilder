@@ -65,7 +65,17 @@ void Generator::generateSite(Site *site)
         else
             posts.append(QVariant::fromValue(content));
     }
-
+    QVariantMap menus;
+    foreach(Menu *menu, m_site->menus())
+    {
+        QVariantList items;
+        foreach(MenuItem *item, menu->items())
+        {
+            items.append(QVariant::fromValue(item));
+        }
+        menus[menu->name()] = items;
+    }
+    sitevars["menus"] = menus;
     sitevars["pages"] = pages;
     sitevars["posts"] = posts;
     sitevars["title"] = m_site->title();
@@ -119,6 +129,7 @@ void Generator::generateSite(Site *site)
                 pagevars["date"] = content->date();
                 pagevars["author"] = content->author();
                 pagevars["excerpt"] = content->excerpt();
+                pagevars["menu"] = content->menu();
 
                 globals.insert("page", pagevars);
 

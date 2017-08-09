@@ -54,7 +54,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_vbox = new QVBoxLayout();
     m_layout = new QGridLayout();
     m_save = new QPushButton();
-    m_save->setText(m_content ? "Update" : "Save");
+    m_save->setText(m_content->source().isEmpty() ? "Save" : "Update");
     m_save->setEnabled(false);
     m_save->setMaximumWidth(120);
     m_titleLabel = new QLabel();
@@ -94,12 +94,21 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         m_filename = m_site->path() + "/posts/" + m_content->source();
     }
 
-    load();
+    if(m_content->source().isEmpty())
+        init();
+    else
+        load();
 
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
+}
+
+void ContentEditor::init()
+{
+    PageEditor *pe = new PageEditor();
+    m_scroll->setWidget(pe);
 }
 
 void ContentEditor::load()

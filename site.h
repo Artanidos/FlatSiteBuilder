@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include "content.h"
+#include "menu.h"
 
 class Site : public QObject
 {
@@ -51,6 +52,8 @@ public:
     void addContent(Content *content) {m_contents.append(content);}
     void removeContent(Content *content) {m_contents.removeOne(content);}
 
+    QList<Menu *> menus() {return m_menus;}
+    void addMenu(Menu *menu) {m_menus.append(menu);}
     QString path() {return m_path;}
 
 private:
@@ -62,6 +65,7 @@ private:
     QString m_github;
     QString m_copyright;
     QList<Content *> m_contents;
+    QList<Menu *> m_menus;
 };
 
 #endif // SITE_H

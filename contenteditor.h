@@ -77,6 +77,7 @@ private:
     ElementEditor *m_elementEditor;
 
     void load();
+    void init();
     void loadRows(QDomElement section, SectionEditor *se);
     void loadColumns(QDomElement row, RowEditor *re);
     void loadElements(QDomElement column, ColumnEditor *ce);

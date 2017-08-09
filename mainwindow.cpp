@@ -45,6 +45,7 @@
 #include "expander.h"
 #include "site.h"
 #include "content.h"
+#include "menu.h"
 #include "dashboard.h"
 #include "contentlist.h"
 #include "contenteditor.h"
@@ -80,6 +81,7 @@ void MainWindow::initPython()
     PythonQt::self()->addSysPath("/usr/local/lib/python2.7/dist-packages/");
 
     PythonQt::self()->registerCPPClass("Content", "", "FlatSiteBuilder", PythonQtCreateObject<ContentWrapper>);
+    PythonQt::self()->registerCPPClass("MenuItem", "", "FlatSiteBuilder", PythonQtCreateObject<MenuItemWrapper>);
 
     m_context = PythonQt::self()->getMainModule();
     m_context.evalFile(":/python/python.py");
@@ -238,7 +240,7 @@ void MainWindow::loadProject(QString filename)
     }
     if (!doc.setContent(&file))
     {
-        qDebug() << "Unable to the Site content from XML";
+        qDebug() << "Unable to load the Site content from XML";
         file.close();
         return;
     }
@@ -265,6 +267,7 @@ void MainWindow::loadProject(QString filename)
         }
         p->setTitle(content.attribute("title"));
         p->setSource(content.attribute("source"));
+        p->setMenu(content.attribute("menu", "default"));
         p->setAuthor(content.attribute("author"));
         p->setLayout(content.attribute("layout", "default"));
         p->setDate(QDate::fromString(content.attribute("date"), "dd.MM.yyyy"));
@@ -272,6 +275,23 @@ void MainWindow::loadProject(QString filename)
         content = content.nextSiblingElement("Content");
     }
 
+    QDomElement menu = site.firstChildElement("Menu");
+    while(!menu.isNull())
+    {
+        Menu *m = new Menu();
+        m->setName(menu.attribute("name"));
+        QDomElement menuitem = menu.firstChildElement("Item");
+        while(!menuitem.isNull())
+        {
+            MenuItem *item = new MenuItem();
+            item->setTitle(menuitem.attribute("title"));
+            item->setUrl(menuitem.attribute("url"));
+            m->addMenuitem(item);
+            menuitem = menuitem.nextSiblingElement("Item");
+        }
+        m_site->addMenu(m);
+        menu = menu.nextSiblingElement("Menu");
+    }
     emit siteLoaded(m_site);
 }
 
@@ -298,12 +318,27 @@ void MainWindow::saveProject()
         c.setAttribute("type", content->contentType() == ContentType::Page ? "page" : "post");
         c.setAttribute("source", content->source());
         c.setAttribute("title", content->title());
+        c.setAttribute("menu", content->menu());
         c.setAttribute("author", content->author());
         c.setAttribute("layout", content->layout());
         if(content->contentType() == ContentType::Post)
             c.setAttribute("excerpt", content->excerpt());
         c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
         root.appendChild(c);
+    }
+
+    foreach(Menu *menu, m_site->menus())
+    {
+        QDomElement m = doc.createElement("Menu");
+        m.setAttribute("name", menu->name());
+        foreach(MenuItem *item, menu->items())
+        {
+            QDomElement i = doc.createElement("Item");
+            i.setAttribute("title", item->title());
+            i.setAttribute("url", item->url());
+            m.appendChild(i);
+        }
+        root.appendChild(m);
     }
 
     QTextStream stream(&file);
@@ -426,20 +461,24 @@ void MainWindow::previewSite(Content *content)
 void MainWindow::publishSite()
 {   
     qDebug() << "publish";
-    // initial
-    // cd /tmp
-    // git clone https://github.com/CrowdWare/web.git Crowdware
-    // cd Crowdware
+    // initial source
+    // cd ~/FlatSiteBuilder
+    // cd myproject
+    // git init
+    // git add .
+    // git commit -m "first commit"
+    // git remote add origin https://github.com/mycompany/myproject.git
+    // git push -u origin master
+
+    // initial website
+    // cd ~FlatSiteBuilder
+    // cd MyProject
+    // git init
     // git checkout --orphan gh-pages
-    // git remote add origin git@github.com:CrowdWare/web.git
-    // git rm -rf .
-    // echo "We are still working on it!" >> index.html
-    // git add index.html
-    // git commit -m "initial"
+    // git add .
+    // git commit -m "first commit"
+    // git remote add origin https://github.com/mycompany/myproject.git
     // git push origin gh-pages
-    // git branch -u origin/gh-pages
-    // then on github in settings change to gh-pages
-    // and add a public key to your settings
 
     // after
     // git clone -b gh-pages https://github.com/CrowdWare/web.git Crowdware
