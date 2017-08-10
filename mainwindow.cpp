@@ -106,12 +106,12 @@ void MainWindow::initGui()
     vbox->addStretch();
 
     QVBoxLayout *contentBox = new QVBoxLayout();
-    Hyperlink *postsButton = new Hyperlink("Posts");
     Hyperlink *pagesButton = new Hyperlink("Pages");
+    Hyperlink *postsButton = new Hyperlink("Posts");
     Hyperlink *categoriesButton = new Hyperlink("Categories");
     Hyperlink *tagsButton = new Hyperlink("Tags");
-    contentBox->addWidget(postsButton);
     contentBox->addWidget(pagesButton);
+    contentBox->addWidget(postsButton);
     contentBox->addWidget(categoriesButton);
     contentBox->addWidget(tagsButton);
     m_content->addLayout(contentBox);
@@ -152,7 +152,7 @@ void MainWindow::initGui()
     connect(pagesButton, SIGNAL(linkActivated(QString)), this, SLOT(showPages()));
     connect(postsButton, SIGNAL(linkActivated(QString)), this, SLOT(showPosts()));
     connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
-    connect(m_content, SIGNAL(clicked()), this, SLOT(showPosts()));
+    connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
 }
 
 void MainWindow::dashboardExpanded(bool value)
@@ -249,6 +249,7 @@ void MainWindow::loadProject(QString filename)
     QDomElement site = doc.documentElement();
 
     m_site->setTheme(site.attribute("theme", ""));
+    m_site->setThemeAccent(site.attribute("theme_accent", ""));
     m_site->setTitle(site.attribute("title", ""));
     m_site->setDescription(site.attribute("description", ""));
     m_site->setGithub(site.attribute("github", ""));
@@ -307,6 +308,7 @@ void MainWindow::saveProject()
     }
     root = doc.createElement("Site");
     root.setAttribute("theme", m_site->theme());
+    root.setAttribute("theme_accent", m_site->themeAccent());
     root.setAttribute("title", m_site->title());
     root.setAttribute("description", m_site->description());
     root.setAttribute("github", m_site->github());
@@ -451,10 +453,9 @@ void MainWindow::previewSite(Content *content)
     QString file;
     QString dir = QDir::homePath() + "/FlatSiteBuilder";
     QDir path(dir + "/" + m_site->title());
-    if(content)
-        file = content->url();
-    else
-        file = "index.html";
+    if(!content)
+        content = m_site->contents().at(0);
+    file = content->url();
     QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));
 }
 

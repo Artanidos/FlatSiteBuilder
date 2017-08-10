@@ -36,6 +36,9 @@ public:
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
 
+    QString themeAccent() {return m_themeAccent;}
+    void setThemeAccent(QString accent) {m_themeAccent = accent;}
+
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
@@ -60,6 +63,7 @@ private:
     QString m_filename;
     QString m_path;
     QString m_theme;
+    QString m_themeAccent;
     QString m_title;
     QString m_description;
     QString m_github;

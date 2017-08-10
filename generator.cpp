@@ -81,6 +81,7 @@ void Generator::generateSite(Site *site)
     sitevars["title"] = m_site->title();
     sitevars["description"] = m_site->description();
     sitevars["theme"] = m_site->theme();
+    sitevars["theme_accent"] = m_site->themeAccent();
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->path();
     globals.insert("site", sitevars);
