@@ -24,6 +24,9 @@ The syntax for the templates is based on Django.
     do something
 {% endif %}
 
+## Sample page
+Here is a sample page created with FlatSiteBuilder: https://crowdware.github.io/gradido/gradido.html
+
 ## Contact
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com
 
