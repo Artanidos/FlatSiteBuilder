@@ -1,6 +1,6 @@
 # FlatSiteBuilder
 
-![Image](FlatSiteBuilder_very_early.png)
+![Image](Screenshot.png)
 
 The desktop app is working as a content mangement system and is creating a flat file web content to use with github pages.
 
@@ -17,6 +17,12 @@ The syntax for the templates is based on Django.
 {% for page in pages %}
     {{ page.title }}
 {% endfor %}
+
+## Contitional
+
+{% if condition %}
+    do something
+{% endif %}
 
 ## Contact
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com

@@ -189,12 +189,12 @@ void ContentEditor::save()
         if(m_content->contentType() == ContentType::Page)
         {
             m_content->setLayout("default");
-            m_filename = m_site->path() + "/pages/" + m_title->text().toLower() + ".html";
+            m_filename = m_site->path() + "/pages/" + m_title->text().toLower() + ".xml";
         }
         else // TODO: real date here
         {
             m_content->setLayout("post");
-            m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".html";
+            m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".xml";
         }
         // TODO: real author here
         m_content->setAuthor("Olaf Japp");

@@ -118,7 +118,6 @@ DISTFILES += \
     python/python.py \
     testsite/Site.xml \
     themes/default/layouts/post.html \
-    test.js \
     testsite/pages/index.xml \
     testsite/posts/hello.xml \
     testsite/pages/about.xml \

@@ -7,8 +7,15 @@ Features
 - support all 12 columns from bootstrap
     maybe resize column
 	editor where the columns can be selected
-
-
+- menu editor
+- theme editor (change colors, fonts and other styles)
+- ability to create and load plugins
+- media page
+- setting page
+- create new site
+- write a translator in C++ to leave python behind
+- test on windows
+- test and approve gitting
 
 Bugs
 ----
