@@ -140,7 +140,7 @@ void ImageEditor::seek()
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("Images (*.png)(*.gif)(*.jpg);;All (*)"));
+    dialog->setNameFilter(tr("Images (*.png *.gif *.jpg);;All (*)"));
     dialog->setWindowTitle(tr("Load Image"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);

@@ -464,7 +464,7 @@ void MainWindow::publishSite()
     qDebug() << "publish";
     // initial source
     // cd ~/FlatSiteBuilder
-    // cd myproject
+    // cd sources/myproject
     // git init
     // git add .
     // git commit -m "first commit"
@@ -482,7 +482,8 @@ void MainWindow::publishSite()
     // git push origin gh-pages
 
     // after
-    // git clone -b gh-pages https://github.com/CrowdWare/web.git Crowdware
+    // cd ~FlatSiteBuilder
+    // git clone -b gh-pages https://github.com/CrowdWare/web.git MyProject
 
     QString path = QDir::homePath() + "/FlatSiteBuilder" + "/" + m_site->title();
     runCommand("git add .", path);

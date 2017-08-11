@@ -1,5 +1,5 @@
-<Site theme="atropos" description="" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." title="FlatSiteBuilder">
- <Content source="index.xml" layout="default" author="Olaf Japp" type="page" menu="mainmenu" title="Index" date="11.08.2017"/>
+<Site copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." title="FlatSiteBuilder" theme="atropos" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" description="">
+ <Content author="Olaf Japp" type="page" title="Index" layout="default" date="11.08.2017" source="index.xml" menu="mainmenu"/>
  <Menu name="mainmenu">
   <Item url="#wrapper" title="Home"/>
   <Item url="#slides" title="Slides"/>

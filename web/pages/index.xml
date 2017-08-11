@@ -36,6 +36,24 @@
    </Column>
   </Row>
   <Row>
+   <Column span="4">
+    <Image adminlabel="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" title="" alt="" animation="fadeInLeft"/>
+   </Column>
+   <Column span="8">
+    <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
+<p class="lead">The FlatSiteBuilder is a very easy to use content management system and content creation tool running as a desktop application on Linux.</p>
+<p class="lead">It is also planned to release versions for Windows and Mac OS.</p>]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="12">
+    <Text adminlabel="Divider"><![CDATA[<!-- divider -->
+<div class="divider styleColor">
+	<i class="fa fa-leaf"></i>
+</div>]]></Text>
+   </Column>
+  </Row>
+  <Row>
    <Column span="3">
     <Text adminlabel="Fatests CMS"><![CDATA[<div class="featured-box nobg border-only">
 	<div class="box-content">
