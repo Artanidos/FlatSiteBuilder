@@ -1,0 +1,11 @@
+<!-- Top Nav -->
+<div class="navbar-collapse nav-main-collapse collapse pull-right">
+	<nav class="nav-main mega-menu">
+		<ul class="nav nav-pills nav-main scroll-menu" id="topMain">
+			{% for item in site.menus[page.menu] %}
+				<li><a class="scrollTo" href="{{ item.url() }}">{{ item.title() }}</a></li>
+			{% endfor %}
+		</ul>
+	</nav>
+</div>
+<!-- Top Nav end -->
