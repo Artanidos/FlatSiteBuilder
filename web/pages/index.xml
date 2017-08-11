@@ -1,0 +1,111 @@
+<Post>
+ <Section fullwidth="true">
+  <Row>
+   <Column span="12">
+    <Text adminlabel="Slider"><![CDATA[<!-- REVOLUTION SLIDER -->
+<div class="fullwidthbanner-container roundedcorners">
+	<div class="fullwidthbanner">
+		<ul>	
+			<!-- SLIDE -->
+			<li data-transition="incube-horizontal" data-slotamount="5" data-masterspeed="700" >
+				<img src="assets/images/tagcloud.png" alt="" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+			</li>
+		</ul>
+		<div class="tp-bannertimer"></div>
+	</div>
+	</div>
+<!-- /REVOLUTION SLIDER -->]]></Text>
+   </Column>
+  </Row>
+ </Section>
+ <Section>
+  <Row>
+   <Column span="12">
+    <Text adminlabel="Welcome"><![CDATA[<!-- welcome -->
+<h1>
+	<strong>Welcome</strong> to {{ site.title }}
+	<span class="subtitle">Good to see you here.</span>
+</h1>
+<p class="lead">Did you knew that you are able to host your project website on Github-Pages for free?</p>
+<p class="lead">And the FlatSiteBuilder is our solution to create amazing web content.</p>
+<!-- welcome (end) -->
+<!-- divider -->
+<div class="divider styleColor">
+	<i class="fa fa-leaf"></i>
+</div>]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="3">
+    <Text adminlabel="Fatests CMS"><![CDATA[<div class="featured-box nobg border-only">
+	<div class="box-content">
+		<i class="fa fa-thumbs-up"></i>
+		<h4>Fatest CMS</h4>
+		<p>Because of the fact the FlatSiteBuilder only creates flat HTML files it is therefore the fatest CMS available.</p>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3">
+    <Text adminlabel="Easiest to use"><![CDATA[<div class="featured-box nobg border-only">
+	<div class="box-content">
+		<i class="fa fa-thumbs-up"></i>
+		<h4>Easiest CMS</h4>
+		<p>Because of the fact that FlatSiteBuilder runs on the desktop it is therefore one of the easiest to use CMS avaiable.</p>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3">
+    <Text adminlabel="Safest CMS"><![CDATA[<div class="featured-box nobg border-only">
+	<div class="box-content">
+		<i class="fa fa-thumbs-up"></i>
+		<h4>Safest CMS</h4>
+		<p>Because of the fact that we use github as version control for the content, FlatSiteBuilder is therefore the safest CMS available.</p>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3">
+    <Text adminlabel="Cheapest CMS"><![CDATA[<div class="featured-box nobg border-only">
+	<div class="box-content">
+		<i class="fa fa-thumbs-up"></i>
+		<h4>Cheapest CMS</h4>
+		<p>Because of the fact that hosting on github pages is free, FlatSiteBuilder is therefore the cheapest CMS available.</p>
+	</div>
+</div>]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="12">
+    <Text adminlabel="Divider"><![CDATA[<!-- divider -->
+<div class="divider styleColor">
+	<i class="fa fa-leaf"></i>
+</div>
+<div id="slides" class="margin-top100"/>
+]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="4">
+    <Text adminlabel=""><![CDATA[<h3><strong>Preview</strong></h3>
+<p class="lead">Here are sample preview pictures of the FlatSiteBuilder in action.</p>
+<p class="lead">FlatSiteBuilder is still under development.</p>]]></Text>
+   </Column>
+   <Column span="8">
+    <Text adminlabel="Slider"><![CDATA[<div class="owl-carousel controlls-over" data-plugin-options='{"items": 1, "singleItem": true, "navigation": false, "pagination": false, "transitionStyle":"fadeUp", "autoPlay": true}'>
+	<div>
+		<img alt="" class="img-responsive" src="assets/images/Editor.png">
+	</div>
+	<div>
+		<img alt="" class="img-responsive" src="assets/images/Layout.png">
+	</div>
+	<div>
+		<img alt="" class="img-responsive" src="assets/images/Columns.png">
+	</div>
+	<div>
+		<img alt="" class="img-responsive" src="assets/images/Modules.png">
+	</div>
+</div>
+]]></Text>
+   </Column>
+  </Row>
+ </Section>
+</Post>

@@ -198,7 +198,7 @@ void ContentEditor::save()
         }
         // TODO: real author here
         m_content->setAuthor("Olaf Japp");
-        m_content->setSource(m_title->text().toLower() + ".html");
+        m_content->setSource(m_title->text().toLower() + ".xml");
         m_content->setDate(QDate());   
         m_site->addContent(m_content);
     }
