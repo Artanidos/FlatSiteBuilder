@@ -18,78 +18,74 @@
 **
 ****************************************************************************/
 
-#include "slidereditor.h"
+#include "rowpropertyeditor.h"
+
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
-#include <QListWidget>
-#include <QHeaderView>
 
-SliderEditor::SliderEditor()
+RowPropertyEditor::RowPropertyEditor()
     : AbstractEditor()
 {
-    m_list = new QTableWidget(0, 2, this);
-    m_list->verticalHeader()->hide();
-    m_list->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch );
-    m_list->setToolTip("Double click to edit item");
-    QStringList labels;
-    labels << "" << "Name";
-    m_list->setHorizontalHeaderLabels(labels);
+    m_grid = new QGridLayout();
+    m_grid->setMargin(0);
 
-    QGridLayout *grid = new QGridLayout();
-    grid->setMargin(0);
-    QPushButton *addSlide = new QPushButton("Add Slide");
-    addSlide->setMaximumWidth(120);
-    m_deleteButton = new QPushButton();
-    m_deleteButton->setText("Delete");
-    m_deleteButton->setMaximumWidth(120);
-    m_deleteButton->setEnabled(false);
-    m_deleteButton->setToolTip("Delete all marked items");
+    m_cssclass = new QLineEdit();
+
     QPushButton *save = new QPushButton("Save and Exit");
     QPushButton *cancel = new QPushButton("Cancel");
     QHBoxLayout *hbox = new QHBoxLayout();
-    QLabel *titleLabel = new QLabel("Slider Module");
+
+    QLabel *titleLabel = new QLabel("Row Module Settings");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(16);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
+
+    QVBoxLayout *vbox = new QVBoxLayout();
+    vbox->addStretch();
     hbox->addStretch();
     hbox->addWidget(save);
     hbox->addWidget(cancel);
-    grid->addWidget(titleLabel, 0, 0);
-    grid->addWidget(addSlide, 1, 0);
-    grid->addWidget(m_list, 2, 0, 1, 3);
-    grid->addWidget(m_deleteButton, 3, 0);
-    grid->addLayout(hbox, 4, 0, 1, 3);
-    setLayout(grid);
+    m_grid->addWidget(titleLabel, 0, 0);
+    m_grid->addWidget(new QLabel("CSS Class"), 1, 0);
+    m_grid->addWidget(m_cssclass, 2, 0);
+    m_grid->addLayout(vbox, 3, 0);
+    m_grid->addLayout(hbox, 4, 0);
+    setLayout(m_grid);
 
     connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
-void SliderEditor::setContent(QDomElement element)
+RowPropertyEditor::~RowPropertyEditor()
 {
-    m_element = element;
+    delete m_grid;
 }
 
-void SliderEditor::save()
+void RowPropertyEditor::save()
 {
     if(m_changed)
     {
         if(m_element.isNull())
         {
-            m_element = m_doc.createElement("Slider");
+            m_element = m_doc.createElement("Row");
         }
-        //m_element.setAttribute("src", m_temp);
-        //m_element.setAttribute("animation", m_animationCombo->currentData(Qt::UserRole).toString());
+        m_element.setAttribute("cssclass", m_cssclass->text());
     }
     emit close(this);
 }
 
-void SliderEditor::cancel()
+void RowPropertyEditor::cancel()
 {
     m_changed = false;
     emit close(this);
+}
+
+void RowPropertyEditor::setContent(QDomElement element)
+{
+    m_element = element;
+    m_cssclass->setText(m_element.attribute("cssclass", ""));
+    m_changed = false;
 }

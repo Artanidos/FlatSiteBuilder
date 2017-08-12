@@ -269,6 +269,7 @@ void MainWindow::loadProject(QString filename)
         p->setTitle(content.attribute("title"));
         p->setSource(content.attribute("source"));
         p->setMenu(content.attribute("menu", "default"));
+        p->setLogo(content.attribute("logo", "logo.png"));
         p->setAuthor(content.attribute("author"));
         p->setLayout(content.attribute("layout", "default"));
         p->setDate(QDate::fromString(content.attribute("date"), "dd.MM.yyyy"));
@@ -321,6 +322,7 @@ void MainWindow::saveProject()
         c.setAttribute("source", content->source());
         c.setAttribute("title", content->title());
         c.setAttribute("menu", content->menu());
+        c.setAttribute("logo", content->logo());
         c.setAttribute("author", content->author());
         c.setAttribute("layout", content->layout());
         if(content->contentType() == ContentType::Post)

@@ -39,6 +39,9 @@ public:
     void addColumn(ColumnEditor *, int column);
     RowEditor* clone();
     void save(QDomDocument doc, QDomElement de);
+    void setContent(QDomElement row);
+    QDomElement content();
+    void setCssClass(QString cls) {m_cssclass = cls;}
 
 signals:
     void beginDrag();
@@ -57,6 +60,8 @@ private:
     FlatButton *m_copyButton;
     FlatButton *m_closeButton;
     Hyperlink *m_addColumns;
+    QString m_cssclass;
+    QDomDocument m_doc;
 
     ContentEditor* getContentEditor();
 };

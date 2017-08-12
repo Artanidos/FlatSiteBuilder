@@ -95,6 +95,7 @@ void ColumnEditor::addElement(ElementEditor *ee)
 ColumnEditor* ColumnEditor::clone()
 {
     ColumnEditor *nce = new ColumnEditor();
+    nce->setSpan(m_span);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());

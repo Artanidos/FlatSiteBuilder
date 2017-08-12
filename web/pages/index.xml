@@ -29,15 +29,12 @@
 <p class="lead">Did you knew that you are able to host your project website on Github-Pages for free?</p>
 <p class="lead">And the FlatSiteBuilder is our solution to create amazing web content.</p>
 <!-- welcome (end) -->
-<!-- divider -->
-<div class="divider styleColor">
-	<i class="fa fa-leaf"></i>
-</div>]]></Text>
+<div class="divider styleColor"/>]]></Text>
    </Column>
   </Row>
   <Row>
    <Column span="4">
-    <Image adminlabel="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" title="" alt="" animation="fadeInLeft"/>
+    <Image title="" animation="fadeInLeft" adminlabel="" alt="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png"/>
    </Column>
    <Column span="8">
     <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
@@ -47,10 +44,7 @@
   </Row>
   <Row>
    <Column span="12">
-    <Text adminlabel="Divider"><![CDATA[<!-- divider -->
-<div class="divider styleColor">
-	<i class="fa fa-leaf"></i>
-</div>]]></Text>
+    <Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text>
    </Column>
   </Row>
   <Row>
@@ -93,10 +87,7 @@
   </Row>
   <Row>
    <Column span="12">
-    <Text adminlabel="Divider"><![CDATA[<!-- divider -->
-<div class="divider styleColor">
-	<i class="fa fa-leaf"></i>
-</div>
+    <Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>
 <div id="slides" class="margin-top100"/>
 ]]></Text>
    </Column>

@@ -27,6 +27,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QStandardPaths>
 #include <QTest>
 
 ImageEditor::ImageEditor()
@@ -144,7 +145,7 @@ void ImageEditor::seek()
     dialog->setWindowTitle(tr("Load Image"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    //dialog->setDirectory(m_defaultPath);
+    dialog->setDirectory(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
     if(dialog->exec())
         fileName = dialog->selectedFiles().first();
     delete dialog;
@@ -165,8 +166,7 @@ void ImageEditor::save()
     {
         if(m_element.isNull())
         {
-            QDomDocument doc;
-            m_element = doc.createElement("Image");
+            m_element = m_doc.createElement("Image");
         }
         m_element.setAttribute("src", m_source->text());
         m_element.setAttribute("animation", m_animationCombo->currentData(Qt::UserRole).toString());

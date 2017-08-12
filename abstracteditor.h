@@ -30,6 +30,7 @@ class AbstractEditor : public QWidget
 
 public:
     AbstractEditor();
+    ~AbstractEditor();
 
     void setSite(Site *site) {m_site = site;}
     bool changed() {return m_changed;}
@@ -43,6 +44,7 @@ public slots:
     void contentChanged() {m_changed = true;}
 
 protected:
+    QDomDocument m_doc;
     QDomElement m_element;
     bool m_changed;
     Site *m_site;

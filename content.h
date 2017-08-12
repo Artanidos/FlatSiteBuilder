@@ -41,6 +41,8 @@ public:
     QString menu() {return m_menu;}
     void setMenu(QString menu) {m_menu = menu;}
 
+    QString logo() {return m_logo;}
+    void setLogo(QString logo) {m_logo = logo;}
 
     QString source() {return m_source;}
     void setSource(QString source) {m_source = source;}
@@ -73,6 +75,7 @@ private:
     QString m_author;
     QString m_excerpt;
     QString m_menu;
+    QString m_logo;
     QList<Section *> m_sections;
     ContentType m_type;
     QDate m_date;
@@ -85,6 +88,7 @@ class ContentWrapper : public QObject
 
 public Q_SLOTS:
     QString url(Content *o) {return o->url();}
+    QString logo(Content *o) {return o->logo();}
     QString title(Content *o) {return o->title();}
     QString menu(Content *o) {return o->menu();}
     QString date(Content *o) {return o->date().toString("dd.MM.yyyy");}

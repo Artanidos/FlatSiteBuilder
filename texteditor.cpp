@@ -79,9 +79,8 @@ void TextEditor::save()
     {
         if(m_element.isNull())
         {
-            QDomDocument doc;
-            m_element = doc.createElement("Text");
-            m_element.appendChild(doc.createCDATASection(m_html->toPlainText()));
+            m_element = m_doc.createElement("Text");
+            m_element.appendChild(m_doc.createCDATASection(m_html->toPlainText()));
         }
         else
         {
@@ -107,4 +106,5 @@ void TextEditor::setContent(QDomElement element)
     QDomNode data = m_element.firstChild();
     QDomCDATASection cdata = data.toCDATASection();
     m_html->setPlainText(cdata.data());
+    m_changed = false;
 }

@@ -1,8 +1,8 @@
-<Site copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." title="FlatSiteBuilder" theme="atropos" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" description="">
- <Content author="Olaf Japp" type="page" title="Index" layout="default" date="11.08.2017" source="index.xml" menu="mainmenu"/>
+<Site title="FlatSiteBuilder" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" theme="atropos" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." description="">
+ <Content title="Index" layout="default" date="11.08.2017" type="page" menu="mainmenu" source="index.xml" author="Olaf Japp"/>
  <Menu name="mainmenu">
-  <Item url="#wrapper" title="Home"/>
-  <Item url="#slides" title="Slides"/>
-  <Item url="#contact" title="Contact"/>
+  <Item title="Home" url="#wrapper"/>
+  <Item title="Slides" url="#slides"/>
+  <Item title="Contact" url="#contact"/>
  </Menu>
 </Site>

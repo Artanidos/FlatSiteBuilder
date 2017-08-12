@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     slidereditor.cpp \
     slider.cpp \
     menu.cpp \
-    menuitem.cpp
+    menuitem.cpp \
+    rowpropertyeditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -106,7 +107,8 @@ HEADERS  += mainwindow.h \
     slidereditor.h \
     slider.h \
     menu.h \
-    menuitem.h
+    menuitem.h \
+    rowpropertyeditor.h
 
 DISTFILES += \
     README.md \

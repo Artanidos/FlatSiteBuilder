@@ -28,7 +28,6 @@
 #include "pageeditor.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
-#include "elementeditor.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QTextEdit>
@@ -148,6 +147,7 @@ void ContentEditor::loadRows(QDomElement section, SectionEditor *se)
     while(!row.isNull())
     {
         RowEditor *re = new RowEditor();
+        re->setCssClass(row.attribute("cssclass"));
         se->addRow(re);
         loadColumns(row, re);
         row = row.nextSiblingElement("Row");
@@ -251,40 +251,8 @@ void ContentEditor::preview()
     emit preview(m_content);
 }
 
-void ContentEditor::elementEdit(ElementEditor *ee)
+void ContentEditor::animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixmap pixmapScroll)
 {
-    m_elementEditor = ee;
-
-    QPoint pos = ee->mapTo(m_scroll, ee->pos());
-
-    // make screenprint from elementeditor
-    QPixmap pixmapEe(ee->size());
-    ee->render(&pixmapEe);
-
-    // make screenprint from scrollarea
-    QPixmap pixmapScroll(m_scroll->size());
-    m_scroll->render(&pixmapScroll);
-
-    if(ee->type() == ElementEditor::Type::Text)
-    {
-        m_editor = new TextEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
-    else if(ee->type() == ElementEditor::Type::Image)
-    {
-        m_editor = new ImageEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
-    else if(ee->type() == ElementEditor::Type::Slider)
-    {
-        m_editor = new SliderEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
-    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
-
     m_animationPanel = new QWidget();
     QLabel *scroll = new QLabel();
     scroll->setPixmap(pixmapScroll);
@@ -320,20 +288,91 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     m_animationgroup->addAnimation(animy);
     QPropertyAnimation *animw = new QPropertyAnimation();
     animw->setDuration(300);
-    animw->setStartValue(ee->size().width());
+    animw->setStartValue(widget->size().width());
     animw->setEndValue(m_scroll->size().width());
     animw->setTargetObject(anim);
     animw->setPropertyName("width");
     m_animationgroup->addAnimation(animw);
     QPropertyAnimation *animh = new QPropertyAnimation();
     animh->setDuration(300);
-    animh->setStartValue(ee->size().height());
+    animh->setStartValue(widget->size().height());
     animh->setEndValue(m_scroll->size().height());
     animh->setTargetObject(anim);
     animh->setPropertyName("height");
     m_animationgroup->addAnimation(animh);
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
     m_animationgroup->start();
+}
+
+void ContentEditor::rowEdit(RowEditor *re)
+{
+    m_rowEditor = re;
+    QPoint pos = re->mapTo(m_scroll, re->pos());
+
+    // make screenprint from elementeditor
+    QPixmap pixmapRe(re->size());
+    re->render(&pixmapRe);
+
+    // make screenprint from scrollarea
+    QPixmap pixmapScroll(m_scroll->size());
+    m_scroll->render(&pixmapScroll);
+
+    m_editor = new RowPropertyEditor();
+    m_editor->setContent(re->content());
+    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(rowEditorClose(QWidget*)));
+
+    animate(re, pixmapRe, pos, pixmapScroll);
+
+    /*
+    m_layout->replaceWidget(m_scroll, m_rowPropertyEditor);
+    m_scroll->hide();
+
+    m_title->hide();
+    m_save->hide();
+    m_previewLink->hide();
+    if(m_content->contentType() == ContentType::Post)
+    {
+        m_excerptLabel->hide();
+        m_excerpt->hide();
+    }
+    */
+}
+
+void ContentEditor::elementEdit(ElementEditor *ee)
+{
+    m_elementEditor = ee;
+
+    QPoint pos = ee->mapTo(m_scroll, ee->pos());
+
+    // make screenprint from elementeditor
+    QPixmap pixmapEe(ee->size());
+    ee->render(&pixmapEe);
+
+    // make screenprint from scrollarea
+    QPixmap pixmapScroll(m_scroll->size());
+    m_scroll->render(&pixmapScroll);
+
+    if(ee->type() == ElementEditor::Type::Text)
+    {
+        m_editor = new TextEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+    }
+    else if(ee->type() == ElementEditor::Type::Image)
+    {
+        m_editor = new ImageEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+    }
+    else if(ee->type() == ElementEditor::Type::Slider)
+    {
+        m_editor = new SliderEditor();
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+    }
+    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
+
+    animate(ee, pixmapEe, pos, pixmapScroll);
 }
 
 void ContentEditor::animationFineshedZoomIn()
@@ -348,6 +387,30 @@ void ContentEditor::animationFineshedZoomIn()
         m_excerptLabel->hide();
         m_excerpt->hide();
     }
+}
+
+void ContentEditor::rowEditorClose(QWidget *w)
+{
+    if(m_editor->changed())
+    {
+        editChanged();
+        m_rowEditor->setContent(m_editor->content());
+    }
+    m_title->show();
+    m_save->show();
+    m_previewLink->show();
+    if(m_content->contentType() == ContentType::Post)
+    {
+        m_excerptLabel->show();
+        m_excerpt->show();
+    }
+    m_layout->replaceWidget(w, m_animationPanel);
+    m_animationPanel->show();
+    delete w;
+    m_animationgroup->setDirection(QAbstractAnimation::Backward);
+    disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
+    m_animationgroup->start();
 }
 
 void ContentEditor::editorClose(QWidget *w)

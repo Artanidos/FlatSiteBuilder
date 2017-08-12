@@ -74,6 +74,7 @@ RowEditor::RowEditor(bool clone)
 void RowEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement row = doc.createElement("Row");
+    row.setAttribute("cssclass", m_cssclass);
     de.appendChild(row);
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -98,7 +99,9 @@ void RowEditor::copy()
 
 void RowEditor::edit()
 {
-    qDebug() << "edit";
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->rowEdit(this);;
 }
 
 void RowEditor::addColumns()
@@ -248,7 +251,8 @@ void RowEditor::addColumn(ColumnEditor *ce, int column)
 
 RowEditor* RowEditor::clone()
 {
-    RowEditor * nre = new RowEditor(true);
+    RowEditor *nre = new RowEditor(true);
+    nre->setCssClass(m_cssclass);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ColumnEditor *ce = dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget());
@@ -318,4 +322,16 @@ ContentEditor* RowEditor::getContentEditor()
         }
     }
     return NULL;
+}
+
+void RowEditor::setContent(QDomElement row)
+{
+    m_cssclass = row.attribute("cssclass");
+}
+
+QDomElement RowEditor::content()
+{
+    QDomElement row = m_doc.createElement("Row");
+    row.setAttribute("cssclass", m_cssclass);
+    return row;
 }

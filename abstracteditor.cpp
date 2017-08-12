@@ -24,3 +24,8 @@ AbstractEditor::AbstractEditor()
 {
     m_changed = false;
 }
+
+AbstractEditor::~AbstractEditor()
+{
+
+}

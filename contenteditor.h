@@ -33,6 +33,7 @@
 #include "site.h"
 #include "texteditor.h"
 #include "sectioneditor.h"
+#include "rowpropertyeditor.h"
 
 class ContentEditor : public QWidget
 {
@@ -42,6 +43,7 @@ public:
     ContentEditor(Site *site, Content *content = NULL);
 
     void elementEdit(ElementEditor *);
+    void rowEdit(RowEditor *);
 
 public slots:
     void editChanged();
@@ -50,6 +52,7 @@ private slots:
     void save();
     void preview();
     void editorClose(QWidget *);
+    void rowEditorClose(QWidget *);
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
 
@@ -75,12 +78,14 @@ private:
     AbstractEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     ElementEditor *m_elementEditor;
+    RowEditor *m_rowEditor;
 
     void load();
     void init();
     void loadRows(QDomElement section, SectionEditor *se);
     void loadColumns(QDomElement row, RowEditor *re);
     void loadElements(QDomElement column, ColumnEditor *ce);
+    void animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixmap pixmapScroll);
 };
 
 #endif // CONTENTEDITOR_H

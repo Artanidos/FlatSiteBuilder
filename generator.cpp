@@ -131,6 +131,7 @@ void Generator::generateSite(Site *site)
                 pagevars["author"] = content->author();
                 pagevars["excerpt"] = content->excerpt();
                 pagevars["menu"] = content->menu();
+                pagevars["logo"] = content->logo();
 
                 globals.insert("page", pagevars);
 

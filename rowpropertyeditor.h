@@ -18,24 +18,31 @@
 **
 ****************************************************************************/
 
-#include "row.h"
-#include "column.h"
+#ifndef ROWPROPERTYEDITOR_H
+#define ROWPROPERTYEDITOR_H
 
-Row::Row()
+#include "abstracteditor.h"
+#include <QLineEdit>
+#include <QGridLayout>
+
+class RowPropertyEditor : public AbstractEditor
 {
+    Q_OBJECT
 
-}
+public:
+    RowPropertyEditor();
+    ~RowPropertyEditor();
 
-QString Row::getHtml(QDomElement row)
-{
-    QString cls = row.attribute("cssclass");
-    QString html = "<div class=\"row" + (cls.isEmpty() ? "" : " " + cls) + "\">\n";
-    QDomElement col = row.firstChildElement("Column");
-    while(!col.isNull())
-    {
-        Column *c = new Column();
-        html += c->getHtml(col);
-        col = col.nextSiblingElement("Column");
-    }
-    return html + "\n</div>\n";
-}
+    void setContent(QDomElement ele);
+    QDomElement content() {return m_element;}
+
+private slots:
+    void save();
+    void cancel();
+
+private:
+    QLineEdit *m_cssclass;
+    QGridLayout *m_grid;
+};
+
+#endif // ROWPROPERTYEDITOR_H
