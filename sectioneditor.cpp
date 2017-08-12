@@ -60,7 +60,7 @@ SectionEditor::SectionEditor(bool fullwidth)
     layout->addLayout(vboxRight);
     setLayout(layout);
 
-    connect(addRow, SIGNAL(linkActivated(QString)), this, SLOT(addRow()));
+    connect(addRow, SIGNAL(clicked()), this, SLOT(addRow()));
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
     connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
@@ -69,6 +69,12 @@ SectionEditor::SectionEditor(bool fullwidth)
 void SectionEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement section = doc.createElement("Section");
+    if(!m_cssclass.isEmpty())
+        section.setAttribute("cssclass", m_cssclass);
+    if(!m_style.isEmpty())
+        section.setAttribute("style", m_style);
+    if(!m_attributes.isEmpty())
+        section.setAttribute("attributes", m_attributes);
     if(m_fullwidth)
         section.setAttribute("fullwidth", "true");
     de.appendChild(section);
@@ -132,12 +138,15 @@ void SectionEditor::copy()
 
 void SectionEditor::edit()
 {
-    qDebug() << "edit";
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->sectionEdit(this);
 }
 
 SectionEditor *SectionEditor::clone()
 {
     SectionEditor *ne = new SectionEditor();
+    ne->setCssClass(m_cssclass);
     ne->setFullwidth(m_fullwidth);
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -313,4 +322,20 @@ ContentEditor* SectionEditor::getContentEditor()
     }
 
     return NULL;
+}
+
+void SectionEditor::setContent(QDomElement section)
+{
+    m_cssclass = section.attribute("cssclass");
+    m_style = section.attribute("style");
+    m_attributes = section.attribute("attributes");
+}
+
+QDomElement SectionEditor::content()
+{
+    QDomElement section = m_doc.createElement("Section");
+    section.setAttribute("cssclass", m_cssclass);
+    section.setAttribute("style", m_style);
+    section.setAttribute("attributes", m_attributes);
+    return section;
 }

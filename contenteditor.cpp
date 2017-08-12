@@ -101,7 +101,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
     connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    connect(m_previewLink, SIGNAL(linkActivated(QString)), this, SLOT(preview()));
+    connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
 }
 
 void ContentEditor::init()
@@ -135,6 +135,9 @@ void ContentEditor::load()
     {
         QString fw = section.attribute("fullwidth", "false");
         SectionEditor *se = new SectionEditor(fw == "true");
+        se->setCssClass(section.attribute("cssclass"));
+        se->setStyle(section.attribute("style"));
+        se->setAttributes(section.attribute("attributes"));
         pe->addSection(se);
         loadRows(section, se);
         section = section.nextSiblingElement("Section");
@@ -251,7 +254,7 @@ void ContentEditor::preview()
     emit preview(m_content);
 }
 
-void ContentEditor::animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixmap pixmapScroll)
+void ContentEditor::animate(QWidget *widget, QPixmap pixmap, QPoint pos, QPixmap pixmapScroll)
 {
     m_animationPanel = new QWidget();
     QLabel *scroll = new QLabel();
@@ -259,7 +262,7 @@ void ContentEditor::animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixm
     scroll->setParent(m_animationPanel);
     scroll->move(0, 0);
     AnimationLabel *anim = new AnimationLabel();
-    anim->setPixmap(pixmapEe);
+    anim->setPixmap(pixmap);
     anim->setAlignment(Qt::AlignTop);
     anim->setAutoFillBackground(true);
     QPalette pal = palette();
@@ -304,12 +307,32 @@ void ContentEditor::animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixm
     m_animationgroup->start();
 }
 
+void ContentEditor::sectionEdit(SectionEditor *se)
+{
+    m_sectionEditor = se;
+    QPoint pos = se->mapTo(m_scroll, se->pos());
+
+    // make screenprint from editor
+    QPixmap pixmapSe(se->size());
+    se->render(&pixmapSe);
+
+    // make screenprint from scrollarea
+    QPixmap pixmapScroll(m_scroll->size());
+    m_scroll->render(&pixmapScroll);
+
+    m_editor = new SectionPropertyEditor();
+    m_editor->setContent(se->content());
+    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(sectionEditorClose(QWidget*)));
+
+    animate(se, pixmapSe, pos, pixmapScroll);
+}
+
 void ContentEditor::rowEdit(RowEditor *re)
 {
     m_rowEditor = re;
     QPoint pos = re->mapTo(m_scroll, re->pos());
 
-    // make screenprint from elementeditor
+    // make screenprint from editor
     QPixmap pixmapRe(re->size());
     re->render(&pixmapRe);
 
@@ -322,20 +345,6 @@ void ContentEditor::rowEdit(RowEditor *re)
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(rowEditorClose(QWidget*)));
 
     animate(re, pixmapRe, pos, pixmapScroll);
-
-    /*
-    m_layout->replaceWidget(m_scroll, m_rowPropertyEditor);
-    m_scroll->hide();
-
-    m_title->hide();
-    m_save->hide();
-    m_previewLink->hide();
-    if(m_content->contentType() == ContentType::Post)
-    {
-        m_excerptLabel->hide();
-        m_excerpt->hide();
-    }
-    */
 }
 
 void ContentEditor::elementEdit(ElementEditor *ee)
@@ -344,7 +353,7 @@ void ContentEditor::elementEdit(ElementEditor *ee)
 
     QPoint pos = ee->mapTo(m_scroll, ee->pos());
 
-    // make screenprint from elementeditor
+    // make screenprint from editor
     QPixmap pixmapEe(ee->size());
     ee->render(&pixmapEe);
 
@@ -389,13 +398,8 @@ void ContentEditor::animationFineshedZoomIn()
     }
 }
 
-void ContentEditor::rowEditorClose(QWidget *w)
+void ContentEditor::editorClosed(QWidget *w)
 {
-    if(m_editor->changed())
-    {
-        editChanged();
-        m_rowEditor->setContent(m_editor->content());
-    }
     m_title->show();
     m_save->show();
     m_previewLink->show();
@@ -413,6 +417,26 @@ void ContentEditor::rowEditorClose(QWidget *w)
     m_animationgroup->start();
 }
 
+void ContentEditor::sectionEditorClose(QWidget *w)
+{
+    if(m_editor->changed())
+    {
+        editChanged();
+        m_sectionEditor->setContent(m_editor->content());
+    }
+    editorClosed(w);
+}
+
+void ContentEditor::rowEditorClose(QWidget *w)
+{
+    if(m_editor->changed())
+    {
+        editChanged();
+        m_rowEditor->setContent(m_editor->content());
+    }
+    editorClosed(w);
+}
+
 void ContentEditor::editorClose(QWidget *w)
 {
     if(m_editor->changed())
@@ -420,21 +444,7 @@ void ContentEditor::editorClose(QWidget *w)
         editChanged();
         m_elementEditor->setContent(m_editor->content());
     }
-    m_title->show();
-    m_save->show();
-    m_previewLink->show();
-    if(m_content->contentType() == ContentType::Post)
-    {
-        m_excerptLabel->show();
-        m_excerpt->show();
-    }
-    m_layout->replaceWidget(w, m_animationPanel);
-    m_animationPanel->show();
-    delete w;
-    m_animationgroup->setDirection(QAbstractAnimation::Backward);
-    disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
-    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
-    m_animationgroup->start();
+    editorClosed(w);
 }
 
 void ContentEditor::animationFineshedZoomOut()

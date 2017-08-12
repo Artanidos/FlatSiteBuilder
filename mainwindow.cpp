@@ -149,8 +149,8 @@ void MainWindow::initGui()
     connect(m_plugins, SIGNAL(expanded(bool)), this, SLOT(pluginsExpanded(bool)));
     connect(m_settings, SIGNAL(expanded(bool)), this, SLOT(settingsExpanded(bool)));
 
-    connect(pagesButton, SIGNAL(linkActivated(QString)), this, SLOT(showPages()));
-    connect(postsButton, SIGNAL(linkActivated(QString)), this, SLOT(showPosts()));
+    connect(pagesButton, SIGNAL(clicked()), this, SLOT(showPages()));
+    connect(postsButton, SIGNAL(clicked()), this, SLOT(showPosts()));
     connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
 }

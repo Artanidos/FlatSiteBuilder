@@ -30,12 +30,20 @@ class Hyperlink : public QLabel
 public:
     Hyperlink(QString text);
 
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void enterEvent (QEvent *event);
     void leaveEvent (QEvent *event);
 
     void setColor(QString color);
     void setHovered(bool value);
     void setAutohover(bool value);
+
+signals:
+    void clicked();
+
+private slots:
+    void linkActivated();
 
 private:
     QString m_text;

@@ -41,6 +41,11 @@ public:
     SectionEditor *clone();
     void save(QDomDocument doc, QDomElement de);
     void setFullwidth(bool fw) {m_fullwidth = fw;}
+    void setContent(QDomElement row);
+    QDomElement content();
+    void setCssClass(QString cls) {m_cssclass = cls;}
+    void setStyle(QString style) {m_style = style;}
+    void setAttributes(QString attributes) {m_attributes = attributes;}
 
 private slots:
     void addRow();
@@ -64,6 +69,10 @@ private:
     FlatButton *m_copyButton;
     FlatButton *m_closeButton;
     bool m_fullwidth;
+    QString m_cssclass;
+    QString m_style;
+    QString m_attributes;
+    QDomDocument m_doc;
 
     ContentEditor* getContentEditor();
 };

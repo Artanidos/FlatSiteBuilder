@@ -1,21 +1,26 @@
 Features
 --------
-- cascading rows / columns
+- section editor (background image, cssclass)
+- slider editor
 - other modules (plugins)
-- bootstrap 4 support
 - default theme should look nicer :-)
-- support all 12 columns from bootstrap
-    maybe resize column
-	editor where the columns can be selected
 - menu editor
 - theme editor (change colors, fonts and other styles)
-- ability to create and load plugins
 - media page
 - setting page
 - create new site
 - write a translator in C++ to leave python behind
 - test on windows
-- test and approve gitting
+- test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
+
+Postponend
+----------
+- bootstrap 4 support
+- ability to create and load plugins
+- support all 12 columns from bootstrap
+    maybe resize column
+	editor where the columns can be selected
+- cascading rows / columns
 
 Bugs
 ----

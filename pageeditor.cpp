@@ -41,8 +41,8 @@ PageEditor::PageEditor()
     m_layout->addStretch();
     setLayout(m_layout);
     setAcceptDrops(true);
-    connect(addSection, SIGNAL(linkActivated(QString)), this, SLOT(addSection()));
-    connect(addFullSection, SIGNAL(linkActivated(QString)), this, SLOT(addFullSection()));
+    connect(addSection, SIGNAL(clicked()), this, SLOT(addSection()));
+    connect(addFullSection, SIGNAL(clicked()), this, SLOT(addFullSection()));
 }
 
 void PageEditor::addSection(SectionEditor *se)

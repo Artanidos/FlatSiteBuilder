@@ -68,13 +68,14 @@ RowEditor::RowEditor(bool clone)
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
     connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
-    connect(m_addColumns, SIGNAL(linkActivated(QString)), this, SLOT(addColumns()));
+    connect(m_addColumns, SIGNAL(clicked()), this, SLOT(addColumns()));
 }
 
 void RowEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement row = doc.createElement("Row");
-    row.setAttribute("cssclass", m_cssclass);
+    if(!m_cssclass.isEmpty())
+        row.setAttribute("cssclass", m_cssclass);
     de.appendChild(row);
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -101,7 +102,7 @@ void RowEditor::edit()
 {
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->rowEdit(this);;
+        ce->rowEdit(this);
 }
 
 void RowEditor::addColumns()

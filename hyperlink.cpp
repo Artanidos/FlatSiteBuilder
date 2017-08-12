@@ -19,6 +19,7 @@
 ****************************************************************************/
 
 #include "hyperlink.h"
+#include <QMouseEvent>
 
 Hyperlink::Hyperlink(QString text)
 {
@@ -30,6 +31,23 @@ Hyperlink::Hyperlink(QString text)
     setTextFormat(Qt::RichText);
     setTextInteractionFlags(Qt::TextBrowserInteraction);
     setCursor(Qt::PointingHandCursor);
+    connect(this, SIGNAL(linkActivated(QString)), this, SLOT(linkActivated()));
+}
+
+void Hyperlink::linkActivated()
+{
+    emit clicked();
+}
+
+void Hyperlink::mousePressEvent(QMouseEvent *event)
+{
+    event->accept();
+}
+
+void Hyperlink::mouseReleaseEvent(QMouseEvent *event)
+{
+    event->accept();
+    emit clicked();
 }
 
 void Hyperlink::enterEvent (QEvent *)

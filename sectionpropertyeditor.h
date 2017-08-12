@@ -18,39 +18,33 @@
 **
 ****************************************************************************/
 
-#include "section.h"
-#include "row.h"
+#ifndef SECTIONPROPERTYEDITOR_H
+#define SECTIONPROPERTYEDITOR_H
 
-Section::Section()
-{
-    m_fullwidth = false;
-}
+#include "abstracteditor.h"
+#include <QLineEdit>
+#include <QGridLayout>
 
-QString Section::getHtml(QDomElement sec)
+class SectionPropertyEditor : public AbstractEditor
 {
-    QString cls = sec.attribute("cssclass");
-    QString style = sec.attribute("style");
-    QString attributes = sec.attribute("attributes");
-    QString html = "\n<section";
-    if(!m_fullwidth)
-    {
-        if(!cls.isEmpty())
-            cls += " ";
-        cls += "container";
-    }
-    if(!cls.isEmpty())
-        html += " class=\"" + cls + "\"";
-    if(!style.isEmpty())
-        html += " style=\"" + style + "\"";
-    if(!attributes.isEmpty())
-        html += " " + attributes;
-    html += ">\n";
-    QDomElement row = sec.firstChildElement("Row");
-    while(!row.isNull())
-    {
-        Row *r = new Row();
-        html += r->getHtml(row);
-        row = row.nextSiblingElement("Row");
-    }
-    return html + "\n</section>\n";
-}
+    Q_OBJECT
+
+public:
+    SectionPropertyEditor();
+    ~SectionPropertyEditor();
+
+    void setContent(QDomElement ele);
+    QDomElement content() {return m_element;}
+
+private slots:
+    void save();
+    void cancel();
+
+private:
+    QLineEdit *m_cssclass;
+    QLineEdit *m_style;
+    QLineEdit *m_attributes;
+    QGridLayout *m_grid;
+};
+
+#endif // SECTIONPROPERTYEDITOR_H

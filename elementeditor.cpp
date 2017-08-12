@@ -68,7 +68,7 @@ ElementEditor::ElementEditor()
     layout->addWidget(m_closeButton);
     setLayout(layout);
 
-    connect(m_link, SIGNAL(linkActivated(QString)), this, SLOT(enable()));
+    connect(m_link, SIGNAL(clicked()), this, SLOT(enable()));
     connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
     connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
