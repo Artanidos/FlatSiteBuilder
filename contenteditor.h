@@ -89,7 +89,7 @@ private:
     void loadRows(QDomElement section, SectionEditor *se);
     void loadColumns(QDomElement row, RowEditor *re);
     void loadElements(QDomElement column, ColumnEditor *ce);
-    void animate(QWidget *widget, QPixmap pixmapEe, QPoint pos, QPixmap pixmapScroll);
+    void animate(QWidget *widget);
     void editorClosed(QWidget *w);
 };
 

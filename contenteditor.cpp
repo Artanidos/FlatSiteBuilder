@@ -254,8 +254,18 @@ void ContentEditor::preview()
     emit preview(m_content);
 }
 
-void ContentEditor::animate(QWidget *widget, QPixmap pixmap, QPoint pos, QPixmap pixmapScroll)
+void ContentEditor::animate(QWidget *widget)
 {
+    QPoint pos = widget->mapTo(m_scroll, QPoint(0,0));
+
+    // make screenprint from widget
+    QPixmap pixmap(widget->size());
+    widget->render(&pixmap);
+
+    // make screenprint from scrollarea
+    QPixmap pixmapScroll(m_scroll->size());
+    m_scroll->render(&pixmapScroll);
+
     m_animationPanel = new QWidget();
     QLabel *scroll = new QLabel();
     scroll->setPixmap(pixmapScroll);
@@ -266,7 +276,7 @@ void ContentEditor::animate(QWidget *widget, QPixmap pixmap, QPoint pos, QPixmap
     anim->setAlignment(Qt::AlignTop);
     anim->setAutoFillBackground(true);
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, palette().base().color());
+    pal.setColor(QPalette::Background, widget->palette().background().color());
     anim->setPalette(pal);
     anim->setParent(m_animationPanel);
     m_animationPanel->setMinimumWidth(m_scroll->size().width());
@@ -310,56 +320,28 @@ void ContentEditor::animate(QWidget *widget, QPixmap pixmap, QPoint pos, QPixmap
 void ContentEditor::sectionEdit(SectionEditor *se)
 {
     m_sectionEditor = se;
-    QPoint pos = se->mapTo(m_scroll, se->pos());
-
-    // make screenprint from editor
-    QPixmap pixmapSe(se->size());
-    se->render(&pixmapSe);
-
-    // make screenprint from scrollarea
-    QPixmap pixmapScroll(m_scroll->size());
-    m_scroll->render(&pixmapScroll);
 
     m_editor = new SectionPropertyEditor();
     m_editor->setContent(se->content());
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(sectionEditorClose(QWidget*)));
 
-    animate(se, pixmapSe, pos, pixmapScroll);
+    animate(se);
 }
 
 void ContentEditor::rowEdit(RowEditor *re)
 {
     m_rowEditor = re;
-    QPoint pos = re->mapTo(m_scroll, re->pos());
-
-    // make screenprint from editor
-    QPixmap pixmapRe(re->size());
-    re->render(&pixmapRe);
-
-    // make screenprint from scrollarea
-    QPixmap pixmapScroll(m_scroll->size());
-    m_scroll->render(&pixmapScroll);
 
     m_editor = new RowPropertyEditor();
     m_editor->setContent(re->content());
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(rowEditorClose(QWidget*)));
 
-    animate(re, pixmapRe, pos, pixmapScroll);
+    animate(re);
 }
 
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-
-    QPoint pos = ee->mapTo(m_scroll, ee->pos());
-
-    // make screenprint from editor
-    QPixmap pixmapEe(ee->size());
-    ee->render(&pixmapEe);
-
-    // make screenprint from scrollarea
-    QPixmap pixmapScroll(m_scroll->size());
-    m_scroll->render(&pixmapScroll);
 
     if(ee->type() == ElementEditor::Type::Text)
     {
@@ -381,7 +363,7 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     }
     connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
 
-    animate(ee, pixmapEe, pos, pixmapScroll);
+    animate(ee);
 }
 
 void ContentEditor::animationFineshedZoomIn()
