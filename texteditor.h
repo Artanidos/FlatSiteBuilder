@@ -24,6 +24,7 @@
 #include "abstracteditor.h"
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QPushButton>
 
 class TextEditor : public AbstractEditor
 {
@@ -39,9 +40,13 @@ private slots:
     void save();
     void cancel();
 
+public slots:
+    void contentChanged();
+
 private:
     QTextEdit *m_html;
     QLineEdit *m_adminlabel;
+    QPushButton *m_save;
 };
 
 #endif // TEXTEDITOR_H

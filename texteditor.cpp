@@ -47,7 +47,8 @@ TextEditor::TextEditor()
     new HtmlHighlighter(m_html->document());
     m_adminlabel = new QLineEdit();
     m_adminlabel->setMaximumWidth(200);
-    QPushButton *save = new QPushButton("Save and Exit");
+    m_save = new QPushButton("Save and Exit");
+    m_save->setEnabled(false);
     QPushButton *cancel = new QPushButton("Cancel");
     QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -58,7 +59,7 @@ TextEditor::TextEditor()
     titleLabel->setFont(fnt);
 
     hbox->addStretch();
-    hbox->addWidget(save);
+    hbox->addWidget(m_save);
     hbox->addWidget(cancel);
     grid->addWidget(titleLabel, 0, 0);
     grid->addWidget(m_html, 1, 0);
@@ -67,7 +68,7 @@ TextEditor::TextEditor()
     grid->addLayout(hbox, 4, 0);
     setLayout(grid);
 
-    connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
+    connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
     connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
     connect(m_html, SIGNAL(textChanged()), this, SLOT(contentChanged()));
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
@@ -107,4 +108,11 @@ void TextEditor::setContent(QDomElement element)
     QDomCDATASection cdata = data.toCDATASection();
     m_html->setPlainText(cdata.data());
     m_changed = false;
+    m_save->setEnabled(false);
+}
+
+void TextEditor::contentChanged()
+{
+    m_changed = true;
+    m_save->setEnabled(true);
 }

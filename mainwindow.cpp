@@ -61,11 +61,7 @@ MainWindow::MainWindow()
     if(m_defaultPath.isEmpty())
         m_defaultPath = QDir::homePath();
     else
-    {
         loadProject(m_defaultPath + "/Site.xml");
-        Generator *gen = new Generator(m_context);
-        gen->generateSite(m_site);
-    }
 
     m_dashboardExpander->setExpanded(true);
     showDashboard();

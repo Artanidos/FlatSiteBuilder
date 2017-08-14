@@ -220,6 +220,7 @@ void ElementEditor::enable()
 
     setMode(Mode::Enabled);
     emit elementEnabled();
+    edit();
 }
 
 void ElementEditor::close()
