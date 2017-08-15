@@ -35,7 +35,6 @@
         <file>images/preview_hover.png</file>
         <file>images/preview_normal.png</file>
         <file>images/preview_pressed.png</file>
-        <file>test.js</file>
         <file>images/close_hover.png</file>
         <file>images/close_normal.png</file>
         <file>images/copy_hover.png</file>
@@ -71,5 +70,10 @@
         <file>images/text_hover.png</file>
         <file>images/text_normal.png</file>
         <file>images/image_placeholder.png</file>
+        <file>docs/publish.html</file>
+        <file>images/background.png</file>
+        <file>images/icon64.png</file>
+        <file>images/wizard.png</file>
+        <file>docs/notimpl.html</file>
     </qresource>
 </RCC>

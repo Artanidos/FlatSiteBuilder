@@ -36,12 +36,14 @@
 #include <QDockWidget>
 #include <QDomDocument>
 #include <QDate>
+#include <QTextBrowser>
 #include <QProcess>
 #include <QDesktopServices>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
 #include "PythonQt_QtAll.h"
+#include "sitewizard.h"
 #include "expander.h"
 #include "site.h"
 #include "content.h"
@@ -147,8 +149,14 @@ void MainWindow::initGui()
 
     connect(pagesButton, SIGNAL(clicked()), this, SLOT(showPages()));
     connect(postsButton, SIGNAL(clicked()), this, SLOT(showPosts()));
+    connect(categoriesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(tagsButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
+    connect(m_media, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(m_appearance, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(m_settings, SIGNAL(clicked()), this, SLOT(notImplemented()));
 }
 
 void MainWindow::dashboardExpanded(bool value)
@@ -400,6 +408,7 @@ void MainWindow::showDashboard()
     connect(db, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
     connect(db, SIGNAL(previewSite(Content *)), this, SLOT(previewSite(Content *)));
     connect(db, SIGNAL(publishSite()), this, SLOT(publishSite()));
+    connect(db, SIGNAL(createSite()), this, SLOT(createSite()));
     connect(this, SIGNAL(siteLoaded(Site*)), db, SLOT(siteLoaded(Site*)));
     setCentralWidget(db);
 }
@@ -459,7 +468,16 @@ void MainWindow::previewSite(Content *content)
 
 void MainWindow::publishSite()
 {   
-    qDebug() << "publish";
+    QTextBrowser *browser = new QTextBrowser();
+    setCentralWidget(browser);
+    browser->show();
+    QFile file(":/docs/publish.html");
+    if(file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QTextStream stream(&file);
+        browser->setHtml(stream.readAll());
+        file.close();
+    }
     // initial source
     // cd ~/FlatSiteBuilder
     // cd sources/myproject
@@ -483,10 +501,31 @@ void MainWindow::publishSite()
     // cd ~FlatSiteBuilder
     // git clone -b gh-pages https://github.com/CrowdWare/web.git MyProject
 
-    QString path = QDir::homePath() + "/FlatSiteBuilder" + "/" + m_site->title();
-    runCommand("git add .", path);
-    runCommand("git commit -m \"updated with FlatSiteBuilder\"", path);
-    runCommand("git push", path);
+    // QString path = QDir::homePath() + "/FlatSiteBuilder" + "/" + m_site->title();
+    // runCommand("git add .", path);
+    // runCommand("git commit -m \"updated with FlatSiteBuilder\"", path);
+    // runCommand("git push", path);
+}
+
+void MainWindow::createSite()
+{
+    SiteWizard *wiz = new SiteWizard();
+    connect(wiz, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
+    wiz->show();
+}
+
+void MainWindow::notImplemented()
+{
+    QTextBrowser *browser = new QTextBrowser();
+    setCentralWidget(browser);
+    browser->show();
+    QFile file(":/docs/notimpl.html");
+    if(file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QTextStream stream(&file);
+        browser->setHtml(stream.readAll());
+        file.close();
+    }
 }
 
 void MainWindow::runCommand(QString cmd, QString path)

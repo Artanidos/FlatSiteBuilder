@@ -173,7 +173,7 @@ void Dashboard::loadClicked()
 
 void Dashboard::createClicked()
 {
-    qDebug() << "create";
+    emit createSite();
 }
 
 void Dashboard::publishClicked()

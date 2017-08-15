@@ -78,6 +78,8 @@ private slots:
     void loadProject(QString path);
     void previewSite(Content *content);
     void publishSite();
+    void createSite();
+    void notImplemented();
 };
 
 #endif // MAINWINDOW_H

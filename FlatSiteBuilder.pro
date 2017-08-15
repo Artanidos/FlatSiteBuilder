@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     menu.cpp \
     menuitem.cpp \
     rowpropertyeditor.cpp \
-    sectionpropertyeditor.cpp
+    sectionpropertyeditor.cpp \
+    sitewizard.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -110,7 +111,8 @@ HEADERS  += mainwindow.h \
     menu.h \
     menuitem.h \
     rowpropertyeditor.h \
-    sectionpropertyeditor.h
+    sectionpropertyeditor.h \
+    sitewizard.h
 
 DISTFILES += \
     README.md \
@@ -126,7 +128,9 @@ DISTFILES += \
     testsite/posts/hello.xml \
     testsite/pages/about.xml \
     testsite/pages/news.xml \
-    todo.txt
+    todo.txt \
+    docs/publish.html \
+    docs/notimpl.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -37,6 +37,7 @@ public:
 
 signals:
     void loadSite(QString filename);
+    void createSite();
     void previewSite(Content *);
     void publishSite();
 

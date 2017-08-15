@@ -1,0 +1,37 @@
+<html>
+<head>
+</head>
+<body style="margin:10;">
+<h1>Publish</h1>
+<p>The publish process is not yet implemented in this preview version.</p>
+<p>But you can publish your website manually using git.</p>
+<p>Your content is stored at ~/FlatSiteBuilder/MyProject</p>
+<p>Please exchange <strong>MyProject</strong> with the project title and <strong>mycompany</strong> and <strong>myproject</strong> with the appropriate values.</p>
+<p>We assume that you already have a github repository for your project. If not you should create a repo prior to push content.</p>
+<h3>Publish site <strong>source</strong></h3>
+<p style="font-family: Courier;">
+    <ul>
+	    <li>cd ~/FlatSiteBuilder</li>
+		<li>cd sources/myproject</li>
+		<li>git init</li>
+		<li>git add .</li>
+		<li>git commit -m "first commit"</li>
+		<li>git remote add origin https://github.com/mycompany/myproject.git</li>
+		<li>git push -u origin master</li>
+	</ul>
+</p>
+<h3>Publish site <strong>content</strong></h3>
+<p style="font-family: Courier;">
+    <ul>
+	    <li>cd ~/FlatSiteBuilder</li>
+		<li>cd MyProject</li>
+		<li>git init</li>
+		<li>git checkout --orphan gh-pages</li>
+		<li>git add .</li>
+		<li>git commit -m "first commit"</li>
+		<li>git remote add origin https://github.com/mycompany/myproject.git</li>
+		<li>git push origin gh-pages</li>
+	<ul>
+</p>
+</body>
+</html>

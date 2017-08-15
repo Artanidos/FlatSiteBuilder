@@ -129,8 +129,8 @@ void ContentEditor::load()
 
     PageEditor *pe = new PageEditor();
     m_scroll->setWidget(pe);
-    QDomElement post = doc.documentElement();
-    QDomElement section = post.firstChildElement("Section");
+    QDomElement content = doc.documentElement();
+    QDomElement section = content.firstChildElement("Section");
     while(!section.isNull())
     {
         QString fw = section.attribute("fullwidth", "false");
@@ -217,7 +217,7 @@ void ContentEditor::save()
     }
     QDomDocument doc;
     QDomElement root;
-    root = doc.createElement("Post");
+    root = doc.createElement("Content");
     doc.appendChild(root);
     PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
     foreach(SectionEditor *se, pe->sections())

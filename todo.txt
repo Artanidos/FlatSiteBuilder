@@ -1,6 +1,5 @@
 Features
 --------
-- section editor (background image, cssclass)
 - slider editor
 - other modules (plugins)
 - default theme should look nicer :-)
