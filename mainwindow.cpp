@@ -66,6 +66,7 @@ MainWindow::MainWindow()
     else
         loadProject(m_defaultPath + "/Site.xml");
 
+    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
     m_dashboardExpander->setExpanded(true);
     showDashboard();
 }
