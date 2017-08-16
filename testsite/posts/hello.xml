@@ -1,16 +1,19 @@
-<Post>
+<Content>
  <Section>
   <Row>
    <Column span="12">
-    <Text><![CDATA[<h1>Welcome</h1>
-<p>To my site</p>]]></Text>
+    <Text adminlabel=""><![CDATA[<p>This is my first blog post.</p>
+
+]]></Text>
    </Column>
   </Row>
   <Row>
    <Column span="4">
-    <Image src="/home/olaf/SourceCode/FlatSiteBuilder/testsite/assets/images/cropped-cropped-woman.jpg"/>
+    <Image title="" animation="fadeInLeft" src="/home/olaf/SourceCode/FlatSiteBuilder/testsite/assets/images/FrauPortrait.jpg" adminlabel="" alt=""/>
    </Column>
-   <Column span="8"/>
+   <Column span="8">
+    <Text adminlabel=""><![CDATA[<p>Here you see a beatiful lady</p>]]></Text>
+   </Column>
   </Row>
  </Section>
-</Post>
+</Content>

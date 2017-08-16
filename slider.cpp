@@ -5,7 +5,7 @@ Slider::Slider()
 
 }
 
-QString Slider::getHtml(QDomElement ele)
+QString Slider::getHtml(QDomElement)
 {
     return "";
 }

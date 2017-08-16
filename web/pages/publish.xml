@@ -32,8 +32,7 @@
 		<li>git remote add origin https://github.com/mycompany/myproject.git</li>
 		<li>git push origin gh-pages</li>
 	<ul>
-</p>
-]]></Text>
+</p>]]></Text>
    </Column>
   </Row>
  </Section>

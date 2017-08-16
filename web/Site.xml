@@ -1,7 +1,7 @@
-<Site description="" title="FlatSiteBuilder" theme="atropos" theme_accent="blue" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." github="https://github.com/Artanidos/FlatSiteBuilder.git">
- <Content layout="default" type="page" source="index.xml" title="Index" author="Olaf Japp" menu="mainmenu" logo="logo.png" date="11.08.2017"/>
- <Content layout="simple" type="page" source="notimpl.xml" title="NotImpl" author="Olaf Japp" menu="" logo="logo.png" date="16.08.2017"/>
- <Content layout="simple" type="page" source="publish.xml" title="Publish" author="Olaf Japp" menu="" logo="logo.png" date="16.08.2017"/>
+<Site copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" description="" theme="atropos" title="FlatSiteBuilder">
+ <Content source="index.xml" logo="logo.png" date="11.08.2017" type="page" menu="mainmenu" title="Index" author="Olaf Japp" layout="default"/>
+ <Content source="notimpl.xml" logo="logo.png" date="16.08.2017" type="page" menu="" title="NotImpl" author="Olaf Japp" layout="simple"/>
+ <Content source="publish.xml" logo="logo.png" date="16.08.2017" type="page" menu="" title="Publish" author="Olaf Japp" layout="simple"/>
  <Menu name="mainmenu">
   <Item url="#wrapper" title="Home"/>
   <Item url="#slides" title="Slides"/>

@@ -128,7 +128,8 @@ DISTFILES += \
     testsite/posts/hello.xml \
     testsite/pages/about.xml \
     testsite/pages/news.xml \
-    todo.txt
+    todo.txt \
+    build.txt
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -25,7 +25,7 @@ Element::Element()
 
 }
 
-QString Element::getHtml(QDomElement ele)
+QString Element::getHtml(QDomElement)
 {
     return "";
 }

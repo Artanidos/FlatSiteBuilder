@@ -12,10 +12,10 @@
 	 </div>
 	 <div id="navbar" class="navbar-collapse collapse">
 	   <ul class="nav navbar-nav">
-	     {% for p in site.pages %}
-		 <li {% if p.url() == page.url %}class="active"{% endif %}>
-		       <a href="{{ p.url() }}">
-			       {{ p.title() }}
+		{% for item in site.menus[page.menu] %} 
+		 <li {% if item.url() == page.url %}class="active"{% endif %}>
+		       <a href="{{ item.url() }}">
+			       {{ item.title() }}
 			   </a>
 		 </li>
 		 {% endfor %}
