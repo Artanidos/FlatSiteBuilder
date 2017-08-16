@@ -39,6 +39,7 @@
 #include <QTextBrowser>
 #include <QProcess>
 #include <QDesktopServices>
+#include <QNetworkReply>
 #include "hyperlink.h"
 #include "generator.h"
 #include "PythonQt.h"
@@ -468,43 +469,7 @@ void MainWindow::previewSite(Content *content)
 
 void MainWindow::publishSite()
 {   
-    QTextBrowser *browser = new QTextBrowser();
-    setCentralWidget(browser);
-    browser->show();
-    QFile file(":/docs/publish.html");
-    if(file.open(QFile::ReadOnly | QFile::Text))
-    {
-        QTextStream stream(&file);
-        browser->setHtml(stream.readAll());
-        file.close();
-    }
-    // initial source
-    // cd ~/FlatSiteBuilder
-    // cd sources/myproject
-    // git init
-    // git add .
-    // git commit -m "first commit"
-    // git remote add origin https://github.com/mycompany/myproject.git
-    // git push -u origin master
-
-    // initial website
-    // cd ~FlatSiteBuilder
-    // cd MyProject
-    // git init
-    // git checkout --orphan gh-pages
-    // git add .
-    // git commit -m "first commit"
-    // git remote add origin https://github.com/mycompany/myproject.git
-    // git push origin gh-pages
-
-    // after
-    // cd ~FlatSiteBuilder
-    // git clone -b gh-pages https://github.com/CrowdWare/web.git MyProject
-
-    // QString path = QDir::homePath() + "/FlatSiteBuilder" + "/" + m_site->title();
-    // runCommand("git add .", path);
-    // runCommand("git commit -m \"updated with FlatSiteBuilder\"", path);
-    // runCommand("git push", path);
+    showHtml("https://artanidos.github.io/FlatSiteBuilder/publish.html");
 }
 
 void MainWindow::createSite()
@@ -516,16 +481,22 @@ void MainWindow::createSite()
 
 void MainWindow::notImplemented()
 {
+    showHtml("https://artanidos.github.io/FlatSiteBuilder/notimpl.html");
+}
+
+void MainWindow::showHtml(QString url)
+{
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileIsReady(QNetworkReply*)));
+    manager->get(QNetworkRequest(QUrl(url)));
+}
+
+void MainWindow::fileIsReady(QNetworkReply *reply)
+{
     QTextBrowser *browser = new QTextBrowser();
     setCentralWidget(browser);
     browser->show();
-    QFile file(":/docs/notimpl.html");
-    if(file.open(QFile::ReadOnly | QFile::Text))
-    {
-        QTextStream stream(&file);
-        browser->setHtml(stream.readAll());
-        file.close();
-    }
+    browser->setHtml(reply->readAll());
 }
 
 void MainWindow::runCommand(QString cmd, QString path)

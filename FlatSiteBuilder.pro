@@ -22,7 +22,7 @@
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
 QT += core gui script
-QT += testlib 
+QT += testlib network
 QT += widgets xml webenginewidgets
 
 unix:PYTHON_VERSION=2.7
@@ -128,9 +128,7 @@ DISTFILES += \
     testsite/posts/hello.xml \
     testsite/pages/about.xml \
     testsite/pages/news.xml \
-    todo.txt \
-    docs/publish.html \
-    docs/notimpl.html
+    todo.txt
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

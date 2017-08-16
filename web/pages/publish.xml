@@ -1,8 +1,8 @@
-<html>
-<head>
-</head>
-<body style="margin:10;">
-<h1>Publish</h1>
+<Content>
+ <Section>
+  <Row>
+   <Column span="12">
+    <Text adminlabel=""><![CDATA[<h1>Publish</h1>
 <p>The publish process is not yet implemented in this preview version.</p>
 <p>But you can publish your website manually using git.</p>
 <p>Your content is stored at ~/FlatSiteBuilder/MyProject</p>
@@ -33,5 +33,8 @@
 		<li>git push origin gh-pages</li>
 	<ul>
 </p>
-</body>
-</html>
+]]></Text>
+   </Column>
+  </Row>
+ </Section>
+</Content>

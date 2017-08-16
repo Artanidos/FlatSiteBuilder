@@ -70,10 +70,8 @@
         <file>images/text_hover.png</file>
         <file>images/text_normal.png</file>
         <file>images/image_placeholder.png</file>
-        <file>docs/publish.html</file>
         <file>images/background.png</file>
         <file>images/icon64.png</file>
         <file>images/wizard.png</file>
-        <file>docs/notimpl.html</file>
     </qresource>
 </RCC>

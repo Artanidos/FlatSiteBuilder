@@ -30,6 +30,7 @@
 #include "site.h"
 #include "PythonQt.h"
 
+class QNetworkReply;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -48,6 +49,7 @@ private:
     void initPython();
     void initGui();
     void runCommand(QString cmd, QString path);
+    void showHtml(QString url);
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -80,6 +82,7 @@ private slots:
     void publishSite();
     void createSite();
     void notImplemented();
+    void fileIsReady(QNetworkReply *reply);
 };
 
 #endif // MAINWINDOW_H

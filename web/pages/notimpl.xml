@@ -1,8 +1,8 @@
-<html>
-<head>
-</head>
-<body style="margin:10;">
-<h1>Not Implemented Yet</h1>
+<Content>
+ <Section>
+  <Row>
+   <Column span="12">
+    <Text adminlabel=""><![CDATA[<h1>Not Implemented Yet</h1>
 <p>We are sorry, but this feature is not implemented in this preview version.</p>
 <h3>Feature List</h3>
 <p>Here is a list of features which will be implemented in the following months.</p>
@@ -20,5 +20,8 @@
 </ul>
 <h3>Feature Requests</h3>
 <p>If you have any ideas or feature requests let us know. Just send an email to artanidos@gmail.com</p>
-</body>
-</html>
+]]></Text>
+   </Column>
+  </Row>
+ </Section>
+</Content>
