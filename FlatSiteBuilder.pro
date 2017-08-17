@@ -127,7 +127,8 @@ DISTFILES += \
     testsite/pages/about.xml \
     testsite/pages/news.xml \
     todo.txt \
-    build.txt
+    build.txt \
+    buildAppImage.sh
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

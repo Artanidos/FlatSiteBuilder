@@ -430,7 +430,7 @@ void MainWindow::editContent(Content *content)
 void MainWindow::previewSite(Content *content)
 {
     QString file;
-    QString dir = QDir::homePath() + "/FlatSiteBuilder";
+    QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
     QDir path(dir + "/" + m_site->title());
     if(!content)
         content = m_site->contents().at(0);

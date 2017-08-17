@@ -1,9 +1,9 @@
-<Site copyright="&amp;copy; Your Copyright" theme="default" theme_accent="" description="Site description" github="https://github.com/yourname/yoursite.git" title="Yourtitle">
- <Content author="admin" layout="default" logo="logo.png" type="page" source="index.xml" date="17.08.2017" title="Index" menu="default"/>
- <Content author="admin" layout="default" logo="logo.png" type="page" source="news.xml" date="17.08.2017" title="News" menu="default"/>
- <Content author="admin" layout="post" logo="logo.png" excerpt="Thanks to FlateSiteBuilder our new website is now online." type="post" source="hello.xml" date="16.08.2017" title="Website Online" menu="default"/>
+<Site theme="default" description="Site description" title="Yourtitle" theme_accent="" copyright="&amp;copy; Your Copyright" github="https://github.com/yourname/yoursite.git">
+ <Content menu="default" type="page" date="17.08.2017" logo="logo.png" author="admin" source="index.xml" title="Index" layout="default"/>
+ <Content menu="default" type="page" date="17.08.2017" logo="logo.png" author="admin" source="news.xml" title="News" layout="default"/>
+ <Content menu="default" type="post" date="16.08.2017" logo="logo.png" author="admin" excerpt="Thanks to FlateSiteBuilder our new website is now online." source="hello.xml" title="Website Online" layout="post"/>
  <Menu name="default">
-  <Item title="Home" url="index.html"/>
-  <Item title="News" url="news.html"/>
+  <Item url="index.html" title="Home"/>
+  <Item url="news.html" title="News"/>
  </Menu>
 </Site>

@@ -26,9 +26,9 @@ void SiteWizard::accept()
     QString description = field("description").toString();
     QString copyright = field("copyright").toString();
     QString githubUrl = field("githubUrl").toString();
-    QString path = QDir::homePath() + "/FlatSiteBuilder/Sources/" + siteName.toLower();
+    QString path = QDir::homePath() + "/FlatSiteBuilder/sources/" + siteName.toLower();
 
-    QDir dir(QDir::homePath() + "/FlatSiteBuilder/Sources/");
+    QDir dir(QDir::homePath() + "/FlatSiteBuilder/sources/");
     dir.mkdir(siteName.toLower());
     dir.cd(siteName.toLower());
     dir.mkdir("pages");

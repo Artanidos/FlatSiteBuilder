@@ -33,7 +33,7 @@ Q_DECLARE_METATYPE(QFile*)
 
 Generator::Generator()
 {
-    m_themePath = QDir::currentPath() + "/themes/";
+    m_themePath = QDir::homePath() + "/FlatSiteBuilder/themes/";
 }
 
 /*
@@ -44,7 +44,7 @@ void Generator::generateSite(Site *site)
 {
     m_site = site;
 
-    QString dir = QDir::homePath() + "/FlatSiteBuilder";
+    QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
     QDir old;
     old.setPath(dir + "/" + m_site->title() + "/assets");
     old.removeRecursively();
@@ -99,7 +99,7 @@ void Generator::generateSite(Site *site)
 
     // first copy assets from site, they will not be overridden by theme assets
     copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
-    copyPath(m_themePath + sitevars["theme"].toString() + "/assets", dir + "/" + m_site->title() + "/assets");
+    copyPath(m_themePath + m_site->theme() + "/assets", dir + "/" + m_site->title() + "/assets");
 
     foreach (Content *content, m_site->contents())
     {
@@ -152,7 +152,7 @@ void Generator::generateSite(Site *site)
                 if(out.open(QFile::WriteOnly))
                 {
                     QString rc = translateTemplate(layout, Layout);
-                    out.write(translateContent(rc).toLatin1());
+                    out.write(translateContent(rc).toUtf8());
                     out.close();
                     qInfo() << "Created file " + name;
                 }
@@ -170,7 +170,13 @@ void Generator::generateSite(Site *site)
 QString Generator::translateTemplate(QString layout, Mode mode)
 {
     QString rc = "";
-    QFile file(m_themePath + m_site->theme() + (mode == Layout ? "/layouts/" : "/includes/") + layout);
+    QString path = m_site->path() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
+
+    QFile site(path);
+    if(!site.exists())
+        path = m_themePath + m_site->theme() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
+
+    QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
         QString content = QString::fromLatin1(file.readAll());
@@ -193,7 +199,7 @@ QString Generator::translateTemplate(QString layout, Mode mode)
             rc = content;
     }
     else
-        qWarning() << "Unable to open template " + m_themePath + layout;
+            qWarning() << "Unable to open template " + m_themePath + layout;
     return rc;
 }
 
