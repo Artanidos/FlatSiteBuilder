@@ -31,9 +31,9 @@
 
 Q_DECLARE_METATYPE(QFile*)
 
-Generator::Generator(PythonQtObjectPtr ctx)
+Generator::Generator()
 {
-    context = ctx;
+    m_themePath = QDir::currentPath() + "/themes/";
 }
 
 /*
@@ -42,8 +42,6 @@ Generator::Generator(PythonQtObjectPtr ctx)
  */
 void Generator::generateSite(Site *site)
 {
-    // TODO: themes should be deployed and we should use the app path
-    QString theme_path = "/home/olaf/SourceCode/FlatSiteBuilder/themes/";
     m_site = site;
 
     QString dir = QDir::homePath() + "/FlatSiteBuilder";
@@ -60,18 +58,31 @@ void Generator::generateSite(Site *site)
     QVariantList posts;
     foreach (Content *content, m_site->contents())
     {
+        QVariantMap cm;
+        cm["author"] = content->author();
+        cm["date"] = content->date();
+        cm["excerpt"] = content->excerpt();
+        cm["layout"] = content->layout();
+        cm["logo"] = content->logo();
+        cm["menu"] = content->menu();
+        cm["source"] = content->source();
+        cm["title"] = content->title();
+        cm["url"] = content->url();
         if(content->contentType() == ContentType::Page)
-            pages.append(QVariant::fromValue(content));
+            pages.append(cm);
         else
-            posts.append(QVariant::fromValue(content));
+            posts.append(cm);
     }
     QVariantMap menus;
     foreach(Menu *menu, m_site->menus())
-    {
+    {   
         QVariantList items;
         foreach(MenuItem *item, menu->items())
         {
-            items.append(QVariant::fromValue(item));
+            QVariantMap menuitem;
+            menuitem["title"] = item->title();
+            menuitem["url"] = item->url();
+            items.append(menuitem);
         }
         menus[menu->name()] = items;
     }
@@ -88,7 +99,7 @@ void Generator::generateSite(Site *site)
 
     // first copy assets from site, they will not be overridden by theme assets
     copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
-    copyPath(theme_path + sitevars["theme"].toString() + "/assets", dir + "/" + m_site->title() + "/assets");
+    copyPath(m_themePath + sitevars["theme"].toString() + "/assets", dir + "/" + m_site->title() + "/assets");
 
     foreach (Content *content, m_site->contents())
     {
@@ -140,10 +151,8 @@ void Generator::generateSite(Site *site)
                 QFile out(name);
                 if(out.open(QFile::WriteOnly))
                 {
-                    QVariantList args;
-                    args << theme_path << layout << globals << pagevars;
-                    QVariant rc = context.call("translateTemplate", args);
-                    out.write(rc.toByteArray());
+                    QString rc = translateTemplate(layout, Layout);
+                    out.write(translateContent(rc).toLatin1());
                     out.close();
                     qInfo() << "Created file " + name;
                 }
@@ -158,12 +167,222 @@ void Generator::generateSite(Site *site)
     }
 }
 
+QString Generator::translateTemplate(QString layout, Mode mode)
+{
+    QString rc = "";
+    QFile file(m_themePath + m_site->theme() + (mode == Layout ? "/layouts/" : "/includes/") + layout);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QString content = QString::fromLatin1(file.readAll());
+        file.close();
+        int pos = content.indexOf("{% include ");
+        int end = 0;
+        if(pos >= 0)
+        {
+            while(pos >= 0)
+            {
+                rc += content.mid(end, pos - end);
+                end = content.indexOf("%}", pos + 11) + 2;
+                QString include = content.mid(pos + 11, end - pos - 13).trimmed();
+                rc += translateTemplate(include, Include);
+                pos = content.indexOf("{% include ", end + 1);
+            }
+            rc += content.mid(end);
+        }
+        else
+            rc = content;
+    }
+    else
+        qWarning() << "Unable to open template " + m_themePath + layout;
+    return rc;
+}
+
 QString Generator::translateContent(QString content)
 {
-    QVariantList args;
-    args << content << globals << pagevars;
-    QVariant rc = context.call("translateContent", args);
-    return rc.toString();
+    int state = NormalState;
+    int len = content.length();
+    int start = 0;
+    int pos = 0;
+    bool inIf = false;
+    bool isTrue = false;
+    QString rc = "";
+    QString ifContent;
+    QString loopContent;
+    QString loopVar;
+    QString loopArray;
+
+    while (pos < len)
+    {
+        switch (state)
+        {
+            case NormalState:
+            default:
+                while (pos < len)
+                {
+                    QChar ch = content.at(pos);
+                    if (ch == '{')
+                    {
+                        if(content.mid(pos, 2) == "{{")
+                        {
+                            state = InVar;
+                            break;
+                        }
+                        else if(content.mid(pos, 11) == "{% endif %}")
+                        {
+                            if(isTrue)
+                                rc += ifContent;
+                            inIf = false;
+                            isTrue = false;
+                            pos += 11;
+                            break;
+                        }
+                        else if(content.mid(pos, 2) == "{%")
+                        {
+                            state = InExpression;
+                            break;
+                        }
+                        if(inIf)
+                            ifContent += ch;
+                        else
+                            rc += ch;
+                        pos++;
+                        break;
+                    }
+                    else
+                    {
+                        if(inIf)
+                            ifContent += ch;
+                        else
+                            rc += ch;
+                        pos++;
+                    }
+                }
+                break;
+
+            case InVar:
+            {
+                start = pos;
+                while (pos < len)
+                {
+                    if(content.mid(pos, 2) == "}}")
+                    {
+                        pos += 2;
+                        state = NormalState;
+                        break;
+                    }
+                    else
+                        pos++;
+                }
+                QString var = translateVar(content.mid(start + 2, pos - start - 4).trimmed()).toString();
+                if(inIf)
+                    ifContent += var;
+                else
+                    rc += var;
+                break;
+            }
+            case InExpression:
+            {
+                start = pos;
+                while (pos < len)
+                {
+                    if(content.mid(pos, 2) == "%}")
+                    {
+                        pos += 2;
+                        state = NormalState;
+                        break;
+                    }
+                    else
+                        pos++;
+                }
+                QString exp = content.mid(start + 2, pos - start - 4);
+                exp = exp.trimmed();
+                if(exp.startsWith("for "))
+                {
+                    int blank2 = exp.indexOf(" ", 5);
+                    int blank3 = exp.indexOf(" in ", blank2) + 4;
+                    loopVar = exp.mid(4, blank2 - 4).trimmed();
+                    loopArray = exp.mid(blank3).trimmed();
+                    state = InLoop;
+                    loopContent = "";
+                }
+                else if(exp.startsWith("if "))
+                {
+                    int equal = exp.indexOf("==");
+                    QString leftVar = exp.mid(2, equal - 2).trimmed();
+                    QString rightVar = exp.mid(equal + 2).trimmed();
+                    QString left = translateVar(leftVar).toString();
+                    QString right = translateVar(rightVar).toString();
+                    isTrue = left == right;
+                    inIf = true;
+                    ifContent = "";
+                }
+                break;
+            }
+            case InLoop:
+            {
+                while (pos < len)
+                {
+                    if(content.mid(pos, 12) == "{% endfor %}")
+                    {
+                        loopvars.clear();
+                        QVariantList list = translateVar(loopArray).toList();
+
+                        for(int i = 0; i < list.count(); i++)
+                        {
+                            loopvars[loopVar] = list.at(i);
+                            rc += translateContent(loopContent);
+                        }
+                        pos += 12;
+                        state = NormalState;
+                        break;
+                    }
+                    else
+                    {
+                        loopContent += content.at(pos);
+                        pos++;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return rc;
+}
+
+QVariant Generator::translateVar(QString exp)
+{
+    QString indexValue = "";
+
+    int posOpen = exp.indexOf("[");
+    if(posOpen > 0)
+    {
+        int posClose = exp.indexOf("]");
+        QString index = exp.mid(posOpen + 1, posClose - posOpen - 1).trimmed();
+        QString var = exp.mid(0, posOpen).trimmed();
+        indexValue = translateVar(index).toString();
+        exp = var;
+    }
+
+    if(exp.startsWith("page."))
+        return pagevars[exp.mid(5)];
+    else if(exp.startsWith("site."))
+    {
+        if(indexValue.isEmpty())
+            return sitevars[exp.mid(5)];
+        else
+            return sitevars[exp.mid(5)].toMap()[indexValue];
+    }
+    else
+    {
+        int dot = exp.indexOf(".");
+        if(dot <= 0)
+            return pagevars[exp];
+        QString var = exp.mid(0, dot);
+        QString value = exp.mid(dot + 1);
+        QVariant obj = loopvars[var];
+        QVariantMap map = obj.toMap();
+        return map[value];
+    }
 }
 
 void Generator::copyPath(QString src, QString dst)

@@ -21,9 +21,6 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
-
 #include <QObject>
 #include <QHash>
 #include <QVariant>
@@ -34,23 +31,39 @@ class Generator : QObject
 {
     Q_OBJECT
 public:
-    Generator(PythonQtObjectPtr ctx);
+    Generator();
 
     void generateSite(Site *site);
     void testScript(Site *site);
 
 private:
+    enum State
+    {
+        NormalState = -1,
+        InVar,
+        InLoop,
+        InExpression,
+    };
+
+    enum Mode
+    {
+        Layout = -1,
+        Include,
+    };
+
     Site *m_site;
     QVariantMap globals;
     QVariantMap pagevars;
     QVariantMap sitevars;
-    PythonQtObjectPtr context;
+    QVariantMap loopvars;
+    QString m_themePath;
 
     void parseFront(QString content);
     QString translateContent(QString content);
-    QString translateMarkdown(QString content);
     QVariantMap parseYaml(QString code);
     void copyPath(QString src, QString dst);
+    QVariant translateVar(QString exp);
+    QString translateTemplate(QString layout, Mode mode);
 };
 
 #endif // GENERATOR_H

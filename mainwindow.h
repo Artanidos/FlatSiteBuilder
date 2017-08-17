@@ -28,7 +28,6 @@
 #include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"
-#include "PythonQt.h"
 
 class QNetworkReply;
 class MainWindow : public QMainWindow
@@ -46,9 +45,7 @@ signals:
 private:
     void writeSettings();
     void readSettings();
-    void initPython();
     void initGui();
-    void runCommand(QString cmd, QString path);
     void showHtml(QString url);
 
     Expander *m_dashboardExpander;
@@ -59,11 +56,8 @@ private:
     Expander *m_settings;
     Site *m_site;
     QString m_defaultPath;
-    PythonQtObjectPtr m_context;
 
 private slots:
-    void OnPythonQtStdOut(QString str);
-    void OnPythonQtStdErr(QString str);
     void dashboardExpanded(bool value);
     void contentExpanded(bool value);
     void mediaExpanded(bool value);

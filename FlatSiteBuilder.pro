@@ -25,7 +25,6 @@ QT += core gui script
 QT += testlib network
 QT += widgets xml webenginewidgets
 
-unix:PYTHON_VERSION=2.7
 TARGET = FlatSiteBuilder
 TEMPLATE = app
 target.path += /bin
@@ -121,7 +120,6 @@ DISTFILES += \
     themes/default/includes/head.html \
     themes/default/includes/nav.html \
     themes/default/assets/css/style.css \
-    python/python.py \
     testsite/Site.xml \
     themes/default/layouts/post.html \
     testsite/pages/index.xml \
@@ -135,17 +133,6 @@ linux-g++ {
     LIBS += -L$$PWD/lib/
     LIBS += -lm
     LIBS += -ldl
-
-    LIBS += -L$$PWD/dependencies/PythonQt3.1/lib/
-    LIBS += -lPythonQt
-    LIBS += -lPythonQt_QtAll
-
-    LIBS += $$system(python$${PYTHON_VERSION}-config --libs)
-    QMAKE_CXXFLAGS += $$system(python$${PYTHON_VERSION}-config --includes)
-
-
-    INCLUDEPATH += $$PWD/dependencies/PythonQt3.1/include
-    DEPENDPATH += $$PWD/dependencies/PythonQt3.1/include
 }
 
 RESOURCES += \

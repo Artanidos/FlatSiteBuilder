@@ -8,6 +8,7 @@
 		<p class="lead blog-description">An example blog template.</p>
 	</div>
 </div>
+
 ]]></Text>
    </Column>
   </Row>
@@ -17,13 +18,14 @@
    <Column span="12">
     <Text adminlabel="Post List"><![CDATA[<ul>
 {% for post in site.posts %}
-<li><a href="{{ post.url() }}">{{ post.title() }}</a>
-{{ post.author() }}
-{{ post.date() }}<br/>
-{{ post.excerpt() }}
+<li><a href="{{ post.url }}">{{ post.title }}</a>
+{{ post.author }}
+{{ post.date }}<br/>
+{{ post.excerpt }}
 </li>
 {% endfor %}
-</ul>]]></Text>
+</ul>
+]]></Text>
    </Column>
   </Row>
  </Section>

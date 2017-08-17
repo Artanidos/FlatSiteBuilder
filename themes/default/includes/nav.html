@@ -13,9 +13,9 @@
 	 <div id="navbar" class="navbar-collapse collapse">
 	   <ul class="nav navbar-nav">
 		{% for item in site.menus[page.menu] %} 
-		 <li {% if item.url() == page.url %}class="active"{% endif %}>
-		       <a href="{{ item.url() }}">
-			       {{ item.title() }}
+		 <li {% if item.url == page.url %}class="active"{% endif %}>
+		       <a href="{{ item.url }}">
+			       {{ item.title }}
 			   </a>
 		 </li>
 		 {% endfor %}

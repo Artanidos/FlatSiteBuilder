@@ -42,8 +42,6 @@
 #include <QNetworkReply>
 #include "hyperlink.h"
 #include "generator.h"
-#include "PythonQt.h"
-#include "PythonQt_QtAll.h"
 #include "sitewizard.h"
 #include "expander.h"
 #include "site.h"
@@ -57,7 +55,6 @@ MainWindow::MainWindow()
 {
     m_site = NULL;
 
-    initPython();
     initGui();
     readSettings();
 
@@ -69,22 +66,6 @@ MainWindow::MainWindow()
     setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
     m_dashboardExpander->setExpanded(true);
     showDashboard();
-}
-
-void MainWindow::initPython()
-{
-    PythonQt::init();
-    PythonQt_QtAll::init();
-    connect(PythonQt::self(), SIGNAL(pythonStdOut(QString)), this, SLOT(OnPythonQtStdOut(QString)));
-    connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(OnPythonQtStdErr(QString)));
-    PythonQt::self()->addSysPath("/home/olaf/.local/lib/python2.7/site-packages/");
-    PythonQt::self()->addSysPath("/usr/local/lib/python2.7/dist-packages/");
-
-    PythonQt::self()->registerCPPClass("Content", "", "FlatSiteBuilder", PythonQtCreateObject<ContentWrapper>);
-    PythonQt::self()->registerCPPClass("MenuItem", "", "FlatSiteBuilder", PythonQtCreateObject<MenuItemWrapper>);
-
-    m_context = PythonQt::self()->getMainModule();
-    m_context.evalFile(":/python/python.py");
 }
 
 void MainWindow::initGui()
@@ -355,8 +336,7 @@ void MainWindow::saveProject()
     stream << doc.toString();
     file.close();
 
-    // TODO: start generate in background
-    Generator *gen = new Generator(m_context);
+    Generator *gen = new Generator();
     gen->generateSite(m_site);
     delete gen;
 }
@@ -392,16 +372,6 @@ void MainWindow::readSettings()
         restoreState(settings.value("state").toByteArray());
     }
     m_defaultPath = settings.value("lastSite").toString();
-}
-
-void MainWindow::OnPythonQtStdOut(QString str)
-{
-    qDebug() << "Python:" << str;
-}
-
-void MainWindow::OnPythonQtStdErr(QString str)
-{
-    qDebug() << "PythonErr:" << str;
 }
 
 void MainWindow::showDashboard()
@@ -498,18 +468,4 @@ void MainWindow::fileIsReady(QNetworkReply *reply)
     setCentralWidget(browser);
     browser->show();
     browser->setHtml(reply->readAll());
-}
-
-void MainWindow::runCommand(QString cmd, QString path)
-{
-    qDebug() << cmd;
-    QProcess *proc = new QProcess();
-    proc->setWorkingDirectory(path);
-    proc->start(cmd);
-    proc->waitForFinished(-1);
-    QByteArray out = proc->readAllStandardOutput();
-    QByteArray err = proc->readAllStandardError();
-    qDebug() << "gitout:" << out;
-    qDebug() << "giterr:" << err;
-    delete proc;
 }
