@@ -72,5 +72,28 @@
         <file>images/background.png</file>
         <file>images/icon64.png</file>
         <file>images/wizard.png</file>
+        <file>themes/default/layouts/default.html</file>
+        <file>themes/default/layouts/post.html</file>
+        <file>themes/default/includes/footer.html</file>
+        <file>themes/default/includes/head.html</file>
+        <file>themes/default/includes/nav.html</file>
+        <file>themes/default/includes/postheader.html</file>
+        <file>themes/default/includes/postnav.html</file>
+        <file>themes/default/assets/css/bootstrap.min.css</file>
+        <file>themes/default/assets/css/bootstrap-theme.min.css</file>
+        <file>themes/default/assets/css/theme.css</file>
+        <file>themes/default/assets/fonts/glyphicons-halflings-regular.eot</file>
+        <file>themes/default/assets/fonts/glyphicons-halflings-regular.svg</file>
+        <file>themes/default/assets/fonts/glyphicons-halflings-regular.ttf</file>
+        <file>themes/default/assets/fonts/glyphicons-halflings-regular.woff</file>
+        <file>themes/default/assets/fonts/glyphicons-halflings-regular.woff2</file>
+        <file>themes/default/assets/js/bootstrap.min.js</file>
+        <file>themes/default/assets/js/npm.js</file>
+        <file>testsite/Site.xml</file>
+        <file>testsite/posts/hello.xml</file>
+        <file>testsite/pages/index.xml</file>
+        <file>testsite/pages/news.xml</file>
+        <file>testsite/includes/footercontent.html</file>
+        <file>testsite/assets/images/woman.png</file>
     </qresource>
 </RCC>

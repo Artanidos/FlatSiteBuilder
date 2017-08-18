@@ -128,7 +128,20 @@ DISTFILES += \
     testsite/pages/news.xml \
     todo.txt \
     build.txt \
-    buildAppImage.sh
+    buildAppImage.sh \
+    themes/default/includes/postheader.html \
+    themes/default/includes/postnav.html \
+    themes/default/assets/css/bootstrap.min.css \
+    themes/default/assets/css/bootstrap-theme.min.css \
+    themes/default/assets/css/theme.css \
+    themes/default/assets/fonts/glyphicons-halflings-regular.eot \
+    themes/default/assets/fonts/glyphicons-halflings-regular.woff \
+    themes/default/assets/fonts/glyphicons-halflings-regular.woff2 \
+    themes/default/assets/fonts/glyphicons-halflings-regular.ttf \
+    themes/default/assets/fonts/glyphicons-halflings-regular.svg \
+    themes/default/assets/js/bootstrap.min.js \
+    themes/default/assets/js/npm.js \
+    testsite/includes/footercontent.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

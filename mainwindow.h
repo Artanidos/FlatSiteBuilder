@@ -46,6 +46,8 @@ private:
     void writeSettings();
     void readSettings();
     void initGui();
+    bool install();
+    void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
 
     Expander *m_dashboardExpander;

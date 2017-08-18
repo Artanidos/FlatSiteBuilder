@@ -2,17 +2,18 @@
  <Section>
   <Row>
    <Column span="12">
-    <Text adminlabel=""><![CDATA[<p>This is my first blog post.</p>
+    <Text adminlabel="Hello"><![CDATA[<h3>Hello</h3>
+<p>This is my first blog post.</p>
 
 ]]></Text>
    </Column>
   </Row>
   <Row>
    <Column span="4">
-    <Image title="" animation="fadeInLeft" src="/home/olaf/SourceCode/FlatSiteBuilder/testsite/assets/images/FrauPortrait.jpg" adminlabel="" alt=""/>
+    <Image src="/home/olaf/SourceCode/FlatSiteBuilder/testsite/assets/images/woman.png" adminlabel="" title="" alt="" animation="fadeInLeft"/>
    </Column>
    <Column span="8">
-    <Text adminlabel=""><![CDATA[<p>Here you see a beatiful lady</p>]]></Text>
+    <Text adminlabel=""><![CDATA[<p class="lead">Decription of the picture</p>]]></Text>
    </Column>
   </Row>
  </Section>

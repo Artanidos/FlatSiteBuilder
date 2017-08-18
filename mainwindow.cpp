@@ -57,15 +57,91 @@ MainWindow::MainWindow()
 
     initGui();
     readSettings();
-
-    if(m_defaultPath.isEmpty())
-        m_defaultPath = QDir::homePath();
-    else
-        loadProject(m_defaultPath + "/Site.xml");
-
-    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
+    if(!install())
+    {
+        if(m_defaultPath.isEmpty())
+            m_defaultPath = QDir::homePath();
+        else
+            loadProject(m_defaultPath + "/Site.xml");
+    }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
+}
+
+bool MainWindow::install()
+{
+    QDir installDir(QDir::homePath() + "/FlatSiteBuilder");
+    if(installDir.exists())
+        return false;
+    installDir.setPath(QDir::homePath());
+    installDir.mkdir("FlatSiteBuilder");
+    installDir.cd("FlatSiteBuilder");
+    installDir.mkdir("sites");
+    installDir.mkdir("sources");
+    installDir.mkdir("themes");
+    installDir.cd("themes");
+    installDir.mkdir("default");
+    installDir.cd("default");
+    installDir.mkdir("layouts");
+    installDir.mkdir("includes");
+    installDir.mkdir("assets");
+    installDir.cd("assets");
+    installDir.mkdir("css");
+    installDir.mkdir("fonts");
+    installDir.mkdir("js");
+    installDir.cdUp();
+    installDir.cdUp();
+    installDir.cdUp();
+    installDir.cd("sources");
+    installDir.mkdir("testsite");
+    installDir.cd("testsite");
+    installDir.mkdir("layouts");
+    installDir.mkdir("pages");
+    installDir.mkdir("posts");
+    installDir.mkdir("assets");
+    installDir.cd("assets");
+    installDir.mkdir("css");
+    installDir.mkdir("fonts");
+    installDir.mkdir("js");
+    installDir.mkdir("images");
+
+    QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
+    QString siteDir = QDir::homePath() + "/FlatSiteBuilder/sources/testsite";
+    installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
+    installFiles(":/themes/default/includes/", themeDir + "/includes/");
+    installFiles(":/themes/default/assets/css/", themeDir + "/assets/css/");
+    installFiles(":/themes/default/assets/fonts/", themeDir + "/assets/fonts/");
+    installFiles(":/themes/default/assets/js/", themeDir + "/assets/js/");
+
+    installFiles(":/testsite/", siteDir + "/", false);
+    installFiles(":/testsite/posts/", siteDir + "/posts/", false);
+    installFiles(":/testsite/pages/", siteDir + "/pages/", false);
+    installFiles(":/testsite/includes/", siteDir + "/includes/", false);
+    installFiles(":/testsite/assets/images/", siteDir + "/assets/images/", false);
+
+    m_defaultPath = siteDir;
+    loadProject(m_defaultPath + "/Site.xml");
+
+    Generator *gen = new Generator;
+    gen->generateSite(m_site);
+    delete gen;
+
+    return true;
+}
+
+void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly)
+{
+    QDir layouts(sourceDir);
+    foreach(QString source, layouts.entryList(QDir::NoDotAndDotDot | QDir::Files))
+    {
+        QFile::copy(sourceDir + source, targetDir + source);
+        if(!readOnly)
+        {
+            QFile file(targetDir + source);
+            file.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
+        }
+        qDebug() << "Installing file " + targetDir + source;
+    }
 }
 
 void MainWindow::initGui()
@@ -77,6 +153,7 @@ void MainWindow::initGui()
     m_plugins = new Expander("Plugins", ":/images/plugin_normal.png", ":/images/plugin_hover.png", ":/images/plugin_selected.png");
     m_settings = new Expander("Settings", ":/images/settings_normal.png", ":/images/settings_hover.png", ":/images/settings_selected.png");
 
+    setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addWidget(m_dashboardExpander);
     vbox->addWidget(m_media);
@@ -222,7 +299,7 @@ void MainWindow::loadProject(QString filename)
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Unable to open Site.xml";
+        qDebug() << "Unable to open " + filename;
         return;
     }
     if (!doc.setContent(&file))
