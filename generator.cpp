@@ -95,6 +95,7 @@ void Generator::generateSite(Site *site)
     sitevars["theme_accent"] = m_site->themeAccent();
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->path();
+    sitevars["github"] = m_site->github();
     globals.insert("site", sitevars);
 
     // first copy assets from site, they will not be overridden by theme assets

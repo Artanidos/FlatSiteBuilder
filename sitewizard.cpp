@@ -14,9 +14,6 @@ SiteWizard::SiteWizard()
     addPage(new SiteInfoPage);
     addPage(new ConclusionPage);
 
-    //setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
-    //setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
-
     setWindowTitle(tr("Site Wizard"));
 }
 
@@ -97,6 +94,7 @@ void SiteWizard::accept()
     QDomElement section = idoc.createElement("Section");
     QDomElement row = idoc.createElement("Row");
     QDomElement column = idoc.createElement("Column");
+    column.setAttribute("span", "12");
     QDomElement text = idoc.createElement("Text");
     text.appendChild(idoc.createCDATASection("<h1>Welcome</h1>"));
     column.appendChild(text);
