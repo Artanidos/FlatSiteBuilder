@@ -1,9 +1,13 @@
-<Site keywords="site key words" description="Site description" theme_accent="" title="Yourtitle" copyright="&amp;copy; Your Copyright" theme="default" github="https://github.com/yourname/yoursite.git">
- <Content keywords="page key words" logo="logo.png" type="page" title="Index" menu="default" source="index.xml" author="admin" date="18.08.2017" layout="default"/>
- <Content keywords="page key words" logo="logo.png" type="page" title="News" menu="default" source="news.xml" author="admin" date="18.08.2017" layout="default"/>
- <Content keywords="page key words" logo="logo.png" type="post" title="Hello" menu="default" excerpt="Thanks to FlateSiteBuilder our new website is now online." source="hello.xml" author="admin" date="18.08.2017" layout="post"/>
+<Site description="A sample test site" github="https://github.com/Artanidos/FlatSiteBuilder.git" keywords="site key words" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp" theme_accent="" title="Test">
+ <Content menu="default" keywords="" source="index.xml" layout="default" author="admin" logo="logo.png" type="page" date="19.08.2017" title="Index"/>
  <Menu name="default">
-  <Item title="Home" url="index.html"/>
-  <Item title="News" url="news.html"/>
+  <Item url="#navigation" title="Home"/>
+  <Item url="#about-us" title="About Us"/>
+  <Item url="#services" title="Services"/>
+  <Item url="#our-team" title="Our Team"/>
+  <Item url="#portfolio" title="Portfolio"/>
+  <Item url="#clients" title="Clients"/>
+  <Item url="#blog" title="Blog"/>
+  <Item url="#contact" title="Contact"/>
  </Menu>
 </Site>
