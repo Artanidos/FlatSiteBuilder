@@ -31,6 +31,7 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_cssclass = new QLineEdit();
     m_style = new QLineEdit();
     m_attributes = new QLineEdit();
+    m_id = new QLineEdit;
 
     QPushButton *save = new QPushButton("Save and Exit");
     QPushButton *cancel = new QPushButton("Cancel");
@@ -54,8 +55,10 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_grid->addWidget(m_style, 4, 0);
     m_grid->addWidget(new QLabel("Aditional Attributes"), 5, 0);
     m_grid->addWidget(m_attributes, 6, 0);
-    m_grid->addLayout(vbox, 7, 0);
-    m_grid->addLayout(hbox, 8, 0);
+    m_grid->addWidget(new QLabel("Id"), 7, 0);
+    m_grid->addWidget(m_id, 8, 0);
+    m_grid->addLayout(vbox, 9, 0);
+    m_grid->addLayout(hbox, 10, 0);
     setLayout(m_grid);
 
     connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
@@ -63,6 +66,8 @@ SectionPropertyEditor::SectionPropertyEditor()
     connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_style, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_attributes, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+
 }
 
 SectionPropertyEditor::~SectionPropertyEditor()
@@ -81,6 +86,7 @@ void SectionPropertyEditor::save()
         m_element.setAttribute("cssclass", m_cssclass->text());
         m_element.setAttribute("style", m_style->text());
         m_element.setAttribute("attributes", m_attributes->text());
+        m_element.setAttribute("id", m_id->text());
     }
     emit close(this);
 }
@@ -97,5 +103,6 @@ void SectionPropertyEditor::setContent(QDomElement element)
     m_cssclass->setText(m_element.attribute("cssclass", ""));
     m_style->setText(m_element.attribute("style", ""));
     m_attributes->setText(m_element.attribute("attributes", ""));
+    m_id->setText(m_element.attribute("id", ""));
     m_changed = false;
 }

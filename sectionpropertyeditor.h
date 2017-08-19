@@ -44,6 +44,7 @@ private:
     QLineEdit *m_cssclass;
     QLineEdit *m_style;
     QLineEdit *m_attributes;
+    QLineEdit *m_id;
     QGridLayout *m_grid;
 };
 

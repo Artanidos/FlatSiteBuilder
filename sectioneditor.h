@@ -46,6 +46,7 @@ public:
     void setCssClass(QString cls) {m_cssclass = cls;}
     void setStyle(QString style) {m_style = style;}
     void setAttributes(QString attributes) {m_attributes = attributes;}
+    void setId(QString id) {m_id = id;}
 
 private slots:
     void addRow();
@@ -72,6 +73,7 @@ private:
     QString m_cssclass;
     QString m_style;
     QString m_attributes;
+    QString m_id;
     QDomDocument m_doc;
 
     ContentEditor* getContentEditor();

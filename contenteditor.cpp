@@ -138,6 +138,7 @@ void ContentEditor::load()
         se->setCssClass(section.attribute("cssclass"));
         se->setStyle(section.attribute("style"));
         se->setAttributes(section.attribute("attributes"));
+        se->setId(section.attribute("id"));
         pe->addSection(se);
         loadRows(section, se);
         section = section.nextSiblingElement("Section");

@@ -318,6 +318,7 @@ void MainWindow::loadProject(QString filename)
     m_site->setDescription(site.attribute("description", ""));
     m_site->setGithub(site.attribute("github", ""));
     m_site->setCopyright(site.attribute("copyright"));
+    m_site->setKeywords(site.attribute("keywords"));
 
     QDomElement content = site.firstChildElement("Content");
     while(!content.isNull())
@@ -336,6 +337,7 @@ void MainWindow::loadProject(QString filename)
         p->setLogo(content.attribute("logo", "logo.png"));
         p->setAuthor(content.attribute("author"));
         p->setLayout(content.attribute("layout", "default"));
+        p->setKeywords(content.attribute("keywords"));
         p->setDate(QDate::fromString(content.attribute("date"), "dd.MM.yyyy"));
         m_site->addContent(p);
         content = content.nextSiblingElement("Content");
@@ -378,6 +380,7 @@ void MainWindow::saveProject()
     root.setAttribute("description", m_site->description());
     root.setAttribute("github", m_site->github());
     root.setAttribute("copyright", m_site->copyright());
+    root.setAttribute("keywords", m_site->keywords());
     doc.appendChild(root);
     foreach(Content *content, m_site->contents())
     {
@@ -389,6 +392,7 @@ void MainWindow::saveProject()
         c.setAttribute("logo", content->logo());
         c.setAttribute("author", content->author());
         c.setAttribute("layout", content->layout());
+        c.setAttribute("keywords", content->keywords());
         if(content->contentType() == ContentType::Post)
             c.setAttribute("excerpt", content->excerpt());
         c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));

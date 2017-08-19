@@ -42,6 +42,9 @@ public:
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
+    QString keywords() {return m_keywords;}
+    void setKeywords(QString keywords) {m_keywords = keywords;}
+
     QString description() {return m_description;}
     void setDescription(QString desc) {m_description = desc;}
 
@@ -68,6 +71,7 @@ private:
     QString m_description;
     QString m_github;
     QString m_copyright;
+    QString m_keywords;
     QList<Content *> m_contents;
     QList<Menu *> m_menus;
 };

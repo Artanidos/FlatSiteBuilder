@@ -69,6 +69,8 @@ SectionEditor::SectionEditor(bool fullwidth)
 void SectionEditor::save(QDomDocument doc, QDomElement de)
 {
     QDomElement section = doc.createElement("Section");
+    if(!m_id.isEmpty())
+        section.setAttribute("id", m_id);
     if(!m_cssclass.isEmpty())
         section.setAttribute("cssclass", m_cssclass);
     if(!m_style.isEmpty())
@@ -147,6 +149,9 @@ SectionEditor *SectionEditor::clone()
 {
     SectionEditor *ne = new SectionEditor();
     ne->setCssClass(m_cssclass);
+    ne->setId(m_id);
+    ne->setAttributes(m_attributes);
+    ne->setStyle(m_style);
     ne->setFullwidth(m_fullwidth);
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -329,6 +334,7 @@ void SectionEditor::setContent(QDomElement section)
     m_cssclass = section.attribute("cssclass");
     m_style = section.attribute("style");
     m_attributes = section.attribute("attributes");
+    m_id = section.attribute("id");
 }
 
 QDomElement SectionEditor::content()
@@ -337,5 +343,6 @@ QDomElement SectionEditor::content()
     section.setAttribute("cssclass", m_cssclass);
     section.setAttribute("style", m_style);
     section.setAttribute("attributes", m_attributes);
+    section.setAttribute("id", m_id);
     return section;
 }

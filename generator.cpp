@@ -68,6 +68,7 @@ void Generator::generateSite(Site *site)
         cm["source"] = content->source();
         cm["title"] = content->title();
         cm["url"] = content->url();
+        cm["keywords"] = content->keywords();
         if(content->contentType() == ContentType::Page)
             pages.append(cm);
         else
@@ -96,19 +97,28 @@ void Generator::generateSite(Site *site)
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->path();
     sitevars["github"] = m_site->github();
-    globals.insert("site", sitevars);
+    sitevars["keywords"] = m_site->keywords();
 
     // first copy assets from site, they will not be overridden by theme assets
     copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
     copyPath(m_themePath + m_site->theme() + "/assets", dir + "/" + m_site->title() + "/assets");
 
+    int index = 0;
     foreach (Content *content, m_site->contents())
     {
         QString subdir;
+        QVariantMap cm;
         if(content->contentType() == ContentType::Page)
+        {
             subdir = "pages";
+            cm = sitevars["pages"].toList().at(index).toMap();
+        }
         else
+        {
             subdir = "posts";
+            cm = sitevars["posts"].toList().at(index).toMap();
+        }
+        index++;
 
         QDomDocument doc;
         QFile file(m_site->path() + "/" + subdir + "/" + content->source());
@@ -117,7 +127,7 @@ void Generator::generateSite(Site *site)
             if (doc.setContent(&file))
             {
                 file.close();
-                pagevars.clear();
+                //pagevars.clear();
                 QString cnt = "";
                 QDomElement c = doc.documentElement();
                 QDomElement section = c.firstChildElement("Section");
@@ -137,16 +147,8 @@ void Generator::generateSite(Site *site)
                 layout = layout + ".html";
 
                 QString name = dir + "/" + m_site->title() + "/" + content->url();
-                pagevars["url"] = content->url();
-                pagevars["title"] = content->title();
-                pagevars["date"] = content->date();
-                pagevars["author"] = content->author();
-                pagevars["excerpt"] = content->excerpt();
-                pagevars["menu"] = content->menu();
-                pagevars["logo"] = content->logo();
 
-                globals.insert("page", pagevars);
-
+                pagevars = cm;
                 pagevars["content"] = translateContent(cnt);
 
                 QFile out(name);
@@ -211,9 +213,11 @@ QString Generator::translateContent(QString content)
     int start = 0;
     int pos = 0;
     bool inIf = false;
+    bool inElse = false;
     bool isTrue = false;
     QString rc = "";
     QString ifContent;
+    QString elseContent;
     QString loopContent;
     QString loopVar;
     QString loopArray;
@@ -234,11 +238,30 @@ QString Generator::translateContent(QString content)
                             state = InVar;
                             break;
                         }
-                        else if(content.mid(pos, 11) == "{% endif %}")
+                        // {½ if bla == blub %} {{ if }} {% else %} {{ else }} {% endif %}
+                        else if(content.mid(pos, 10) == "{% else %}")
                         {
-                            if(isTrue)
+                            if(isTrue && inIf)
                                 rc += ifContent;
                             inIf = false;
+                            inElse = true;
+                            pos += 10;
+                            break;
+                        }
+                        else if(content.mid(pos, 11) == "{% endif %}")
+                        {
+                            if(inIf)
+                            {
+                                if(isTrue)
+                                    rc += ifContent;
+                            }
+                            else if(inElse)
+                            {
+                                if(!isTrue)
+                                    rc += elseContent;
+                            }
+                            inIf = false;
+                            inElse = false;
                             isTrue = false;
                             pos += 11;
                             break;
@@ -250,6 +273,8 @@ QString Generator::translateContent(QString content)
                         }
                         if(inIf)
                             ifContent += ch;
+                        else if(inElse)
+                            elseContent += ch;
                         else
                             rc += ch;
                         pos++;
@@ -259,6 +284,8 @@ QString Generator::translateContent(QString content)
                     {
                         if(inIf)
                             ifContent += ch;
+                        else if(inElse)
+                            elseContent += ch;
                         else
                             rc += ch;
                         pos++;
@@ -280,9 +307,12 @@ QString Generator::translateContent(QString content)
                     else
                         pos++;
                 }
-                QString var = translateVar(content.mid(start + 2, pos - start - 4).trimmed()).toString();
+                QString varname = content.mid(start + 2, pos - start - 4).trimmed();
+                QString var = translateVar(varname).toString();
                 if(inIf)
                     ifContent += var;
+                else if(inElse)
+                    elseContent += var;
                 else
                     rc += var;
                 break;
@@ -321,7 +351,9 @@ QString Generator::translateContent(QString content)
                     QString right = translateVar(rightVar).toString();
                     isTrue = left == right;
                     inIf = true;
+                    inElse = false;
                     ifContent = "";
+                    elseContent = "";
                 }
                 break;
             }
@@ -359,6 +391,9 @@ QString Generator::translateContent(QString content)
 QVariant Generator::translateVar(QString exp)
 {
     QString indexValue = "";
+
+    if(exp == "\"\"") // blank constant: {% if page.keywords == "" %}
+        return "";
 
     int posOpen = exp.indexOf("[");
     if(posOpen > 0)

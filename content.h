@@ -58,6 +58,9 @@ public:
     QString author() {return m_author;}
     void setAuthor(QString author) {m_author = author;}
 
+    QString keywords() {return m_keywords;}
+    void setKeywords(QString keywords) {m_keywords = keywords;}
+
     QDate date() {return m_date;}
     void setDate(QDate date) {m_date = date;}
 
@@ -76,6 +79,7 @@ private:
     QString m_excerpt;
     QString m_menu;
     QString m_logo;
+    QString m_keywords;
     QList<Section *> m_sections;
     ContentType m_type;
     QDate m_date;

@@ -28,6 +28,7 @@ Section::Section()
 
 QString Section::getHtml(QDomElement sec)
 {
+    QString id = sec.attribute("id");
     QString cls = sec.attribute("cssclass");
     QString style = sec.attribute("style");
     QString attributes = sec.attribute("attributes");
@@ -38,6 +39,8 @@ QString Section::getHtml(QDomElement sec)
             cls += " ";
         cls += "container";
     }
+    if(!id.isEmpty())
+        html += " id=\"" + id +"\"";
     if(!cls.isEmpty())
         html += " class=\"" + cls + "\"";
     if(!style.isEmpty())
