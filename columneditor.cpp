@@ -70,7 +70,7 @@ void ColumnEditor::addElement()
 
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Add Element");
     connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
     connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
@@ -81,7 +81,7 @@ void ColumnEditor::copyElement(ElementEditor *e)
     addElement(e->clone());
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Copy Element");
 }
 
 void ColumnEditor::addElement(ElementEditor *ee)
@@ -209,7 +209,7 @@ void ColumnEditor::dropEvent(QDropEvent *event)
             ee->disconnect(SIGNAL(elementCopied(ElementEditor*)));
             ContentEditor *ce = getContentEditor();
             if(ce)
-                ce->editChanged();
+                ce->editChanged("Move Element");
             connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
             connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
             connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));

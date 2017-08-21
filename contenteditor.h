@@ -28,6 +28,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QDomElement>
+#include <QUndoStack>
 #include <QParallelAnimationGroup>
 #include "content.h"
 #include "site.h"
@@ -46,18 +47,25 @@ public:
     void elementEdit(ElementEditor *);
     void rowEdit(RowEditor *);
     void sectionEdit(SectionEditor *);
+    void setUndoStack(QUndoStack *stack);
+    Content *content() {return m_content;}
+    Site *site() {return m_site;}
+    QString filename() {return m_filename;}
+    void load();
 
 public slots:
-    void editChanged();
+    void editChanged(QString text);
+    void save();
 
 private slots:
-    void save();
     void preview();
     void editorClose(QWidget *);
     void rowEditorClose(QWidget *);
     void sectionEditorClose(QWidget *);
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
+    void titleChanged();
+    void excerptChanged();
 
 signals:
     void contentUpdated();
@@ -83,8 +91,8 @@ private:
     ElementEditor *m_elementEditor;
     RowEditor *m_rowEditor;
     SectionEditor *m_sectionEditor;
+    QUndoStack *m_undoStack;
 
-    void load();
     void init();
     void loadRows(QDomElement section, SectionEditor *se);
     void loadColumns(QDomElement row, RowEditor *re);

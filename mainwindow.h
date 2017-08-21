@@ -48,6 +48,7 @@ private:
     void readSettings();
     void initGui();
     bool install();
+    void initUndoRedo();
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
 

@@ -26,6 +26,7 @@
 #include "slidereditor.h"
 #include "animationlabel.h"
 #include "pageeditor.h"
+#include "commands.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
 #include <QGridLayout>
@@ -37,6 +38,7 @@
 #include <QParallelAnimationGroup>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QAction>
 #include <QTest>
 
 ContentEditor::ContentEditor(Site *site, Content *content)
@@ -44,7 +46,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_site = site;
     m_content = content;
 
-    QString txt = "preview ";
+    QString txt = "view ";
     if(m_content->contentType() == ContentType::Page)
         txt += "page";
     else
@@ -99,9 +101,32 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         load();
 
     connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
-    connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(editChanged()));
+    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged()));
+    connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(excerptChanged()));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
+}
+
+void ContentEditor::titleChanged()
+{
+    editChanged("Titel changed");
+}
+
+void ContentEditor::excerptChanged()
+{
+    editChanged("Excerpt changed");
+}
+
+void ContentEditor::setUndoStack(QUndoStack *stack)
+{
+    m_undoStack = stack;
+    QAction *undoAct = m_undoStack->createUndoAction(this, "&Undo");
+    undoAct->setShortcuts(QKeySequence::Undo);
+
+    QAction *redoAct = m_undoStack->createRedoAction(this, "&Redo");
+    redoAct->setShortcuts(QKeySequence::Redo);
+
+    addAction(undoAct);
+    addAction(redoAct);
 }
 
 void ContentEditor::init()
@@ -201,14 +226,11 @@ void ContentEditor::save()
             m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".xml";
         }
         // TODO: real author here
-        m_content->setAuthor("Olaf Japp");
+        m_content->setAuthor("author");
         m_content->setSource(m_title->text().toLower() + ".xml");
         m_content->setDate(QDate());   
         m_site->addContent(m_content);
     }
-
-    // create a versioned file prior to override the old file
-    QFile::copy(m_filename, m_filename + "." + QDate::currentDate().toString("yyyyddMM") + QTime::currentTime().toString("hhmmss"));
 
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
@@ -244,13 +266,12 @@ void ContentEditor::save()
     emit contentUpdated();
 }
 
-void ContentEditor::editChanged()
+void ContentEditor::editChanged(QString text)
 {
-    //QUndoCommand *deleteCommand = new DeleteItemCommand(item, this);
-    //m_undoStack->push(deleteCommand);
+    QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
+    m_undoStack->push(changeCommand);
 
-
-    m_save->setEnabled(true);
+    //m_save->setEnabled(true);
 }
 
 void ContentEditor::preview()
@@ -408,8 +429,8 @@ void ContentEditor::sectionEditorClose(QWidget *w)
 {
     if(m_editor->changed())
     {
-        editChanged();
         m_sectionEditor->setContent(m_editor->content());
+        editChanged("Update Section");
     }
     editorClosed(w);
 }
@@ -418,8 +439,8 @@ void ContentEditor::rowEditorClose(QWidget *w)
 {
     if(m_editor->changed())
     {
-        editChanged();
         m_rowEditor->setContent(m_editor->content());
+        editChanged("Update Row");
     }
     editorClosed(w);
 }
@@ -428,8 +449,8 @@ void ContentEditor::editorClose(QWidget *w)
 {
     if(m_editor->changed())
     {
-        editChanged();
         m_elementEditor->setContent(m_editor->content());
+        editChanged("Update Element");
     }
     editorClosed(w);
 }

@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     menuitem.cpp \
     rowpropertyeditor.cpp \
     sectionpropertyeditor.cpp \
-    sitewizard.cpp
+    sitewizard.cpp \
+    commands.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \

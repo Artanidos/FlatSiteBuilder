@@ -74,6 +74,7 @@ private:
     Mode m_mode;
     Type m_type;
     bool m_zoom;
+    QDomDocument m_doc;
 
     void setColor(QString name);
     ContentEditor* getContentEditor();

@@ -32,6 +32,7 @@ public:
     Element();
 
     virtual QString getHtml(QDomElement ele);
+
 };
 
 #endif // ELEMENT_H

@@ -87,10 +87,13 @@ void RowEditor::save(QDomDocument doc, QDomElement de)
 
 void RowEditor::close()
 {
+    SectionEditor *se = dynamic_cast<SectionEditor*>(parentWidget());
+    if(se)
+        se->removeRow(this);
+    this->deleteLater();
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
-    delete this;
+        ce->editChanged("Delete Row");    
 }
 
 void RowEditor::copy()
@@ -233,7 +236,7 @@ void RowEditor::addColumns()
     }
     ContentEditor *c = getContentEditor();
     if(c)
-        c->editChanged();
+        c->editChanged("Add Columns");
 }
 
 void RowEditor::addColumn(ColumnEditor *ce, int column)

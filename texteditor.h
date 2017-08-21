@@ -45,8 +45,8 @@ public slots:
 
 private:
     QTextEdit *m_html;
-    QLineEdit *m_adminlabel;
     QPushButton *m_save;
+    QLineEdit *m_adminlabel;
 };
 
 #endif // TEXTEDITOR_H

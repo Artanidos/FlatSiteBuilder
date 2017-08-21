@@ -54,8 +54,8 @@
 MainWindow::MainWindow()
 {
     m_site = NULL;
-    m_undoStack = new QUndoStack;
 
+    initUndoRedo();
     initGui();
     readSettings();
     if(!install())
@@ -67,6 +67,16 @@ MainWindow::MainWindow()
     }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
+}
+
+void MainWindow::initUndoRedo()
+{
+    m_undoStack = new QUndoStack;
+    QDir temp(QDir::tempPath() + "/FlatSiteBuilder");
+    if(temp.exists())
+        temp.removeRecursively();
+    temp.setPath(QDir::tempPath());
+    temp.mkdir("FlatSiteBuilder");
 }
 
 bool MainWindow::install()
@@ -416,6 +426,15 @@ void MainWindow::loadProject(QString filename)
         m_site->addMenu(m);
         menu = menu.nextSiblingElement("Menu");
     }
+
+    // create temp dir for undo redo
+    QString tempPath = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    QDir temp(QDir::tempPath() + "/FlatSiteBuilder");
+    temp.mkdir(tempPath);
+    temp.cd(tempPath);
+    temp.mkdir("pages");
+    temp.mkdir("posts");
+
     emit siteLoaded(m_site);
 }
 
@@ -543,6 +562,7 @@ void MainWindow::showPages()
 void MainWindow::addPost()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Post));
+    edit->setUndoStack(m_undoStack);
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
@@ -551,6 +571,7 @@ void MainWindow::addPost()
 void MainWindow::addPage()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Page));
+    edit->setUndoStack(m_undoStack);
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
@@ -559,6 +580,7 @@ void MainWindow::addPage()
 void MainWindow::editContent(Content *content)
 {
     ContentEditor *edit = new ContentEditor(m_site, content);
+    edit->setUndoStack(m_undoStack);
     connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);

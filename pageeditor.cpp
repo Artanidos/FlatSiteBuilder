@@ -68,7 +68,7 @@ void PageEditor::addSection()
     addSection(new SectionEditor());
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Add Section");
 }
 
 void PageEditor::addFullSection()
@@ -76,7 +76,7 @@ void PageEditor::addFullSection()
     addSection(new SectionEditor(true));
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Add Section");
 }
 
 void PageEditor::copySection(SectionEditor *se)
@@ -84,7 +84,7 @@ void PageEditor::copySection(SectionEditor *se)
     addSection(se->clone());
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Copy Section");
 }
 
 void PageEditor::removeSection(SectionEditor *se)
@@ -220,7 +220,7 @@ void PageEditor::dropEvent(QDropEvent *event)
             }
             ContentEditor *ce = getContentEditor();
             if(ce)
-                ce->editChanged();
+                ce->editChanged("Move Section");
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }

@@ -205,13 +205,17 @@ void ElementEditor::enable()
         case 1:
             m_text->setText("Text");
             m_type = Type::Text;
+            m_content = m_doc.createElement("Text");
+            m_content.appendChild(m_doc.createCDATASection(""));
             break;
         case 2:
             m_text->setText("Image");
+            m_content = m_doc.createElement("Image");
             m_type = Type::Image;
             break;
         case 3:
             m_text->setText("Slider");
+            m_content = m_doc.createElement("Slider");
             m_type = Type::Slider;
             break;
         default:
@@ -225,11 +229,11 @@ void ElementEditor::enable()
 
 void ElementEditor::close()
 {
+    parentWidget()->layout()->removeWidget(this);
+    this->deleteLater();
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
-    parentWidget()->layout()->removeWidget(this);
-    delete this;
+        ce->editChanged("Delete Element"); 
 }
 
 void ElementEditor::edit()

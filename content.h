@@ -86,18 +86,4 @@ private:
     bool m_published;
 };
 
-class ContentWrapper : public QObject
-{
-    Q_OBJECT
-
-public Q_SLOTS:
-    QString url(Content *o) {return o->url();}
-    QString logo(Content *o) {return o->logo();}
-    QString title(Content *o) {return o->title();}
-    QString menu(Content *o) {return o->menu();}
-    QString date(Content *o) {return o->date().toString("dd.MM.yyyy");}
-    QString excerpt(Content *o) {return o->excerpt();}
-    QString author(Content *o) {return o->author();}
-};
-
 #endif // CONTENT_H

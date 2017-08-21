@@ -104,7 +104,7 @@ void SectionEditor::copyRowEditor(RowEditor *re)
     addRow(re->clone());
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Copy Row");
 }
 
 void SectionEditor::enableColumnAcceptDrop(bool mode)
@@ -122,15 +122,18 @@ void SectionEditor::addRow()
     addRow(new RowEditor());
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
+        ce->editChanged("Add Row");
 }
 
 void SectionEditor::close()
 {
+    PageEditor *pe = dynamic_cast<PageEditor*>(parentWidget());
+    if(pe)
+        pe->removeSection(this);
+    this->deleteLater();
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged();
-    delete this;
+        ce->editChanged("Delete Row");
 }
 
 void SectionEditor::copy()
@@ -237,7 +240,7 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
             }
             ContentEditor *ce = getContentEditor();
             if(ce)
-                ce->editChanged();
+                ce->editChanged("Move Row");
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }
