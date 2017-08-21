@@ -31,9 +31,12 @@ void SiteWizard::accept()
     dir.mkdir("pages");
     dir.mkdir("posts");
     dir.mkdir("includes");
+    dir.mkdir("layouts");
     dir.mkdir("assets");
     dir.cd("assets");
     dir.mkdir("css");
+    dir.mkdir("fonts");
+    dir.mkdir("js");
     dir.mkdir("images");
 
     QDomDocument doc;
@@ -63,8 +66,6 @@ void SiteWizard::accept()
     c.setAttribute("menu", "default");
     c.setAttribute("author", "admin");
     c.setAttribute("layout", "default");
-    //if(content->contentType() == ContentType::Post)
-    //    c.setAttribute("excerpt", content->excerpt());
     c.setAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
     root.appendChild(c);
 
@@ -160,7 +161,7 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     m_theme = new QComboBox;
     m_themeLabel->setBuddy(m_theme);
     m_theme->addItem("default");
-    m_theme->setEnabled(false);
+    m_theme->addItem("himu");
 
     registerField("siteName*", m_siteNameLineEdit);
     registerField("description", m_descriptionLineEdit);

@@ -54,6 +54,7 @@
 MainWindow::MainWindow()
 {
     m_site = NULL;
+    m_undoStack = new QUndoStack;
 
     initGui();
     readSettings();
@@ -91,11 +92,43 @@ bool MainWindow::install()
     installDir.mkdir("js");
     installDir.cdUp();
     installDir.cdUp();
+    installDir.mkdir("himu");
+    installDir.cd("himu");
+    installDir.mkdir("layouts");
+    installDir.mkdir("includes");
+    installDir.mkdir("assets");
+    installDir.cd("assets");
+    installDir.mkdir("css");
+    installDir.mkdir("fonts");
+    installDir.mkdir("js");
+    installDir.mkdir("images");
+    installDir.cd("images");
+    installDir.mkdir("about-us");
+    installDir.mkdir("blog");
+    installDir.mkdir("clients");
+    installDir.mkdir("ico");
+    installDir.mkdir("our-team");
+    installDir.mkdir("portfolio");
+    installDir.mkdir("services");
+    installDir.mkdir("slider");
+    installDir.mkdir("prettyPhoto");
+    installDir.cd("prettyPhoto");
+    installDir.mkdir("dark_rounded");
+    installDir.mkdir("dark_square");
+    installDir.mkdir("default");
+    installDir.mkdir("facebook");
+    installDir.mkdir("light_rounded");
+    installDir.mkdir("light_square");
+    installDir.cdUp();
+    installDir.cdUp();
+    installDir.cdUp();
+    installDir.cdUp();
     installDir.cdUp();
     installDir.cd("sources");
     installDir.mkdir("testsite");
     installDir.cd("testsite");
     installDir.mkdir("layouts");
+    installDir.mkdir("includes");
     installDir.mkdir("pages");
     installDir.mkdir("posts");
     installDir.mkdir("assets");
@@ -106,18 +139,41 @@ bool MainWindow::install()
     installDir.mkdir("images");
 
     QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
-    QString siteDir = QDir::homePath() + "/FlatSiteBuilder/sources/testsite";
     installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
     installFiles(":/themes/default/includes/", themeDir + "/includes/");
     installFiles(":/themes/default/assets/css/", themeDir + "/assets/css/");
     installFiles(":/themes/default/assets/fonts/", themeDir + "/assets/fonts/");
     installFiles(":/themes/default/assets/js/", themeDir + "/assets/js/");
 
+    themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/himu";
+    installFiles(":/themes/himu/", themeDir + "/");
+    installFiles(":/themes/himu/layouts/", themeDir + "/layouts/");
+    installFiles(":/themes/himu/includes/", themeDir + "/includes/");
+    installFiles(":/themes/himu/assets/css/", themeDir + "/assets/css/");
+    installFiles(":/themes/himu/assets/fonts/", themeDir + "/assets/fonts/");
+    installFiles(":/themes/himu/assets/js/", themeDir + "/assets/js/");
+    installFiles(":/themes/himu/assets/images/", themeDir + "/assets/images/");
+    installFiles(":/themes/himu/assets/images/about-us/", themeDir + "/assets/images/about-us/");
+    installFiles(":/themes/himu/assets/images/blog/", themeDir + "/assets/images/blog/");
+    installFiles(":/themes/himu/assets/images/clients/", themeDir + "/assets/images/clients/");
+    installFiles(":/themes/himu/assets/images/ico/", themeDir + "/assets/images/ico/");
+    installFiles(":/themes/himu/assets/images/our-team/", themeDir + "/assets/images/our-team/");
+    installFiles(":/themes/himu/assets/images/portfolio/", themeDir + "/assets/images/portfolio/");
+    installFiles(":/themes/himu/assets/images/blog/", themeDir + "/assets/images/blog/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/", themeDir + "/assets/images/prettyPhoto/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/dark_rounded/", themeDir + "/assets/images/prettyPhoto/dark_rounded/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/dark_square/", themeDir + "/assets/images/prettyPhoto/dark_square/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/default/", themeDir + "/assets/images/prettyPhoto/default/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/facebook/", themeDir + "/assets/images/prettyPhoto/facebook/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/light_rounded/", themeDir + "/assets/images/prettyPhoto/light_rounded/");
+    installFiles(":/themes/himu/assets/images/prettyPhoto/light_square/", themeDir + "/assets/images/prettyPhoto/light_square/");
+    installFiles(":/themes/himu/assets/images/services/", themeDir + "/assets/images/services/");
+    installFiles(":/themes/himu/assets/images/slider/", themeDir + "/assets/images/slider/");
+
+
+    QString siteDir = QDir::homePath() + "/FlatSiteBuilder/sources/testsite";
     installFiles(":/testsite/", siteDir + "/", false);
-    installFiles(":/testsite/posts/", siteDir + "/posts/", false);
     installFiles(":/testsite/pages/", siteDir + "/pages/", false);
-    installFiles(":/testsite/includes/", siteDir + "/includes/", false);
-    installFiles(":/testsite/assets/images/", siteDir + "/assets/images/", false);
 
     m_defaultPath = siteDir;
     loadProject(m_defaultPath + "/Site.xml");

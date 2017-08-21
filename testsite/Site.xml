@@ -1,13 +1,13 @@
-<Site description="A sample test site" github="https://github.com/Artanidos/FlatSiteBuilder.git" keywords="site key words" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp" theme_accent="" title="Test">
- <Content menu="default" keywords="" source="index.xml" layout="default" author="admin" logo="logo.png" type="page" date="19.08.2017" title="Index"/>
+<Site theme_accent="" title="Test" keywords="site key words" description="A sample test site" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp">
+ <Content source="index.xml" logo="logo.png" title="Index" author="admin" keywords="" type="page" layout="default" date="21.08.2017" menu="default"/>
  <Menu name="default">
-  <Item url="#navigation" title="Home"/>
-  <Item url="#about-us" title="About Us"/>
-  <Item url="#services" title="Services"/>
-  <Item url="#our-team" title="Our Team"/>
-  <Item url="#portfolio" title="Portfolio"/>
-  <Item url="#clients" title="Clients"/>
-  <Item url="#blog" title="Blog"/>
-  <Item url="#contact" title="Contact"/>
+  <Item title="Home" url="#navigation"/>
+  <Item title="About Us" url="#about-us"/>
+  <Item title="Services" url="#services"/>
+  <Item title="Our Team" url="#our-team"/>
+  <Item title="Portfolio" url="#portfolio"/>
+  <Item title="Clients" url="#clients"/>
+  <Item title="Blog" url="#blog"/>
+  <Item title="Contact" url="#contact"/>
  </Menu>
 </Site>

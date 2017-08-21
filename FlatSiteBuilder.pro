@@ -111,7 +111,8 @@ HEADERS  += mainwindow.h \
     menuitem.h \
     rowpropertyeditor.h \
     sectionpropertyeditor.h \
-    sitewizard.h
+    sitewizard.h \
+    commands.h
 
 DISTFILES += \
     README.md \
@@ -141,7 +142,25 @@ DISTFILES += \
     themes/default/assets/fonts/glyphicons-halflings-regular.svg \
     themes/default/assets/js/bootstrap.min.js \
     themes/default/assets/js/npm.js \
-    testsite/includes/footercontent.html
+    testsite/includes/footercontent.html \
+    web/pages/index.xml \
+    web/pages/notimpl.xml \
+    web/pages/publish.xml \
+    web/Site.xml \
+    web/assets/images/olaf winter.jpg \
+    web/assets/images/olaf.jpg \
+    web/assets/images/Columns.png \
+    web/assets/images/Dashboard.png \
+    web/assets/images/Editor.png \
+    web/assets/images/Layout.png \
+    web/assets/images/logo.png \
+    web/assets/images/logo_dark.png \
+    web/assets/images/Modules.png \
+    web/assets/images/tagcloud.png \
+    Screenshot.png \
+    web/assets/css/style.css \
+    web/includes/footercontent.html \
+    web/layouts/simple.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

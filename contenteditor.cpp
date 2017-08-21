@@ -246,6 +246,10 @@ void ContentEditor::save()
 
 void ContentEditor::editChanged()
 {
+    //QUndoCommand *deleteCommand = new DeleteItemCommand(item, this);
+    //m_undoStack->push(deleteCommand);
+
+
     m_save->setEnabled(true);
 }
 

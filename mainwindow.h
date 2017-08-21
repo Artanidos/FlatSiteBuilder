@@ -25,6 +25,7 @@
 #include <QTextEdit>
 #include <QTreeWidget>
 #include <QGraphicsView>
+#include <QUndoStack>
 #include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"
@@ -58,6 +59,7 @@ private:
     Expander *m_settings;
     Site *m_site;
     QString m_defaultPath;
+    QUndoStack *m_undoStack;
 
 private slots:
     void dashboardExpanded(bool value);
