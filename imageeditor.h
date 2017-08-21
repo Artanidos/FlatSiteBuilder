@@ -37,8 +37,7 @@ public:
 
 private slots:
     void seek();
-    void save();
-    void cancel();
+    void closeEditor();
 
 private:
     QString m_animation;

@@ -37,6 +37,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
+    void reloadProject();
+    void saveProject();
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
@@ -75,13 +78,13 @@ private slots:
     void addPost();
     void addPage();
     void editContent(Content *page);
-    void saveProject();
-    void loadProject(QString path);
     void previewSite(Content *content);
     void publishSite();
     void createSite();
     void notImplemented();
     void fileIsReady(QNetworkReply *reply);
+    void loadProject(QString path);
+    void projectUpdated(QString text);
 };
 
 #endif // MAINWINDOW_H

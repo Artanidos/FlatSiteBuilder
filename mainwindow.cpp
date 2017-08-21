@@ -42,6 +42,7 @@
 #include <QNetworkReply>
 #include "hyperlink.h"
 #include "generator.h"
+#include "commands.h"
 #include "sitewizard.h"
 #include "expander.h"
 #include "site.h"
@@ -60,10 +61,7 @@ MainWindow::MainWindow()
     readSettings();
     if(!install())
     {
-        if(m_defaultPath.isEmpty())
-            m_defaultPath = QDir::homePath();
-        else
-            loadProject(m_defaultPath + "/Site.xml");
+        loadProject(m_defaultPath + "/Site.xml");
     }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
@@ -360,12 +358,27 @@ void MainWindow::settingsExpanded(bool value)
 void MainWindow::loadProject(QString filename)
 {
     m_site = new Site(filename);
+    reloadProject();
+
+    // create temp dir for undo redo
+    QString tempPath = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    QDir temp(QDir::tempPath() + "/FlatSiteBuilder");
+    temp.mkdir(tempPath);
+    temp.cd(tempPath);
+    temp.mkdir("pages");
+    temp.mkdir("posts");
+}
+
+void MainWindow::reloadProject()
+{
+    m_site->contents().clear();
+    m_site->menus().clear();
 
     QDomDocument doc;
-    QFile file(filename);
+    QFile file(m_site->path() + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Unable to open " + filename;
+        qDebug() << "Unable to open " + m_site->path() + "/Site.xml";
         return;
     }
     if (!doc.setContent(&file))
@@ -427,14 +440,6 @@ void MainWindow::loadProject(QString filename)
         menu = menu.nextSiblingElement("Menu");
     }
 
-    // create temp dir for undo redo
-    QString tempPath = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
-    QDir temp(QDir::tempPath() + "/FlatSiteBuilder");
-    temp.mkdir(tempPath);
-    temp.cd(tempPath);
-    temp.mkdir("pages");
-    temp.mkdir("posts");
-
     emit siteLoaded(m_site);
 }
 
@@ -491,10 +496,12 @@ void MainWindow::saveProject()
     QTextStream stream(&file);
     stream << doc.toString();
     file.close();
+}
 
-    Generator *gen = new Generator();
-    gen->generateSite(m_site);
-    delete gen;
+void MainWindow::projectUpdated(QString text)
+{
+    QUndoCommand *changeCommand = new ChangeProjectCommand(this, m_site, text);
+    m_undoStack->push(changeCommand);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -546,7 +553,7 @@ void MainWindow::showPosts()
     ContentList *list = new ContentList(m_site, ContentType::Post);
     connect(list, SIGNAL(addContent()), this, SLOT(addPost()));
     connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
-    connect(list, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(list, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(list);
 }
 
@@ -555,7 +562,7 @@ void MainWindow::showPages()
     ContentList *list = new ContentList(m_site, ContentType::Page);
     connect(list, SIGNAL(addContent()), this, SLOT(addPage()));
     connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
-    connect(list, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(list, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(list);
 }
 
@@ -563,7 +570,7 @@ void MainWindow::addPost()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Post));
     edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
 }
@@ -572,7 +579,7 @@ void MainWindow::addPage()
 {
     ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Page));
     edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     setCentralWidget(edit);
 }
@@ -581,8 +588,9 @@ void MainWindow::editContent(Content *content)
 {
     ContentEditor *edit = new ContentEditor(m_site, content);
     edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated()), this, SLOT(saveProject()));
+    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
+    connect(this, SIGNAL(siteLoaded(Site*)), edit, SLOT(siteLoaded(Site*)));
     setCentralWidget(edit);
 }
 

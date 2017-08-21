@@ -45,6 +45,9 @@ SectionEditor::SectionEditor(bool fullwidth)
     m_editButton = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
     m_copyButton = new FlatButton(":/images/copy_normal.png", ":/images/copy_hover.png");
     m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    m_editButton->setToolTip("Edit Section");
+    m_closeButton->setToolTip("Delete Section");
+    m_copyButton->setToolTip("Copy Section");
     vbox->addWidget(m_editButton);
     vbox->addWidget(m_copyButton);
     vbox->addWidget(m_closeButton);

@@ -54,10 +54,6 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_previewLink = new Hyperlink(txt);
     m_vbox = new QVBoxLayout();
     m_layout = new QGridLayout();
-    m_save = new QPushButton();
-    m_save->setText(m_content->source().isEmpty() ? "Save" : "Update");
-    m_save->setEnabled(false);
-    m_save->setMaximumWidth(120);
     m_titleLabel = new QLabel();
     if(!m_content->title().isEmpty())
         m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Edit Page" : "Edit Post");
@@ -78,7 +74,6 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
     m_layout->addWidget(m_title, 1, 0, 1, 2);
-    m_layout->addWidget(m_save, 1, 2);
     m_layout->addWidget(m_scroll, 2, 0, 1, 3);
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
@@ -100,20 +95,36 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     else
         load();
 
-    connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged()));
-    connect(m_excerpt, SIGNAL(textChanged(QString)), this, SLOT(excerptChanged()));
+    connect(m_title, SIGNAL(editingFinished()), this, SLOT(titleChanged()));
+    connect(m_excerpt, SIGNAL(editingFinished()), this, SLOT(excerptChanged()));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
+}
+
+void ContentEditor::siteLoaded(Site *site)
+{
+    m_site = site;
+    foreach(Content *c, m_site->contents())
+    {
+        if(c->source() == m_content->source() && c->contentType() == m_content->contentType())
+        {
+            m_excerpt->setText(c->excerpt());
+            m_title->setText(c->title());
+        }
+    }
 }
 
 void ContentEditor::titleChanged()
 {
-    editChanged("Titel changed");
+    m_content->setDate(QDate::currentDate());
+    m_content->setTitle(m_title->text());
+    emit contentUpdated("Titel changed");
 }
 
 void ContentEditor::excerptChanged()
 {
-    editChanged("Excerpt changed");
+    m_content->setDate(QDate::currentDate());
+    m_content->setExcerpt(m_excerpt->text());
+    emit contentUpdated("Excerpt changed");
 }
 
 void ContentEditor::setUndoStack(QUndoStack *stack)
@@ -251,32 +262,17 @@ void ContentEditor::save()
     stream << doc.toString();
     file.close();
 
-    if(m_content->contentType() == ContentType::Post)
-        m_content->setExcerpt(m_excerpt->text());
-    m_content->setDate(QDate::currentDate());
-    m_content->setTitle(m_title->text());
-
-    m_save->setText("Update");
-    m_save->setEnabled(false);
-    if(m_content->contentType() == ContentType::Page)
-        m_titleLabel->setText("Edit Page");
-    else
-        m_titleLabel->setText("Edit Post");
-
-    emit contentUpdated();
+    //emit contentUpdated("Content Save");
 }
 
 void ContentEditor::editChanged(QString text)
 {
     QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
     m_undoStack->push(changeCommand);
-
-    //m_save->setEnabled(true);
 }
 
 void ContentEditor::preview()
 {
-    save();
     emit preview(m_content);
 }
 
@@ -397,7 +393,6 @@ void ContentEditor::animationFineshedZoomIn()
     m_layout->replaceWidget(m_animationPanel, m_editor);
     m_animationPanel->hide();
     m_title->hide();
-    m_save->hide();
     m_previewLink->hide();
     if(m_content->contentType() == ContentType::Post)
     {
@@ -409,7 +404,6 @@ void ContentEditor::animationFineshedZoomIn()
 void ContentEditor::editorClosed(QWidget *w)
 {
     m_title->show();
-    m_save->show();
     m_previewLink->show();
     if(m_content->contentType() == ContentType::Post)
     {

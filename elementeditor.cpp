@@ -58,6 +58,9 @@ ElementEditor::ElementEditor()
     m_editButton->setVisible(false);
     m_copyButton->setVisible(false);
     m_closeButton->setVisible(false);
+    m_editButton->setToolTip("Edit Element");
+    m_closeButton->setToolTip("Delete Element");
+    m_copyButton->setToolTip("Copy Element");
     m_text = new QLabel("Text");
     m_text->setVisible(false);
     QHBoxLayout *layout= new QHBoxLayout();

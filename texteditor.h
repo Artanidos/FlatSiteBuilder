@@ -37,15 +37,13 @@ public:
     QDomElement content() {return m_element;}
 
 private slots:
-    void save();
-    void cancel();
+    void closeEditor();
 
 public slots:
     void contentChanged();
 
 private:
     QTextEdit *m_html;
-    QPushButton *m_save;
     QLineEdit *m_adminlabel;
 };
 

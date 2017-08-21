@@ -146,7 +146,7 @@ void ContentList::deleteButtonClicked()
         }
     }
     m_deleteButton->setEnabled(false);
-    emit contentUpdated();
+    emit contentUpdated("Delete Content");
 }
 
 void ContentList::tableDoubleClicked(int r, int)

@@ -22,7 +22,6 @@
 #define CONTENTEDITOR_H
 
 #include <QWidget>
-#include <QPushButton>
 #include <QScrollArea>
 #include <QLabel>
 #include <QTextEdit>
@@ -66,15 +65,15 @@ private slots:
     void animationFineshedZoomOut();
     void titleChanged();
     void excerptChanged();
+    void siteLoaded(Site *);
 
 signals:
-    void contentUpdated();
+    void contentUpdated(QString text);
     void preview(Content *);
 
 private:
     Site *m_site;
     Content *m_content;
-    QPushButton *m_save;
     QLabel *m_titleLabel;
     QTextEdit *m_text;
     QString m_filename;

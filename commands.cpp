@@ -20,6 +20,8 @@
 
 #include "commands.h"
 #include "content.h"
+#include "generator.h"
+#include "site.h"
 #include <QFile>
 #include <QDir>
 #include <QTest>
@@ -44,6 +46,10 @@ void ChangeContentCommand::undo()
         dest.remove();
     QFile::copy(m_tempFilename, m_contentEditor->filename());
     m_contentEditor->load();
+
+    Generator *gen = new Generator();
+    gen->generateSite(m_contentEditor->site());
+    delete gen;
 }
 
 void ChangeContentCommand::redo()
@@ -68,4 +74,62 @@ void ChangeContentCommand::redo()
         m_contentEditor->save();
         QFile::copy(m_contentEditor->filename(), m_redoFilename);
     }
+
+    Generator *gen = new Generator();
+    gen->generateSite(m_contentEditor->site());
+    delete gen;
+}
+
+ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    fileVersionNumber += 2;
+    m_site = site;
+    m_win = win;
+    setText(text);
+}
+
+ChangeProjectCommand::~ChangeProjectCommand()
+{
+
+}
+
+void ChangeProjectCommand::undo()
+{
+    QFile dest(m_site->path() + "/Site.xml");
+    if(dest.exists())
+        dest.remove();
+    QFile::copy(m_tempFilename, m_site->path() + "/Site.xml");
+    m_win->reloadProject();
+
+    Generator *gen = new Generator();
+    gen->generateSite(m_site);
+    delete gen;
+}
+
+void ChangeProjectCommand::redo()
+{
+    QString sitedir = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber);
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber + 1);
+
+    QFile redo(m_redoFilename);
+    if(redo.exists())
+    {
+        QFile dest(m_site->path() + "/Site.xml");
+        if(dest.exists())
+            dest.remove();
+        QFile::copy(m_redoFilename, m_site->path() + "/Site.xml");
+        m_win->reloadProject();
+    }
+    else
+    {
+        QFile::copy(m_site->path() + "/Site.xml", m_tempFilename);
+        m_win->saveProject();
+        QFile::copy(m_site->path() + "/Site.xml", m_redoFilename);
+    }
+
+    Generator *gen = new Generator();
+    gen->generateSite(m_site);
+    delete gen;
 }

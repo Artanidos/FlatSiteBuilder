@@ -20,6 +20,7 @@
 
 #include "texteditor.h"
 #include "htmlhighlighter.h"
+#include "flatbutton.h"
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QTextEdit>
@@ -38,6 +39,8 @@ TextEditor::TextEditor()
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
 
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
     m_html = new QTextEdit();
     m_html->setFont(font);
     m_html->setAcceptRichText(false);
@@ -47,10 +50,6 @@ TextEditor::TextEditor()
     new HtmlHighlighter(m_html->document());
     m_adminlabel = new QLineEdit();
     m_adminlabel->setMaximumWidth(200);
-    m_save = new QPushButton("Save and Exit");
-    m_save->setEnabled(false);
-    QPushButton *cancel = new QPushButton("Cancel");
-    QHBoxLayout *hbox = new QHBoxLayout();
 
     QLabel *titleLabel = new QLabel("Text Module");
     QFont fnt = titleLabel->font();
@@ -58,23 +57,19 @@ TextEditor::TextEditor()
     fnt.setBold(true);
     titleLabel->setFont(fnt);
 
-    hbox->addStretch();
-    hbox->addWidget(m_save);
-    hbox->addWidget(cancel);
     grid->addWidget(titleLabel, 0, 0);
+    grid->addWidget(close, 0, 1);
     grid->addWidget(m_html, 1, 0);
     grid->addWidget(new QLabel("Admin Label"), 2, 0);
     grid->addWidget(m_adminlabel, 3, 0);
-    grid->addLayout(hbox, 4, 0);
     setLayout(grid);
 
-    connect(m_save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_html, SIGNAL(textChanged()), this, SLOT(contentChanged()));
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
-void TextEditor::save()
+void TextEditor::closeEditor()
 {
     if(m_changed)
     {
@@ -94,12 +89,6 @@ void TextEditor::save()
     emit close(this);
 }
 
-void TextEditor::cancel()
-{
-    m_changed = false;
-    emit close(this);
-}
-
 void TextEditor::setContent(QDomElement element)
 {
     m_element = element;
@@ -108,11 +97,9 @@ void TextEditor::setContent(QDomElement element)
     QDomCDATASection cdata = data.toCDATASection();
     m_html->setPlainText(cdata.data());
     m_changed = false;
-    m_save->setEnabled(false);
 }
 
 void TextEditor::contentChanged()
 {
     m_changed = true;
-    m_save->setEnabled(true);
 }

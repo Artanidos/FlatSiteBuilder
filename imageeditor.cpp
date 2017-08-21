@@ -20,6 +20,7 @@
 
 #include "imageeditor.h"
 #include "imageselector.h"
+#include "flatbutton.h"
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QPushButton>
@@ -35,9 +36,9 @@ ImageEditor::ImageEditor()
 {
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
-    QPushButton *save = new QPushButton("Save and Exit");
-    QPushButton *cancel = new QPushButton("Cancel");
-    QHBoxLayout *hbox = new QHBoxLayout();
+
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
 
     m_source = new QLineEdit();
     m_alt = new QLineEdit();
@@ -63,9 +64,7 @@ ImageEditor::ImageEditor()
     imageVBox->addStretch();
     imageVBox->addLayout(imageHBox);
     imageVBox->addStretch();
-    hbox->addStretch();
-    hbox->addWidget(save);
-    hbox->addWidget(cancel);
+
     m_animationCombo = new QComboBox();
     m_animationCombo->addItem("None", "none");
     m_animationCombo->addItem("Fade In", "fadeIn");
@@ -95,6 +94,7 @@ ImageEditor::ImageEditor()
     m_animationCombo->addItem("Wobble","wobble");
     m_animationCombo->addItem("Wiggle","wiggle");
     grid->addWidget(titleLabel, 0, 0);
+    grid->addWidget(close, 0, 2);
     grid->addWidget(new QLabel("Path"), 1, 0);
     grid->addWidget(m_source, 2, 0, 1, 2);
     grid->addWidget(seek, 2, 2);
@@ -107,7 +107,6 @@ ImageEditor::ImageEditor()
     grid->addWidget(m_title, 9, 0);
     grid->addWidget(new QLabel("Admin Label"), 10, 0);
     grid->addWidget(m_adminlabel, 11, 0);
-    grid->addLayout(hbox, 12, 0, 1, 3);
     setLayout(grid);
 
     connect(m_animationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(contentChanged()));
@@ -117,8 +116,7 @@ ImageEditor::ImageEditor()
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_image, SIGNAL(clicked()), this, SLOT(seek()));
     connect(seek, SIGNAL(clicked()), this, SLOT(seek()));
-    connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
 void ImageEditor::setContent(QDomElement element)
@@ -160,7 +158,7 @@ void ImageEditor::seek()
     contentChanged();
 }
 
-void ImageEditor::save()
+void ImageEditor::closeEditor()
 {
     if(m_changed)
     {
@@ -174,11 +172,5 @@ void ImageEditor::save()
         m_element.setAttribute("title", m_title->text());
         m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
-    emit close(this);
-}
-
-void ImageEditor::cancel()
-{
-    m_changed = false;
     emit close(this);
 }

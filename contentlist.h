@@ -41,7 +41,7 @@ private slots:
 
 signals:
     void addContent();
-    void contentUpdated();
+    void contentUpdated(QString text);
     void editContent(Content *content);
 
 private:

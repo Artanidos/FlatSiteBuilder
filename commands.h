@@ -23,6 +23,7 @@
 
 #include <QUndoCommand>
 #include "contenteditor.h"
+#include "mainwindow.h"
 
 static int fileVersionNumber = 0;
 
@@ -38,6 +39,21 @@ private:
     ContentEditor *m_contentEditor;
     QString m_tempFilename;
     QString m_redoFilename;
+};
+
+class ChangeProjectCommand : public QUndoCommand
+{
+public:
+    ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent = 0);
+    ~ChangeProjectCommand();
+    void undo() override;
+    void redo() override;
+
+private:
+    Site *m_site;
+    QString m_tempFilename;
+    QString m_redoFilename;
+    MainWindow *m_win;
 };
 
 #endif // COMMANDS_H
