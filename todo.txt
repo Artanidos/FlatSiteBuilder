@@ -1,7 +1,7 @@
 Features
 --------
 - slider editor
-- undo/redo should be visible in statusbar
+- undo/redo should be visible somewhere
 - other modules (plugins)
 - generate should only generate changed files
 - menu editor
@@ -11,6 +11,7 @@ Features
 - test on windows
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - transitions for zoom out should be created new after window resize
+- library to save pages, sections and rows as templates
 
 Postponend
 ----------

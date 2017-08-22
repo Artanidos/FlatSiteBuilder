@@ -80,9 +80,9 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_layout->addWidget(m_previewLink, 0, 1);
     m_layout->addWidget(m_close, 0, 2, 1, 1, Qt::AlignRight);
     m_layout->addWidget(new QLabel("Title"), 1, 0);
-    m_layout->addWidget(m_title, 2, 0, 1, 3);
-    m_layout->addWidget(new QLabel("Permalink"), 3, 0);
-    m_layout->addWidget(m_source, 4, 0, 1, 3);
+    m_layout->addWidget(m_title, 2, 0);
+    m_layout->addWidget(new QLabel("Permalink"), 1, 1);
+    m_layout->addWidget(m_source, 2, 1);
     m_layout->addWidget(m_scroll, 5, 0, 1, 3);
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
@@ -175,38 +175,48 @@ void ContentEditor::siteLoaded(Site *site)
 
 void ContentEditor::titleChanged(QString title)
 {
-    if(m_content->source().isEmpty())
+    if(m_isNew)
     {
         QString source = title.toLower() + ".xml";
+        m_content->setSource(source);
         m_source->setText(source);
     }
 }
 
 void ContentEditor::titleChanged()
 {
-    m_content->setDate(QDate::currentDate());
-    m_content->setTitle(m_title->text());
-    emit contentHasChanged(m_content);
-    if(!m_isNew)
-        emit contentUpdated("Titel Changed");
+    if(m_title->text() != m_content->title())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setTitle(m_title->text());
+        emit contentHasChanged(m_content);
+        if(!m_isNew)
+            emit contentUpdated("Titel Changed");
+    }
 }
 
 void ContentEditor::sourceChanged()
 {
-    m_content->setDate(QDate::currentDate());
-    m_content->setSource(m_source->text());
-    if(m_content->contentType() == ContentType::Page)
-        m_filename = m_site->path() + "/pages/" + m_content->source();
-    else
-        m_filename = m_site->path() + "/pages/" + m_content->source();
-    emit contentUpdated("Permalink Changed");
+    if(m_source->text() != m_content->source())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setSource(m_source->text());
+        if(m_content->contentType() == ContentType::Page)
+            m_filename = m_site->path() + "/pages/" + m_content->source();
+        else
+            m_filename = m_site->path() + "/pages/" + m_content->source();
+        emit contentUpdated("Permalink Changed");
+    }
 }
 
 void ContentEditor::excerptChanged()
 {
-    m_content->setDate(QDate::currentDate());
-    m_content->setExcerpt(m_excerpt->text());
-    emit contentUpdated("Excerpt Changed");
+    if(m_excerpt->text() != m_content->excerpt())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setExcerpt(m_excerpt->text());
+        emit contentUpdated("Excerpt Changed");
+    }
 }
 
 void ContentEditor::setUndoStack(QUndoStack *stack)
