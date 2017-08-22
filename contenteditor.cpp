@@ -31,6 +31,7 @@
 #include "roweditor.h"
 #include <QGridLayout>
 #include <QLabel>
+#include <QTemporaryFile>
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QScrollArea>
@@ -64,7 +65,11 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     fnt.setBold(true);
     m_titleLabel->setFont(fnt);
     m_title = new QLineEdit();
+    m_source = new QLineEdit;
     m_excerpt = new QLineEdit();
+
+    m_close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    m_close->setToolTip("Close Editor");
 
     m_scroll = new QScrollArea();
     m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -73,12 +78,17 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
-    m_layout->addWidget(m_title, 1, 0, 1, 3);
-    m_layout->addWidget(m_scroll, 2, 0, 1, 3);
+    m_layout->addWidget(m_close, 0, 2, 1, 1, Qt::AlignRight);
+    m_layout->addWidget(new QLabel("Title"), 1, 0);
+    m_layout->addWidget(m_title, 2, 0, 1, 3);
+    m_layout->addWidget(new QLabel("Permalink"), 3, 0);
+    m_layout->addWidget(m_source, 4, 0, 1, 3);
+    m_layout->addWidget(m_scroll, 5, 0, 1, 3);
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
 
     m_title->setText(m_content->title());
+    m_source->setText(m_content->source());
     if(m_content->contentType() == ContentType::Page)
         m_filename = m_site->path() + "/pages/" + m_content->source();
     else
@@ -95,9 +105,59 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     else
         load();
 
+    connect(m_close, SIGNAL(clicked()), this, SLOT(close()));
     connect(m_title, SIGNAL(editingFinished()), this, SLOT(titleChanged()));
+    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged(QString)));
+    connect(m_source, SIGNAL(editingFinished()), this, SLOT(sourceChanged()));
     connect(m_excerpt, SIGNAL(editingFinished()), this, SLOT(excerptChanged()));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
+}
+
+void ContentEditor::updateNewContent()
+{
+    m_isNew = false;
+    if(m_title->text().isEmpty())
+    {
+        m_content->setTitle("New");
+        m_title->setText("New");
+    }
+    else
+        m_content->setTitle(m_title->text());
+
+    if(m_source->text().isEmpty())
+    {
+        m_content->setSource("new.xml");
+        m_source->setText("new.xml");
+    }
+    else
+        m_content->setSource(m_source->text());
+
+    if(m_content->contentType() == ContentType::Page)
+    {
+        m_content->setLayout("default");
+        m_filename = m_site->path() + "/pages/" + m_content->source();
+    }
+    else
+    {
+        m_content->setLayout("post");
+        m_filename = m_site->path() + "/pages/" + m_content->source();
+    }
+    m_content->setMenu("default");
+
+    // TODO: real author here
+    m_content->setAuthor("author");
+    m_content->setDate(QDate::currentDate());
+    emit contentHasChanged(m_content);
+    save();
+    emit contentUpdated("Content updated");
+}
+
+void ContentEditor::close()
+{
+    if(m_isNew)
+        updateNewContent();
+
+    emit contentEditorClosed(this);
 }
 
 void ContentEditor::siteLoaded(Site *site)
@@ -113,18 +173,40 @@ void ContentEditor::siteLoaded(Site *site)
     }
 }
 
+void ContentEditor::titleChanged(QString title)
+{
+    if(m_content->source().isEmpty())
+    {
+        QString source = title.toLower() + ".xml";
+        m_source->setText(source);
+    }
+}
+
 void ContentEditor::titleChanged()
 {
     m_content->setDate(QDate::currentDate());
     m_content->setTitle(m_title->text());
-    emit contentUpdated("Titel changed");
+    emit contentHasChanged(m_content);
+    if(!m_isNew)
+        emit contentUpdated("Titel Changed");
+}
+
+void ContentEditor::sourceChanged()
+{
+    m_content->setDate(QDate::currentDate());
+    m_content->setSource(m_source->text());
+    if(m_content->contentType() == ContentType::Page)
+        m_filename = m_site->path() + "/pages/" + m_content->source();
+    else
+        m_filename = m_site->path() + "/pages/" + m_content->source();
+    emit contentUpdated("Permalink Changed");
 }
 
 void ContentEditor::excerptChanged()
 {
     m_content->setDate(QDate::currentDate());
     m_content->setExcerpt(m_excerpt->text());
-    emit contentUpdated("Excerpt changed");
+    emit contentUpdated("Excerpt Changed");
 }
 
 void ContentEditor::setUndoStack(QUndoStack *stack)
@@ -142,12 +224,14 @@ void ContentEditor::setUndoStack(QUndoStack *stack)
 
 void ContentEditor::init()
 {
+    m_isNew = true;
     PageEditor *pe = new PageEditor();
     m_scroll->setWidget(pe);
 }
 
 void ContentEditor::load()
 {
+    m_isNew = false;
     QDomDocument doc;
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
@@ -224,27 +308,6 @@ void ContentEditor::loadElements(QDomElement column, ColumnEditor *ce)
 
 void ContentEditor::save()
 {
-    bool newEntry = false;
-    if(m_content->source().isEmpty())
-    {
-        newEntry = true;
-        if(m_content->contentType() == ContentType::Page)
-        {
-            m_content->setLayout("default");
-            m_filename = m_site->path() + "/pages/" + m_title->text().toLower() + ".xml";
-        }
-        else
-        {
-            m_content->setLayout("post");
-            m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".xml";
-        }
-        m_content->setMenu("default");
-        m_content->setSource(m_title->text().toLower() + ".xml");
-        // TODO: real author here
-        m_content->setAuthor("author");
-        m_content->setDate(QDate::currentDate());
-    }
-
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
@@ -263,13 +326,13 @@ void ContentEditor::save()
     QTextStream stream(&file);
     stream << doc.toString();
     file.close();
-
-    if(newEntry)
-        emit contentUpdated("Content updated");
 }
 
 void ContentEditor::editChanged(QString text)
 {
+    if(m_isNew)
+        updateNewContent();
+
     QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
     m_undoStack->push(changeCommand);
 }
@@ -397,6 +460,7 @@ void ContentEditor::animationFineshedZoomIn()
     m_animationPanel->hide();
     m_title->hide();
     m_previewLink->hide();
+    m_close->hide();
     if(m_content->contentType() == ContentType::Post)
     {
         m_excerptLabel->hide();
@@ -408,6 +472,7 @@ void ContentEditor::editorClosed(QWidget *w)
 {
     m_title->show();
     m_previewLink->show();
+    m_close->show();
     if(m_content->contentType() == ContentType::Post)
     {
         m_excerptLabel->show();

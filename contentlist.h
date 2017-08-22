@@ -42,13 +42,14 @@ private slots:
 signals:
     void addContent();
     void contentUpdated(QString text);
-    void editContent(Content *content);
+    void editContent(QTableWidgetItem *item);
 
 private:
     Site *m_site;
     ContentType m_type;
     QTableWidget *m_list;
     QPushButton *m_deleteButton;
+    void addListItem(Content *content);
 };
 
 #endif // CONTENTLIST_H

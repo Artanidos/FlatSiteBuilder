@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDebug>
+#include <QTableWidgetItem>
 #include <QTextStream>
 #include <QDir>
 #include <QSplitter>
@@ -43,6 +44,7 @@
 #include "hyperlink.h"
 #include "generator.h"
 #include "commands.h"
+#include "animationlabel.h"
 #include "sitewizard.h"
 #include "expander.h"
 #include "site.h"
@@ -210,6 +212,12 @@ void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnl
 
 void MainWindow::initGui()
 {
+    QWidget *centralWidget = new QWidget();
+    m_layout = new QVBoxLayout();
+    centralWidget->setLayout(m_layout);
+    QMainWindow::setCentralWidget(centralWidget);
+    m_panel = 0;
+
     m_dashboardExpander = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
     m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
     m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
@@ -537,6 +545,18 @@ void MainWindow::readSettings()
     m_defaultPath = settings.value("lastSite").toString();
 }
 
+void MainWindow::setCentralWidget(QWidget *widget)
+{
+    if(m_panel)
+    {
+        m_layout->replaceWidget(m_panel, widget);
+        delete m_panel;
+    }
+    else
+        m_layout->addWidget(widget);
+    m_panel = widget;
+}
+
 void MainWindow::showDashboard()
 {
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
@@ -551,8 +571,7 @@ void MainWindow::showDashboard()
 void MainWindow::showPosts()
 {
     ContentList *list = new ContentList(m_site, ContentType::Post);
-    connect(list, SIGNAL(addContent()), this, SLOT(addPost()));
-    connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    connect(list, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editContent(QTableWidgetItem *)));
     connect(list, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(list);
 }
@@ -560,44 +579,124 @@ void MainWindow::showPosts()
 void MainWindow::showPages()
 {
     ContentList *list = new ContentList(m_site, ContentType::Page);
-    connect(list, SIGNAL(addContent()), this, SLOT(addPage()));
-    connect(list, SIGNAL(editContent(Content*)), this, SLOT(editContent(Content *)));
+    connect(list, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editContent(QTableWidgetItem*)));
     connect(list, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(list);
 }
 
-void MainWindow::addPost()
+void MainWindow::editContent(QTableWidgetItem *item)
 {
-    Content *content = new Content(ContentType::Post);
-    m_site->addContent(content);
-    projectUpdated("Add Post");
-    ContentEditor *edit = new ContentEditor(m_site, content);
-    edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
-    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
-    setCentralWidget(edit);
+    Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
+    m_editor = new ContentEditor(m_site, content);
+    m_editor->setUndoStack(m_undoStack);
+    connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
+    connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
+    connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));
+    connect(m_editor, SIGNAL(contentEditorClosed(QWidget*)), this, SLOT(contentEditorClosed(QWidget*)));
+    connect(m_editor, SIGNAL(contentHasChanged(Content*)), this, SLOT(contentHasChanged(Content*)));
+    animate(item);
+    m_editedItem = item;
 }
 
-void MainWindow::addPage()
+void MainWindow::contentHasChanged(Content *content)
 {
-    Content *content = new Content(ContentType::Page);
-    m_site->addContent(content);
-    projectUpdated("Add Page");
-    ContentEditor *edit = new ContentEditor(m_site, content);
-    edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
-    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
-    setCentralWidget(edit);
+    QTableWidget *table = m_editedItem->tableWidget();
+    m_editedItem->setText(content->title());
+    QTableWidgetItem *layout = table->item(m_editedItem->row(), 2);
+    layout->setText(content->layout());
+    QTableWidgetItem *author = table->item(m_editedItem->row(), 3);
+    author->setText(content->author());
+    QTableWidgetItem *date = table->item(m_editedItem->row(), 4);
+    date->setText(content->date().toString("dd.MM.yyyy"));
+
 }
 
-void MainWindow::editContent(Content *content)
+void MainWindow::animate(QTableWidgetItem *item)
 {
-    ContentEditor *edit = new ContentEditor(m_site, content);
-    edit->setUndoStack(m_undoStack);
-    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
-    connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
-    connect(this, SIGNAL(siteLoaded(Site*)), edit, SLOT(siteLoaded(Site*)));
-    setCentralWidget(edit);
+    QTableWidget *list = item->tableWidget();
+
+    // create a cell widget to get the right position in the table
+    QWidget *widget = new QWidget();
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(new QLabel(item->data(Qt::DisplayRole).toString()));
+    widget->setLayout(layout);
+    list->setCellWidget(item->row(), 1, widget);
+    QPoint pos = widget->mapTo(m_panel, QPoint(0,0));
+
+    // make screenprint from cell widget
+    QPixmap pixmap(widget->size());
+    widget->render(&pixmap);
+
+    // make screenprint from central widget
+    QPixmap pixmapScroll(m_panel->size());
+    m_panel->render(&pixmapScroll);
+
+    m_animationPanel = new QWidget();
+    QLabel *scroll = new QLabel();
+    scroll->setPixmap(pixmapScroll);
+    scroll->setParent(m_animationPanel);
+    scroll->move(0, 0);
+    AnimationLabel *anim = new AnimationLabel();
+    anim->setPixmap(pixmap);
+    anim->setAlignment(Qt::AlignTop);
+    anim->setAutoFillBackground(true);
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, widget->palette().background().color());
+    anim->setPalette(pal);
+    anim->setParent(m_animationPanel);
+    m_animationPanel->setMinimumWidth(m_panel->size().width());
+    m_animationPanel->setMinimumHeight(m_panel->size().height());
+    m_layout->replaceWidget(m_panel, m_animationPanel);
+    m_panel->hide();
+
+    m_animationgroup = new QParallelAnimationGroup();
+    QPropertyAnimation *animx = new QPropertyAnimation();
+    animx->setDuration(300);
+    animx->setStartValue(pos.x());
+    animx->setEndValue(0);
+    animx->setTargetObject(anim);
+    animx->setPropertyName("x");
+    m_animationgroup->addAnimation(animx);
+    QPropertyAnimation *animy = new QPropertyAnimation();
+    animy->setDuration(300);
+    animy->setStartValue(pos.y());
+    animy->setEndValue(0);
+    animy->setTargetObject(anim);
+    animy->setPropertyName("y");
+    m_animationgroup->addAnimation(animy);
+    QPropertyAnimation *animw = new QPropertyAnimation();
+    animw->setDuration(300);
+    animw->setStartValue(widget->size().width());
+    animw->setEndValue(m_panel->size().width());
+    animw->setTargetObject(anim);
+    animw->setPropertyName("width");
+    m_animationgroup->addAnimation(animw);
+    QPropertyAnimation *animh = new QPropertyAnimation();
+    animh->setDuration(300);
+    animh->setStartValue(widget->size().height());
+    animh->setEndValue(m_panel->size().height());
+    animh->setTargetObject(anim);
+    animh->setPropertyName("height");
+    m_animationgroup->addAnimation(animh);
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    m_animationgroup->start();
+
+    list->removeCellWidget(item->row(), 1);
+}
+
+void MainWindow::animationFineshedZoomIn()
+{
+    m_layout->replaceWidget(m_animationPanel, m_editor);
+    m_animationPanel->hide();
+}
+
+void MainWindow::animationFineshedZoomOut()
+{
+    m_layout->replaceWidget(m_animationPanel, m_panel);
+    m_animationPanel->hide();
+    m_panel->show();
+    delete m_animationPanel;
+    delete m_animationgroup;
 }
 
 void MainWindow::previewSite(Content *content)
@@ -641,4 +740,15 @@ void MainWindow::fileIsReady(QNetworkReply *reply)
     setCentralWidget(browser);
     browser->show();
     browser->setHtml(reply->readAll());
+}
+
+void MainWindow::contentEditorClosed(QWidget *w)
+{
+    m_layout->replaceWidget(w, m_animationPanel);
+    m_animationPanel->show();
+    delete w;
+    m_animationgroup->setDirection(QAbstractAnimation::Backward);
+    disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
+    m_animationgroup->start();
 }

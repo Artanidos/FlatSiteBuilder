@@ -58,10 +58,10 @@ TextEditor::TextEditor()
     titleLabel->setFont(fnt);
 
     grid->addWidget(titleLabel, 0, 0);
-    grid->addWidget(close, 0, 1);
-    grid->addWidget(m_html, 1, 0);
+    grid->addWidget(close, 0, 1, 1, 1, Qt::AlignRight);
+    grid->addWidget(m_html, 1, 0, 1, 2);
     grid->addWidget(new QLabel("Admin Label"), 2, 0);
-    grid->addWidget(m_adminlabel, 3, 0);
+    grid->addWidget(m_adminlabel, 3, 0, 1, 2);
     setLayout(grid);
 
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));

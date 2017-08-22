@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "rowpropertyeditor.h"
-
+#include "flatbutton.h"
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
@@ -32,9 +32,8 @@ RowPropertyEditor::RowPropertyEditor()
 
     m_cssclass = new QLineEdit();
 
-    QPushButton *save = new QPushButton("Save and Exit");
-    QPushButton *cancel = new QPushButton("Cancel");
-    QHBoxLayout *hbox = new QHBoxLayout();
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
 
     QLabel *titleLabel = new QLabel("Row Module Settings");
     QFont fnt = titleLabel->font();
@@ -44,18 +43,14 @@ RowPropertyEditor::RowPropertyEditor()
 
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch();
-    hbox->addStretch();
-    hbox->addWidget(save);
-    hbox->addWidget(cancel);
     m_grid->addWidget(titleLabel, 0, 0);
+    m_grid->addWidget(close, 0, 1, 1, 1, Qt::AlignRight);
     m_grid->addWidget(new QLabel("CSS Class"), 1, 0);
-    m_grid->addWidget(m_cssclass, 2, 0);
+    m_grid->addWidget(m_cssclass, 2, 0, 1, 2);
     m_grid->addLayout(vbox, 3, 0);
-    m_grid->addLayout(hbox, 4, 0);
     setLayout(m_grid);
 
-    connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(close, SIGNAL(clicked()), this, SLOT(editorClose()));
     connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
@@ -64,7 +59,7 @@ RowPropertyEditor::~RowPropertyEditor()
     delete m_grid;
 }
 
-void RowPropertyEditor::save()
+void RowPropertyEditor::editorClose()
 {
     if(m_changed)
     {
@@ -74,12 +69,6 @@ void RowPropertyEditor::save()
         }
         m_element.setAttribute("cssclass", m_cssclass->text());
     }
-    emit close(this);
-}
-
-void RowPropertyEditor::cancel()
-{
-    m_changed = false;
     emit close(this);
 }
 

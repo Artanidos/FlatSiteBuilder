@@ -74,6 +74,7 @@ void ChangeContentCommand::redo()
         QFile::copy(m_contentEditor->filename(), m_redoFilename);
     }
 
+    qDebug() << "Content" << text();
     Generator gen;
     gen.generateSite(m_contentEditor->site(), m_contentEditor->content());
 }
@@ -126,6 +127,7 @@ void ChangeProjectCommand::redo()
         QFile::copy(m_site->path() + "/Site.xml", m_redoFilename);
     }
 
+    qDebug() << "Project" << text();
     Generator gen;
     gen.generateSite(m_site);
 }

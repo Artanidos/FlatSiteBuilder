@@ -32,6 +32,7 @@ FlatButton::FlatButton(QString normalIcon, QString hoverIcon)
 
 void FlatButton::mousePressEvent(QMouseEvent *event)
 {
+    setFocus();
     event->accept();
 }
 

@@ -196,5 +196,6 @@
         <file>themes/himu/assets/js/smoothscroll.js</file>
         <file>themes/himu/includes/nav.html</file>
         <file>themes/himu/layouts/default.html</file>
+        <file>images/close_hover_red.png</file>
     </qresource>
 </RCC>

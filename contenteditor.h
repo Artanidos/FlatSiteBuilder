@@ -55,6 +55,7 @@ public:
 public slots:
     void editChanged(QString text);
     void save();
+    void close();
 
 private slots:
     void preview();
@@ -64,12 +65,16 @@ private slots:
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
     void titleChanged();
+    void titleChanged(QString title);
+    void sourceChanged();
     void excerptChanged();
     void siteLoaded(Site *);
 
 signals:
     void contentUpdated(QString text);
     void preview(Content *);
+    void contentEditorClosed(QWidget *w);
+    void contentHasChanged(Content *content);
 
 private:
     Site *m_site;
@@ -78,6 +83,7 @@ private:
     QTextEdit *m_text;
     QString m_filename;
     QLineEdit *m_title;
+    QLineEdit *m_source;
     QLineEdit *m_excerpt;
     QScrollArea *m_scroll;
     QGridLayout *m_layout;
@@ -91,6 +97,8 @@ private:
     RowEditor *m_rowEditor;
     SectionEditor *m_sectionEditor;
     QUndoStack *m_undoStack;
+    FlatButton *m_close;
+    bool m_isNew;
 
     void init();
     void loadRows(QDomElement section, SectionEditor *se);
@@ -98,6 +106,7 @@ private:
     void loadElements(QDomElement column, ColumnEditor *ce);
     void animate(QWidget *widget);
     void editorClosed(QWidget *w);
+    void updateNewContent();
 };
 
 #endif // CONTENTEDITOR_H

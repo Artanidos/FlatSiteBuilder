@@ -94,7 +94,7 @@ ImageEditor::ImageEditor()
     m_animationCombo->addItem("Wobble","wobble");
     m_animationCombo->addItem("Wiggle","wiggle");
     grid->addWidget(titleLabel, 0, 0);
-    grid->addWidget(close, 0, 2);
+    grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(new QLabel("Path"), 1, 0);
     grid->addWidget(m_source, 2, 0, 1, 2);
     grid->addWidget(seek, 2, 2);

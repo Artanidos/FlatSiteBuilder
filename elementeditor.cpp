@@ -54,7 +54,7 @@ ElementEditor::ElementEditor()
 
     m_editButton = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
     m_copyButton = new FlatButton(":/images/copy_normal.png", ":/images/copy_hover.png");
-    m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover_red.png");
     m_editButton->setVisible(false);
     m_copyButton->setVisible(false);
     m_closeButton->setVisible(false);

@@ -31,6 +31,8 @@
 #include "site.h"
 
 class QNetworkReply;
+class QTableWidgetItem;
+class ContentEditor;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -39,6 +41,7 @@ public:
 
     void reloadProject();
     void saveProject();
+    void setCentralWidget(QWidget *widget);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -54,6 +57,7 @@ private:
     void initUndoRedo();
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
+    void animate(QTableWidgetItem *item);
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -64,6 +68,12 @@ private:
     Site *m_site;
     QString m_defaultPath;
     QUndoStack *m_undoStack;
+    QWidget *m_animationPanel;
+    QParallelAnimationGroup *m_animationgroup;
+    ContentEditor *m_editor;
+    QWidget *m_panel;
+    QVBoxLayout *m_layout;
+    QTableWidgetItem *m_editedItem;
 
 private slots:
     void dashboardExpanded(bool value);
@@ -75,9 +85,7 @@ private slots:
     void showDashboard();
     void showPosts();
     void showPages();
-    void addPost();
-    void addPage();
-    void editContent(Content *page);
+    void editContent(QTableWidgetItem *item);
     void previewSite(Content *content);
     void publishSite();
     void createSite();
@@ -85,6 +93,10 @@ private slots:
     void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);
     void projectUpdated(QString text);
+    void contentEditorClosed(QWidget *w);
+    void animationFineshedZoomIn();
+    void animationFineshedZoomOut();
+    void contentHasChanged(Content *content);
 };
 
 #endif // MAINWINDOW_H

@@ -37,8 +37,7 @@ public:
     QDomElement content() {return m_element;}
 
 private slots:
-    void save();
-    void cancel();
+    void editorClose();
 
 private:
     QLineEdit *m_cssclass;

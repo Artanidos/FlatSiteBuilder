@@ -19,6 +19,7 @@
 ****************************************************************************/
 
 #include "sectionpropertyeditor.h"
+#include "flatbutton.h"
 #include <QPushButton>
 #include <QLabel>
 
@@ -33,9 +34,8 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_attributes = new QLineEdit();
     m_id = new QLineEdit;
 
-    QPushButton *save = new QPushButton("Save and Exit");
-    QPushButton *cancel = new QPushButton("Cancel");
-    QHBoxLayout *hbox = new QHBoxLayout();
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
 
     QLabel *titleLabel = new QLabel("Section Module Settings");
     QFont fnt = titleLabel->font();
@@ -45,24 +45,21 @@ SectionPropertyEditor::SectionPropertyEditor()
 
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch();
-    hbox->addStretch();
-    hbox->addWidget(save);
-    hbox->addWidget(cancel);
+
     m_grid->addWidget(titleLabel, 0, 0);
+    m_grid->addWidget(close, 0, 1, 1, 1, Qt::AlignRight);
     m_grid->addWidget(new QLabel("CSS Class"), 1, 0);
-    m_grid->addWidget(m_cssclass, 2, 0);
+    m_grid->addWidget(m_cssclass, 2, 0, 1, 2);
     m_grid->addWidget(new QLabel("Style"), 3, 0);
-    m_grid->addWidget(m_style, 4, 0);
+    m_grid->addWidget(m_style, 4, 0, 1, 2);
     m_grid->addWidget(new QLabel("Aditional Attributes"), 5, 0);
-    m_grid->addWidget(m_attributes, 6, 0);
+    m_grid->addWidget(m_attributes, 6, 0, 1, 2);
     m_grid->addWidget(new QLabel("Id"), 7, 0);
-    m_grid->addWidget(m_id, 8, 0);
+    m_grid->addWidget(m_id, 8, 0, 1, 2);
     m_grid->addLayout(vbox, 9, 0);
-    m_grid->addLayout(hbox, 10, 0);
     setLayout(m_grid);
 
-    connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
+    connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_style, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_attributes, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
@@ -75,7 +72,7 @@ SectionPropertyEditor::~SectionPropertyEditor()
     delete m_grid;
 }
 
-void SectionPropertyEditor::save()
+void SectionPropertyEditor::closeEditor()
 {
     if(m_changed)
     {
@@ -88,12 +85,6 @@ void SectionPropertyEditor::save()
         m_element.setAttribute("attributes", m_attributes->text());
         m_element.setAttribute("id", m_id->text());
     }
-    emit close(this);
-}
-
-void SectionPropertyEditor::cancel()
-{
-    m_changed = false;
     emit close(this);
 }
 

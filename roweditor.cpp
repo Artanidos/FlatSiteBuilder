@@ -33,7 +33,7 @@ RowEditor::RowEditor(bool clone)
 {
     m_editButton = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
     m_copyButton = new FlatButton(":/images/copy_normal.png", ":/images/copy_hover.png");
-    m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover_red.png");
     m_addColumns = new Hyperlink("(+) Add Columns");
     m_editButton->setToolTip("Edit Row");
     m_closeButton->setToolTip("Delete Row");

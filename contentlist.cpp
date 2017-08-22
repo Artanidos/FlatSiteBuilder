@@ -58,7 +58,6 @@ ContentList::ContentList(Site *site, ContentType type)
     labels << "" << "Name"  << "Layout" << "Author" << "Date";
     m_list->setHorizontalHeaderLabels(labels);
 
-    int rows = 0;
     if(m_site)
     {
         for(int i = 0; i < m_site->contents().count(); i++)
@@ -66,29 +65,7 @@ ContentList::ContentList(Site *site, ContentType type)
             Content *content = m_site->contents().at(i);
             if(content->contentType() == m_type)
             {
-                m_list->setRowCount(rows + 1);
-
-                TableCheckbox *checkBox = new TableCheckbox();
-                connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
-                m_list->setCellWidget(rows, 0, checkBox);
-                m_list->setRowHeight(rows, checkBox->sizeHint().height());
-                QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
-                titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
-                titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
-                m_list->setItem(rows, 1, titleItem);
-
-                QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
-                layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 2, layoutItem);
-
-                QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
-                authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 3, authorItem);
-
-                QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
-                dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
-                m_list->setItem(rows, 4, dateItem);
-                rows++;
+                addListItem(content);
             }
         }
     }
@@ -102,6 +79,32 @@ ContentList::ContentList(Site *site, ContentType type)
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
     connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
+}
+
+void ContentList::addListItem(Content *content)
+{
+    int rows = m_list->rowCount();
+    m_list->setRowCount(rows + 1);
+    TableCheckbox *checkBox = new TableCheckbox();
+    connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
+    m_list->setCellWidget(rows, 0, checkBox);
+    m_list->setRowHeight(rows, checkBox->sizeHint().height());
+    QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
+    titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
+    titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
+    m_list->setItem(rows, 1, titleItem);
+
+    QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
+    layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
+    m_list->setItem(rows, 2, layoutItem);
+
+    QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
+    authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
+    m_list->setItem(rows, 3, authorItem);
+
+    QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
+    dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
+    m_list->setItem(rows, 4, dateItem);
 }
 
 void ContentList::checkStateChanged(bool)
@@ -121,7 +124,13 @@ void ContentList::checkStateChanged(bool)
 
 void ContentList::buttonClicked()
 {
-    emit addContent();
+    Content *content = new Content(m_type);
+    m_site->addContent(content);
+    addListItem(content);
+
+    QTableWidgetItem *item = m_list->item(m_list->rowCount() - 1, 1);
+    m_list->selectRow(m_list->rowCount() - 1);
+    emit editContent(item);
 }
 
 void ContentList::deleteButtonClicked()
@@ -152,5 +161,5 @@ void ContentList::deleteButtonClicked()
 void ContentList::tableDoubleClicked(int r, int)
 {
     QTableWidgetItem *item = m_list->item(r, 1);
-    emit editContent(qvariant_cast<Content*>(item->data(Qt::UserRole)));
+    emit editContent(item);
 }
