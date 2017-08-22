@@ -568,7 +568,10 @@ void MainWindow::showPages()
 
 void MainWindow::addPost()
 {
-    ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Post));
+    Content *content = new Content(ContentType::Post);
+    m_site->addContent(content);
+    projectUpdated("Add Post");
+    ContentEditor *edit = new ContentEditor(m_site, content);
     edit->setUndoStack(m_undoStack);
     connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
@@ -577,7 +580,10 @@ void MainWindow::addPost()
 
 void MainWindow::addPage()
 {
-    ContentEditor *edit = new ContentEditor(m_site, new Content(ContentType::Page));
+    Content *content = new Content(ContentType::Page);
+    m_site->addContent(content);
+    projectUpdated("Add Page");
+    ContentEditor *edit = new ContentEditor(m_site, content);
     edit->setUndoStack(m_undoStack);
     connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(edit, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));

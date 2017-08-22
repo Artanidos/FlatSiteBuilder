@@ -1,14 +1,13 @@
 Features
 --------
 - slider editor
+- undo/redo should be visible in statusbar
 - other modules (plugins)
-- default theme should look nicer :-)
+- generate should only generate changed files
 - menu editor
 - theme editor (change colors, fonts and other styles)
 - media page
-- setting page
-- create new site
-- write a translator in C++ to leave python behind
+- setting pages
 - test on windows
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 
@@ -23,3 +22,4 @@ Postponend
 
 Bugs
 ----
+- Undo after Add Page shows double entries in list

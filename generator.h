@@ -33,7 +33,7 @@ class Generator : QObject
 public:
     Generator();
 
-    void generateSite(Site *site);
+    void generateSite(Site *site, Content *content = 0);
     void testScript(Site *site);
 
 private:

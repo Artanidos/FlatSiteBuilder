@@ -40,18 +40,22 @@ Generator::Generator()
  * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(Site *site)
+void Generator::generateSite(Site *site, Content *contentToBuild)
 {
     m_site = site;
-
     QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
-    QDir old;
-    old.setPath(dir + "/" + m_site->title() + "/assets");
-    old.removeRecursively();
-    old.cdUp();
-    foreach(QString file, old.entryList(QDir::NoDotAndDotDot | QDir::Files))
+
+    if(contentToBuild == 0)
     {
-        old.remove(file);
+
+        QDir old;
+        old.setPath(dir + "/" + m_site->title() + "/assets");
+        old.removeRecursively();
+        old.cdUp();
+        foreach(QString file, old.entryList(QDir::NoDotAndDotDot | QDir::Files))
+        {
+            old.remove(file);
+        }
     }
 
     QVariantList pages;
@@ -76,7 +80,7 @@ void Generator::generateSite(Site *site)
     }
     QVariantMap menus;
     foreach(Menu *menu, m_site->menus())
-    {   
+    {
         QVariantList items;
         foreach(MenuItem *item, menu->items())
         {
@@ -99,11 +103,15 @@ void Generator::generateSite(Site *site)
     sitevars["github"] = m_site->github();
     sitevars["keywords"] = m_site->keywords();
 
-    // first copy assets from site, they will not be overridden by theme assets
-    copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
-    copyPath(m_themePath + m_site->theme() + "/assets", dir + "/" + m_site->title() + "/assets");
+    if(contentToBuild == 0)
+    {
+        // first copy assets from site, they will not be overridden by theme assets
+        copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
+        copyPath(m_themePath + m_site->theme() + "/assets", dir + "/" + m_site->title() + "/assets");
+    }
 
-    int index = 0;
+    int pa = 0;
+    int po = 0;
     foreach (Content *content, m_site->contents())
     {
         QString subdir;
@@ -111,14 +119,16 @@ void Generator::generateSite(Site *site)
         if(content->contentType() == ContentType::Page)
         {
             subdir = "pages";
-            cm = sitevars["pages"].toList().at(index).toMap();
+            cm = sitevars["pages"].toList().at(pa++).toMap();
         }
         else
         {
             subdir = "posts";
-            cm = sitevars["posts"].toList().at(index).toMap();
+            cm = sitevars["posts"].toList().at(po++).toMap();
         }
-        index++;
+
+        if(contentToBuild != 0 && contentToBuild != content)
+            continue;
 
         QDomDocument doc;
         QFile file(m_site->path() + "/" + subdir + "/" + content->source());
@@ -127,7 +137,6 @@ void Generator::generateSite(Site *site)
             if (doc.setContent(&file))
             {
                 file.close();
-                //pagevars.clear();
                 QString cnt = "";
                 QDomElement c = doc.documentElement();
                 QDomElement section = c.firstChildElement("Section");
@@ -202,7 +211,7 @@ QString Generator::translateTemplate(QString layout, Mode mode)
             rc = content;
     }
     else
-            qWarning() << "Unable to open template " + m_themePath + layout;
+        qWarning() << "Unable to open template " + m_themePath + layout;
     return rc;
 }
 

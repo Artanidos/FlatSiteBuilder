@@ -47,9 +47,8 @@ void ChangeContentCommand::undo()
     QFile::copy(m_tempFilename, m_contentEditor->filename());
     m_contentEditor->load();
 
-    Generator *gen = new Generator();
-    gen->generateSite(m_contentEditor->site());
-    delete gen;
+    Generator gen;
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->content());
 }
 
 void ChangeContentCommand::redo()
@@ -75,9 +74,8 @@ void ChangeContentCommand::redo()
         QFile::copy(m_contentEditor->filename(), m_redoFilename);
     }
 
-    Generator *gen = new Generator();
-    gen->generateSite(m_contentEditor->site());
-    delete gen;
+    Generator gen;
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->content());
 }
 
 ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)
@@ -102,9 +100,8 @@ void ChangeProjectCommand::undo()
     QFile::copy(m_tempFilename, m_site->path() + "/Site.xml");
     m_win->reloadProject();
 
-    Generator *gen = new Generator();
-    gen->generateSite(m_site);
-    delete gen;
+    Generator gen;
+    gen.generateSite(m_site);
 }
 
 void ChangeProjectCommand::redo()
@@ -129,7 +126,6 @@ void ChangeProjectCommand::redo()
         QFile::copy(m_site->path() + "/Site.xml", m_redoFilename);
     }
 
-    Generator *gen = new Generator();
-    gen->generateSite(m_site);
-    delete gen;
+    Generator gen;
+    gen.generateSite(m_site);
 }

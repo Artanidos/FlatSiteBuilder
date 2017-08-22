@@ -73,7 +73,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
-    m_layout->addWidget(m_title, 1, 0, 1, 2);
+    m_layout->addWidget(m_title, 1, 0, 1, 3);
     m_layout->addWidget(m_scroll, 2, 0, 1, 3);
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
@@ -224,23 +224,25 @@ void ContentEditor::loadElements(QDomElement column, ColumnEditor *ce)
 
 void ContentEditor::save()
 {
+    bool newEntry = false;
     if(m_content->source().isEmpty())
     {
+        newEntry = true;
         if(m_content->contentType() == ContentType::Page)
         {
             m_content->setLayout("default");
             m_filename = m_site->path() + "/pages/" + m_title->text().toLower() + ".xml";
         }
-        else // TODO: real date here
+        else
         {
             m_content->setLayout("post");
             m_filename = m_site->path() + "/posts/" + m_title->text().toLower() + ".xml";
         }
+        m_content->setMenu("default");
+        m_content->setSource(m_title->text().toLower() + ".xml");
         // TODO: real author here
         m_content->setAuthor("author");
-        m_content->setSource(m_title->text().toLower() + ".xml");
-        m_content->setDate(QDate());   
-        m_site->addContent(m_content);
+        m_content->setDate(QDate::currentDate());
     }
 
     QFile file(m_filename);
@@ -262,7 +264,8 @@ void ContentEditor::save()
     stream << doc.toString();
     file.close();
 
-    //emit contentUpdated("Content Save");
+    if(newEntry)
+        emit contentUpdated("Content updated");
 }
 
 void ContentEditor::editChanged(QString text)
