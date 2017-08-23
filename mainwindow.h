@@ -35,12 +35,14 @@ class QTableWidgetItem;
 class ContentEditor;
 class ContentList;
 class AnimationLabel;
+class QTableWidget;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     MainWindow();
 
+    bool eventFilter(QObject *watched, QEvent *event);
     void reloadProject();
     void saveProject();
 
@@ -58,8 +60,7 @@ private:
     void initUndoRedo();
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
-    void animateIn(QTableWidgetItem *item);
-    void animateOut();
+    void animate(QTableWidgetItem *item);
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -70,11 +71,15 @@ private:
     Site *m_site;
     QString m_defaultPath;
     QUndoStack *m_undoStack;
-    QWidget *m_animationPanel;
     QParallelAnimationGroup *m_animationgroup;
+    QPropertyAnimation *m_animx;
+    QPropertyAnimation *m_animy;
+    QPropertyAnimation *m_animw;
+    QPropertyAnimation *m_animh;
     ContentEditor *m_editor;
-    ContentList *m_contentList;
-    AnimationLabel *m_anim;
+    QTableWidget *m_list;
+    QWidget *m_cellWidget;
+    int m_row;
 
 private slots:
     void dashboardExpanded(bool value);
@@ -95,9 +100,10 @@ private slots:
     void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);
     void projectUpdated(QString text);
-    void contentEditorClosed(ContentEditor *editor);
+    void contentEditorClosed();
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
+    void contentChanged(Content *content);
 };
 
 #endif // MAINWINDOW_H

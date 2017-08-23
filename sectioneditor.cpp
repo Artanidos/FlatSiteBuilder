@@ -241,9 +241,6 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
                     break;
                 }
             }
-            ContentEditor *ce = getContentEditor();
-            if(ce)
-                ce->editChanged("Move Row");
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }
@@ -274,6 +271,9 @@ void SectionEditor::dropEvent(QDropEvent *event)
                     break;
                 }
             }
+            ContentEditor *ce = getContentEditor();
+            if(ce)
+                ce->editChanged("Move Row");
             event->setDropAction(Qt::MoveAction);
             event->accept();
         }

@@ -48,15 +48,15 @@ void ChangeContentCommand::undo()
     m_contentEditor->load();
 
     Generator gen;
-    gen.generateSite(m_contentEditor->site(), m_contentEditor->content());
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
 
 void ChangeContentCommand::redo()
 {
     QString sitedir = m_contentEditor->site()->path().mid(m_contentEditor->site()->path().lastIndexOf("/") + 1);
-    QString subdir = m_contentEditor->content()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->content()->source() + "." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->content()->source() + "." + QString::number(fileVersionNumber + 1);
+    QString subdir = m_contentEditor->getContent()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
+    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber);
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber + 1);
 
     QFile redo(m_redoFilename);
     if(redo.exists())
@@ -76,7 +76,7 @@ void ChangeContentCommand::redo()
 
     qDebug() << "Content" << text();
     Generator gen;
-    gen.generateSite(m_contentEditor->site(), m_contentEditor->content());
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
 
 ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)

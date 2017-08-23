@@ -33,11 +33,12 @@
 #include "content.h"
 #include "site.h"
 #include "texteditor.h"
+#include "abstracteditor.h"
 #include "sectioneditor.h"
 #include "rowpropertyeditor.h"
 #include "sectionpropertyeditor.h"
 
-class ContentEditor : public QWidget
+class ContentEditor : public AbstractEditor
 {
     Q_OBJECT
 
@@ -49,7 +50,7 @@ public:
     void rowEdit(RowEditor *);
     void sectionEdit(SectionEditor *);
     void setUndoStack(QUndoStack *stack);
-    Content *content() {return m_content;}
+    Content *getContent() {return m_content;}
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
     void load();
@@ -75,7 +76,8 @@ private slots:
 signals:
     void contentUpdated(QString text);
     void preview(Content *);
-    void contentEditorClosed(ContentEditor *editor);
+    void contentEditorClosed();
+    void contentChanged(Content *content);
 
 private:
     Site *m_site;
@@ -98,6 +100,8 @@ private:
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;
+    QPropertyAnimation *m_animw;
+    QPropertyAnimation *m_animh;
     ElementEditor *m_elementEditor;
     RowEditor *m_rowEditor;
     SectionEditor *m_sectionEditor;

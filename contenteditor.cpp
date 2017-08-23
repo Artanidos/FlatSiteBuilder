@@ -161,7 +161,7 @@ void ContentEditor::close()
     if(m_isNew)
         updateNewContent();
 
-    emit contentEditorClosed(this);
+    emit contentEditorClosed();
 }
 
 void ContentEditor::siteLoaded(Site *site)
@@ -193,6 +193,7 @@ void ContentEditor::titleChanged()
     {
         m_content->setDate(QDate::currentDate());
         m_content->setTitle(m_title->text());
+        emit contentChanged(m_content);
         if(!m_isNew)
             emit contentUpdated("Titel Changed");
     }
@@ -208,6 +209,7 @@ void ContentEditor::sourceChanged()
             m_filename = m_site->path() + "/pages/" + m_content->source();
         else
             m_filename = m_site->path() + "/pages/" + m_content->source();
+        emit contentChanged(m_content);
         emit contentUpdated("Permalink Changed");
     }
 }
@@ -218,6 +220,7 @@ void ContentEditor::excerptChanged()
     {
         m_content->setDate(QDate::currentDate());
         m_content->setExcerpt(m_excerpt->text());
+        emit contentChanged(m_content);
         emit contentUpdated("Excerpt Changed");
     }
 }
@@ -425,20 +428,20 @@ void ContentEditor::animate(QWidget *widget)
     m_animy->setTargetObject(m_editor);
     m_animy->setPropertyName("y");
     m_animationgroup->addAnimation(m_animy);
-    QPropertyAnimation *animw = new QPropertyAnimation();
-    animw->setDuration(300);
-    animw->setStartValue(widget->size().width());
-    animw->setEndValue(m_scroll->size().width());
-    animw->setTargetObject(m_editor);
-    animw->setPropertyName("width");
-    m_animationgroup->addAnimation(animw);
-    QPropertyAnimation *animh = new QPropertyAnimation();
-    animh->setDuration(300);
-    animh->setStartValue(widget->size().height());
-    animh->setEndValue(m_scroll->size().height());
-    animh->setTargetObject(m_editor);
-    animh->setPropertyName("height");
-    m_animationgroup->addAnimation(animh);
+    m_animw = new QPropertyAnimation();
+    m_animw->setDuration(300);
+    m_animw->setStartValue(widget->size().width());
+    m_animw->setEndValue(m_scroll->size().width());
+    m_animw->setTargetObject(m_editor);
+    m_animw->setPropertyName("width");
+    m_animationgroup->addAnimation(m_animw);
+    m_animh = new QPropertyAnimation();
+    m_animh->setDuration(300);
+    m_animh->setStartValue(widget->size().height());
+    m_animh->setEndValue(m_scroll->size().height());
+    m_animh->setTargetObject(m_editor);
+    m_animh->setPropertyName("height");
+    m_animationgroup->addAnimation(m_animh);
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
     m_animationgroup->start();
 }
@@ -449,6 +452,7 @@ void ContentEditor::animationFineshedZoomIn()
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_title->setEnabled(false);
+    m_previewLink->hide();
     m_source->setEnabled(false);
     if(m_content->contentType() == ContentType::Post)
         m_excerpt->setEnabled(false);
@@ -462,6 +466,8 @@ void ContentEditor::editorClosed()
     // correct end values in case of resizing the window
     m_animx->setStartValue(pos.x());
     m_animy->setStartValue(pos.y());
+    m_animw->setStartValue(m_sourcewidget->size().width());
+    m_animh->setStartValue(m_sourcewidget->size().height());
     m_animationgroup->setDirection(QAbstractAnimation::Backward);
     disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
@@ -502,9 +508,10 @@ void ContentEditor::animationFineshedZoomOut()
 {
     m_title->setEnabled(true);
     m_source->setEnabled(true);
-    m_previewLink->setEnabled(true);
+    m_previewLink->show();
     if(m_content->contentType() == ContentType::Post)
         m_excerpt->setEnabled(true);
+    delete m_animationgroup;
     delete m_editor;
     m_editor = NULL;
 }
