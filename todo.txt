@@ -3,7 +3,6 @@ Features
 - slider editor
 - undo/redo should be visible somewhere
 - other modules (plugins)
-- generate should only generate changed files
 - menu editor
 - theme editor (change colors, fonts and other styles)
 - media page
@@ -21,7 +20,3 @@ Postponend
     maybe resize column
 	editor where the columns can be selected
 - cascading rows / columns
-
-Bugs
-----
-- Undo after Add Page shows double entries in list

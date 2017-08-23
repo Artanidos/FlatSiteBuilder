@@ -145,7 +145,7 @@ void ContentEditor::updateNewContent()
     else
     {
         m_content->setLayout("post");
-        m_filename = m_site->path() + "/pages/" + m_content->source();
+        m_filename = m_site->path() + "/posts/" + m_content->source();
     }
     m_content->setMenu("default");
 
@@ -153,6 +153,7 @@ void ContentEditor::updateNewContent()
     m_content->setAuthor("author");
     m_content->setDate(QDate::currentDate());
     save();
+    emit contentChanged(m_content);
     emit contentUpdated("Content updated");
 }
 
