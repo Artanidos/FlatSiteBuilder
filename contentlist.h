@@ -33,6 +33,8 @@ class ContentList  : public QWidget
 public:
     ContentList(Site *site, ContentType type);
 
+    QTableWidget *list() {return m_list;}
+
 private slots:
     void buttonClicked();
     void deleteButtonClicked();

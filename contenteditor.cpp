@@ -39,6 +39,7 @@
 #include <QParallelAnimationGroup>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QApplication>
 #include <QAction>
 #include <QTest>
 
@@ -46,6 +47,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 {
     m_site = site;
     m_content = content;
+    m_editor = NULL;
 
     QString txt = "view ";
     if(m_content->contentType() == ContentType::Page)
@@ -67,6 +69,8 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_title = new QLineEdit();
     m_source = new QLineEdit;
     m_excerpt = new QLineEdit();
+    m_labelPermalink = new QLabel("Permalink");
+    m_labelTitle = new QLabel("Title");
 
     m_close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     m_close->setToolTip("Close Editor");
@@ -75,13 +79,14 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setWidgetResizable(true);
+    m_scroll->installEventFilter(this);
 
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
     m_layout->addWidget(m_close, 0, 2, 1, 1, Qt::AlignRight);
-    m_layout->addWidget(new QLabel("Title"), 1, 0);
+    m_layout->addWidget(m_labelTitle, 1, 0);
     m_layout->addWidget(m_title, 2, 0);
-    m_layout->addWidget(new QLabel("Permalink"), 1, 1);
+    m_layout->addWidget(m_labelPermalink, 1, 1);
     m_layout->addWidget(m_source, 2, 1);
     m_layout->addWidget(m_scroll, 5, 0, 1, 3);
     m_vbox->addLayout(m_layout);
@@ -147,7 +152,6 @@ void ContentEditor::updateNewContent()
     // TODO: real author here
     m_content->setAuthor("author");
     m_content->setDate(QDate::currentDate());
-    emit contentHasChanged(m_content);
     save();
     emit contentUpdated("Content updated");
 }
@@ -189,7 +193,6 @@ void ContentEditor::titleChanged()
     {
         m_content->setDate(QDate::currentDate());
         m_content->setTitle(m_title->text());
-        emit contentHasChanged(m_content);
         if(!m_isNew)
             emit contentUpdated("Titel Changed");
     }
@@ -352,67 +355,13 @@ void ContentEditor::preview()
     emit preview(m_content);
 }
 
-void ContentEditor::animate(QWidget *widget)
+bool ContentEditor::eventFilter(QObject *watched, QEvent *event)
 {
-    QPoint pos = widget->mapTo(m_scroll, QPoint(0,0));
-
-    // make screenprint from widget
-    QPixmap pixmap(widget->size());
-    widget->render(&pixmap);
-
-    // make screenprint from scrollarea
-    QPixmap pixmapScroll(m_scroll->size());
-    m_scroll->render(&pixmapScroll);
-
-    m_animationPanel = new QWidget();
-    QLabel *scroll = new QLabel();
-    scroll->setPixmap(pixmapScroll);
-    scroll->setParent(m_animationPanel);
-    scroll->move(0, 0);
-    AnimationLabel *anim = new AnimationLabel();
-    anim->setPixmap(pixmap);
-    anim->setAlignment(Qt::AlignTop);
-    anim->setAutoFillBackground(true);
-    QPalette pal = palette();
-    pal.setColor(QPalette::Background, widget->palette().background().color());
-    anim->setPalette(pal);
-    anim->setParent(m_animationPanel);
-    m_animationPanel->setMinimumWidth(m_scroll->size().width());
-    m_animationPanel->setMinimumHeight(m_scroll->size().height());
-    m_layout->replaceWidget(m_scroll, m_animationPanel);
-    m_scroll->hide();
-
-    m_animationgroup = new QParallelAnimationGroup();
-    QPropertyAnimation *animx = new QPropertyAnimation();
-    animx->setDuration(300);
-    animx->setStartValue(pos.x());
-    animx->setEndValue(0);
-    animx->setTargetObject(anim);
-    animx->setPropertyName("x");
-    m_animationgroup->addAnimation(animx);
-    QPropertyAnimation *animy = new QPropertyAnimation();
-    animy->setDuration(300);
-    animy->setStartValue(pos.y());
-    animy->setEndValue(0);
-    animy->setTargetObject(anim);
-    animy->setPropertyName("y");
-    m_animationgroup->addAnimation(animy);
-    QPropertyAnimation *animw = new QPropertyAnimation();
-    animw->setDuration(300);
-    animw->setStartValue(widget->size().width());
-    animw->setEndValue(m_scroll->size().width());
-    animw->setTargetObject(anim);
-    animw->setPropertyName("width");
-    m_animationgroup->addAnimation(animw);
-    QPropertyAnimation *animh = new QPropertyAnimation();
-    animh->setDuration(300);
-    animh->setStartValue(widget->size().height());
-    animh->setEndValue(m_scroll->size().height());
-    animh->setTargetObject(anim);
-    animh->setPropertyName("height");
-    m_animationgroup->addAnimation(animh);
-    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
-    m_animationgroup->start();
+    if(watched == m_scroll && event->type() == QEvent::Resize && m_editor)
+    {
+        m_editor->resize(m_scroll->size());
+    }
+    return false;
 }
 
 void ContentEditor::sectionEdit(SectionEditor *se)
@@ -421,8 +370,7 @@ void ContentEditor::sectionEdit(SectionEditor *se)
 
     m_editor = new SectionPropertyEditor();
     m_editor->setContent(se->content());
-    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(sectionEditorClose(QWidget*)));
-
+    connect(m_editor, SIGNAL(close()), this, SLOT(sectionEditorClose()));
     animate(se);
 }
 
@@ -432,7 +380,7 @@ void ContentEditor::rowEdit(RowEditor *re)
 
     m_editor = new RowPropertyEditor();
     m_editor->setContent(re->content());
-    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(rowEditorClose(QWidget*)));
+    connect(m_editor, SIGNAL(close()), this, SLOT(rowEditorClose()));
 
     animate(re);
 }
@@ -442,96 +390,121 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     m_elementEditor = ee;
 
     if(ee->type() == ElementEditor::Type::Text)
-    {
         m_editor = new TextEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
     else if(ee->type() == ElementEditor::Type::Image)
-    {
         m_editor = new ImageEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
     else if(ee->type() == ElementEditor::Type::Slider)
-    {
         m_editor = new SliderEditor();
-        m_editor->setSite(m_site);
-        m_editor->setContent(ee->content());
-    }
-    connect(m_editor, SIGNAL(close(QWidget*)), this, SLOT(editorClose(QWidget*)));
-
+    m_editor->setSite(m_site);
+    m_editor->setContent(ee->content());
+    connect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
     animate(ee);
+}
+
+void ContentEditor::animate(QWidget *widget)
+{
+    m_sourcewidget = widget;
+    QPoint pos = widget->mapTo(m_scroll, QPoint(0,0));
+    m_editor->setParent(m_scroll);
+    m_editor->move(pos);
+    m_editor->resize(widget->size());
+    m_editor->show();
+
+    m_animationgroup = new QParallelAnimationGroup();
+    m_animx = new QPropertyAnimation();
+    m_animx->setDuration(300);
+    m_animx->setStartValue(pos.x());
+    m_animx->setEndValue(0);
+    m_animx->setTargetObject(m_editor);
+    m_animx->setPropertyName("x");
+    m_animationgroup->addAnimation(m_animx);
+    m_animy = new QPropertyAnimation();
+    m_animy->setDuration(300);
+    m_animy->setStartValue(pos.y());
+    m_animy->setEndValue(0);
+    m_animy->setTargetObject(m_editor);
+    m_animy->setPropertyName("y");
+    m_animationgroup->addAnimation(m_animy);
+    QPropertyAnimation *animw = new QPropertyAnimation();
+    animw->setDuration(300);
+    animw->setStartValue(widget->size().width());
+    animw->setEndValue(m_scroll->size().width());
+    animw->setTargetObject(m_editor);
+    animw->setPropertyName("width");
+    m_animationgroup->addAnimation(animw);
+    QPropertyAnimation *animh = new QPropertyAnimation();
+    animh->setDuration(300);
+    animh->setStartValue(widget->size().height());
+    animh->setEndValue(m_scroll->size().height());
+    animh->setTargetObject(m_editor);
+    animh->setPropertyName("height");
+    m_animationgroup->addAnimation(animh);
+    connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
+    m_animationgroup->start();
 }
 
 void ContentEditor::animationFineshedZoomIn()
 {
-    m_layout->replaceWidget(m_animationPanel, m_editor);
-    m_animationPanel->hide();
-    m_title->hide();
-    m_previewLink->hide();
-    m_close->hide();
+    m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_title->setEnabled(false);
+    m_source->setEnabled(false);
     if(m_content->contentType() == ContentType::Post)
-    {
-        m_excerptLabel->hide();
-        m_excerpt->hide();
-    }
+        m_excerpt->setEnabled(false);
 }
 
-void ContentEditor::editorClosed(QWidget *w)
-{
-    m_title->show();
-    m_previewLink->show();
-    m_close->show();
-    if(m_content->contentType() == ContentType::Post)
-    {
-        m_excerptLabel->show();
-        m_excerpt->show();
-    }
-    m_layout->replaceWidget(w, m_animationPanel);
-    m_animationPanel->show();
-    delete w;
+void ContentEditor::editorClosed()
+{   
+    m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    QPoint pos = m_sourcewidget->mapTo(m_scroll, QPoint(0,0));
+    // correct end values in case of resizing the window
+    m_animx->setStartValue(pos.x());
+    m_animy->setStartValue(pos.y());
     m_animationgroup->setDirection(QAbstractAnimation::Backward);
     disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
     m_animationgroup->start();
 }
 
-void ContentEditor::sectionEditorClose(QWidget *w)
+void ContentEditor::sectionEditorClose()
 {
     if(m_editor->changed())
     {
         m_sectionEditor->setContent(m_editor->content());
         editChanged("Update Section");
     }
-    editorClosed(w);
+    editorClosed();
 }
 
-void ContentEditor::rowEditorClose(QWidget *w)
+void ContentEditor::rowEditorClose()
 {
     if(m_editor->changed())
     {
         m_rowEditor->setContent(m_editor->content());
         editChanged("Update Row");
     }
-    editorClosed(w);
+    editorClosed();
 }
 
-void ContentEditor::editorClose(QWidget *w)
+void ContentEditor::editorClose()
 {
     if(m_editor->changed())
     {
         m_elementEditor->setContent(m_editor->content());
         editChanged("Update Element");
     }
-    editorClosed(w);
+    editorClosed();
 }
 
 void ContentEditor::animationFineshedZoomOut()
 {
-    m_layout->replaceWidget(m_animationPanel, m_scroll);
-    m_animationPanel->hide();
-    m_scroll->show();
-    delete m_animationPanel;
-    delete m_animationgroup;
+    m_title->setEnabled(true);
+    m_source->setEnabled(true);
+    m_previewLink->setEnabled(true);
+    if(m_content->contentType() == ContentType::Post)
+        m_excerpt->setEnabled(true);
+    delete m_editor;
+    m_editor = NULL;
 }

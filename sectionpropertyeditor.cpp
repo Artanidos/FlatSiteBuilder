@@ -85,7 +85,7 @@ void SectionPropertyEditor::closeEditor()
         m_element.setAttribute("attributes", m_attributes->text());
         m_element.setAttribute("id", m_id->text());
     }
-    emit close(this);
+    emit close();
 }
 
 void SectionPropertyEditor::setContent(QDomElement element)

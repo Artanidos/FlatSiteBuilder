@@ -103,7 +103,15 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["github"] = m_site->github();
     sitevars["keywords"] = m_site->keywords();
 
-    if(contentToBuild == 0)
+    QDir siteDir(dir + "/" + m_site->title());
+    bool copyAssets = false;
+    if(!siteDir.exists())
+    {
+        siteDir.setPath(dir);
+        siteDir.mkdir(m_site->title());
+        copyAssets = true;
+    }
+    if(contentToBuild == 0 || copyAssets)
     {
         // first copy assets from site, they will not be overridden by theme assets
         copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");

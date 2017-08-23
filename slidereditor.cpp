@@ -85,11 +85,11 @@ void SliderEditor::save()
         //m_element.setAttribute("src", m_temp);
         //m_element.setAttribute("animation", m_animationCombo->currentData(Qt::UserRole).toString());
     }
-    emit close(this);
+    emit close();
 }
 
 void SliderEditor::cancel()
 {
     m_changed = false;
-    emit close(this);
+    emit close();
 }

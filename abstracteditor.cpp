@@ -23,6 +23,7 @@
 AbstractEditor::AbstractEditor()
 {
     m_changed = false;
+    setAutoFillBackground(true);
 }
 
 AbstractEditor::~AbstractEditor()

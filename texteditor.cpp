@@ -86,7 +86,7 @@ void TextEditor::closeEditor()
         }
         m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
-    emit close(this);
+    emit close();
 }
 
 void TextEditor::setContent(QDomElement element)

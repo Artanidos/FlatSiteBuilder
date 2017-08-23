@@ -69,7 +69,7 @@ void RowPropertyEditor::editorClose()
         }
         m_element.setAttribute("cssclass", m_cssclass->text());
     }
-    emit close(this);
+    emit close();
 }
 
 void RowPropertyEditor::setContent(QDomElement element)
