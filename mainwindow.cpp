@@ -564,6 +564,7 @@ void MainWindow::showDashboard()
     connect(db, SIGNAL(previewSite(Content *)), this, SLOT(previewSite(Content *)));
     connect(db, SIGNAL(publishSite()), this, SLOT(publishSite()));
     connect(db, SIGNAL(createSite()), this, SLOT(createSite()));
+    connect(db, SIGNAL(buildSite()), this, SLOT(buildSite()));
     connect(this, SIGNAL(siteLoaded(Site*)), db, SLOT(siteLoaded(Site*)));
     setCentralWidget(db);
 }
@@ -594,7 +595,7 @@ void MainWindow::editContent(QTableWidgetItem *item)
     connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));
     connect(m_editor, SIGNAL(contentEditorClosed(QWidget*)), this, SLOT(contentEditorClosed(QWidget*)));
     connect(m_editor, SIGNAL(contentHasChanged(Content*)), this, SLOT(contentHasChanged(Content*)));
-    animate(item);
+    animateIn(item);
     m_editedItem = item;
 }
 
@@ -608,10 +609,9 @@ void MainWindow::contentHasChanged(Content *content)
     author->setText(content->author());
     QTableWidgetItem *date = table->item(m_editedItem->row(), 4);
     date->setText(content->date().toString("dd.MM.yyyy"));
-
 }
 
-void MainWindow::animate(QTableWidgetItem *item)
+void MainWindow::animateIn(QTableWidgetItem *item)
 {
     QTableWidget *list = item->tableWidget();
 
@@ -688,6 +688,7 @@ void MainWindow::animationFineshedZoomIn()
 {
     m_layout->replaceWidget(m_animationPanel, m_editor);
     m_animationPanel->hide();
+    //m_panel = m_editor;
 }
 
 void MainWindow::animationFineshedZoomOut()
@@ -713,6 +714,12 @@ void MainWindow::previewSite(Content *content)
 void MainWindow::publishSite()
 {   
     showHtml("https://artanidos.github.io/FlatSiteBuilder/publish.html");
+}
+
+void MainWindow::buildSite()
+{
+    Generator gen;
+    gen.generateSite(m_site);
 }
 
 void MainWindow::createSite()

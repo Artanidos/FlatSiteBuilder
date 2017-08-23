@@ -26,6 +26,7 @@
 #include <QLabel>
 #include "site.h"
 
+class FlatButton;
 class Dashboard : public QWidget
 {
     Q_OBJECT
@@ -33,15 +34,15 @@ class Dashboard : public QWidget
 public:
     Dashboard(Site *site, QString defaultPath);
 
-    bool eventFilter(QObject * watched, QEvent * event);
-
 signals:
     void loadSite(QString filename);
     void createSite();
     void previewSite(Content *);
     void publishSite();
+    void buildSite();
 
 private slots:
+    void buildClicked();
     void loadClicked();
     void createClicked();
     void publishClicked();
@@ -49,10 +50,11 @@ private slots:
     void siteLoaded(Site *site);
 
 private:
-    QPushButton *m_loadButton;
-    QPushButton *m_createButton;
-    QPushButton *m_publishButton;
-    QPushButton *m_previewButton;
+    FlatButton *m_loadButton;
+    FlatButton *m_createButton;
+    FlatButton *m_publishButton;
+    FlatButton *m_previewButton;
+    FlatButton *m_buildButton;
     QLabel *m_info;
     Site *m_site;
     QString m_defaultPath;

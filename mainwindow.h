@@ -57,7 +57,7 @@ private:
     void initUndoRedo();
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
-    void animate(QTableWidgetItem *item);
+    void animateIn(QTableWidgetItem *item);
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -89,6 +89,7 @@ private slots:
     void previewSite(Content *content);
     void publishSite();
     void createSite();
+    void buildSite();
     void notImplemented();
     void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);

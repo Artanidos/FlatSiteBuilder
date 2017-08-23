@@ -28,7 +28,7 @@ class FlatButton : public QLabel
     Q_OBJECT
 
 public:
-    FlatButton(QString normal, QString hover);
+    FlatButton(QString normal, QString hover, QString pressed = "");
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -41,6 +41,7 @@ signals:
 private:
     QImage m_normalIcon;
     QImage m_hoverIcon;
+    QImage m_pressedIcon;
 };
 
 #endif // FLATBUTTON_H

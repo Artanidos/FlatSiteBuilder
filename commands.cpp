@@ -100,9 +100,6 @@ void ChangeProjectCommand::undo()
         dest.remove();
     QFile::copy(m_tempFilename, m_site->path() + "/Site.xml");
     m_win->reloadProject();
-
-    Generator gen;
-    gen.generateSite(m_site);
 }
 
 void ChangeProjectCommand::redo()
@@ -128,6 +125,4 @@ void ChangeProjectCommand::redo()
     }
 
     qDebug() << "Project" << text();
-    Generator gen;
-    gen.generateSite(m_site);
 }

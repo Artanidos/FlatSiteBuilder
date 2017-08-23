@@ -197,5 +197,8 @@
         <file>themes/himu/includes/nav.html</file>
         <file>themes/himu/layouts/default.html</file>
         <file>images/close_hover_red.png</file>
+        <file>images/build_hover.png</file>
+        <file>images/build_normal.png</file>
+        <file>images/build_pressed.png</file>
     </qresource>
 </RCC>

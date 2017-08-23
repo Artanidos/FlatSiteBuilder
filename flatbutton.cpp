@@ -21,10 +21,14 @@
 #include "flatbutton.h"
 #include <QMouseEvent>
 
-FlatButton::FlatButton(QString normalIcon, QString hoverIcon)
+FlatButton::FlatButton(QString normalIcon, QString hoverIcon, QString pressedIcon)
 {
     m_normalIcon = QImage(normalIcon);
     m_hoverIcon = QImage(hoverIcon);
+    if(pressedIcon.isEmpty())
+        m_pressedIcon = QImage(hoverIcon);
+    else
+        m_pressedIcon = QImage(pressedIcon);
 
     setPixmap(QPixmap::fromImage(m_normalIcon));
     setCursor(Qt::PointingHandCursor);
@@ -32,12 +36,14 @@ FlatButton::FlatButton(QString normalIcon, QString hoverIcon)
 
 void FlatButton::mousePressEvent(QMouseEvent *event)
 {
+    setPixmap(QPixmap::fromImage(m_pressedIcon));
     setFocus();
     event->accept();
 }
 
 void FlatButton::mouseReleaseEvent(QMouseEvent *event)
 {
+    setPixmap(QPixmap::fromImage(m_hoverIcon));
     event->accept();
     emit clicked();
 }

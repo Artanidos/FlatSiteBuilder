@@ -9,6 +9,7 @@ Features
 - media page
 - setting pages
 - test on windows
+- widget system ala wordpress
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - transitions for zoom out should be created new after window resize
 - library to save pages, sections and rows as templates
