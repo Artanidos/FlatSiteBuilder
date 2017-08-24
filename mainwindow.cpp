@@ -449,6 +449,8 @@ void MainWindow::reloadProject()
     }
 
     emit siteLoaded(m_site);
+
+    statusBar()->showMessage(m_site->title() + " has been loaded");
 }
 
 void MainWindow::saveProject()
@@ -504,6 +506,8 @@ void MainWindow::saveProject()
     QTextStream stream(&file);
     stream << doc.toString();
     file.close();
+
+    statusBar()->showMessage(m_site->title() + " has been saved");
 }
 
 void MainWindow::projectUpdated(QString text)
@@ -545,19 +549,6 @@ void MainWindow::readSettings()
     m_defaultPath = settings.value("lastSite").toString();
 }
 
-/*
-void MainWindow::setCentralWidget(QWidget *widget)
-{
-    if(m_panel)
-    {
-        m_layout->replaceWidget(m_panel, widget);
-        delete m_panel;
-    }
-    else
-        m_layout->addWidget(widget);
-    m_panel = widget;
-}
-*/
 void MainWindow::showDashboard()
 {
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
@@ -673,12 +664,14 @@ void MainWindow::buildSite()
 {
     Generator gen;
     gen.generateSite(m_site);
+    statusBar()->showMessage(m_site->title() + " has been generated");
 }
 
 void MainWindow::createSite()
 {
     SiteWizard *wiz = new SiteWizard();
     connect(wiz, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
+    connect(wiz, SIGNAL(buildSite()), this, SLOT(buildSite()));
     wiz->show();
 }
 

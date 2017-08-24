@@ -111,6 +111,7 @@ void SiteWizard::accept()
     QDialog::accept();
 
     emit loadSite(path + "/Site.xml");
+    emit buildSite();
 }
 
 IntroPage::IntroPage(QWidget *parent)

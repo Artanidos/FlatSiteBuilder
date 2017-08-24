@@ -17,6 +17,7 @@ public:
 
 signals:
     void loadSite(QString file);
+    void buildSite();
 };
 
 class IntroPage : public QWizardPage
