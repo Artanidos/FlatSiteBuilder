@@ -6,6 +6,7 @@
  <Menu name="mainmenu">
   <Item title="Home" url="#wrapper"/>
   <Item title="Slides" url="#slides"/>
+<Item title="Downloads" url="#downloads"/>
   <Item title="Contact" url="#contact"/>
  </Menu>
 </Site>

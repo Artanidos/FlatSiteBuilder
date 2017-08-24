@@ -1,4 +1,4 @@
-<Post>
+<Content>
  <Section fullwidth="true">
   <Row>
    <Column span="12">
@@ -34,7 +34,7 @@
   </Row>
   <Row>
    <Column span="4">
-    <Image title="" animation="fadeInLeft" adminlabel="" alt="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png"/>
+    <Image alt="" adminlabel="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" animation="fadeInLeft" title=""/>
    </Column>
    <Column span="8">
     <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
@@ -117,4 +117,14 @@
    </Column>
   </Row>
  </Section>
-</Post>
+ <Section id="downloads">
+  <Row>
+   <Column span="12">
+    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+<h3><strong>Downloads</strong></h3>
+<p class="lead">Here you can download our first pre-release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
+]]></Text>
+   </Column>
+  </Row>
+ </Section>
+</Content>
