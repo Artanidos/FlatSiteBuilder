@@ -28,12 +28,13 @@ class FlatButton : public QLabel
     Q_OBJECT
 
 public:
-    FlatButton(QString normal, QString hover, QString pressed = "");
+    FlatButton(QString normal, QString hover, QString pressed = "", QString disabled = "");
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void enterEvent(QEvent * event);
     void leaveEvent(QEvent * event);
+    void setEnabled(bool enabled);
 
 signals:
     void clicked();
@@ -42,6 +43,8 @@ private:
     QImage m_normalIcon;
     QImage m_hoverIcon;
     QImage m_pressedIcon;
+    QImage m_disabledIcon;
+    bool m_enabled;
 };
 
 #endif // FLATBUTTON_H

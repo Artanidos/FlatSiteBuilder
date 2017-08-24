@@ -21,41 +21,59 @@
 #include "flatbutton.h"
 #include <QMouseEvent>
 
-FlatButton::FlatButton(QString normalIcon, QString hoverIcon, QString pressedIcon)
+FlatButton::FlatButton(QString normalIcon, QString hoverIcon, QString pressedIcon, QString disabledIcon)
 {
+    m_enabled = true;
     m_normalIcon = QImage(normalIcon);
     m_hoverIcon = QImage(hoverIcon);
     if(pressedIcon.isEmpty())
         m_pressedIcon = QImage(hoverIcon);
     else
         m_pressedIcon = QImage(pressedIcon);
-
+    if(disabledIcon.isEmpty())
+        m_disabledIcon = QImage(normalIcon);
+    else
+        m_disabledIcon = QImage(disabledIcon);
     setPixmap(QPixmap::fromImage(m_normalIcon));
     setCursor(Qt::PointingHandCursor);
 }
 
+void FlatButton::setEnabled(bool enabled)
+{
+    m_enabled = enabled;
+    if(enabled)
+        setPixmap(QPixmap::fromImage(m_normalIcon));
+    else
+        setPixmap(QPixmap::fromImage(m_disabledIcon));
+
+}
+
 void FlatButton::mousePressEvent(QMouseEvent *event)
 {
-    setPixmap(QPixmap::fromImage(m_pressedIcon));
+    if(m_enabled)
+        setPixmap(QPixmap::fromImage(m_pressedIcon));
     setFocus();
     event->accept();
 }
 
 void FlatButton::mouseReleaseEvent(QMouseEvent *event)
 {
-    setPixmap(QPixmap::fromImage(m_hoverIcon));
+    if(m_enabled)
+        setPixmap(QPixmap::fromImage(m_hoverIcon));
     event->accept();
     emit clicked();
 }
 
 void FlatButton::enterEvent(QEvent * event)
 {
-    setPixmap(QPixmap::fromImage(m_hoverIcon));
+    if(m_enabled)
+        setPixmap(QPixmap::fromImage(m_hoverIcon));
     QWidget::enterEvent(event);
 }
 
 void FlatButton::leaveEvent(QEvent * event)
 {
-    setPixmap(QPixmap::fromImage(m_normalIcon));
+    if(m_enabled)
+        setPixmap(QPixmap::fromImage(m_normalIcon));
     QWidget::leaveEvent(event);
 }

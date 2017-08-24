@@ -35,6 +35,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QScrollArea>
+#include <QMenu>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QDomDocument>
@@ -48,6 +49,9 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_site = site;
     m_content = content;
     m_editor = NULL;
+    m_undoStack = new QUndoStack;
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
     QString txt = "view ";
     if(m_content->contentType() == ContentType::Page)
@@ -73,8 +77,17 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_labelTitle = new QLabel("Title");
 
     m_close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
-    m_close->setToolTip("Close Editor");
-
+    m_close->setToolTip("Close Content Editor");
+    m_undo = new FlatButton(":/images/undo_normal.png", ":/images/undo_hover.png", "", ":/images/undo_disabled.png");
+    m_redo = new FlatButton(":/images/redo_normal.png", ":/images/redo_hover.png", "", ":/images/redo_disabled.png");
+    m_undo->setToolTip("Undo");
+    m_redo->setToolTip("Redo");
+    m_undo->setEnabled(false);
+    m_redo->setEnabled(false);
+    QHBoxLayout *hbox = new QHBoxLayout();
+    hbox->addWidget(m_undo);
+    hbox->addWidget(m_redo);
+    hbox->addWidget(m_close);
     m_scroll = new QScrollArea();
     m_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -83,7 +96,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
-    m_layout->addWidget(m_close, 0, 2, 1, 1, Qt::AlignRight);
+    m_layout->addLayout(hbox, 0, 2);
     m_layout->addWidget(m_labelTitle, 1, 0);
     m_layout->addWidget(m_title, 2, 0);
     m_layout->addWidget(m_labelPermalink, 1, 1);
@@ -111,11 +124,65 @@ ContentEditor::ContentEditor(Site *site, Content *content)
         load();
 
     connect(m_close, SIGNAL(clicked()), this, SLOT(close()));
+    connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
+    connect(m_redo, SIGNAL(clicked()), this, SLOT(redo()));
     connect(m_title, SIGNAL(editingFinished()), this, SLOT(titleChanged()));
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged(QString)));
     connect(m_source, SIGNAL(editingFinished()), this, SLOT(sourceChanged()));
     connect(m_excerpt, SIGNAL(editingFinished()), this, SLOT(excerptChanged()));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
+    connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
+    connect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
+    connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
+    connect(m_undoStack, SIGNAL(redoTextChanged(QString)), this, SLOT(redoTextChanged(QString)));
+}
+
+ContentEditor::~ContentEditor()
+{
+    delete m_undoStack;
+}
+
+void ContentEditor::canUndoChanged(bool can)
+{
+    m_undo->setEnabled(can);
+}
+
+void ContentEditor::canRedoChanged(bool can)
+{
+    m_redo->setEnabled(can);
+}
+
+void ContentEditor::undoTextChanged(QString text)
+{
+    m_undo->setToolTip("Undo " + text);
+}
+
+void ContentEditor::redoTextChanged(QString text)
+{
+    m_redo->setToolTip("Redo " + text);
+}
+
+void ContentEditor::undo()
+{
+    m_undoStack->undo();
+}
+
+void ContentEditor::redo()
+{
+    m_undoStack->redo();
+}
+
+void ContentEditor::showContextMenu(const QPoint &pos)
+{
+    QMenu contextMenu("Context menu", this);
+    QAction *undoAct = m_undoStack->createUndoAction(this, tr("&Undo"));
+    undoAct->setShortcuts(QKeySequence::Undo);
+    QAction *redoAct = m_undoStack->createRedoAction(this, tr("&Redo"));
+    redoAct->setShortcuts(QKeySequence::Redo);
+    contextMenu.addAction(undoAct);
+    contextMenu.addAction(redoAct);
+    contextMenu.exec(mapToGlobal(pos));
 }
 
 void ContentEditor::updateNewContent()
@@ -224,19 +291,6 @@ void ContentEditor::excerptChanged()
         emit contentChanged(m_content);
         emit contentUpdated("Excerpt Changed");
     }
-}
-
-void ContentEditor::setUndoStack(QUndoStack *stack)
-{
-    m_undoStack = stack;
-    QAction *undoAct = m_undoStack->createUndoAction(this, "&Undo");
-    undoAct->setShortcuts(QKeySequence::Undo);
-
-    QAction *redoAct = m_undoStack->createRedoAction(this, "&Redo");
-    redoAct->setShortcuts(QKeySequence::Redo);
-
-    addAction(undoAct);
-    addAction(redoAct);
 }
 
 void ContentEditor::init()

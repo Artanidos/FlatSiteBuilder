@@ -32,6 +32,11 @@ ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUnd
     m_contentEditor = ce;
     fileVersionNumber += 2;
     setText(text);
+
+    QString sitedir = m_contentEditor->site()->path().mid(m_contentEditor->site()->path().lastIndexOf("/") + 1);
+    QString subdir = m_contentEditor->getContent()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
+    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber);
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber + 1);
 }
 
 ChangeContentCommand::~ChangeContentCommand()
@@ -53,11 +58,6 @@ void ChangeContentCommand::undo()
 
 void ChangeContentCommand::redo()
 {
-    QString sitedir = m_contentEditor->site()->path().mid(m_contentEditor->site()->path().lastIndexOf("/") + 1);
-    QString subdir = m_contentEditor->getContent()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber + 1);
-
     QFile redo(m_redoFilename);
     if(redo.exists())
     {
@@ -74,7 +74,6 @@ void ChangeContentCommand::redo()
         QFile::copy(m_contentEditor->filename(), m_redoFilename);
     }
 
-    qDebug() << "Content" << text();
     Generator gen;
     gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
@@ -86,6 +85,10 @@ ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString 
     m_site = site;
     m_win = win;
     setText(text);
+
+    QString sitedir = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber);
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber + 1);
 }
 
 ChangeProjectCommand::~ChangeProjectCommand()
@@ -104,10 +107,6 @@ void ChangeProjectCommand::undo()
 
 void ChangeProjectCommand::redo()
 {
-    QString sitedir = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber + 1);
-
     QFile redo(m_redoFilename);
     if(redo.exists())
     {
@@ -123,6 +122,4 @@ void ChangeProjectCommand::redo()
         m_win->saveProject();
         QFile::copy(m_site->path() + "/Site.xml", m_redoFilename);
     }
-
-    qDebug() << "Project" << text();
 }

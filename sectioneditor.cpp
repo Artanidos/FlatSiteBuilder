@@ -136,7 +136,7 @@ void SectionEditor::close()
     this->deleteLater();
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged("Delete Row");
+        ce->editChanged("Delete Section");
 }
 
 void SectionEditor::copy()

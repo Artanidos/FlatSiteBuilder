@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QSplitter>
 #include <QHeaderView>
+#include <QMenu>
 #include <QToolBox>
 #include <QPalette>
 #include <QAction>
@@ -41,6 +42,7 @@
 #include <QProcess>
 #include <QDesktopServices>
 #include <QNetworkReply>
+#include <QStatusBar>
 #include "hyperlink.h"
 #include "generator.h"
 #include "commands.h"
@@ -586,7 +588,6 @@ void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
     m_editor = new ContentEditor(m_site, content);
-    m_editor->setUndoStack(m_undoStack);
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));

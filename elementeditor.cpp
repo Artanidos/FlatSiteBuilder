@@ -137,8 +137,9 @@ void ElementEditor::setColor(QString name)
 
 void ElementEditor::mousePressEvent(QMouseEvent *event)
 {
-    if(m_mode != Mode::Enabled)
+    if(m_mode != Mode::Enabled || event->button() != Qt::LeftButton)
         return;
+
     if(parentWidget()->layout()->count() == 1)
     {
         emit elementDragged();
@@ -236,7 +237,7 @@ void ElementEditor::close()
     this->deleteLater();
     ContentEditor *ce = getContentEditor();
     if(ce)
-        ce->editChanged("Delete Element"); 
+        ce->editChanged("Delete Element");
 }
 
 void ElementEditor::edit()

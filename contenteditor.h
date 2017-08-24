@@ -44,12 +44,12 @@ class ContentEditor : public AbstractEditor
 
 public:
     ContentEditor(Site *site, Content *content = NULL);
+    ~ContentEditor();
 
     bool eventFilter(QObject *watched, QEvent *event);
     void elementEdit(ElementEditor *);
     void rowEdit(RowEditor *);
     void sectionEdit(SectionEditor *);
-    void setUndoStack(QUndoStack *stack);
     Content *getContent() {return m_content;}
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
@@ -72,6 +72,13 @@ private slots:
     void sourceChanged();
     void excerptChanged();
     void siteLoaded(Site *);
+    void showContextMenu(const QPoint &);
+    void canUndoChanged(bool can);
+    void canRedoChanged(bool can);
+    void undoTextChanged(QString text);
+    void redoTextChanged(QString text);
+    void undo();
+    void redo();
 
 signals:
     void contentUpdated(QString text);
@@ -107,6 +114,8 @@ private:
     SectionEditor *m_sectionEditor;
     QUndoStack *m_undoStack;
     FlatButton *m_close;
+    FlatButton *m_undo;
+    FlatButton *m_redo;
     QWidget *m_sourcewidget;
     bool m_isNew;
 

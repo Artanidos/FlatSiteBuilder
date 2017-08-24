@@ -200,5 +200,11 @@
         <file>images/build_hover.png</file>
         <file>images/build_normal.png</file>
         <file>images/build_pressed.png</file>
+        <file>images/redo_normal.png</file>
+        <file>images/undo_hover.png</file>
+        <file>images/undo_normal.png</file>
+        <file>images/redo_hover.png</file>
+        <file>images/redo_disabled.png</file>
+        <file>images/undo_disabled.png</file>
     </qresource>
 </RCC>
