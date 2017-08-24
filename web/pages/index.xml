@@ -34,7 +34,7 @@
   </Row>
   <Row>
    <Column span="4">
-    <Image alt="" adminlabel="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" animation="fadeInLeft" title=""/>
+    <Image alt="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" title="" animation="fadeInLeft" adminlabel=""/>
    </Column>
    <Column span="8">
     <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
@@ -125,6 +125,73 @@
 <p class="lead">Here you can download our first pre-release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
 ]]></Text>
    </Column>
+  </Row>
+ </Section>
+ <Section id="portfolio">
+  <Row>
+   <Column span="12">
+    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+<h3><strong>Portfolio</strong></h3>
+<p class="lead">Here you can see some pages which has been created using the FlatSiteBuilder.</p>
+]]></Text>
+   </Column>
+  </Row>
+  <Row>
+   <Column span="3">
+    <Text adminlabel="Crowdware"><![CDATA[<div class="item-box">
+	<figure>
+		<a class="item-hover" href="https://crowdware.github.io/web/">
+			<span class="overlay color2"></span>
+			<span class="inner">
+				<span class="block fa fa-plus fsize20"></span>
+				<strong>PROJECT</strong> DETAIL
+			</span>
+		</a>
+		<img class="img-responsive" src="assets/images/crowdware.png" width="260" height="260" alt="">
+	</figure>
+	<div class="item-box-desc">
+		<h4>CrowdWare</h4>
+		<small class="styleColor">2017</small>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3">
+    <Text adminlabel="Gradido"><![CDATA[<div class="item-box">
+	<figure>
+		<a class="item-hover" href="https://crowdware.github.io/gradido/gradido.html">
+			<span class="overlay color2"></span>
+			<span class="inner">
+				<span class="block fa fa-plus fsize20"></span>
+				<strong>PROJECT</strong> DETAIL
+			</span>
+		</a>
+		<img class="img-responsive" src="assets/images/gradido.png" width="260" height="260" alt="">
+	</figure>
+	<div class="item-box-desc">
+		<h4>Gradido</h4>
+		<small class="styleColor">2017</small>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3">
+    <Text adminlabel="Masterplan"><![CDATA[<div class="item-box">
+	<figure>
+		<a class="item-hover" href="https://crowdware.github.io/gradido/masterplan.html">
+			<span class="overlay color2"></span>
+			<span class="inner">
+				<span class="block fa fa-plus fsize20"></span>
+				<strong>PROJECT</strong> DETAIL
+			</span>
+		</a>
+		<img class="img-responsive" src="assets/images/masterplan.png" width="260" height="260" alt="">
+	</figure>
+	<div class="item-box-desc">
+		<h4>Masterplan</h4>
+		<small class="styleColor">2017</small>
+	</div>
+</div>]]></Text>
+   </Column>
+   <Column span="3"/>
   </Row>
  </Section>
 </Content>
