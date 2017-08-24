@@ -70,6 +70,7 @@ MainWindow::MainWindow()
     }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
+    statusBar()->showMessage("Ready");
 }
 
 void MainWindow::initUndoRedo()
@@ -84,6 +85,7 @@ void MainWindow::initUndoRedo()
 
 bool MainWindow::install()
 {
+    statusBar()->showMessage("Installing themes and demosite");
     QDir installDir(QDir::homePath() + "/FlatSiteBuilder");
     if(installDir.exists())
         return false;
@@ -209,7 +211,7 @@ void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnl
             QFile file(targetDir + source);
             file.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
         }
-        qDebug() << "Installing file " + targetDir + source;
+        statusBar()->showMessage("Installing file " + targetDir + source);
     }
 }
 
@@ -384,12 +386,12 @@ void MainWindow::reloadProject()
     QFile file(m_site->path() + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Unable to open " + m_site->path() + "/Site.xml";
+        statusBar()->showMessage("Unable to open " + m_site->path() + "/Site.xml");
         return;
     }
     if (!doc.setContent(&file))
     {
-        qDebug() << "Unable to load the Site content from XML";
+        statusBar()->showMessage("Unable to load the Site content from XML");
         file.close();
         return;
     }
@@ -456,7 +458,7 @@ void MainWindow::saveProject()
     QFile file(m_site->path() + "/Site.xml");
     if(!file.open(QFile::WriteOnly))
     {
-        qDebug() << "Unable to open file " + m_site->path() + "/Site.xml";
+        statusBar()->showMessage("Unable to open file " + m_site->path() + "/Site.xml");
         return;
     }
     root = doc.createElement("Site");
@@ -588,6 +590,7 @@ void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
     m_editor = new ContentEditor(m_site, content);
+    m_editor->setStatusBar(statusBar());
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));
@@ -691,12 +694,18 @@ void MainWindow::showHtml(QString url)
     manager->get(QNetworkRequest(QUrl(url)));
 }
 
+void MainWindow::anchorClicked(QUrl url)
+{
+    QDesktopServices::openUrl(url);
+}
+
 void MainWindow::fileIsReady(QNetworkReply *reply)
 {
     QTextBrowser *browser = new QTextBrowser();
     setCentralWidget(browser);
     browser->show();
     browser->setHtml(reply->readAll());
+    connect(browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 }
 
 void MainWindow::contentEditorClosed()

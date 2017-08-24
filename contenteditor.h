@@ -38,6 +38,7 @@
 #include "rowpropertyeditor.h"
 #include "sectionpropertyeditor.h"
 
+class QStatusBar;
 class ContentEditor : public AbstractEditor
 {
     Q_OBJECT
@@ -54,6 +55,7 @@ public:
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
     void load();
+    void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}
 
 public slots:
     void editChanged(QString text);
@@ -117,6 +119,7 @@ private:
     FlatButton *m_undo;
     FlatButton *m_redo;
     QWidget *m_sourcewidget;
+    QStatusBar *m_statusbar;
     bool m_isNew;
 
     void init();

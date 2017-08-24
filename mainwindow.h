@@ -104,6 +104,7 @@ private slots:
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
     void contentChanged(Content *content);
+    void anchorClicked(QUrl url);
 };
 
 #endif // MAINWINDOW_H

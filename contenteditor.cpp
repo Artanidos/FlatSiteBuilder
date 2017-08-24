@@ -30,6 +30,7 @@
 #include "sectioneditor.h"
 #include "roweditor.h"
 #include <QGridLayout>
+#include <QStatusBar>
 #include <QLabel>
 #include <QTemporaryFile>
 #include <QTextEdit>
@@ -307,12 +308,12 @@ void ContentEditor::load()
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "ContentEditor::load(): Unable to open " + m_filename;
+        m_statusbar->showMessage("ContentEditor::load(): Unable to open " + m_filename);
         return;
     }
     if (!doc.setContent(&file))
     {
-        qDebug() << "ContentEditor::load(): Unable to read the post content from XML";
+        m_statusbar->showMessage("ContentEditor::load(): Unable to read the post content from XML");
         file.close();
         return;
     }
@@ -382,7 +383,7 @@ void ContentEditor::save()
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
-        qDebug() << "ContentEditor::save(): Unable to open file " + m_filename;
+        m_statusbar->showMessage("ContentEditor::save(): Unable to open file " + m_filename);
         return;
     }
     QDomDocument doc;

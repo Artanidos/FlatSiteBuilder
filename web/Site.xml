@@ -1,10 +1,11 @@
-<Site copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." github="https://github.com/Artanidos/FlatSiteBuilder.git" theme_accent="blue" description="" theme="atropos" title="FlatSiteBuilder">
- <Content source="index.xml" logo="logo.png" date="11.08.2017" type="page" menu="mainmenu" title="Index" author="Olaf Japp" layout="default"/>
- <Content source="notimpl.xml" logo="logo.png" date="16.08.2017" type="page" menu="" title="NotImpl" author="Olaf Japp" layout="simple"/>
- <Content source="publish.xml" logo="logo.png" date="16.08.2017" type="page" menu="" title="Publish" author="Olaf Japp" layout="simple"/>
+<Site title="FlatSiteBuilder" github="https://github.com/Artanidos/FlatSiteBuilder.git" keywords="" theme="atropos" theme_accent="blue" description="" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved.">
+ <Content title="Index" date="11.08.2017" type="page" layout="default" logo="logo.png" author="Olaf Japp" keywords="" source="index.xml" menu="mainmenu"/>
+ <Content title="NotImpl" date="16.08.2017" type="page" layout="simple" logo="logo.png" author="Olaf Japp" keywords="" source="notimpl.xml" menu=""/>
+ <Content title="Publish" date="16.08.2017" type="page" layout="simple" logo="logo.png" author="Olaf Japp" keywords="" source="publish.xml" menu=""/>
+ <Content title="Intro" date="24.08.2017" type="page" layout="simple" logo="" author="Olaf Japp" keywords="" source="intro.xml" menu=""/>
  <Menu name="mainmenu">
-  <Item url="#wrapper" title="Home"/>
-  <Item url="#slides" title="Slides"/>
-  <Item url="#contact" title="Contact"/>
+  <Item title="Home" url="#wrapper"/>
+  <Item title="Slides" url="#slides"/>
+  <Item title="Contact" url="#contact"/>
  </Menu>
 </Site>

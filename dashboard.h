@@ -24,9 +24,12 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QUrl>
 #include "site.h"
 
 class FlatButton;
+class QTextBrowser;
+class QNetworkReply;
 class Dashboard : public QWidget
 {
     Q_OBJECT
@@ -48,6 +51,8 @@ private slots:
     void publishClicked();
     void previewClicked();
     void siteLoaded(Site *site);
+    void fileIsReady(QNetworkReply *reply);
+    void anchorClicked(QUrl);
 
 private:
     FlatButton *m_loadButton;
@@ -58,6 +63,7 @@ private:
     QLabel *m_info;
     Site *m_site;
     QString m_defaultPath;
+    QTextBrowser *m_browser;
 };
 
 #endif // DASHBOARD_H

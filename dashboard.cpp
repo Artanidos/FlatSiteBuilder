@@ -24,7 +24,11 @@
 #include <QLabel>
 #include <QTest>
 #include <QPushButton>
+#include <QTextBrowser>
+#include <QScrollArea>
+#include <QDesktopServices>
 #include <QFileDialog>
+#include <QNetworkAccessManager>
 
 Dashboard::Dashboard(Site *site, QString defaultPath)
 {
@@ -54,15 +58,25 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     m_buildButton = new FlatButton(":/images/build_normal.png", ":/images/build_hover.png", ":/images/build_pressed.png");
     m_buildButton->setToolTip("Build the website");
 
+    m_browser = new QTextBrowser;
+    m_browser->setOpenLinks(false);
+    m_browser->setHtml("Loading content...");
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileIsReady(QNetworkReply*)));
+    manager->get(QNetworkRequest(QUrl("https://artanidos.github.io/FlatSiteBuilder/intro.html")));
+
     m_info = new QLabel();
     if(m_site)
         m_info->setText(m_site->title() + " loaded...");
     else
         m_info->setText("No site loaded yet...");
+
     QWidget *space = new QWidget();
     QWidget *space2 = new QWidget();
+    QWidget *space3 = new QWidget();
     space->setMinimumHeight(30);
     space2->setMinimumHeight(30);
+    space3->setMinimumHeight(30);
     layout->addWidget(title, 0, 0, 1, 3);
     layout->addWidget(m_info, 1, 0, 1, 3);
     layout->addWidget(space, 2, 0);
@@ -72,8 +86,9 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     layout->addWidget(space2, 4, 0);
     layout->addWidget(m_previewButton, 5, 0, 1, 1, Qt::AlignCenter);
     layout->addWidget(m_buildButton, 5, 1, 1, 1, Qt::AlignCenter);
+    layout->addWidget(space3, 6, 0);
+    layout->addWidget(m_browser, 7, 0, 1, 3);
     vbox->addLayout(layout);
-    vbox->addStretch();
     setLayout(vbox);
 
     connect(m_loadButton, SIGNAL(clicked()), this, SLOT(loadClicked()));
@@ -81,6 +96,17 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     connect(m_publishButton, SIGNAL(clicked()), this, SLOT(publishClicked()));
     connect(m_previewButton, SIGNAL(clicked()), this, SLOT(previewClicked()));
     connect(m_buildButton, SIGNAL(clicked()), this, SLOT(buildClicked()));
+    connect(m_browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
+}
+
+void Dashboard::anchorClicked(QUrl url)
+{
+    QDesktopServices::openUrl(url);
+}
+
+void Dashboard::fileIsReady(QNetworkReply *reply)
+{
+    m_browser->setHtml(reply->readAll());
 }
 
 void Dashboard::loadClicked()
