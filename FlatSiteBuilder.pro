@@ -23,7 +23,7 @@
 
 QT += core gui script
 QT += testlib network
-QT += widgets xml webenginewidgets
+QT += widgets xml
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app
