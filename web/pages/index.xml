@@ -34,7 +34,7 @@
   </Row>
   <Row>
    <Column span="4">
-    <Image alt="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" title="" animation="fadeInLeft" adminlabel=""/>
+    <Image animation="fadeInLeft" adminlabel="" title="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt=""/>
    </Column>
    <Column span="8">
     <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
@@ -158,7 +158,7 @@
    <Column span="3">
     <Text adminlabel="Gradido"><![CDATA[<div class="item-box">
 	<figure>
-		<a class="item-hover" href="https://crowdware.github.io/gradido/gradido.html">
+		<a class="item-hover" href="#">
 			<span class="overlay color2"></span>
 			<span class="inner">
 				<span class="block fa fa-plus fsize20"></span>
@@ -176,7 +176,7 @@
    <Column span="3">
     <Text adminlabel="Masterplan"><![CDATA[<div class="item-box">
 	<figure>
-		<a class="item-hover" href="https://crowdware.github.io/gradido/masterplan.html">
+		<a class="item-hover" href="#">
 			<span class="overlay color2"></span>
 			<span class="inner">
 				<span class="block fa fa-plus fsize20"></span>
@@ -192,6 +192,56 @@
 </div>]]></Text>
    </Column>
    <Column span="3"/>
+  </Row>
+ </Section>
+ <Section id="faq">
+  <Row>
+   <Column span="12">
+    <Text adminlabel="FAQ"><![CDATA[<div class="divider styleColor"></div>
+<h3><strong>FAQ</strong></h3>
+]]></Text>
+   </Column>
+  </Row>
+  <Row cssclass="featured-box-minimal margin-bottom30">
+   <Column span="4">
+    <Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> Where can I host my website?</h4>
+<p>You can host your website with every hosting provider. We recommend to host your website with <a href="https://pages.github.com/">github-pages</a> because it is free of charge.</p>]]></Text>
+   </Column>
+   <Column span="4">
+    <Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> How can I integrate dynamic content?</h4>
+<p>You can use services like <a href="https://disqus.com/">disqus</a> to integrate comments for your blog posts for example. We are also using disqus, see below under comments.</p>]]></Text>
+   </Column>
+   <Column span="4"/>
+  </Row>
+ </Section>
+ <Section>
+  <Row>
+   <Column span="12">
+    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+<h3><strong>Comments</strong></h3>
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = "{{ page.url }}";  
+this.page.identifier = "{{ page.title }}";
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://flatsitebuilder.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            ]]></Text>
+   </Column>
   </Row>
  </Section>
 </Content>
