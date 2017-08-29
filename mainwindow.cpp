@@ -61,6 +61,7 @@ MainWindow::MainWindow()
     m_site = NULL;
     m_editor = NULL;
 
+    initQml();
     initUndoRedo();
     initGui();
     readSettings();
@@ -71,6 +72,11 @@ MainWindow::MainWindow()
     m_dashboardExpander->setExpanded(true);
     showDashboard();
     statusBar()->showMessage("Ready");
+}
+
+void MainWindow::initQml()
+{
+    qmlRegisterType<Site>("FlatSiteBuilder", 1,0, "Site");
 }
 
 void MainWindow::initUndoRedo()

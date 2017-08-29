@@ -55,6 +55,7 @@ signals:
 private:
     void writeSettings();
     void readSettings();
+    void initQml();
     void initGui();
     bool install();
     void initUndoRedo();

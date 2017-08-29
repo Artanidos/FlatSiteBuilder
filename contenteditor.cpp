@@ -29,11 +29,13 @@
 #include "commands.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
+#include "editorplugin.h"
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>
 #include <QTemporaryFile>
 #include <QTextEdit>
+#include <QQuickItem>
 #include <QLineEdit>
 #include <QScrollArea>
 #include <QMenu>
@@ -50,6 +52,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_site = site;
     m_content = content;
     m_editor = NULL;
+    m_editorPlugin = NULL;
     m_undoStack = new QUndoStack;
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -416,9 +419,12 @@ void ContentEditor::preview()
 
 bool ContentEditor::eventFilter(QObject *watched, QEvent *event)
 {
-    if(watched == m_scroll && event->type() == QEvent::Resize && m_editor)
+    if(watched == m_scroll && event->type() == QEvent::Resize && (m_editor || m_editorPlugin))
     {
-        m_editor->resize(m_scroll->size());
+        if(m_editor)
+            m_editor->resize(m_scroll->size());
+        if(m_editorPlugin)
+            m_editorPlugin->resize(m_scroll->size());
     }
     return false;
 }
@@ -451,51 +457,69 @@ void ContentEditor::elementEdit(ElementEditor *ee)
     if(ee->type() == ElementEditor::Type::Text)
         m_editor = new TextEditor();
     else if(ee->type() == ElementEditor::Type::Image)
-        m_editor = new ImageEditor();
+    {
+        //m_editor = new ImageEditor();
+        m_editorPlugin = new EditorPlugin;
+        m_editorPlugin->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/FlatSiteBuilder/test.qml"));
+    }
     else if(ee->type() == ElementEditor::Type::Slider)
         m_editor = new SliderEditor();
-    m_editor->setSite(m_site);
-    m_editor->setContent(ee->content());
-    connect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
+    if(m_editor)
+    {
+        m_editor->setSite(m_site);
+        m_editor->setContent(ee->content());
+        connect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
+    }
+    else if(m_editorPlugin)
+    {
+        QQuickItem *item = m_editorPlugin->rootObject();
+        item->setProperty("site", QVariant::fromValue(m_site));
+
+        //m_editorPlugin->setSite(m_site);
+        //m_editorPlugin->setContent(ee->content());
+        connect(item, SIGNAL(close()), this, SLOT(editorClose()));
+    }
     animate(ee);
 }
 
 void ContentEditor::animate(QWidget *widget)
 {
+    QWidget *editor = m_editor ? dynamic_cast<QWidget*>(m_editor) : dynamic_cast<QWidget*>(m_editorPlugin);
     m_sourcewidget = widget;
     QPoint pos = widget->mapTo(m_scroll, QPoint(0,0));
-    m_editor->setParent(m_scroll);
-    m_editor->move(pos);
-    m_editor->resize(widget->size());
-    m_editor->show();
+
+    editor->setParent(m_scroll);
+    editor->move(pos);
+    editor->resize(widget->size());
+    editor->show();
 
     m_animationgroup = new QParallelAnimationGroup();
     m_animx = new QPropertyAnimation();
     m_animx->setDuration(300);
     m_animx->setStartValue(pos.x());
     m_animx->setEndValue(0);
-    m_animx->setTargetObject(m_editor);
+    m_animx->setTargetObject(editor);
     m_animx->setPropertyName("x");
     m_animationgroup->addAnimation(m_animx);
     m_animy = new QPropertyAnimation();
     m_animy->setDuration(300);
     m_animy->setStartValue(pos.y());
     m_animy->setEndValue(0);
-    m_animy->setTargetObject(m_editor);
+    m_animy->setTargetObject(editor);
     m_animy->setPropertyName("y");
     m_animationgroup->addAnimation(m_animy);
     m_animw = new QPropertyAnimation();
     m_animw->setDuration(300);
     m_animw->setStartValue(widget->size().width());
     m_animw->setEndValue(m_scroll->size().width());
-    m_animw->setTargetObject(m_editor);
+    m_animw->setTargetObject(editor);
     m_animw->setPropertyName("width");
     m_animationgroup->addAnimation(m_animw);
     m_animh = new QPropertyAnimation();
     m_animh->setDuration(300);
     m_animh->setStartValue(widget->size().height());
     m_animh->setEndValue(m_scroll->size().height());
-    m_animh->setTargetObject(m_editor);
+    m_animh->setTargetObject(editor);
     m_animh->setPropertyName("height");
     m_animationgroup->addAnimation(m_animh);
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
@@ -552,9 +576,14 @@ void ContentEditor::rowEditorClose()
 
 void ContentEditor::editorClose()
 {
-    if(m_editor->changed())
+    if(m_editor && m_editor->changed())
     {
         m_elementEditor->setContent(m_editor->content());
+        editChanged("Update Element");
+    }
+    if(m_editorPlugin && m_editorPlugin->changed())
+    {
+        m_elementEditor->setContent(m_editorPlugin->content());
         editChanged("Update Element");
     }
     editorClosed();
@@ -569,5 +598,7 @@ void ContentEditor::animationFineshedZoomOut()
         m_excerpt->setEnabled(true);
     delete m_animationgroup;
     delete m_editor;
+    delete m_editorPlugin;
     m_editor = NULL;
+    m_editorPlugin = NULL;
 }

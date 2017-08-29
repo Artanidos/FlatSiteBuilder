@@ -28,6 +28,7 @@ class FlatButton : public QLabel
     Q_OBJECT
 
 public:
+    FlatButton() {}
     FlatButton(QString normal, QString hover, QString pressed = "", QString disabled = "");
 
     void mousePressEvent(QMouseEvent *event) override;

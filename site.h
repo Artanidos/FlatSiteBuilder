@@ -28,8 +28,10 @@
 class Site : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString title READ title WRITE setTitle)
 
 public:
+    Site() {}
     Site(QObject *) {}
     Site(QString filename);
 

@@ -153,12 +153,11 @@ void SectionEditor::edit()
 
 SectionEditor *SectionEditor::clone()
 {
-    SectionEditor *ne = new SectionEditor();
+    SectionEditor *ne = new SectionEditor(m_fullwidth);
     ne->setCssClass(m_cssclass);
     ne->setId(m_id);
     ne->setAttributes(m_attributes);
     ne->setStyle(m_style);
-    ne->setFullwidth(m_fullwidth);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ne->addRow(dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget())->clone());

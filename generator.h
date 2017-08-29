@@ -27,7 +27,7 @@
 #include <QMap>
 #include "site.h"
 
-class Generator : QObject
+class Generator : public QObject
 {
     Q_OBJECT
 public:

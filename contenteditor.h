@@ -37,6 +37,7 @@
 #include "sectioneditor.h"
 #include "rowpropertyeditor.h"
 #include "sectionpropertyeditor.h"
+#include "editorplugin.h"
 
 class QStatusBar;
 class ContentEditor : public AbstractEditor
@@ -106,6 +107,7 @@ private:
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
     AbstractEditor *m_editor;
+    EditorPlugin *m_editorPlugin;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;
