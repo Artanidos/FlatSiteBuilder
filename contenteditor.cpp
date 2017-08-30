@@ -416,7 +416,7 @@ void ContentEditor::preview()
 
 bool ContentEditor::eventFilter(QObject *watched, QEvent *event)
 {
-    if(watched == m_scroll && event->type() == QEvent::Resize)
+    if(watched == m_scroll && event->type() == QEvent::Resize && m_editor)
     {
         m_editor->resize(m_scroll->size());
     }

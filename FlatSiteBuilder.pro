@@ -113,7 +113,8 @@ HEADERS  += mainwindow.h \
     rowpropertyeditor.h \
     sectionpropertyeditor.h \
     sitewizard.h \
-    commands.h
+    commands.h \
+    interfaces.h
 
 DISTFILES += \
     README.md \
