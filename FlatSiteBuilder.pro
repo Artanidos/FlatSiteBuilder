@@ -23,7 +23,7 @@
 
 QT += core gui script
 QT += testlib network
-QT += widgets xml quickwidgets
+QT += widgets xml
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app
@@ -71,8 +71,7 @@ SOURCES += main.cpp\
     rowpropertyeditor.cpp \
     sectionpropertyeditor.cpp \
     sitewizard.cpp \
-    commands.cpp \
-    editorplugin.cpp
+    commands.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -114,8 +113,7 @@ HEADERS  += mainwindow.h \
     rowpropertyeditor.h \
     sectionpropertyeditor.h \
     sitewizard.h \
-    commands.h \
-    editorplugin.h
+    commands.h
 
 DISTFILES += \
     README.md \
@@ -163,8 +161,7 @@ DISTFILES += \
     Screenshot.png \
     web/assets/css/style.css \
     web/includes/footercontent.html \
-    web/layouts/simple.html \
-    test.qml
+    web/layouts/simple.html
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

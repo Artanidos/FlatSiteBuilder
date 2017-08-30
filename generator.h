@@ -34,7 +34,10 @@ public:
     Generator();
 
     void generateSite(Site *site, Content *content = 0);
-    void testScript(Site *site);
+
+    // for unit tests only
+    void setSitesPath(QString path) {m_sitesPath = path;}
+    void setThemePath(QString path) {m_themePath = path;}
 
 private:
     enum State
@@ -56,6 +59,7 @@ private:
     QVariantMap sitevars;
     QVariantMap loopvars;
     QString m_themePath;
+    QString m_sitesPath;
 
     void parseFront(QString content);
     QString translateContent(QString content);

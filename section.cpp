@@ -32,7 +32,7 @@ QString Section::getHtml(QDomElement sec)
     QString cls = sec.attribute("cssclass");
     QString style = sec.attribute("style");
     QString attributes = sec.attribute("attributes");
-    QString html = "\n<section";
+    QString html = "<section";
     if(!m_fullwidth)
     {
         if(!cls.isEmpty())
@@ -55,5 +55,5 @@ QString Section::getHtml(QDomElement sec)
         html += r->getHtml(row);
         row = row.nextSiblingElement("Row");
     }
-    return html + "\n</section>\n";
+    return html + "</section>";
 }

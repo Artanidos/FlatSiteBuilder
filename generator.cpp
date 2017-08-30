@@ -33,7 +33,8 @@ Q_DECLARE_METATYPE(QFile*)
 
 Generator::Generator()
 {
-    m_themePath = QDir::homePath() + "/FlatSiteBuilder/themes/";
+    m_themePath = QDir::homePath() + "/FlatSiteBuilder/themes";
+    m_sitesPath = QDir::homePath() + "/FlatSiteBuilder/sites";
 }
 
 /*
@@ -43,13 +44,12 @@ Generator::Generator()
 void Generator::generateSite(Site *site, Content *contentToBuild)
 {
     m_site = site;
-    QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
 
     if(contentToBuild == 0)
     {
 
         QDir old;
-        old.setPath(dir + "/" + m_site->title() + "/assets");
+        old.setPath(m_sitesPath + "/" + m_site->title() + "/assets");
         old.removeRecursively();
         old.cdUp();
         foreach(QString file, old.entryList(QDir::NoDotAndDotDot | QDir::Files))
@@ -102,20 +102,21 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["source"] = m_site->path();
     sitevars["github"] = m_site->github();
     sitevars["keywords"] = m_site->keywords();
+    sitevars["author"] = m_site->author();
 
-    QDir siteDir(dir + "/" + m_site->title());
+    QDir siteDir(m_sitesPath + "/" + m_site->title());
     bool copyAssets = false;
     if(!siteDir.exists())
     {
-        siteDir.setPath(dir);
+        siteDir.setPath(m_sitesPath);
         siteDir.mkdir(m_site->title());
         copyAssets = true;
     }
     if(contentToBuild == 0 || copyAssets)
     {
         // first copy assets from site, they will not be overridden by theme assets
-        copyPath(m_site->path() + "/assets", dir + "/" + m_site->title() + "/assets");
-        copyPath(m_themePath + m_site->theme() + "/assets", dir + "/" + m_site->title() + "/assets");
+        copyPath(m_site->path() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
+        copyPath(m_themePath + "/" + m_site->theme() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
     }
 
     int pa = 0;
@@ -163,7 +164,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                     layout = "default";
                 layout = layout + ".html";
 
-                QString name = dir + "/" + m_site->title() + "/" + content->url();
+                QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
 
                 pagevars = cm;
                 pagevars["content"] = translateContent(cnt);
@@ -180,10 +181,10 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                     qWarning() << "Generator::generateSite(): Unable to create file " +  name;
             }
             else
-                qWarning() << "Generator::generateSite(): Unable to parse file " + content->source();
+                qWarning() << "Generator::generateSite(): Unable to parse file " + m_site->path() + "/" + subdir + "/" + content->source();
         }
         else
-            qWarning() << "Generator::generateSite(): Unable to open file " + content->source();
+            qWarning() << "Generator::generateSite(): Unable to open file " + m_site->path() + "/" + subdir + "/" + content->source();
     }
 }
 
@@ -194,7 +195,7 @@ QString Generator::translateTemplate(QString layout, Mode mode)
 
     QFile site(path);
     if(!site.exists())
-        path = m_themePath + m_site->theme() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
+        path = m_themePath + "/" + m_site->theme() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
 
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
@@ -213,13 +214,15 @@ QString Generator::translateTemplate(QString layout, Mode mode)
                 rc += translateTemplate(include, Include);
                 pos = content.indexOf("{% include ", end + 1);
             }
+            if(content.at(end) == "\n")
+                end++;
             rc += content.mid(end);
         }
         else
             rc = content;
     }
     else
-        qWarning() << "Unable to open template " + m_themePath + layout;
+        qWarning() << "Unable to open template " + m_themePath + "/" + layout;
     return rc;
 }
 
@@ -342,6 +345,8 @@ QString Generator::translateContent(QString content)
                     if(content.mid(pos, 2) == "%}")
                     {
                         pos += 2;
+                        if(content.at(pos) == "\n")
+                            pos++;
                         state = NormalState;
                         break;
                     }
@@ -389,6 +394,8 @@ QString Generator::translateContent(QString content)
                             rc += translateContent(loopContent);
                         }
                         pos += 12;
+                        if(content.at(pos) == "\n")
+                            pos++;
                         state = NormalState;
                         break;
                     }

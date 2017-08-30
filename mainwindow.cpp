@@ -61,7 +61,6 @@ MainWindow::MainWindow()
     m_site = NULL;
     m_editor = NULL;
 
-    initQml();
     initUndoRedo();
     initGui();
     readSettings();
@@ -72,11 +71,6 @@ MainWindow::MainWindow()
     m_dashboardExpander->setExpanded(true);
     showDashboard();
     statusBar()->showMessage("Ready");
-}
-
-void MainWindow::initQml()
-{
-    qmlRegisterType<Site>("FlatSiteBuilder", 1,0, "Site");
 }
 
 void MainWindow::initUndoRedo()
@@ -405,13 +399,14 @@ void MainWindow::reloadProject()
 
     QDomElement site = doc.documentElement();
 
-    m_site->setTheme(site.attribute("theme", ""));
-    m_site->setThemeAccent(site.attribute("theme_accent", ""));
-    m_site->setTitle(site.attribute("title", ""));
-    m_site->setDescription(site.attribute("description", ""));
-    m_site->setGithub(site.attribute("github", ""));
+    m_site->setTheme(site.attribute("theme"));
+    m_site->setThemeAccent(site.attribute("theme_accent"));
+    m_site->setTitle(site.attribute("title"));
+    m_site->setDescription(site.attribute("description"));
+    m_site->setGithub(site.attribute("github"));
     m_site->setCopyright(site.attribute("copyright"));
     m_site->setKeywords(site.attribute("keywords"));
+    m_site->setAuthor(site.attribute("author"));
 
     QDomElement content = site.firstChildElement("Content");
     while(!content.isNull())
@@ -477,6 +472,7 @@ void MainWindow::saveProject()
     root.setAttribute("github", m_site->github());
     root.setAttribute("copyright", m_site->copyright());
     root.setAttribute("keywords", m_site->keywords());
+    root.setAttribute("author", m_site->author());
     doc.appendChild(root);
     foreach(Content *content, m_site->contents())
     {

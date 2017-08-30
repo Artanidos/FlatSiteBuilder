@@ -37,5 +37,5 @@ QString Row::getHtml(QDomElement row)
         html += c->getHtml(col);
         col = col.nextSiblingElement("Column");
     }
-    return html + "\n</div>\n";
+    return html + "</div>\n";
 }

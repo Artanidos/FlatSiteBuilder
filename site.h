@@ -44,6 +44,9 @@ public:
     QString title() {return m_title;}
     void setTitle(QString title) {m_title = title;}
 
+    QString author() {return m_author;}
+    void setAuthor(QString author) {m_author = author;}
+
     QString keywords() {return m_keywords;}
     void setKeywords(QString keywords) {m_keywords = keywords;}
 
@@ -68,6 +71,7 @@ private:
     QString m_filename;
     QString m_path;
     QString m_theme;
+    QString m_author;
     QString m_themeAccent;
     QString m_title;
     QString m_description;
