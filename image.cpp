@@ -20,11 +20,7 @@
 
 #include "image.h"
 #include <QTest>
-
-Image::Image()
-{
-
-}
+#include <QDomElement>
 
 QString Image::getHtml(QDomElement ele)
 {

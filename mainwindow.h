@@ -29,6 +29,7 @@
 #include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"
+#include "interfaces.h"
 
 class QNetworkReply;
 class QTableWidgetItem;
@@ -45,6 +46,7 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void reloadProject();
     void saveProject();
+    QMap<QString, EditorInterface*> editorPlugins() {return m_editorPlugins;}
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -61,6 +63,7 @@ private:
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
     void showHtml(QString url);
     void animate(QTableWidgetItem *item);
+    void loadPlugins();
 
     Expander *m_dashboardExpander;
     Expander *m_media;
@@ -79,6 +82,7 @@ private:
     ContentEditor *m_editor;
     QTableWidget *m_list;
     QWidget *m_cellWidget;
+    QMap<QString, EditorInterface*> m_editorPlugins;
     int m_row;
 
 private slots:

@@ -20,6 +20,7 @@
 
 #include "generator.h"
 #include "content.h"
+#include "sectionpropertyeditor.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -41,7 +42,7 @@ Generator::Generator()
  * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(Site *site, Content *contentToBuild)
+void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins, Content *contentToBuild)
 {
     m_site = site;
 
@@ -151,11 +152,9 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                 QDomElement section = c.firstChildElement("Section");
                 while(!section.isNull())
                 {
-                    Section *sec = new Section();
-                    QString fw = section.attribute("fullwidth", "false");
-                    if(fw == "true")
-                        sec->setFullWidth(true);
-                    cnt += sec->getHtml(section);
+                    SectionPropertyEditor *sec = dynamic_cast<SectionPropertyEditor*>(plugins["SectionPropertyEditor"]);
+                    if(sec)
+                        cnt += sec->getHtml(section, plugins);
                     section = section.nextSiblingElement("Section");
                 }
 

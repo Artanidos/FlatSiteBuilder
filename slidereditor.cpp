@@ -26,8 +26,9 @@
 #include <QHeaderView>
 
 SliderEditor::SliderEditor()
-    : AbstractEditor()
 {
+    m_changed = false;
+    setAutoFillBackground(true);
     m_list = new QTableWidget(0, 2, this);
     m_list->verticalHeader()->hide();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -64,9 +65,6 @@ SliderEditor::SliderEditor()
     grid->addWidget(m_deleteButton, 3, 0);
     grid->addLayout(hbox, 4, 0, 1, 3);
     setLayout(grid);
-
-    connect(save, SIGNAL(clicked(bool)), this, SLOT(save()));
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(cancel()));
 }
 
 void SliderEditor::setContent(QDomElement element)
@@ -74,6 +72,12 @@ void SliderEditor::setContent(QDomElement element)
     m_element = element;
 }
 
+QString SliderEditor::getHtml(QDomElement, QMap<QString, QObject*>)
+{
+    return "";
+}
+
+/*
 void SliderEditor::save()
 {
     if(m_changed)
@@ -93,3 +97,4 @@ void SliderEditor::cancel()
     m_changed = false;
     emit close();
 }
+*/

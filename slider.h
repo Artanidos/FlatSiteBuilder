@@ -1,12 +1,13 @@
 #ifndef SLIDER_H
 #define SLIDER_H
 
-#include "element.h"
+#include <QObject>
 
-class Slider : public Element
+class QDomElement;
+class Slider : public QObject
 {
 public:
-    Slider();
+    Slider() {}
 
     QString getHtml(QDomElement ele);
 };

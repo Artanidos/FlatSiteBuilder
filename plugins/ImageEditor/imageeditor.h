@@ -18,24 +18,45 @@
 **
 ****************************************************************************/
 
-#ifndef SECTION_H
-#define SECTION_H
+#ifndef IMAGEEDITOR_H
+#define IMAGEEDITOR_H
 
+#include <QtPlugin>
 #include <QObject>
-#include <QDomElement>
+#include <QComboBox>
+#include "interfaces.h"
+#include "imageselector.h"
 
-class Section : public QObject
+class ImageEditor : public EditorInterface
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
+    Q_INTERFACES(EditorInterface)
 
 public:
-    Section();
+    ImageEditor();
+    QString className() {return "ImageEditor";}
+    QString displayName() {return "Image";}
+    QString tagName() {return "Image";}
+    QImage icon() {return QImage(":/image.png");}
+    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    void setContent(QDomElement ele);
 
-    QString getHtml(QDomElement sec);
-    void setFullWidth(bool val) {m_fullwidth = val;}
+public slots:
+    void contentChanged() {m_changed = true;}
+
+private slots:
+    void seek();
+    void closeEditor();
 
 private:
-    bool m_fullwidth;
+    QString m_animation;
+    ImageSelector *m_image;
+    QComboBox *m_animationCombo;
+    QLineEdit *m_source;
+    QLineEdit *m_alt;
+    QLineEdit *m_title;
+    QLineEdit *m_adminlabel;
 };
 
-#endif // SECTION_H
+#endif // IMAGEEDITOR_H

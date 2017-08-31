@@ -22,23 +22,28 @@
 #define MODULDIALOG_H
 
 #include <QDialog>
+#include <QGridLayout>
+#include "interfaces.h"
 
+class FlatButton;
 class ModulDialog : public QDialog
 {
     Q_OBJECT
 
 public:
     ModulDialog();
-    int result() {return m_result;}
-    void setResult(int res) {m_result = res;}
+    QString result() {return m_result;}
+    void setResult(QString res) {m_result = res;}
+    void registerPlugins(QMap<QString, EditorInterface*> plugins);
 
 private slots:
     void close1();
-    void close2();
-    void close3();
+    void close2(QString);
 
 private:
-    int m_result;
+    QString m_result;
+    QGridLayout *m_grid;
+    FlatButton *createButton(QImage icon, QString text);
 };
 
 #endif // MODULDIALOG_H

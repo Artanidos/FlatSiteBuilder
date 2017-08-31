@@ -29,8 +29,9 @@
 #include <QTest>
 
 TextEditor::TextEditor()
-    : AbstractEditor()
 {
+    m_changed = false;
+    setAutoFillBackground(true);
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -47,7 +48,9 @@ TextEditor::TextEditor()
     m_html->setLineWrapMode(QTextEdit::NoWrap);
     QFontMetrics metrics(font);
     m_html->setTabStopWidth(4 * metrics.width(' '));
+
     new HtmlHighlighter(m_html->document());
+
     m_adminlabel = new QLineEdit();
     m_adminlabel->setMaximumWidth(200);
 
@@ -80,9 +83,17 @@ void TextEditor::closeEditor()
         }
         else
         {
-            QDomNode data = m_element.firstChild();
-            QDomCDATASection cdata = data.toCDATASection();
-            cdata.setData(m_html->toPlainText());
+            if(m_element.nodeName() == "Text")
+            {
+                QDomNode data = m_element.firstChild();
+                QDomCDATASection cdata = data.toCDATASection();
+                cdata.setData(m_html->toPlainText());
+            }
+            else
+            {
+                m_doc.setContent(m_html->toPlainText());
+                m_element = m_doc.documentElement();
+            }
         }
         m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
@@ -92,14 +103,34 @@ void TextEditor::closeEditor()
 void TextEditor::setContent(QDomElement element)
 {
     m_element = element;
-    m_adminlabel->setText(m_element.attribute("adminlabel", ""));
-    QDomNode data = m_element.firstChild();
-    QDomCDATASection cdata = data.toCDATASection();
-    m_html->setPlainText(cdata.data());
+    if(element.nodeName() == "Text")
+    {
+        m_adminlabel->setText(m_element.attribute("adminlabel", ""));
+        QDomNode data = m_element.firstChild();
+        QDomCDATASection cdata = data.toCDATASection();
+        m_html->setPlainText(cdata.data());
+    }
+    else
+    {
+        QString txt = "<" + element.nodeName();
+        QDomNamedNodeMap attrs = element.attributes();
+        for(int i = 0; i < attrs.count(); i++)
+        {
+            QDomAttr att = attrs.item(i).toAttr();
+            if(att.name() == "adminlabel")
+                m_adminlabel->setText(m_element.attribute("adminlabel", ""));
+            else
+                txt += QString::fromLatin1(" %0=\"%1\"").arg(att.name()).arg(att.value());
+        }
+        txt += ">";
+        m_html->setPlainText(txt);
+    }
     m_changed = false;
 }
 
-void TextEditor::contentChanged()
+QString TextEditor::getHtml(QDomElement text, QMap<QString, EditorInterface*>)
 {
-    m_changed = true;
+    QDomNode data = text.firstChild();
+    QDomCDATASection cdata = data.toCDATASection();
+    return cdata.data();
 }

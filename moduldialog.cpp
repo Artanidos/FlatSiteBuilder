@@ -20,55 +20,92 @@
 
 #include "moduldialog.h"
 #include "flatbutton.h"
+#include "interfaces.h"
 #include <QGridLayout>
 #include <QPushButton>
+#include <QMap>
+#include <QLabel>
 
 ModulDialog::ModulDialog()
 {
-    m_result = 0;
+    m_result = "";
     setWindowTitle("Insert Module");
-    QGridLayout *grid = new QGridLayout();
-    FlatButton *b1 = new FlatButton(":/images/text_normal.png", ":/images/text_hover.png");
-    FlatButton *b2 = new FlatButton(":/images/image_normal.png", ":/images/image_hover.png");
-    //FlatButton *b3 = new FlatButton(":/images/slider_normal.png", ":/images/slider_hover.png");
+    m_grid = new QGridLayout();
+    FlatButton *textButton = createButton(QImage(":/images/text.png"), "Text");
+    m_grid->addWidget(textButton, 0, 0);
 
-    grid->addWidget(b1, 0, 0);
-    grid->addWidget(b2, 0, 1);
-    //grid->addWidget(b3, 0, 2);
-
-    QPushButton *closeButton = new QPushButton("Close");
-
+    QPushButton *cancelButton = new QPushButton("Cancel");
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch(1);
-    buttonsLayout->addWidget(closeButton);
+    buttonsLayout->addWidget(cancelButton);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(grid);
+    mainLayout->addLayout(m_grid);
     mainLayout->addStretch(1);
     mainLayout->addSpacing(12);
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
 
-    connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-    connect(b1, SIGNAL(clicked()), this, SLOT(close1()));
-    connect(b2, SIGNAL(clicked()), this, SLOT(close2()));
-    //connect(b3, SIGNAL(clicked()), this, SLOT(close3()));
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(textButton, SIGNAL(clicked()), this, SLOT(close1()));
+}
+
+FlatButton* ModulDialog::createButton(QImage icon, QString text)
+{
+    FlatButton *btn = new FlatButton;
+    QPixmap pmNormal = QPixmap::fromImage(QImage(":/images/module_normal.png"));
+    QPixmap pmHover = QPixmap::fromImage(QImage(":/images/module_hover.png"));
+    QLabel title;
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, QColor("#999999"));
+    pal.setColor(QPalette::Foreground, QColor("#000000"));
+    title.setPalette(pal);
+    title.setText(text);
+    title.setFixedWidth(90);
+    title.render(&pmNormal, QPoint(80, 40));
+    title.render(&pmHover, QPoint(80, 40));
+
+    QLabel iconLabel;
+    iconLabel.setPixmap(QPixmap::fromImage(icon));
+    iconLabel.render(&pmNormal, QPoint(33, 33));
+    iconLabel.render(&pmHover, QPoint(33, 33));
+
+    btn->setNormalPixmap(pmNormal);
+    btn->setHoverPixmap(pmHover);
+    return btn;
+}
+
+void ModulDialog::registerPlugins(QMap<QString, EditorInterface*> plugins)
+{
+    int row = 0;
+    int col = 1;
+
+    foreach(QString name, plugins.keys())
+    {
+        if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor" && name != "SliderEditor")
+        {
+            EditorInterface *plugin = plugins[name];
+            FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
+            btn->setReturnCode(name);
+            m_grid->addWidget(btn, row, col++);
+            connect(btn, SIGNAL(clicked(QString)), this, SLOT(close2(QString)));
+            if(col == 2)
+            {
+                row++;
+                col = 0;
+            }
+        }
+    }
 }
 
 void ModulDialog::close1()
 {
-    setResult(1);
+    setResult("TextEditor");
     close();
 }
 
-void ModulDialog::close2()
+void ModulDialog::close2(QString rc)
 {
-    setResult(2);
-    close();
-}
-
-void ModulDialog::close3()
-{
-    setResult(3);
+    setResult(rc);
     close();
 }

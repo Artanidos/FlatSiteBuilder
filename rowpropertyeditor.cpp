@@ -19,18 +19,19 @@
 ****************************************************************************/
 
 #include "rowpropertyeditor.h"
+#include "column.h"
 #include "flatbutton.h"
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
 
 RowPropertyEditor::RowPropertyEditor()
-    : AbstractEditor()
 {
+    m_changed = false;
     m_grid = new QGridLayout();
     m_grid->setMargin(0);
-
     m_cssclass = new QLineEdit();
+    setAutoFillBackground(true);
 
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     close->setToolTip("Close Editor");
@@ -77,4 +78,18 @@ void RowPropertyEditor::setContent(QDomElement element)
     m_element = element;
     m_cssclass->setText(m_element.attribute("cssclass", ""));
     m_changed = false;
+}
+
+QString RowPropertyEditor::getHtml(QDomElement row, QMap<QString, EditorInterface*> plugins)
+{
+    QString cls = row.attribute("cssclass");
+    QString html = "<div class=\"row" + (cls.isEmpty() ? "" : " " + cls) + "\">\n";
+    QDomElement col = row.firstChildElement("Column");
+    while(!col.isNull())
+    {
+        Column *c = new Column();
+        html += c->getHtml(col, plugins);
+        col = col.nextSiblingElement("Column");
+    }
+    return html + "</div>\n";
 }

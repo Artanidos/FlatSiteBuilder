@@ -31,20 +31,22 @@
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include "content.h"
+#include "interfaces.h"
 #include "site.h"
 #include "texteditor.h"
-#include "abstracteditor.h"
 #include "sectioneditor.h"
 #include "rowpropertyeditor.h"
 #include "sectionpropertyeditor.h"
+#include "interfaces.h"
 
 class QStatusBar;
-class ContentEditor : public AbstractEditor
+class MainWindow;
+class ContentEditor : public EditorInterface
 {
     Q_OBJECT
 
 public:
-    ContentEditor(Site *site, Content *content = NULL);
+    ContentEditor(MainWindow *win, Site *site, Content *content = NULL);
     ~ContentEditor();
 
     bool eventFilter(QObject *watched, QEvent *event);
@@ -56,11 +58,19 @@ public:
     QString filename() {return m_filename;}
     void load();
     void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}
+    void registerPlugins(QMap<QString, EditorInterface*> plugins) {m_plugins = plugins;}\
+    QString className() {return "ContentEditor";}
+    QString displayName() {return "";}
+    QString tagName() {return "";}
+    QImage icon() {return QImage();}
+    void setContent(QDomElement) {/* unused */}
+    QMap<QString, EditorInterface*> plugins() {return m_plugins;}
+    QString getHtml(QDomElement, QMap<QString, EditorInterface*>) {return "";}
 
 public slots:
     void editChanged(QString text);
     void save();
-    void close();
+    void closeEditor();
 
 private slots:
     void preview();
@@ -87,8 +97,10 @@ signals:
     void preview(Content *);
     void contentEditorClosed();
     void contentChanged(Content *content);
+    void close();
 
 private:
+    QMap<QString, EditorInterface*> m_plugins;
     Site *m_site;
     Content *m_content;
     QLabel *m_titleLabel;
@@ -105,7 +117,7 @@ private:
     QLabel *m_excerptLabel;
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
-    AbstractEditor *m_editor;
+    EditorInterface *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;
@@ -120,6 +132,7 @@ private:
     FlatButton *m_redo;
     QWidget *m_sourcewidget;
     QStatusBar *m_statusbar;
+    MainWindow *m_win;
     bool m_isNew;
 
     void init();

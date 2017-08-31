@@ -19,20 +19,22 @@
 ****************************************************************************/
 
 #include "sectionpropertyeditor.h"
+#include "rowpropertyeditor.h"
 #include "flatbutton.h"
 #include <QPushButton>
 #include <QLabel>
 
 SectionPropertyEditor::SectionPropertyEditor()
-    : AbstractEditor()
 {
     m_grid = new QGridLayout();
     m_grid->setMargin(0);
-
     m_cssclass = new QLineEdit();
     m_style = new QLineEdit();
     m_attributes = new QLineEdit();
     m_id = new QLineEdit;
+    m_changed = false;
+    m_fullwidth = false;
+    setAutoFillBackground(true);
 
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     close->setToolTip("Close Editor");
@@ -84,6 +86,7 @@ void SectionPropertyEditor::closeEditor()
         m_element.setAttribute("style", m_style->text());
         m_element.setAttribute("attributes", m_attributes->text());
         m_element.setAttribute("id", m_id->text());
+        m_element.setAttribute("fullwidth", m_fullwidth ? "true" : "false");
     }
     emit close();
 }
@@ -95,5 +98,40 @@ void SectionPropertyEditor::setContent(QDomElement element)
     m_style->setText(m_element.attribute("style", ""));
     m_attributes->setText(m_element.attribute("attributes", ""));
     m_id->setText(m_element.attribute("id", ""));
+    m_fullwidth = m_element.attribute("fullwidth") == "true";
     m_changed = false;
 }
+
+QString SectionPropertyEditor::getHtml(QDomElement sec, QMap<QString, EditorInterface*> plugins)
+{
+    QString id = sec.attribute("id");
+    QString cls = sec.attribute("cssclass");
+    QString style = sec.attribute("style");
+    QString attributes = sec.attribute("attributes");
+    QString html = "<section";
+    if(sec.attribute("fullwidth") != "true")
+    {
+        if(!cls.isEmpty())
+            cls += " ";
+        cls += "container";
+    }
+    if(!id.isEmpty())
+        html += " id=\"" + id +"\"";
+    if(!cls.isEmpty())
+        html += " class=\"" + cls + "\"";
+    if(!style.isEmpty())
+        html += " style=\"" + style + "\"";
+    if(!attributes.isEmpty())
+        html += " " + attributes;
+    html += ">\n";
+    QDomElement row = sec.firstChildElement("Row");
+    while(!row.isNull())
+    {
+        RowPropertyEditor *r = dynamic_cast<RowPropertyEditor*>(plugins["RowPropertyEditor"]);
+        if(r)
+            html += r->getHtml(row, plugins);
+        row = row.nextSiblingElement("Row");
+    }
+    return html + "</section>";
+}
+

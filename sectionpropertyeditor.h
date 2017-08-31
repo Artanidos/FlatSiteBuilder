@@ -21,11 +21,11 @@
 #ifndef SECTIONPROPERTYEDITOR_H
 #define SECTIONPROPERTYEDITOR_H
 
-#include "abstracteditor.h"
+#include "interfaces.h"
 #include <QLineEdit>
 #include <QGridLayout>
 
-class SectionPropertyEditor : public AbstractEditor
+class SectionPropertyEditor : public EditorInterface
 {
     Q_OBJECT
 
@@ -34,7 +34,11 @@ public:
     ~SectionPropertyEditor();
 
     void setContent(QDomElement ele);
-    QDomElement content() {return m_element;}
+    QString className() {return "SectionPropertyEditor";}
+    QString displayName() {return "";}
+    QString tagName() {return "";}
+    QImage icon() {return QImage("");}
+    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
 
 private slots:
     void closeEditor();
@@ -45,6 +49,7 @@ private:
     QLineEdit *m_attributes;
     QLineEdit *m_id;
     QGridLayout *m_grid;
+    bool m_fullwidth;
 };
 
 #endif // SECTIONPROPERTYEDITOR_H

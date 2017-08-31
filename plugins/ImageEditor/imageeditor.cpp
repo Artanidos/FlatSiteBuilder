@@ -21,7 +21,6 @@
 #include "imageeditor.h"
 #include "imageselector.h"
 #include "flatbutton.h"
-#include "site.h"
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QPushButton>
@@ -30,16 +29,14 @@
 #include <QFileDialog>
 #include <QComboBox>
 #include <QStandardPaths>
-#include <QTest>
 
 ImageEditor::ImageEditor()
-    : AbstractEditor()
 {
+    m_changed = false;
+    setAutoFillBackground(true);
+
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
-
-    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
-    close->setToolTip("Close Editor");
 
     m_source = new QLineEdit();
     m_alt = new QLineEdit();
@@ -50,7 +47,7 @@ ImageEditor::ImageEditor()
     m_adminlabel->setMaximumWidth(200);
     QPushButton *seek = new QPushButton("...");
     seek->setMaximumWidth(50);
-    QLabel *titleLabel = new QLabel("Image Module");
+    QLabel *titleLabel = new QLabel("Image Module Plugin");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(16);
     fnt.setBold(true);
@@ -65,6 +62,10 @@ ImageEditor::ImageEditor()
     imageVBox->addStretch();
     imageVBox->addLayout(imageHBox);
     imageVBox->addStretch();
+
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
+
 
     m_animationCombo = new QComboBox();
     m_animationCombo->addItem("None", "none");
@@ -174,4 +175,17 @@ void ImageEditor::closeEditor()
         m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
     emit close();
+}
+
+QString ImageEditor::getHtml(QDomElement ele, QMap<QString, EditorInterface*>)
+{
+    QString source = ele.attribute("src");
+    QString animation = ele.attribute("animation");
+    QString url = source.mid(source.indexOf("assets/images/"));
+    QString alt = ele.attribute("alt", "");
+    QString title = ele.attribute("title", "");
+    if(animation == "none")
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">";
+    else
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive appear-animation pull-left inner\" src=\"" + url + "\" data-animation=\"" + animation + "\">";
 }

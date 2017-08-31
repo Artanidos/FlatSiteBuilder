@@ -49,7 +49,7 @@ Expander::Expander(QString header, QString normalIcon, QString hoveredIcon, QStr
     setAttribute(Qt::WA_Hover, true);
 
     setColor(m_normalColor);
-    this->setAutoFillBackground(true);
+    setAutoFillBackground(true);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox = new QHBoxLayout();

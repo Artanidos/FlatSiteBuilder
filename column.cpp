@@ -22,34 +22,20 @@
 #include "text.h"
 #include "image.h"
 #include "slider.h"
+#include "interfaces.h"
 #include <QTest>
 
-Column::Column()
-{
-
-}
-
-QString Column::getHtml(QDomElement col)
+QString Column::getHtml(QDomElement col, QMap<QString, EditorInterface*> plugins)
 {
     QString span = col.attribute("span", "1");
     QString html = "<div class=\"col-md-" + span + "\">\n";
     QDomElement ele = col.firstChildElement();
     while(!ele.isNull())
     {
-        if(ele.nodeName() == "Text")
+        EditorInterface *ei = qobject_cast<EditorInterface *>(plugins[ele.nodeName() + "Editor"]);
+        if(ei)
         {
-            Text *t = new Text();
-            html += t->getHtml(ele);
-        }
-        else if(ele.nodeName() == "Image")
-        {
-            Image *i = new Image();
-            html += i->getHtml(ele);
-        }
-        else if(ele.nodeName() == "Slider")
-        {
-            Slider *s = new Slider();
-            html += s->getHtml(ele);
+            html += ei->getHtml(ele, plugins);
         }
         else
             qDebug() << "Undefined element " + ele.nodeName();

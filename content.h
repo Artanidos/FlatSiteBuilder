@@ -23,7 +23,6 @@
 
 #include <QObject>
 #include <QDate>
-#include "section.h"
 
 enum ContentType{Page, Post};
 
@@ -67,8 +66,6 @@ public:
     QString excerpt() {return m_excerpt;}
     void setExcerpt(QString excerpt) {m_excerpt = excerpt;}
 
-    QList<Section *> sections() {return m_sections;}
-
     ContentType contentType() {return m_type;}
 
 private:
@@ -80,7 +77,6 @@ private:
     QString m_menu;
     QString m_logo;
     QString m_keywords;
-    QList<Section *> m_sections;
     ContentType m_type;
     QDate m_date;
     bool m_published;

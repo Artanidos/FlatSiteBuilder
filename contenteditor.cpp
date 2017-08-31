@@ -22,7 +22,6 @@
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
 #include "texteditor.h"
-#include "imageeditor.h"
 #include "slidereditor.h"
 #include "animationlabel.h"
 #include "pageeditor.h"
@@ -45,12 +44,15 @@
 #include <QAction>
 #include <QTest>
 
-ContentEditor::ContentEditor(Site *site, Content *content)
+ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
 {
     m_site = site;
+    m_win = win;
     m_content = content;
     m_editor = NULL;
     m_undoStack = new QUndoStack;
+    m_changed = false;
+    setAutoFillBackground(true);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -124,7 +126,7 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     else
         load();
 
-    connect(m_close, SIGNAL(clicked()), this, SLOT(close()));
+    connect(m_close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
     connect(m_redo, SIGNAL(clicked()), this, SLOT(redo()));
     connect(m_title, SIGNAL(editingFinished()), this, SLOT(titleChanged()));
@@ -225,7 +227,7 @@ void ContentEditor::updateNewContent()
     emit contentUpdated("Content updated");
 }
 
-void ContentEditor::close()
+void ContentEditor::closeEditor()
 {
     if(m_isNew)
         updateNewContent();
@@ -405,7 +407,7 @@ void ContentEditor::editChanged(QString text)
     if(m_isNew)
         updateNewContent();
 
-    QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
+    QUndoCommand *changeCommand = new ChangeContentCommand(m_win, this, text);
     m_undoStack->push(changeCommand);
 }
 
@@ -427,7 +429,7 @@ void ContentEditor::sectionEdit(SectionEditor *se)
 {
     m_sectionEditor = se;
 
-    m_editor = new SectionPropertyEditor();
+    m_editor = dynamic_cast<EditorInterface*>(m_plugins["SectionPropertyEditor"]);
     m_editor->setContent(se->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(sectionEditorClose()));
     animate(se);
@@ -437,7 +439,7 @@ void ContentEditor::rowEdit(RowEditor *re)
 {
     m_rowEditor = re;
 
-    m_editor = new RowPropertyEditor();
+    m_editor = dynamic_cast<EditorInterface*>(m_plugins["RowPropertyEditor"]);
     m_editor->setContent(re->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(rowEditorClose()));
 
@@ -447,15 +449,13 @@ void ContentEditor::rowEdit(RowEditor *re)
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-
-    if(ee->type() == ElementEditor::Type::Text)
-        m_editor = new TextEditor();
-    else if(ee->type() == ElementEditor::Type::Image)
+    if(m_plugins.contains(ee->type()))
+        m_editor = dynamic_cast<EditorInterface*>(m_plugins[ee->type()]);
+    else
     {
-        m_editor = new ImageEditor();
+        m_editor = dynamic_cast<EditorInterface*>(m_plugins["TextEditor"]);
+        qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
-    else if(ee->type() == ElementEditor::Type::Slider)
-        m_editor = new SliderEditor();
     m_editor->setSite(m_site);
     m_editor->setContent(ee->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
@@ -572,6 +572,7 @@ void ContentEditor::animationFineshedZoomOut()
     if(m_content->contentType() == ContentType::Post)
         m_excerpt->setEnabled(true);
     delete m_animationgroup;
-    delete m_editor;
+    m_editor->hide();
+    // do not delete m_editor here, because its a preloaded plugin
     m_editor = NULL;
 }

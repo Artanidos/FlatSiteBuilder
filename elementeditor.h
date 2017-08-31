@@ -41,10 +41,9 @@ public:
     void setContent(QDomElement content);
     QDomElement content() {return m_content;}
     enum Mode {Empty, Enabled, Dropzone};
-    enum Type {Text, Image, Slider};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
-    Type type() {return m_type;}
+    QString type() {return m_type;}
     void save(QDomDocument doc, QDomElement de);
 
 public slots:
@@ -72,7 +71,7 @@ private:
     QString m_dropColor;
     QDomElement m_content;
     Mode m_mode;
-    Type m_type;
+    QString m_type;
     bool m_zoom;
     QDomDocument m_doc;
 

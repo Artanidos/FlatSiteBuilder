@@ -21,11 +21,11 @@
 #ifndef SLIDEREDITOR_H
 #define SLIDEREDITOR_H
 
-#include "abstracteditor.h"
+#include "interfaces.h"
 #include <QPushButton>
 #include <QTableWidget>
 
-class SliderEditor : public AbstractEditor
+class SliderEditor : public EditorInterface
 {
     Q_OBJECT
 
@@ -33,11 +33,14 @@ public:
     SliderEditor();
 
     void setContent(QDomElement ele);
-    QDomElement content() {return m_element;}
+    QString className() {return "SliderEditor";}
+    QString displayName() {return "Slider";}
+    QString tagName() {return "Slider";}
+    QImage icon() {return QImage(":/images/slider.png");}
+    QString getHtml(QDomElement ele, QMap<QString, QObject*> plugins);
 
-private slots:
-    void save();
-    void cancel();
+signals:
+    void close();
 
 private:
     QPushButton *m_deleteButton;

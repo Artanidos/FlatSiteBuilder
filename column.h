@@ -23,15 +23,16 @@
 
 #include <QObject>
 #include <QDomElement>
+#include "interfaces.h"
 
 class Column : public QObject
 {
     Q_OBJECT
 
 public:
-    Column();
+    Column() {}
 
-    QString getHtml(QDomElement col);
+    QString getHtml(QDomElement col, QMap<QString, EditorInterface*> plugins);
 };
 
 #endif // COLUMN_H

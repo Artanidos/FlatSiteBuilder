@@ -62,12 +62,6 @@
         <file>images/columns9_hover.png</file>
         <file>images/columns10_hover.png</file>
         <file>images/columns11_hover.png</file>
-        <file>images/image_hover.png</file>
-        <file>images/image_normal.png</file>
-        <file>images/slider_hover.png</file>
-        <file>images/slider_normal.png</file>
-        <file>images/text_hover.png</file>
-        <file>images/text_normal.png</file>
         <file>images/image_placeholder.png</file>
         <file>images/background.png</file>
         <file>images/icon64.png</file>
@@ -206,5 +200,9 @@
         <file>images/redo_hover.png</file>
         <file>images/redo_disabled.png</file>
         <file>images/undo_disabled.png</file>
+        <file>images/text.png</file>
+        <file>images/slider.png</file>
+        <file>images/module_hover.png</file>
+        <file>images/module_normal.png</file>
     </qresource>
 </RCC>

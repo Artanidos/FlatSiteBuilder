@@ -20,11 +20,6 @@
 
 #include "text.h"
 
-Text::Text()
-{
-
-}
-
 QString Text::getHtml(QDomElement text)
 {
     QDomNode data = text.firstChild();

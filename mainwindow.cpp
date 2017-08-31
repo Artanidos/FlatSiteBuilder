@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-
+#include "interfaces.h"
 #include <QCloseEvent>
 #include <QSettings>
 #include <QCoreApplication>
@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QSplitter>
 #include <QHeaderView>
+#include <QPluginLoader>
 #include <QMenu>
 #include <QToolBox>
 #include <QPalette>
@@ -55,6 +56,7 @@
 #include "dashboard.h"
 #include "contentlist.h"
 #include "contenteditor.h"
+#include "slidereditor.h"
 
 MainWindow::MainWindow()
 {
@@ -63,6 +65,7 @@ MainWindow::MainWindow()
 
     initUndoRedo();
     initGui();
+    loadPlugins();
     readSettings();
     if(!install())
     {
@@ -71,6 +74,32 @@ MainWindow::MainWindow()
     m_dashboardExpander->setExpanded(true);
     showDashboard();
     statusBar()->showMessage("Ready");
+}
+
+void MainWindow::loadPlugins()
+{
+    QDir pluginsDir = QDir(qApp->applicationDirPath());
+    pluginsDir.cd("plugins");
+
+    m_editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
+    m_editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
+    m_editorPlugins.insert("TextEditor", new TextEditor());
+    m_editorPlugins.insert("SliderEditor", new SliderEditor());
+
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+    {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = loader.instance();
+        if (plugin)
+        {
+            EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
+            if(iEditor)
+            {
+                m_editorPlugins.insert(iEditor->className(), iEditor);
+                qDebug() << "Plugin loaded" << pluginsDir.path() + "/" + fileName << iEditor->className() << iEditor->tagName() << iEditor->displayName();
+            }
+        }
+    }
 }
 
 void MainWindow::initUndoRedo()
@@ -194,7 +223,7 @@ bool MainWindow::install()
     loadProject(m_defaultPath + "/Site.xml");
 
     Generator *gen = new Generator;
-    gen->generateSite(m_site);
+    gen->generateSite(m_site, m_editorPlugins);
     delete gen;
 
     return true;
@@ -582,7 +611,8 @@ void MainWindow::showPages()
 void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
-    m_editor = new ContentEditor(m_site, content);
+    m_editor = new ContentEditor(this, m_site, content);
+    m_editor->registerPlugins(m_editorPlugins);
     m_editor->setStatusBar(statusBar());
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
@@ -665,7 +695,7 @@ void MainWindow::publishSite()
 void MainWindow::buildSite()
 {
     Generator gen;
-    gen.generateSite(m_site);
+    gen.generateSite(m_site, m_editorPlugins);
     statusBar()->showMessage(m_site->title() + " has been generated");
 }
 

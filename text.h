@@ -23,14 +23,13 @@
 
 #include <QObject>
 #include <QDomElement>
-#include "element.h"
 
-class Text : public Element
+class Text : public QObject
 {
     Q_OBJECT
 
 public:
-    Text();
+    Text() {}
 
     QString getHtml(QDomElement text);
 };

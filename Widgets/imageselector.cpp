@@ -22,7 +22,6 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QPainter>
-#include <QTest>
 
 ImageSelector::ImageSelector()
 {

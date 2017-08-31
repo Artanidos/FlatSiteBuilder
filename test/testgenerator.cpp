@@ -1,6 +1,33 @@
-#include <QtTest/QtTest>
-#include "../generator.h"
 
+#include <QtTest/QtTest>
+/*
+#include "../generator.h"
+#include "../interfaces.h"
+
+class SectionPropertyEditor : public EditorInterface
+{
+public:
+    SectionPropertyEditor() {}
+    QString getHtml(QDomElement ele, QMap<QString, QObject*>) {return "";}
+    QString className() {return "SectionPropertyEditor";}
+    QString displayName() {return "";}
+    QString tagName() {return "";}
+    QImage icon() {return QImage();}
+    void setContent(QDomElement) {}
+};
+
+class RowPropertyEditor : public EditorInterface
+{
+public:
+    RowPropertyEditor() {}
+    QString getHtml(QDomElement ele, QMap<QString, QObject*>) {return "";}
+    QString className() {return "RowPropertyEditor";}
+    QString displayName() {return "";}
+    QString tagName() {return "";}
+    QImage icon() {return QImage();}
+    void setContent(QDomElement) {}
+};
+*/
 class TestGenerator : public QObject
 {
     Q_OBJECT
@@ -24,6 +51,13 @@ void TestGenerator::cleanupTestCase()
 
 void TestGenerator::generateSite()
 {
+
+}
+/*
+    QMap<QString, QObject*> plugins;
+    plugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
+    plugins.insert("RowPropertyEditor", new RowPropertyEditor());
+    //plugins.insert("TextEditor", new TextEditor());
     QString dir = QDir::currentPath();
     Generator g;
     g.setSitesPath(dir + "/sites");
@@ -55,7 +89,7 @@ void TestGenerator::generateSite()
     menu->addMenuitem(item2);
     site->addMenu(menu);
     site->addContent(page);
-    g.generateSite(site);
+    g.generateSite(site, plugins);
 
     QStringList list;
     list << "<html>\n";
@@ -91,6 +125,6 @@ void TestGenerator::generateSite()
         file.close();
     }
 }
-
+*/
 QTEST_MAIN(TestGenerator)
-  #include "testgenerator.moc"
+#include "testgenerator.moc"

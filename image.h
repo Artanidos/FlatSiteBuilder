@@ -22,14 +22,14 @@
 #define IMAGE_H
 
 #include <QObject>
-#include "element.h"
 
-class Image : public Element
+class QDomElement;
+class Image : public QObject
 {
     Q_OBJECT
 
 public:
-    Image();
+    Image() {}
 
     QString getHtml(QDomElement ele);
 };

@@ -21,26 +21,32 @@
 #ifndef TEXTEDITOR_H
 #define TEXTEDITOR_H
 
-#include "abstracteditor.h"
+#include "interfaces.h"
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
 
-class TextEditor : public AbstractEditor
+class TextEditor : public EditorInterface
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "texteditor.json")
+    Q_INTERFACES(EditorInterface)
 
 public:
     TextEditor();
 
     void setContent(QDomElement ele);
-    QDomElement content() {return m_element;}
+    QString className() {return "TextEditor";}
+    QString displayName() {return "Text";}
+    QString tagName() {return "Text";}
+    QImage icon() {return QImage(":/images/text.png");}
+    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+
+signals:
+    void close();
 
 private slots:
     void closeEditor();
-
-public slots:
-    void contentChanged();
 
 private:
     QTextEdit *m_html;

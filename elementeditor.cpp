@@ -80,12 +80,8 @@ ElementEditor::ElementEditor()
 void ElementEditor::setContent(QDomElement content)
 {
     m_content = content;
-    if(m_content.nodeName() == "Text")
-        m_type = Type::Text;
-    else if(m_content.nodeName() == "Image")
-        m_type = Type::Image;
-    else if(m_content.nodeName() == "Slider")
-        m_type = Type::Slider;
+    m_type = m_content.nodeName() + "Editor";
+
     QString label = content.attribute("adminlabel", "");
     if(label.isEmpty())
         m_text->setText(m_content.nodeName());
@@ -201,29 +197,27 @@ void ElementEditor::setMode(Mode mode)
 
 void ElementEditor::enable()
 {
+    QMap<QString, EditorInterface*> plugins = getContentEditor()->plugins();
     ModulDialog *dlg = new ModulDialog();
+    dlg->registerPlugins(plugins);
     dlg->exec();
 
-    switch(dlg->result())
+    if(dlg->result().isEmpty())
+        return;
+
+    if(dlg->result() == "TextEditor")
     {
-        case 1:
-            m_text->setText("Text");
-            m_type = Type::Text;
-            m_content = m_doc.createElement("Text");
-            m_content.appendChild(m_doc.createCDATASection(""));
-            break;
-        case 2:
-            m_text->setText("Image");
-            m_content = m_doc.createElement("Image");
-            m_type = Type::Image;
-            break;
-        case 3:
-            m_text->setText("Slider");
-            m_content = m_doc.createElement("Slider");
-            m_type = Type::Slider;
-            break;
-        default:
-            return;
+        m_text->setText("Text");
+        m_type = "TextEditor";
+        m_content = m_doc.createElement("Text");
+        m_content.appendChild(m_doc.createCDATASection(""));
+    }
+    else
+    {
+        EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[dlg->result()]);
+        m_text->setText(editor->displayName());
+        m_content = m_doc.createElement(editor->tagName());
+        m_type = editor->className();
     }
 
     setMode(Mode::Enabled);

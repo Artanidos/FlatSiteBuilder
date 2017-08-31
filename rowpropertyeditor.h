@@ -21,11 +21,11 @@
 #ifndef ROWPROPERTYEDITOR_H
 #define ROWPROPERTYEDITOR_H
 
-#include "abstracteditor.h"
 #include <QLineEdit>
 #include <QGridLayout>
+#include "interfaces.h"
 
-class RowPropertyEditor : public AbstractEditor
+class RowPropertyEditor : public EditorInterface
 {
     Q_OBJECT
 
@@ -34,7 +34,11 @@ public:
     ~RowPropertyEditor();
 
     void setContent(QDomElement ele);
-    QDomElement content() {return m_element;}
+    QString className() {return "RowPropertyEditor";}
+    QString displayName() {return "";}
+    QString tagName() {return "";}
+    QImage icon() {return QImage("");}
+    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
 
 private slots:
     void editorClose();
