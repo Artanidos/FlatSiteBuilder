@@ -83,7 +83,6 @@ void MainWindow::loadPlugins()
     m_editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
     m_editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
     m_editorPlugins.insert("TextEditor", new TextEditor());
-    m_editorPlugins.insert("SliderEditor", new SliderEditor());
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {

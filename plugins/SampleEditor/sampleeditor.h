@@ -18,42 +18,35 @@
 **
 ****************************************************************************/
 
-#ifndef IMAGEEDITOR_H
-#define IMAGEEDITOR_H
+#ifndef SAMPLEEDITOR_H
+#define SAMPLEEDITOR_H
 
 #include <QtPlugin>
 #include <QObject>
 #include <QComboBox>
 #include "interfaces.h"
-#include "imageselector.h"
 
-class ImageEditor : public EditorInterface
+class SampleEditor : public EditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
+    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "sampleeditor.json")
     Q_INTERFACES(EditorInterface)
 
 public:
-    ImageEditor();
-    QString className() {return "ImageEditor";}
-    QString displayName() {return "Image";}
-    QString tagName() {return "Image";}
-    QImage icon() {return QImage(":/image.png");}
+    SampleEditor();
+    QString className() {return "SampleEditor";}
+    QString displayName() {return "Sample";}
+    QString tagName() {return "Sample";}
+    QImage icon() {return QImage(":/sample.png");}
     QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
     void setContent(QDomElement ele);
 
 private slots:
-    void seek();
     void closeEditor();
 
 private:
-    QString m_animation;
-    ImageSelector *m_image;
-    QComboBox *m_animationCombo;
-    QLineEdit *m_source;
-    QLineEdit *m_alt;
-    QLineEdit *m_title;
+    QLineEdit *m_sampleproperty;
     QLineEdit *m_adminlabel;
 };
 
-#endif // IMAGEEDITOR_H
+#endif // SAMPLEEDITOR_H

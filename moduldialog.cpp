@@ -82,7 +82,7 @@ void ModulDialog::registerPlugins(QMap<QString, EditorInterface*> plugins)
 
     foreach(QString name, plugins.keys())
     {
-        if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor" && name != "SliderEditor")
+        if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
         {
             EditorInterface *plugin = plugins[name];
             FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
