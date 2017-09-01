@@ -24,13 +24,12 @@ public:
     virtual QString className() = 0;
     virtual QString displayName() = 0;
     virtual QString tagName() = 0;
-    virtual void setContent(QDomElement) = 0;
+    virtual void setContent(QDomElement properties) = 0;
     virtual QImage icon() = 0;
-    virtual QString getHtml(QDomElement, QMap<QString, EditorInterface*>) = 0;
+    virtual QString getHtml(QDomElement properties, QMap<QString, EditorInterface*> pluginlist) = 0;
     virtual QString pluginStyles() {return "";}
     virtual QString pluginScripts() {return "";}
-    virtual void activate(QString) {}
-    virtual void deactivate(QString) {}
+    virtual void installAssets(QString assetsPath) {Q_UNUSED(assetsPath)}
 
     void setX(int x) {move(x, y());}
     void setY(int y) {move(x(), y);}

@@ -476,16 +476,6 @@ void MainWindow::reloadProject()
         menu = menu.nextSiblingElement("Menu");
     }
 
-    // activate all active plugins, maybe the want to install assets
-    foreach(QString key, m_editorPlugins.keys())
-    {
-        EditorInterface *editor = qobject_cast<EditorInterface*>(m_editorPlugins[key]);
-        if(editor)
-        {
-            editor->activate(m_site->path());
-        }   
-    }
-
     emit siteLoaded(m_site);
 
     statusBar()->showMessage(m_site->title() + " has been loaded");

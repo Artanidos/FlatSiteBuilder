@@ -42,8 +42,7 @@ public:
     QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
     void setContent(QDomElement ele);
     QString pluginStyles();
-    void activate(QString siteDir);
-    void deactivate(QString siteDir);
+    void installAssets(QString assetsPath);
 
 private slots:
     void seek();

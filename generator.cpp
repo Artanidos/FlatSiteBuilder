@@ -46,16 +46,6 @@ void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins
 {
     m_site = site;
 
-    foreach(QString key, plugins.keys())
-    {
-        EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[key]);
-        if(editor)
-        {
-            pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
-            pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
-        }
-    }
-
     if(contentToBuild == 0)
     {
 
@@ -158,14 +148,28 @@ void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins
             {
                 file.close();
                 QString cnt = "";
-                QDomElement c = doc.documentElement();
-                QDomElement section = c.firstChildElement("Section");
+                QDomElement root = doc.documentElement();
+                QDomElement section = root.firstChildElement("Section");
                 while(!section.isNull())
                 {
                     SectionPropertyEditor *sec = dynamic_cast<SectionPropertyEditor*>(plugins["SectionPropertyEditor"]);
                     if(sec)
                         cnt += sec->getHtml(section, plugins);
                     section = section.nextSiblingElement("Section");
+                }
+
+                pluginvars.clear();
+                foreach(QString key, plugins.keys())
+                {
+                    EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[key]);
+                    if(editor)
+                    {
+                        if(root.elementsByTagName(editor->tagName()).count() > 0)
+                        {
+                            pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
+                            pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
+                        }
+                    }
                 }
 
                 QString layout = content->layout();

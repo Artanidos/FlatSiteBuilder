@@ -258,6 +258,7 @@ QString ImageEditor::getHtml(QDomElement ele, QMap<QString, EditorInterface*>)
     QString url = source.mid(source.indexOf("assets/images/"));
     QString alt = ele.attribute("alt", "");
     QString title = ele.attribute("title", "");
+
     if(animation == "none")
         return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">\n";
     else
@@ -269,18 +270,10 @@ QString ImageEditor::pluginStyles()
     return "<link href=\"assets/css/animate.css\" rel=\"stylesheet\" type=\"text/css\"/>\n";
 }
 
-void ImageEditor::activate(QString siteDir)
+void ImageEditor::installAssets(QString assetsPath)
 {
-    QFile tst(siteDir + "/assets/css/animate.css");
+    QFile tst(assetsPath + "/css/animate.css");
     if(tst.exists())
         tst.remove();
-    QFile::copy(":/animate.css", siteDir + "/assets/css/animate.css");
+    QFile::copy(":/animate.css", assetsPath + "/css/animate.css");
 }
-
-void ImageEditor::deactivate(QString siteDir)
-{
-    QFile tst(siteDir + "/assets/css/animate.css");
-    if(tst.exists())
-        tst.remove();
-}
-
