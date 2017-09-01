@@ -89,7 +89,7 @@ void ModulDialog::registerPlugins(QMap<QString, EditorInterface*> plugins)
             btn->setReturnCode(name);
             m_grid->addWidget(btn, row, col++);
             connect(btn, SIGNAL(clicked(QString)), this, SLOT(close2(QString)));
-            if(col == 2)
+            if(col == 4)
             {
                 row++;
                 col = 0;

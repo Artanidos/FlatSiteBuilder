@@ -18,10 +18,37 @@
 **
 ****************************************************************************/
 
-#include "slider.h"
-#include <QDomElement>
+#ifndef SLIDEREDITOR_H
+#define SLIDEREDITOR_H
 
-QString Slider::getHtml(QDomElement)
+#include <QtPlugin>
+#include <QObject>
+#include <QTableWidget>
+#include <QPushButton>
+#include "interfaces.h"
+
+class SliderEditor : public EditorInterface
 {
-    return "";
-}
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "slidereditor.json")
+    Q_INTERFACES(EditorInterface)
+
+public:
+    SliderEditor();
+    QString className() {return "SliderEditor";}
+    QString displayName() {return "Slider";}
+    QString tagName() {return "Slider";}
+    QImage icon() {return QImage(":/slider.png");}
+    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    void setContent(QDomElement ele);
+
+private slots:
+    void closeEditor();
+
+private:
+    QPushButton *m_deleteButton;
+    QLineEdit *m_adminlabel;
+    QTableWidget *m_list;
+};
+
+#endif // SLIDEREDITOR_H

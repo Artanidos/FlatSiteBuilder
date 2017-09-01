@@ -1,8 +1,3 @@
-#-------------------------------------------------
-#
-#    Project created by QtCreator 2016-12-19T11:03:34
-#
-#-------------------------------------------------
 #    Copyright (C) 2017 Olaf Japp
 #    https://facebook.com/artanidos
 #
@@ -57,8 +52,6 @@ SOURCES += main.cpp\
     textdialog.cpp \
     texteditor.cpp \
     animationlabel.cpp \
-    slidereditor.cpp \
-    slider.cpp \
     menu.cpp \
     menuitem.cpp \
     rowpropertyeditor.cpp \
@@ -92,8 +85,6 @@ HEADERS  += mainwindow.h \
     textdialog.h \
     texteditor.h \
     animationlabel.h \
-    slidereditor.h \
-    slider.h \
     menu.h \
     menuitem.h \
     interfaces.h \

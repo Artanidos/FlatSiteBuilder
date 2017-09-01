@@ -19,16 +19,35 @@
 ****************************************************************************/
 
 #include "slidereditor.h"
+#include "flatbutton.h"
+#include <QLineEdit>
 #include <QGridLayout>
-#include <QPushButton>
 #include <QLabel>
-#include <QListWidget>
 #include <QHeaderView>
+#include <QHBoxLayout>
 
 SliderEditor::SliderEditor()
 {
     m_changed = false;
     setAutoFillBackground(true);
+
+    QGridLayout *grid = new QGridLayout();
+    grid->setMargin(0);
+
+    m_adminlabel = new QLineEdit;
+    m_adminlabel->setMaximumWidth(200);
+    QLabel *titleLabel = new QLabel("Slider Module Plugin");
+    QFont fnt = titleLabel->font();
+    fnt.setPointSize(16);
+    fnt.setBold(true);
+    titleLabel->setFont(fnt);
+
+    FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
+    close->setToolTip("Close Editor");
+
+    QPushButton *addSlide = new QPushButton("Add Slide");
+    addSlide->setMaximumWidth(120);
+
     m_list = new QTableWidget(0, 2, this);
     m_list->verticalHeader()->hide();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -39,62 +58,47 @@ SliderEditor::SliderEditor()
     labels << "" << "Name";
     m_list->setHorizontalHeaderLabels(labels);
 
-    QGridLayout *grid = new QGridLayout();
-    grid->setMargin(0);
-    QPushButton *addSlide = new QPushButton("Add Slide");
-    addSlide->setMaximumWidth(120);
     m_deleteButton = new QPushButton();
     m_deleteButton->setText("Delete");
     m_deleteButton->setMaximumWidth(120);
     m_deleteButton->setEnabled(false);
     m_deleteButton->setToolTip("Delete all marked items");
-    QPushButton *save = new QPushButton("Save and Exit");
-    QPushButton *cancel = new QPushButton("Cancel");
-    QHBoxLayout *hbox = new QHBoxLayout();
-    QLabel *titleLabel = new QLabel("Slider Module");
-    QFont fnt = titleLabel->font();
-    fnt.setPointSize(16);
-    fnt.setBold(true);
-    titleLabel->setFont(fnt);
-    hbox->addStretch();
-    hbox->addWidget(save);
-    hbox->addWidget(cancel);
+
     grid->addWidget(titleLabel, 0, 0);
+    grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(addSlide, 1, 0);
     grid->addWidget(m_list, 2, 0, 1, 3);
     grid->addWidget(m_deleteButton, 3, 0);
-    grid->addLayout(hbox, 4, 0, 1, 3);
+    grid->addWidget(new QLabel("Admin Label"), 4, 0);
+    grid->addWidget(m_adminlabel, 5, 0);
+
     setLayout(grid);
+
+    connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
 void SliderEditor::setContent(QDomElement element)
 {
     m_element = element;
+    m_adminlabel->setText(m_element.attribute("adminlabel"));
 }
 
-QString SliderEditor::getHtml(QDomElement, QMap<QString, QObject*>)
-{
-    return "";
-}
-
-/*
-void SliderEditor::save()
+void SliderEditor::closeEditor()
 {
     if(m_changed)
     {
         if(m_element.isNull())
         {
-            m_element = m_doc.createElement("Slider");
+            m_element = m_doc.createElement("Sample");
         }
-        //m_element.setAttribute("src", m_temp);
-        //m_element.setAttribute("animation", m_animationCombo->currentData(Qt::UserRole).toString());
+        m_element.setAttribute("adminlabel", m_adminlabel->text());
     }
     emit close();
 }
 
-void SliderEditor::cancel()
+QString SliderEditor::getHtml(QDomElement, QMap<QString, EditorInterface*>)
 {
-    m_changed = false;
-    emit close();
+    //QString sampleproperty = ele.attribute("sampleproperty", "");
+    return "<div></div>";
 }
-*/

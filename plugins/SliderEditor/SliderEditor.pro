@@ -19,10 +19,10 @@
 QT           += widgets xml gui core
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET		  = SampleEditor
+TARGET		  = SliderEditor
 INCLUDEPATH  += ../../
-SOURCES		 += sampleeditor.cpp
-HEADERS		 += sampleeditor.h \
+SOURCES		 += slidereditor.cpp
+HEADERS		 += slidereditor.h \
     ../../interfaces.h
 DESTDIR       = ~/FlatSiteBuilder/plugins
 

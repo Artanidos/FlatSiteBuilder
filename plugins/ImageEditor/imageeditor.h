@@ -30,7 +30,7 @@
 class ImageEditor : public EditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
     Q_INTERFACES(EditorInterface)
 
 public:

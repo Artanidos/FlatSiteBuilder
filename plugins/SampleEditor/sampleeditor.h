@@ -23,13 +23,13 @@
 
 #include <QtPlugin>
 #include <QObject>
-#include <QComboBox>
+#include <QLineEdit>
 #include "interfaces.h"
 
 class SampleEditor : public EditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "sampleeditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "sampleeditor.json")
     Q_INTERFACES(EditorInterface)
 
 public:
