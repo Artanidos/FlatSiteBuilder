@@ -21,13 +21,16 @@ class EditorInterface : public QWidget
     Q_PROPERTY(int height READ height WRITE setHeight)
 
 public:
-    //~EditorInterface();
-    virtual QString className() {return "EditorInterface";}
-    virtual QString displayName() {return "";}
-    virtual QString tagName() {return "";}
-    virtual void setContent(QDomElement) {}
-    virtual QImage icon() {return QImage();}
-    virtual QString getHtml(QDomElement, QMap<QString, EditorInterface*>) {return "";}
+    virtual QString className() = 0;
+    virtual QString displayName() = 0;
+    virtual QString tagName() = 0;
+    virtual void setContent(QDomElement) = 0;
+    virtual QImage icon() = 0;
+    virtual QString getHtml(QDomElement, QMap<QString, EditorInterface*>) = 0;
+    virtual QString pluginStyles() {return "";}
+    virtual QString pluginScripts() {return "";}
+    virtual void activate(QString) {}
+    virtual void deactivate(QString) {}
 
     void setX(int x) {move(x, y());}
     void setY(int y) {move(x(), y);}

@@ -32,4 +32,4 @@ INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
 
 RESOURCES += \
-    images.qrc
+    resources.qrc

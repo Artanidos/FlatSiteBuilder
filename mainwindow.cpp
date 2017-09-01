@@ -56,7 +56,6 @@
 #include "dashboard.h"
 #include "contentlist.h"
 #include "contenteditor.h"
-#include "slidereditor.h"
 
 MainWindow::MainWindow()
 {
@@ -475,6 +474,16 @@ void MainWindow::reloadProject()
         }
         m_site->addMenu(m);
         menu = menu.nextSiblingElement("Menu");
+    }
+
+    // activate all active plugins, maybe the want to install assets
+    foreach(QString key, m_editorPlugins.keys())
+    {
+        EditorInterface *editor = qobject_cast<EditorInterface*>(m_editorPlugins[key]);
+        if(editor)
+        {
+            editor->activate(m_site->path());
+        }   
     }
 
     emit siteLoaded(m_site);

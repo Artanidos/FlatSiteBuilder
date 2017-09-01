@@ -21,7 +21,6 @@
 #include "column.h"
 #include "text.h"
 #include "image.h"
-#include "slider.h"
 #include "interfaces.h"
 #include <QTest>
 

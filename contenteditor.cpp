@@ -22,7 +22,6 @@
 #include "htmlhighlighter.h"
 #include "hyperlink.h"
 #include "texteditor.h"
-#include "slidereditor.h"
 #include "animationlabel.h"
 #include "pageeditor.h"
 #include "commands.h"

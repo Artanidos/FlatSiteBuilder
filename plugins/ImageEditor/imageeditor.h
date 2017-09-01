@@ -41,6 +41,9 @@ public:
     QImage icon() {return QImage(":/image.png");}
     QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
     void setContent(QDomElement ele);
+    QString pluginStyles();
+    void activate(QString siteDir);
+    void deactivate(QString siteDir);
 
 private slots:
     void seek();
@@ -54,6 +57,8 @@ private:
     QLineEdit *m_alt;
     QLineEdit *m_title;
     QLineEdit *m_adminlabel;
+
+    void addHeader(QString header);
 };
 
 #endif // IMAGEEDITOR_H

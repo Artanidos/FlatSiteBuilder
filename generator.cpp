@@ -46,6 +46,16 @@ void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins
 {
     m_site = site;
 
+    foreach(QString key, plugins.keys())
+    {
+        EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[key]);
+        if(editor)
+        {
+            pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
+            pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
+        }
+    }
+
     if(contentToBuild == 0)
     {
 
@@ -436,6 +446,10 @@ QVariant Generator::translateVar(QString exp)
             return sitevars[exp.mid(5)];
         else
             return sitevars[exp.mid(5)].toMap()[indexValue];
+    }
+    else if(exp.startsWith("plugin."))
+    {
+        return pluginvars[exp.mid(7)];
     }
     else
     {

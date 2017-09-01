@@ -56,6 +56,7 @@ private:
     };
 
     Site *m_site;
+    QVariantMap pluginvars;
     QVariantMap pagevars;
     QVariantMap sitevars;
     QVariantMap loopvars;

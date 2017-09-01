@@ -28,6 +28,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QStandardItemModel>
 #include <QStandardPaths>
 
 ImageEditor::ImageEditor()
@@ -66,35 +67,99 @@ ImageEditor::ImageEditor()
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     close->setToolTip("Close Editor");
 
-
     m_animationCombo = new QComboBox();
     m_animationCombo->addItem("None", "none");
-    m_animationCombo->addItem("Fade In", "fadeIn");
-    m_animationCombo->addItem("Fade In Up", "fadeInUp");
-    m_animationCombo->addItem("Fade In Down","fadeInDown");
-    m_animationCombo->addItem("Fade In Left","fadeInLeft");
-    m_animationCombo->addItem("Fade In Right","fadeInRight");
-    m_animationCombo->addItem("Fade In Up Big","fadeInUpBig");
-    m_animationCombo->addItem("Fade In Down Big","fadeInDownBig");
-    m_animationCombo->addItem("Fade In Left Big","fadeInLeftBig");
-    m_animationCombo->addItem("Fade In Right Big","fadeInRightBig");
+    addHeader("Attention Seekers");
+    m_animationCombo->addItem("Bounce","bounce");
+    m_animationCombo->addItem("Flash","flash");
+    m_animationCombo->addItem("Pulse","pulse");
+    m_animationCombo->addItem("Rubber Band","rubberBand");
+    m_animationCombo->addItem("Shake","shake");
+    m_animationCombo->addItem("Swing","swing");
+    m_animationCombo->addItem("Tada","tada");
+    m_animationCombo->addItem("Wobble","wobble");
+    m_animationCombo->addItem("Jello","jello");
+    addHeader("Bouncing Entrances");
     m_animationCombo->addItem("Bounce In","bounceIn");
-    m_animationCombo->addItem("Bounce In Up","bounceInUp");
     m_animationCombo->addItem("Bounce In Down","bounceInDown");
     m_animationCombo->addItem("Bounce In Left","bounceInLeft");
     m_animationCombo->addItem("Bounce In Right","bounceInRight");
-    m_animationCombo->addItem("Rotate In","rotateIn");
-    m_animationCombo->addItem("Rotate In Up Left","rotateInUpLeft");
-    m_animationCombo->addItem("Rotate In Down Left","rotateInDownLeft");
-    m_animationCombo->addItem("Rotate In Up Right","rotateInUpRight");
-    m_animationCombo->addItem("Rotate In Down Right","rotateInDownRight");
-    m_animationCombo->addItem("Flash","flash");
-    m_animationCombo->addItem("Shake","shake");
-    m_animationCombo->addItem("Bounce","bounce");
-    m_animationCombo->addItem("Tada","tada");
-    m_animationCombo->addItem("Swing","swing");
-    m_animationCombo->addItem("Wobble","wobble");
-    m_animationCombo->addItem("Wiggle","wiggle");
+    m_animationCombo->addItem("Bounce In Up","bounceInUp");
+    addHeader("Bouncing Exits");
+    m_animationCombo->addItem("Bounce Out","bounceOut");
+    m_animationCombo->addItem("Bounce Out Down","bounceOutDown");
+    m_animationCombo->addItem("Bounce Out Left","bounceOutLeft");
+    m_animationCombo->addItem("Bounce Out Right","bounceOutRight");
+    m_animationCombo->addItem("Bounce Out Up","bounceOutUp");
+    addHeader("Fading Entrances");
+    m_animationCombo->addItem("Fade In", "fadeIn");
+    m_animationCombo->addItem("Fade In Down", "fadeInDown");
+    m_animationCombo->addItem("Fade In Down Big", "fadeInDownBig");
+    m_animationCombo->addItem("Fade In Left", "fadeInLeft");
+    m_animationCombo->addItem("Fade In Left Big", "fadeInLeftBig");
+    m_animationCombo->addItem("Fade In Right", "fadeInRight");
+    m_animationCombo->addItem("Fade In Right Big", "fadeInRightBig");
+    m_animationCombo->addItem("Fade In Up", "fadeInUp");
+    m_animationCombo->addItem("Fade In Up Big", "fadeInUpBig");
+    addHeader("Fading Exits");
+    m_animationCombo->addItem("Fade Out", "fadeOut");
+    m_animationCombo->addItem("Fade Out Down", "fadeOutDown");
+    m_animationCombo->addItem("Fade Out Down Big", "fadeOutDownBig");
+    m_animationCombo->addItem("Fade Out Left", "fadeOutLeft");
+    m_animationCombo->addItem("Fade Out Left Big", "fadeOutLeftBig");
+    m_animationCombo->addItem("Fade Out Right", "fadeOutRight");
+    m_animationCombo->addItem("Fade Out Right Big", "fadeOutRightBig");
+    m_animationCombo->addItem("Fade Out Up", "fadeOutUp");
+    m_animationCombo->addItem("Fade Out Up Big", "fadeOutUpBig");
+    addHeader("Flippers");
+    m_animationCombo->addItem("Flip", "flip");
+    m_animationCombo->addItem("Flip In X", "flipInX");
+    m_animationCombo->addItem("Flip In Y", "flipInY");
+    m_animationCombo->addItem("Flip Out X", "flipOutX");
+    m_animationCombo->addItem("Flip Out Y", "flipOutY");
+    addHeader("Lightspeed");
+    m_animationCombo->addItem("Light Speed In", "lightSpeedIn");
+    m_animationCombo->addItem("Light Speed Out", "lightSpeedOut");
+    addHeader("Rotating Entrances");
+    m_animationCombo->addItem("Rotate In", "rotateIn");
+    m_animationCombo->addItem("Rotate In Down Left", "rotateInDownLeft");
+    m_animationCombo->addItem("Rotate In Down Right", "rotateInDownRight");
+    m_animationCombo->addItem("Rotate In Up Left", "rotateInUpLeft");
+    m_animationCombo->addItem("Rotate In Up Right", "rotateInUpRight");
+    addHeader("Rotating Exits");
+    m_animationCombo->addItem("Rotate Out", "rotateOut");
+    m_animationCombo->addItem("Rotate Out Down Left", "rotateOutDownLeft");
+    m_animationCombo->addItem("Rotate Out Down Right", "rotateOutDownRight");
+    m_animationCombo->addItem("Rotate Out Up Left", "rotateOutUpLeft");
+    m_animationCombo->addItem("Rotate Out Up Right", "rotateOutUpRight");
+    addHeader("Sliding Entrances");
+    m_animationCombo->addItem("Slide In Up", "slideInUp");
+    m_animationCombo->addItem("Slide In Down", "slideInDown");
+    m_animationCombo->addItem("Slide In Left", "slideInLeft");
+    m_animationCombo->addItem("Slide In Right", "slideInRight");
+    addHeader("Sliding Exits");
+    m_animationCombo->addItem("Slide In Up", "slideOutUp");
+    m_animationCombo->addItem("Slide Out Down", "slideOutDown");
+    m_animationCombo->addItem("Slide Out Left", "slideOutLeft");
+    m_animationCombo->addItem("Slide Out Right", "slideOutRight");
+    addHeader("Zoom Entrances");
+    m_animationCombo->addItem("Zoom In", "zoomIn");
+    m_animationCombo->addItem("Zoom In Down", "zoomInDown");
+    m_animationCombo->addItem("Zoom In Left", "zoomInLeft");
+    m_animationCombo->addItem("Zoom In Right", "zoomInRight");
+    m_animationCombo->addItem("Zoom In Up", "zoomInUp");
+    addHeader("Zoom Exits");
+    m_animationCombo->addItem("Zoom Out", "zoomOut");
+    m_animationCombo->addItem("Zoom Out Down", "zoomOutDown");
+    m_animationCombo->addItem("Zoom Out Left", "zoomOutLeft");
+    m_animationCombo->addItem("Zoom Out Right", "zoomOutRight");
+    m_animationCombo->addItem("Zoom Out Up", "zoomOutUp");
+    addHeader("Specials");
+    m_animationCombo->addItem("Hinge", "hinge");
+    m_animationCombo->addItem("Jack In The Box", "jackInTheBox");
+    m_animationCombo->addItem("Roll In", "rollIn");
+    m_animationCombo->addItem("Roll Out", "rollOut");
+
     grid->addWidget(titleLabel, 0, 0);
     grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(new QLabel("Path"), 1, 0);
@@ -121,6 +186,13 @@ ImageEditor::ImageEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
+void ImageEditor::addHeader(QString header)
+{
+    m_animationCombo->addItem(header, "");
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel*>( m_animationCombo->model());
+    model->item(m_animationCombo->count() - 1, 0)->setEnabled(false);
+}
+
 void ImageEditor::setContent(QDomElement element)
 {
     m_element = element;
@@ -128,6 +200,8 @@ void ImageEditor::setContent(QDomElement element)
     m_source->setText(src);
     if(!src.isEmpty())
         m_image->setImage(QImage(src));
+    else
+        m_image->setImage(QImage(":/images/image_placeholder.png"));
     QString anim = m_element.attribute("animation", "none");
     int index = m_animationCombo->findData(anim, Qt::UserRole);
     m_animationCombo->setCurrentIndex(index);
@@ -185,7 +259,28 @@ QString ImageEditor::getHtml(QDomElement ele, QMap<QString, EditorInterface*>)
     QString alt = ele.attribute("alt", "");
     QString title = ele.attribute("title", "");
     if(animation == "none")
-        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">";
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">\n";
     else
-        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive appear-animation pull-left inner\" src=\"" + url + "\" data-animation=\"" + animation + "\">";
+        return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive animated " + animation + " pull-left inner\" src=\"" + url + "\">\n";
 }
+
+QString ImageEditor::pluginStyles()
+{
+    return "<link href=\"assets/css/animate.css\" rel=\"stylesheet\" type=\"text/css\"/>\n";
+}
+
+void ImageEditor::activate(QString siteDir)
+{
+    QFile tst(siteDir + "/assets/css/animate.css");
+    if(tst.exists())
+        tst.remove();
+    QFile::copy(":/animate.css", siteDir + "/assets/css/animate.css");
+}
+
+void ImageEditor::deactivate(QString siteDir)
+{
+    QFile tst(siteDir + "/assets/css/animate.css");
+    if(tst.exists())
+        tst.remove();
+}
+
