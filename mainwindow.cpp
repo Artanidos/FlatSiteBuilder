@@ -78,8 +78,7 @@ MainWindow::MainWindow()
 
 void MainWindow::loadPlugins()
 {
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
-    pluginsDir.cd("plugins");
+    QDir pluginsDir(QDir::homePath() + "/FlatSiteBuilder/plugins");
 
     m_editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
     m_editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
@@ -96,7 +95,7 @@ void MainWindow::loadPlugins()
             if(iEditor)
             {
                 m_editorPlugins.insert(iEditor->className(), iEditor);
-                qDebug() << "Plugin loaded" << pluginsDir.path() + "/" + fileName << iEditor->className() << iEditor->tagName() << iEditor->displayName();
+                qDebug() << "Plugin loaded" << fileName;
             }
         }
     }
@@ -124,6 +123,7 @@ bool MainWindow::install()
     installDir.mkdir("sites");
     installDir.mkdir("sources");
     installDir.mkdir("themes");
+    installDir.mkdir("plugins");
     installDir.cd("themes");
     installDir.mkdir("default");
     installDir.cd("default");
