@@ -57,12 +57,7 @@ public:
     QString filename() {return m_filename;}
     void load();
     void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}\
-    //QString className() {return "ContentEditor";}
-    //QString displayName() {return "";}
-    //QString tagName() {return "";}
-    //QImage icon() {return QImage();}
     void setContent(QDomElement) {/* unused */}
-    //QString getHtml(QDomElement) {return "";}
 
 public slots:
     void editChanged(QString text);
