@@ -25,7 +25,7 @@
 #include <QLineEdit>
 #include <QGridLayout>
 
-class SectionPropertyEditor : public EditorInterface
+class SectionPropertyEditor : public AbstractEditor
 {
     Q_OBJECT
 
@@ -34,11 +34,7 @@ public:
     ~SectionPropertyEditor();
 
     void setContent(QDomElement ele);
-    QString className() {return "SectionPropertyEditor";}
-    QString displayName() {return "";}
-    QString tagName() {return "";}
-    QImage icon() {return QImage("");}
-    QString getHtml(QDomElement ele);
+    static QString getHtml(QDomElement ele);
 
 private slots:
     void closeEditor();

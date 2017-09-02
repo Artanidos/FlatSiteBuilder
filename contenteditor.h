@@ -40,7 +40,7 @@
 
 class QStatusBar;
 class MainWindow;
-class ContentEditor : public EditorInterface
+class ContentEditor : public AbstractEditor
 {
     Q_OBJECT
 
@@ -57,12 +57,12 @@ public:
     QString filename() {return m_filename;}
     void load();
     void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}\
-    QString className() {return "ContentEditor";}
-    QString displayName() {return "";}
-    QString tagName() {return "";}
-    QImage icon() {return QImage();}
+    //QString className() {return "ContentEditor";}
+    //QString displayName() {return "";}
+    //QString tagName() {return "";}
+    //QImage icon() {return QImage();}
     void setContent(QDomElement) {/* unused */}
-    QString getHtml(QDomElement) {return "";}
+    //QString getHtml(QDomElement) {return "";}
 
 public slots:
     void editChanged(QString text);
@@ -113,7 +113,7 @@ private:
     QLabel *m_excerptLabel;
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
-    EditorInterface *m_editor;
+    AbstractEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;

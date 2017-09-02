@@ -25,7 +25,7 @@
 #include <QGridLayout>
 #include "interfaces.h"
 
-class RowPropertyEditor : public EditorInterface
+class RowPropertyEditor : public AbstractEditor
 {
     Q_OBJECT
 
@@ -34,11 +34,7 @@ public:
     ~RowPropertyEditor();
 
     void setContent(QDomElement ele);
-    QString className() {return "RowPropertyEditor";}
-    QString displayName() {return "";}
-    QString tagName() {return "";}
-    QImage icon() {return QImage("");}
-    QString getHtml(QDomElement ele);
+    static QString getHtml(QDomElement ele);
 
 private slots:
     void editorClose();

@@ -91,8 +91,8 @@ void MainWindow::loadPlugins()
         }
     }
 
-    MainWindow::editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
-    MainWindow::editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
+    //MainWindow::editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
+    //MainWindow::editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {

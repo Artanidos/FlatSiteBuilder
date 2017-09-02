@@ -128,7 +128,7 @@ QString SectionPropertyEditor::getHtml(QDomElement sec)
     QDomElement row = sec.firstChildElement("Row");
     while(!row.isNull())
     {
-        html += MainWindow::getPlugin("RowPropertyEditor")->getHtml(row);
+        html += RowPropertyEditor::getHtml(row);
         row = row.nextSiblingElement("Row");
     }
     return html + "</section>\n";

@@ -427,7 +427,7 @@ void ContentEditor::sectionEdit(SectionEditor *se)
 {
     m_sectionEditor = se;
 
-    m_editor = MainWindow::getPlugin("SectionPropertyEditor");
+    m_editor = new SectionPropertyEditor();
     m_editor->setContent(se->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(sectionEditorClose()));
     animate(se);
@@ -437,7 +437,7 @@ void ContentEditor::rowEdit(RowEditor *re)
 {
     m_rowEditor = re;
 
-    m_editor = MainWindow::getPlugin("RowPropertyEditor");
+    m_editor = new RowPropertyEditor();
     m_editor->setContent(re->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(rowEditorClose()));
 
@@ -448,10 +448,10 @@ void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
     if(MainWindow::hasPlugin(ee->type()))
-        m_editor = MainWindow::getPlugin(ee->type());
+        m_editor = dynamic_cast<AbstractEditor*>(MainWindow::getPlugin(ee->type()));
     else
     {
-        m_editor = MainWindow::getPlugin("TextEditor");
+        m_editor = dynamic_cast<AbstractEditor*>(MainWindow::getPlugin("TextEditor"));
         qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
     m_editor->setSite(m_site);

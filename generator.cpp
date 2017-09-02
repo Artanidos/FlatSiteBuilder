@@ -152,7 +152,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                 QDomElement section = root.firstChildElement("Section");
                 while(!section.isNull())
                 {
-                    cnt += MainWindow::getPlugin("SectionPropertyEditor")->getHtml(section);
+                    cnt += SectionPropertyEditor::getHtml(section);
                     section = section.nextSiblingElement("Section");
                 }
 
