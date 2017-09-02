@@ -39,7 +39,7 @@ public:
     QString displayName() {return "Image";}
     QString tagName() {return "Image";}
     QImage icon() {return QImage(":/image.png");}
-    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    QString getHtml(QDomElement ele);
     void setContent(QDomElement ele);
     QString pluginStyles();
     void installAssets(QString assetsPath);

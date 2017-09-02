@@ -97,7 +97,7 @@ void SliderEditor::closeEditor()
     emit close();
 }
 
-QString SliderEditor::getHtml(QDomElement, QMap<QString, EditorInterface*>)
+QString SliderEditor::getHtml(QDomElement)
 {
     //QString sampleproperty = ele.attribute("sampleproperty", "");
     return "<div></div>";

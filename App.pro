@@ -28,12 +28,10 @@ INSTALLS += target
 SOURCES += main.cpp\
     mainwindow.cpp \
     generator.cpp \
-    htmlhighlighter.cpp \
     expander.cpp \
     hyperlink.cpp \
     site.cpp \
     column.cpp \
-    text.cpp \
     image.cpp \
     dashboard.cpp \
     content.cpp \
@@ -49,8 +47,6 @@ SOURCES += main.cpp\
     dropzone.cpp \
     columnsdialog.cpp \
     moduldialog.cpp \
-    textdialog.cpp \
-    texteditor.cpp \
     animationlabel.cpp \
     menu.cpp \
     menuitem.cpp \
@@ -61,12 +57,10 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     generator.h \
-    htmlhighlighter.h \
     expander.h \
     hyperlink.h \
     site.h \
     column.h \
-    text.h \
     image.h \
     dashboard.h \
     content.h \
@@ -82,8 +76,6 @@ HEADERS  += mainwindow.h \
     dropzone.h \
     columnsdialog.h \
     moduldialog.h \
-    textdialog.h \
-    texteditor.h \
     animationlabel.h \
     menu.h \
     menuitem.h \

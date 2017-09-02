@@ -16,13 +16,22 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
+QT           += widgets xml gui core
+TEMPLATE      = lib
+CONFIG       += plugin
+TARGET		  = TextEditor
+INCLUDEPATH  += ../../
+SOURCES		 += texteditor.cpp \
+    htmlhighlighter.cpp
+HEADERS		 += texteditor.h \
+    ../../interfaces.h \
+    htmlhighlighter.h
+DESTDIR       = ~/FlatSiteBuilder/plugins
 
-SUBDIRS += \
-    App.pro \
-    plugins/TextEditor \
-    plugins/ImageEditor \
-    plugins/SliderEditor \
-    plugins/SampleEditor \
-    test/Test.pro \
-    Widgets
+unix:!macx: LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
+
+INCLUDEPATH += $$PWD/../../Widgets
+DEPENDPATH += $$PWD/../../Widgets
+
+RESOURCES += \
+    images.qrc

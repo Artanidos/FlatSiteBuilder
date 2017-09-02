@@ -32,7 +32,7 @@ class Column : public QObject
 public:
     Column() {}
 
-    QString getHtml(QDomElement col, QMap<QString, EditorInterface*> plugins);
+    QString getHtml(QDomElement col);
 };
 
 #endif // COLUMN_H

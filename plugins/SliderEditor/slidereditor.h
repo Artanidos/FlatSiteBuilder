@@ -39,7 +39,7 @@ public:
     QString displayName() {return "Slider";}
     QString tagName() {return "Slider";}
     QImage icon() {return QImage(":/slider.png");}
-    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    QString getHtml(QDomElement ele);
     void setContent(QDomElement ele);
 
 private slots:

@@ -19,23 +19,20 @@
 ****************************************************************************/
 
 #include "column.h"
-#include "text.h"
 #include "image.h"
 #include "interfaces.h"
+#include "mainwindow.h"
 #include <QTest>
 
-QString Column::getHtml(QDomElement col, QMap<QString, EditorInterface*> plugins)
+QString Column::getHtml(QDomElement col)
 {
     QString span = col.attribute("span", "1");
     QString html = "<div class=\"col-md-" + span + "\">\n";
     QDomElement ele = col.firstChildElement();
     while(!ele.isNull())
     {
-        EditorInterface *ei = qobject_cast<EditorInterface *>(plugins[ele.nodeName() + "Editor"]);
-        if(ei)
-        {
-            html += ei->getHtml(ele, plugins);
-        }
+        if(MainWindow::hasPlugin(ele.nodeName() + "Editor"))
+            html += MainWindow::getPlugin(ele.nodeName() + "Editor")->getHtml(ele);
         else
             qDebug() << "Undefined element " + ele.nodeName();
         ele = ele.nextSiblingElement();

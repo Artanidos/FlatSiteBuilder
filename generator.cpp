@@ -28,7 +28,7 @@
 #include <QStringList>
 #include <QProcess>
 #include <QDomDocument>
-#include "text.h"
+#include "mainwindow.h"
 
 Q_DECLARE_METATYPE(QFile*)
 
@@ -42,7 +42,7 @@ Generator::Generator()
  * Parses all *.html files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins, Content *contentToBuild)
+void Generator::generateSite(Site *site, Content *contentToBuild)
 {
     m_site = site;
 
@@ -152,23 +152,18 @@ void Generator::generateSite(Site *site, QMap<QString, EditorInterface*> plugins
                 QDomElement section = root.firstChildElement("Section");
                 while(!section.isNull())
                 {
-                    SectionPropertyEditor *sec = dynamic_cast<SectionPropertyEditor*>(plugins["SectionPropertyEditor"]);
-                    if(sec)
-                        cnt += sec->getHtml(section, plugins);
+                    cnt += MainWindow::getPlugin("SectionPropertyEditor")->getHtml(section);
                     section = section.nextSiblingElement("Section");
                 }
 
                 pluginvars.clear();
-                foreach(QString key, plugins.keys())
+                foreach(QString key, MainWindow::pluginNames())
                 {
-                    EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[key]);
-                    if(editor)
+                    EditorInterface *editor = MainWindow::getPlugin(key);
+                    if(root.elementsByTagName(editor->tagName()).count() > 0)
                     {
-                        if(root.elementsByTagName(editor->tagName()).count() > 0)
-                        {
-                            pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
-                            pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
-                        }
+                        pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
+                        pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
                     }
                 }
 

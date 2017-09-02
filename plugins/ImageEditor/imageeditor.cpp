@@ -138,7 +138,7 @@ ImageEditor::ImageEditor()
     m_animationCombo->addItem("Slide In Left", "slideInLeft");
     m_animationCombo->addItem("Slide In Right", "slideInRight");
     addHeader("Sliding Exits");
-    m_animationCombo->addItem("Slide In Up", "slideOutUp");
+    m_animationCombo->addItem("Slide Out Up", "slideOutUp");
     m_animationCombo->addItem("Slide Out Down", "slideOutDown");
     m_animationCombo->addItem("Slide Out Left", "slideOutLeft");
     m_animationCombo->addItem("Slide Out Right", "slideOutRight");
@@ -251,7 +251,7 @@ void ImageEditor::closeEditor()
     emit close();
 }
 
-QString ImageEditor::getHtml(QDomElement ele, QMap<QString, EditorInterface*>)
+QString ImageEditor::getHtml(QDomElement ele)
 {
     QString source = ele.attribute("src");
     QString animation = ele.attribute("animation");

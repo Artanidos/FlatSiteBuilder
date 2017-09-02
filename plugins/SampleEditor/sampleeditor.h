@@ -38,7 +38,7 @@ public:
     QString displayName() {return "Sample";}
     QString tagName() {return "Sample";}
     QImage icon() {return QImage(":/sample.png");}
-    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    QString getHtml(QDomElement ele);
     void setContent(QDomElement ele);
 
 private slots:

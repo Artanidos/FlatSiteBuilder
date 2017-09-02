@@ -26,7 +26,6 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
-#include <QTest>
 
 TextEditor::TextEditor()
 {
@@ -128,7 +127,7 @@ void TextEditor::setContent(QDomElement element)
     m_changed = false;
 }
 
-QString TextEditor::getHtml(QDomElement text, QMap<QString, EditorInterface*>)
+QString TextEditor::getHtml(QDomElement text)
 {
     QDomNode data = text.firstChild();
     QDomCDATASection cdata = data.toCDATASection();

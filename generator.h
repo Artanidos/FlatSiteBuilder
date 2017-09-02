@@ -34,7 +34,7 @@ class Generator : public QObject
 public:
     Generator();
 
-    void generateSite(Site *site, QMap<QString, EditorInterface*> plugins, Content *content = 0);
+    void generateSite(Site *site, Content *content = 0);
 
     // for unit tests only
     void setSitesPath(QString path) {m_sitesPath = path;}

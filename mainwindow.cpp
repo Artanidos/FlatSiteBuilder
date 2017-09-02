@@ -75,13 +75,24 @@ MainWindow::MainWindow()
     statusBar()->showMessage("Ready");
 }
 
+QMap<QString, EditorInterface*> MainWindow::editorPlugins;
+
 void MainWindow::loadPlugins()
 {
     QDir pluginsDir(QDir::homePath() + "/FlatSiteBuilder/plugins");
 
-    m_editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
-    m_editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
-    m_editorPlugins.insert("TextEditor", new TextEditor());
+    foreach (QObject *plugin, QPluginLoader::staticInstances())
+    {
+        EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
+        if(iEditor)
+        {
+            MainWindow::editorPlugins.insert(iEditor->className(), iEditor);
+            qDebug() << "static plugin" << iEditor->className();
+        }
+    }
+
+    MainWindow::editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
+    MainWindow::editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
@@ -92,7 +103,7 @@ void MainWindow::loadPlugins()
             EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
             if(iEditor)
             {
-                m_editorPlugins.insert(iEditor->className(), iEditor);
+                MainWindow::editorPlugins.insert(iEditor->className(), iEditor);
                 qDebug() << "Plugin loaded" << fileName;
             }
         }
@@ -220,9 +231,8 @@ bool MainWindow::install()
     m_defaultPath = siteDir;
     loadProject(m_defaultPath + "/Site.xml");
 
-    Generator *gen = new Generator;
-    gen->generateSite(m_site, m_editorPlugins);
-    delete gen;
+    Generator gen;
+    gen.generateSite(m_site);
 
     return true;
 }
@@ -610,7 +620,6 @@ void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
     m_editor = new ContentEditor(this, m_site, content);
-    m_editor->registerPlugins(m_editorPlugins);
     m_editor->setStatusBar(statusBar());
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
@@ -693,7 +702,7 @@ void MainWindow::publishSite()
 void MainWindow::buildSite()
 {
     Generator gen;
-    gen.generateSite(m_site, m_editorPlugins);
+    gen.generateSite(m_site);
     statusBar()->showMessage(m_site->title() + " has been generated");
 }
 
@@ -768,4 +777,19 @@ void MainWindow::contentChanged(Content *content)
     m_list->item(m_row, 2)->setText(content->layout());
     m_list->item(m_row, 3)->setText(content->author());
     m_list->item(m_row, 4)->setText(content->date().toString("dd.MM.yyyy"));
+}
+
+EditorInterface *MainWindow::getPlugin(QString name)
+{
+    return editorPlugins[name];
+}
+
+bool MainWindow::hasPlugin(QString name)
+{
+    return editorPlugins.contains(name);
+}
+
+QList<QString> MainWindow::pluginNames()
+{
+    return editorPlugins.keys();
 }

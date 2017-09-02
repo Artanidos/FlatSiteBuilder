@@ -26,11 +26,10 @@
 #include <QDir>
 #include <QTest>
 
-ChangeContentCommand::ChangeContentCommand(MainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent)
+ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_contentEditor = ce;
-    m_win = win;
     fileVersionNumber += 2;
     setText(text);
 
@@ -54,7 +53,7 @@ void ChangeContentCommand::undo()
     m_contentEditor->load();
 
     Generator gen;
-    gen.generateSite(m_contentEditor->site(), m_win->editorPlugins(), m_contentEditor->getContent());
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
 
 void ChangeContentCommand::redo()
@@ -76,7 +75,7 @@ void ChangeContentCommand::redo()
     }
 
     Generator gen;
-    gen.generateSite(m_contentEditor->site(), m_win->editorPlugins(), m_contentEditor->getContent());
+    gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
 
 ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)

@@ -30,7 +30,7 @@ static int fileVersionNumber = 0;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
-    ChangeContentCommand(MainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent = 0);
+    ChangeContentCommand(ContentEditor *ce, QString text, QUndoCommand *parent = 0);
     ~ChangeContentCommand();
     void undo() override;
     void redo() override;
@@ -39,7 +39,6 @@ private:
     ContentEditor *m_contentEditor;
     QString m_tempFilename;
     QString m_redoFilename;
-    MainWindow *m_win;
 };
 
 class ChangeProjectCommand : public QUndoCommand

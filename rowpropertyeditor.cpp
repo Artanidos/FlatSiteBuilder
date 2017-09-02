@@ -20,6 +20,7 @@
 
 #include "rowpropertyeditor.h"
 #include "column.h"
+#include "mainwindow.h"
 #include "flatbutton.h"
 #include <QGridLayout>
 #include <QPushButton>
@@ -80,7 +81,7 @@ void RowPropertyEditor::setContent(QDomElement element)
     m_changed = false;
 }
 
-QString RowPropertyEditor::getHtml(QDomElement row, QMap<QString, EditorInterface*> plugins)
+QString RowPropertyEditor::getHtml(QDomElement row)
 {
     QString cls = row.attribute("cssclass");
     QString html = "<div class=\"row" + (cls.isEmpty() ? "" : " " + cls) + "\">\n";
@@ -88,7 +89,7 @@ QString RowPropertyEditor::getHtml(QDomElement row, QMap<QString, EditorInterfac
     while(!col.isNull())
     {
         Column *c = new Column();
-        html += c->getHtml(col, plugins);
+        html += c->getHtml(col);
         col = col.nextSiblingElement("Column");
     }
     return html + "</div>\n";

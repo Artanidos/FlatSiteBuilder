@@ -83,7 +83,7 @@ void SampleEditor::closeEditor()
     emit close();
 }
 
-QString SampleEditor::getHtml(QDomElement ele, QMap<QString, EditorInterface*>)
+QString SampleEditor::getHtml(QDomElement ele)
 {
     QString sampleproperty = ele.attribute("sampleproperty", "");
     return "<div sampleproperty=\"" + sampleproperty + "\">\n";

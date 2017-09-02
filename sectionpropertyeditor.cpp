@@ -20,6 +20,7 @@
 
 #include "sectionpropertyeditor.h"
 #include "rowpropertyeditor.h"
+#include "mainwindow.h"
 #include "flatbutton.h"
 #include <QPushButton>
 #include <QLabel>
@@ -102,7 +103,7 @@ void SectionPropertyEditor::setContent(QDomElement element)
     m_changed = false;
 }
 
-QString SectionPropertyEditor::getHtml(QDomElement sec, QMap<QString, EditorInterface*> plugins)
+QString SectionPropertyEditor::getHtml(QDomElement sec)
 {
     QString id = sec.attribute("id");
     QString cls = sec.attribute("cssclass");
@@ -127,9 +128,7 @@ QString SectionPropertyEditor::getHtml(QDomElement sec, QMap<QString, EditorInte
     QDomElement row = sec.firstChildElement("Row");
     while(!row.isNull())
     {
-        RowPropertyEditor *r = dynamic_cast<RowPropertyEditor*>(plugins["RowPropertyEditor"]);
-        if(r)
-            html += r->getHtml(row, plugins);
+        html += MainWindow::getPlugin("RowPropertyEditor")->getHtml(row);
         row = row.nextSiblingElement("Row");
     }
     return html + "</section>\n";

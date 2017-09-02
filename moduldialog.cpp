@@ -21,6 +21,7 @@
 #include "moduldialog.h"
 #include "flatbutton.h"
 #include "interfaces.h"
+#include "mainwindow.h"
 #include <QGridLayout>
 #include <QPushButton>
 #include <QMap>
@@ -46,6 +47,25 @@ ModulDialog::ModulDialog()
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
 
+    int row = 0;
+    int col = 1;
+
+    foreach(QString name, MainWindow::pluginNames())
+    {
+        if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
+        {
+            EditorInterface *plugin = MainWindow::getPlugin(name);
+            FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
+            btn->setReturnCode(name);
+            m_grid->addWidget(btn, row, col++);
+            connect(btn, SIGNAL(clicked(QString)), this, SLOT(close2(QString)));
+            if(col == 4)
+            {
+                row++;
+                col = 0;
+            }
+        }
+    }
     connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
     connect(textButton, SIGNAL(clicked()), this, SLOT(close1()));
 }
@@ -73,29 +93,6 @@ FlatButton* ModulDialog::createButton(QImage icon, QString text)
     btn->setNormalPixmap(pmNormal);
     btn->setHoverPixmap(pmHover);
     return btn;
-}
-
-void ModulDialog::registerPlugins(QMap<QString, EditorInterface*> plugins)
-{
-    int row = 0;
-    int col = 1;
-
-    foreach(QString name, plugins.keys())
-    {
-        if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
-        {
-            EditorInterface *plugin = plugins[name];
-            FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
-            btn->setReturnCode(name);
-            m_grid->addWidget(btn, row, col++);
-            connect(btn, SIGNAL(clicked(QString)), this, SLOT(close2(QString)));
-            if(col == 4)
-            {
-                row++;
-                col = 0;
-            }
-        }
-    }
 }
 
 void ModulDialog::close1()

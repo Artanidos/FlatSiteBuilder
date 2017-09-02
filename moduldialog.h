@@ -34,7 +34,6 @@ public:
     ModulDialog();
     QString result() {return m_result;}
     void setResult(QString res) {m_result = res;}
-    void registerPlugins(QMap<QString, EditorInterface*> plugins);
 
 private slots:
     void close1();

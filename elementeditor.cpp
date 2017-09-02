@@ -22,8 +22,8 @@
 #include "widgetmimedata.h"
 #include "flatbutton.h"
 #include "moduldialog.h"
+#include "mainwindow.h"
 #include "roweditor.h"
-#include "textdialog.h"
 #include "sectioneditor.h"
 #include "pageeditor.h"
 #include "contenteditor.h"
@@ -197,9 +197,7 @@ void ElementEditor::setMode(Mode mode)
 
 void ElementEditor::enable()
 {
-    QMap<QString, EditorInterface*> plugins = getContentEditor()->plugins();
     ModulDialog *dlg = new ModulDialog();
-    dlg->registerPlugins(plugins);
     dlg->exec();
 
     if(dlg->result().isEmpty())
@@ -214,7 +212,8 @@ void ElementEditor::enable()
     }
     else
     {
-        EditorInterface *editor = qobject_cast<EditorInterface*>(plugins[dlg->result()]);
+        EditorInterface *editor = MainWindow::getPlugin(dlg->result());
+        //EditorInterface *editor = qobject_cast<EditorInterface*>(MainWindow::editorPlugins[dlg->result()]);
         m_text->setText(editor->displayName());
         m_content = m_doc.createElement(editor->tagName());
         m_type = editor->className();

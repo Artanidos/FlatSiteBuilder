@@ -38,7 +38,7 @@ public:
     QString displayName() {return "";}
     QString tagName() {return "";}
     QImage icon() {return QImage("");}
-    QString getHtml(QDomElement ele, QMap<QString, EditorInterface*> plugins);
+    QString getHtml(QDomElement ele);
 
 private slots:
     void editorClose();

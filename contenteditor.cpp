@@ -19,10 +19,9 @@
 ****************************************************************************/
 
 #include "contenteditor.h"
-#include "htmlhighlighter.h"
 #include "hyperlink.h"
-#include "texteditor.h"
 #include "animationlabel.h"
+#include "mainwindow.h"
 #include "pageeditor.h"
 #include "commands.h"
 #include "sectioneditor.h"
@@ -406,7 +405,7 @@ void ContentEditor::editChanged(QString text)
     if(m_isNew)
         updateNewContent();
 
-    QUndoCommand *changeCommand = new ChangeContentCommand(m_win, this, text);
+    QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
     m_undoStack->push(changeCommand);
 }
 
@@ -428,7 +427,7 @@ void ContentEditor::sectionEdit(SectionEditor *se)
 {
     m_sectionEditor = se;
 
-    m_editor = dynamic_cast<EditorInterface*>(m_plugins["SectionPropertyEditor"]);
+    m_editor = MainWindow::getPlugin("SectionPropertyEditor");
     m_editor->setContent(se->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(sectionEditorClose()));
     animate(se);
@@ -438,7 +437,7 @@ void ContentEditor::rowEdit(RowEditor *re)
 {
     m_rowEditor = re;
 
-    m_editor = dynamic_cast<EditorInterface*>(m_plugins["RowPropertyEditor"]);
+    m_editor = MainWindow::getPlugin("RowPropertyEditor");
     m_editor->setContent(re->content());
     connect(m_editor, SIGNAL(close()), this, SLOT(rowEditorClose()));
 
@@ -448,11 +447,11 @@ void ContentEditor::rowEdit(RowEditor *re)
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-    if(m_plugins.contains(ee->type()))
-        m_editor = dynamic_cast<EditorInterface*>(m_plugins[ee->type()]);
+    if(MainWindow::hasPlugin(ee->type()))
+        m_editor = MainWindow::getPlugin(ee->type());
     else
     {
-        m_editor = dynamic_cast<EditorInterface*>(m_plugins["TextEditor"]);
+        m_editor = MainWindow::getPlugin("TextEditor");
         qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
     m_editor->setSite(m_site);
@@ -572,6 +571,7 @@ void ContentEditor::animationFineshedZoomOut()
         m_excerpt->setEnabled(true);
     delete m_animationgroup;
     m_editor->hide();
-    // do not delete m_editor here, because its a preloaded plugin
+    // parent has to be set to NULL, otherwise the plugin will be dropped by parent
+    m_editor->setParent(NULL);
     m_editor = NULL;
 }

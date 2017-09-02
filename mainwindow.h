@@ -26,7 +26,6 @@
 #include <QTreeWidget>
 #include <QGraphicsView>
 #include <QUndoStack>
-#include "htmlhighlighter.h"
 #include "expander.h"
 #include "site.h"
 #include "interfaces.h"
@@ -46,7 +45,9 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void reloadProject();
     void saveProject();
-    QMap<QString, EditorInterface*> editorPlugins() {return m_editorPlugins;}
+    static EditorInterface *getPlugin(QString name);
+    static bool hasPlugin(QString name);
+    static QList<QString> pluginNames();
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -82,7 +83,7 @@ private:
     ContentEditor *m_editor;
     QTableWidget *m_list;
     QWidget *m_cellWidget;
-    QMap<QString, EditorInterface*> m_editorPlugins;
+    static QMap<QString, EditorInterface*> editorPlugins;
     int m_row;
 
 private slots:

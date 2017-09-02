@@ -33,7 +33,6 @@
 #include "content.h"
 #include "interfaces.h"
 #include "site.h"
-#include "texteditor.h"
 #include "sectioneditor.h"
 #include "rowpropertyeditor.h"
 #include "sectionpropertyeditor.h"
@@ -57,15 +56,13 @@ public:
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
     void load();
-    void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}
-    void registerPlugins(QMap<QString, EditorInterface*> plugins) {m_plugins = plugins;}\
+    void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}\
     QString className() {return "ContentEditor";}
     QString displayName() {return "";}
     QString tagName() {return "";}
     QImage icon() {return QImage();}
     void setContent(QDomElement) {/* unused */}
-    QMap<QString, EditorInterface*> plugins() {return m_plugins;}
-    QString getHtml(QDomElement, QMap<QString, EditorInterface*>) {return "";}
+    QString getHtml(QDomElement) {return "";}
 
 public slots:
     void editChanged(QString text);
@@ -100,7 +97,6 @@ signals:
     void close();
 
 private:
-    QMap<QString, EditorInterface*> m_plugins;
     Site *m_site;
     Content *m_content;
     QLabel *m_titleLabel;
