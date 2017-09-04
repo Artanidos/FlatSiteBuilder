@@ -91,9 +91,6 @@ void MainWindow::loadPlugins()
         }
     }
 
-    //MainWindow::editorPlugins.insert("RowPropertyEditor", new RowPropertyEditor());
-    //MainWindow::editorPlugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
-
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
@@ -479,6 +476,17 @@ void MainWindow::reloadProject()
             MenuItem *item = new MenuItem();
             item->setTitle(menuitem.attribute("title"));
             item->setUrl(menuitem.attribute("url"));
+            item->setIcon(menuitem.attribute("icon"));
+            QDomElement submenuitem = menuitem.firstChildElement("Item");
+            while(!submenuitem.isNull())
+            {
+                MenuItem *subitem = new MenuItem();
+                subitem->setTitle(submenuitem.attribute("title"));
+                subitem->setUrl(submenuitem.attribute("url"));
+                subitem->setIcon(submenuitem.attribute("icon"));
+                item->addMenuitem(subitem);
+                submenuitem = submenuitem.nextSiblingElement("Item");
+            }
             m->addMenuitem(item);
             menuitem = menuitem.nextSiblingElement("Item");
         }
@@ -537,6 +545,15 @@ void MainWindow::saveProject()
             QDomElement i = doc.createElement("Item");
             i.setAttribute("title", item->title());
             i.setAttribute("url", item->url());
+            i.setAttribute("icon", item->icon());
+            foreach(MenuItem *subitem, item->items())
+            {
+                QDomElement si = doc.createElement("Item");
+                si.setAttribute("title", subitem->title());
+                si.setAttribute("url", subitem->url());
+                si.setAttribute("icon", subitem->icon());
+                i.appendChild(si);
+            }
             m.appendChild(i);
         }
         root.appendChild(m);

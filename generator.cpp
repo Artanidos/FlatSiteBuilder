@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QProcess>
+#include <QStack>
 #include <QDomDocument>
 #include "mainwindow.h"
 
@@ -88,6 +89,18 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
             QVariantMap menuitem;
             menuitem["title"] = item->title();
             menuitem["url"] = item->url();
+            menuitem["icon"] = item->icon();
+            QVariantList subitems;
+            foreach(MenuItem *subitem, item->items())
+            {
+                QVariantMap submenuitem;
+                submenuitem["title"] = subitem->title();
+                submenuitem["url"] = subitem->url();
+                submenuitem["icon"] = subitem->icon();
+                subitems.append(submenuitem);
+            }
+            menuitem["items"] = subitems;
+            menuitem["hasItems"] = subitems.count() > 0 ? "true" : "false";
             items.append(menuitem);
         }
         menus[menu->name()] = items;
@@ -175,13 +188,14 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                 QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
 
                 pagevars = cm;
-                pagevars["content"] = translateContent(cnt);
+                QVariantMap vars;
+                pagevars["content"] = translateContent(cnt, vars);
 
                 QFile out(name);
                 if(out.open(QFile::WriteOnly))
                 {
                     QString rc = translateTemplate(layout, Layout);
-                    out.write(translateContent(rc).toUtf8());
+                    out.write(translateContent(rc, vars).toUtf8());
                     out.close();
                     qInfo() << "Created file " + name;
                 }
@@ -234,21 +248,34 @@ QString Generator::translateTemplate(QString layout, Mode mode)
     return rc;
 }
 
-QString Generator::translateContent(QString content)
+class IfVars
+{
+public:
+    bool m_isTrue;
+    bool m_inIf;
+    bool m_inElse;
+    QString m_ifContent;
+    QString m_elseContent;
+};
+
+QString Generator::translateContent(QString content, QVariantMap vars)
 {
     int state = NormalState;
     int len = content.length();
     int start = 0;
     int pos = 0;
-    bool inIf = false;
-    bool inElse = false;
-    bool isTrue = false;
     QString rc = "";
-    QString ifContent;
-    QString elseContent;
     QString loopContent;
     QString loopVar;
     QString loopArray;
+    int loopDeep = 0;
+    QStack<IfVars*> stack;
+    IfVars *ifvars = new IfVars;
+    ifvars->m_inIf = false;
+    ifvars->m_inElse = false;
+    ifvars->m_isTrue = false;
+    QVariantMap loopvars;
+    loopvars.unite(vars);
 
     while (pos < len)
     {
@@ -266,32 +293,34 @@ QString Generator::translateContent(QString content)
                             state = InVar;
                             break;
                         }
-                        // {½ if bla == blub %} {{ if }} {% else %} {{ else }} {% endif %}
+                        // {% if bla == blub %} {{ if }} {% else %} {{ else }} {% endif %}
                         else if(content.mid(pos, 10) == "{% else %}")
                         {
-                            if(isTrue && inIf)
-                                rc += ifContent;
-                            inIf = false;
-                            inElse = true;
+                            if(ifvars->m_isTrue && ifvars->m_inIf)
+                                rc += ifvars->m_ifContent;
+                            ifvars->m_inIf = false;
+                            ifvars->m_inElse = true;
                             pos += 10;
                             break;
                         }
                         else if(content.mid(pos, 11) == "{% endif %}")
                         {
-                            if(inIf)
+                            if(ifvars->m_inIf)
                             {
-                                if(isTrue)
-                                    rc += ifContent;
+                                if(ifvars->m_isTrue)
+                                    rc += ifvars->m_ifContent;
                             }
-                            else if(inElse)
+                            else if(ifvars->m_inElse)
                             {
-                                if(!isTrue)
-                                    rc += elseContent;
+                                if(!ifvars->m_isTrue)
+                                    rc += ifvars->m_elseContent;
                             }
-                            inIf = false;
-                            inElse = false;
-                            isTrue = false;
+                            ifvars->m_inIf = false;
+                            ifvars->m_inElse = false;
+                            ifvars->m_isTrue = false;
                             pos += 11;
+                            if(!stack.isEmpty())
+                                ifvars = stack.pop();
                             break;
                         }
                         else if(content.mid(pos, 2) == "{%")
@@ -299,10 +328,10 @@ QString Generator::translateContent(QString content)
                             state = InExpression;
                             break;
                         }
-                        if(inIf)
-                            ifContent += ch;
-                        else if(inElse)
-                            elseContent += ch;
+                        if(ifvars->m_inIf)
+                            ifvars->m_ifContent += ch;
+                        else if(ifvars->m_inElse)
+                            ifvars->m_elseContent += ch;
                         else
                             rc += ch;
                         pos++;
@@ -310,10 +339,10 @@ QString Generator::translateContent(QString content)
                     }
                     else
                     {
-                        if(inIf)
-                            ifContent += ch;
-                        else if(inElse)
-                            elseContent += ch;
+                        if(ifvars->m_inIf)
+                            ifvars->m_ifContent += ch;
+                        else if(ifvars->m_inElse)
+                            ifvars->m_elseContent += ch;
                         else
                             rc += ch;
                         pos++;
@@ -336,11 +365,11 @@ QString Generator::translateContent(QString content)
                         pos++;
                 }
                 QString varname = content.mid(start + 2, pos - start - 4).trimmed();
-                QString var = translateVar(varname).toString();
-                if(inIf)
-                    ifContent += var;
-                else if(inElse)
-                    elseContent += var;
+                QString var = translateVar(varname, loopvars).toString();
+                if(ifvars->m_inIf)
+                    ifvars->m_ifContent += var;
+                else if(ifvars->m_inElse)
+                    ifvars->m_elseContent += var;
                 else
                     rc += var;
                 break;
@@ -353,8 +382,6 @@ QString Generator::translateContent(QString content)
                     if(content.mid(pos, 2) == "%}")
                     {
                         pos += 2;
-                        if(content.at(pos) == "\n")
-                            pos++;
                         state = NormalState;
                         break;
                     }
@@ -374,16 +401,79 @@ QString Generator::translateContent(QString content)
                 }
                 else if(exp.startsWith("if "))
                 {
+                    // found nested if statements so we push the ifvars on the stack
+                    if(ifvars->m_inIf)
+                    {
+                        if(ifvars->m_isTrue)
+                        {
+                            stack.push(ifvars);
+                            ifvars = new IfVars;
+                        }
+                        else
+                        {
+                            // skip to endif
+                            while (pos < len)
+                            {
+                                if(content.mid(pos, 11) == "{% endif %}")
+                                {
+                                    pos += 11;
+                                }
+                                else
+                                    pos++;
+                            }
+                            break;
+                        }
+                    }
+                    else if(ifvars->m_inElse)
+                    {
+                        if(ifvars->m_isTrue)
+                        {
+                            // skip to endif
+                            while (pos < len)
+                            {
+                                if(content.mid(pos, 11) == "{% endif %}")
+                                {
+                                    pos += 11;
+                                }
+                                else
+                                    pos++;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            stack.push(ifvars);
+                            ifvars = new IfVars;
+                        }
+                    }
                     int equal = exp.indexOf("==");
-                    QString leftVar = exp.mid(2, equal - 2).trimmed();
-                    QString rightVar = exp.mid(equal + 2).trimmed();
-                    QString left = translateVar(leftVar).toString();
-                    QString right = translateVar(rightVar).toString();
-                    isTrue = left == right;
-                    inIf = true;
-                    inElse = false;
-                    ifContent = "";
-                    elseContent = "";
+                    if(equal > 0)
+                    {
+                        QString leftVar = exp.mid(2, equal - 2).trimmed();
+                        QString rightVar = exp.mid(equal + 2).trimmed();
+                        QString left = translateVar(leftVar, loopvars).toString();
+                        QString right = translateVar(rightVar, loopvars).toString();
+                        ifvars->m_isTrue = left == right;
+                    }
+                    else
+                    {
+                        int notequal = exp.indexOf("!=");
+                        if(notequal > 0)
+                        {
+                            QString leftVar = exp.mid(2, notequal - 2).trimmed();
+                            QString rightVar = exp.mid(notequal + 2).trimmed();
+                            QString left = translateVar(leftVar, loopvars).toString();
+                            QString right = translateVar(rightVar, loopvars).toString();
+                            ifvars->m_isTrue = left != right;
+                        }
+                    }
+                    ifvars->m_inIf = true;
+                    ifvars->m_inElse = false;
+                    ifvars->m_ifContent = "";
+                    ifvars->m_elseContent = "";
+
+                    if(content.at(pos) == "\n")
+                        pos++;
                 }
                 break;
             }
@@ -391,20 +481,39 @@ QString Generator::translateContent(QString content)
             {
                 while (pos < len)
                 {
-                    if(content.mid(pos, 12) == "{% endfor %}")
+                    if(content.mid(pos, 7) == "{% for ")
                     {
-                        loopvars.clear();
-                        QVariantList list = translateVar(loopArray).toList();
-
-                        for(int i = 0; i < list.count(); i++)
+                        // found nested for
+                        loopDeep++;
+                        loopContent += content.mid(pos, 7);
+                        pos += 7;
+                    }
+                    else if(content.mid(pos, 12) == "{% endfor %}")
+                    {
+                        if(loopDeep == 0)
                         {
-                            loopvars[loopVar] = list.at(i);
-                            rc += translateContent(loopContent);
+                            QVariantList list = translateVar(loopArray, loopvars).toList();
+                            for(int i = 0; i < list.count(); i++)
+                            {
+                                loopvars[loopVar] = list.at(i);
+                                QString cnt = translateContent(loopContent, loopvars);
+                                if(ifvars->m_inIf)
+                                    ifvars->m_ifContent += cnt;
+                                else if(ifvars->m_inElse)
+                                    ifvars->m_elseContent += cnt;
+                                else
+                                    rc += cnt;
+                            }
+                            state = NormalState;
+                        }
+                        else
+                        {
+                            loopDeep--;
+                            loopContent += content.mid(pos, 12);
                         }
                         pos += 12;
                         if(content.at(pos) == "\n")
                             pos++;
-                        state = NormalState;
                         break;
                     }
                     else
@@ -420,12 +529,13 @@ QString Generator::translateContent(QString content)
     return rc;
 }
 
-QVariant Generator::translateVar(QString exp)
+QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
 {
     QString indexValue = "";
 
-    if(exp == "\"\"") // blank constant: {% if page.keywords == "" %}
-        return "";
+    // constant string
+    if(exp.startsWith("\"") && exp.endsWith("\""))
+        return exp.mid(1, exp.length() - 2);
 
     int posOpen = exp.indexOf("[");
     if(posOpen > 0)
@@ -433,7 +543,7 @@ QVariant Generator::translateVar(QString exp)
         int posClose = exp.indexOf("]");
         QString index = exp.mid(posOpen + 1, posClose - posOpen - 1).trimmed();
         QString var = exp.mid(0, posOpen).trimmed();
-        indexValue = translateVar(index).toString();
+        indexValue = translateVar(index, loopvars).toString();
         exp = var;
     }
 

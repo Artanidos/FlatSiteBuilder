@@ -1,38 +1,14 @@
 
 #include <QtTest/QtTest>
-/*
+#include <QObject>
 #include "../generator.h"
-#include "../interfaces.h"
 
-class SectionPropertyEditor : public EditorInterface
-{
-public:
-    SectionPropertyEditor() {}
-    QString getHtml(QDomElement ele, QMap<QString, QObject*>) {return "";}
-    QString className() {return "SectionPropertyEditor";}
-    QString displayName() {return "";}
-    QString tagName() {return "";}
-    QImage icon() {return QImage();}
-    void setContent(QDomElement) {}
-};
-
-class RowPropertyEditor : public EditorInterface
-{
-public:
-    RowPropertyEditor() {}
-    QString getHtml(QDomElement ele, QMap<QString, QObject*>) {return "";}
-    QString className() {return "RowPropertyEditor";}
-    QString displayName() {return "";}
-    QString tagName() {return "";}
-    QImage icon() {return QImage();}
-    void setContent(QDomElement) {}
-};
-*/
 class TestGenerator : public QObject
 {
     Q_OBJECT
 private slots:
-    void generateSite();
+    //void generateSite();
+    //void translateContent();
     void initTestCase();
     void cleanupTestCase();
 };
@@ -49,11 +25,18 @@ void TestGenerator::cleanupTestCase()
     dir.removeRecursively();
 }
 
+/*
+void TestGenerator::translateContent()
+{
+    QVariantMap loopvars;
+    Generator g;
+    QString rc = g.translateContent("{{ site.title }}", loopvars);
+    QCOMPARE(rc, "TestTitle");
+}
+*/
+/*
 void TestGenerator::generateSite()
 {
-
-}
-/*
     QMap<QString, QObject*> plugins;
     plugins.insert("SectionPropertyEditor", new SectionPropertyEditor());
     plugins.insert("RowPropertyEditor", new RowPropertyEditor());
@@ -126,5 +109,6 @@ void TestGenerator::generateSite()
     }
 }
 */
+
 QTEST_MAIN(TestGenerator)
 #include "testgenerator.moc"

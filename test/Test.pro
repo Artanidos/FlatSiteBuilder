@@ -16,11 +16,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT += widgets testlib xml core gui
+QT += widgets testlib xml network
 SOURCES = testgenerator.cpp
-
+DEFINES += TEST
 DISTFILES += \
     pages/test.xml
+
+HEADERS += \
+    ../generator.h
 
 unix:!macx: LIBS += -L$$OUT_PWD/../Widgets/ -lWidgets
 
