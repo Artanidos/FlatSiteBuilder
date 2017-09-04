@@ -55,7 +55,7 @@ ContentList::ContentList(Site *site, ContentType type)
     m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch );
     m_list->setToolTip("Double click to edit item");
     QStringList labels;
-    labels << "" << "Name"  << "Layout" << "Author" << "Date";
+    labels << "" << "Name" << "Source" << "Layout" << "Author" << "Date";
     m_list->setHorizontalHeaderLabels(labels);
 
     if(m_site)
@@ -94,17 +94,21 @@ void ContentList::addListItem(Content *content)
     titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
     m_list->setItem(rows, 1, titleItem);
 
+    QTableWidgetItem *sourceItem = new QTableWidgetItem(content->source());
+    sourceItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
+    m_list->setItem(rows, 2, sourceItem);
+
     QTableWidgetItem *layoutItem = new QTableWidgetItem(content->layout());
     layoutItem->setFlags(layoutItem->flags() ^ Qt::ItemIsEditable);
-    m_list->setItem(rows, 2, layoutItem);
+    m_list->setItem(rows, 3, layoutItem);
 
     QTableWidgetItem *authorItem = new QTableWidgetItem(content->author());
     authorItem->setFlags(authorItem->flags() ^ Qt::ItemIsEditable);
-    m_list->setItem(rows, 3, authorItem);
+    m_list->setItem(rows, 4, authorItem);
 
     QTableWidgetItem *dateItem = new QTableWidgetItem(content->date().toString("dd.MM.yyyy"));
     dateItem->setFlags(dateItem->flags() ^ Qt::ItemIsEditable);
-    m_list->setItem(rows, 4, dateItem);
+    m_list->setItem(rows, 5, dateItem);
 }
 
 void ContentList::checkStateChanged(bool)
