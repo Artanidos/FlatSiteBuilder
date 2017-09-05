@@ -6,10 +6,12 @@
 #include <QDomDocument>
 #include <QMap>
 #include "site.h"
+#include "mainwindow.h"
 
 QT_BEGIN_NAMESPACE
 class QString;
 class Site;
+class MainWindow;
 QT_END_NAMESPACE
 
 class AbstractEditor : public QWidget

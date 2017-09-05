@@ -34,7 +34,6 @@ class QNetworkReply;
 class QTableWidgetItem;
 class ContentEditor;
 class ContentList;
-class AnimationLabel;
 class QTableWidget;
 class MainWindow : public QMainWindow
 {

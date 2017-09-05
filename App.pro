@@ -32,7 +32,6 @@ SOURCES += main.cpp\
     hyperlink.cpp \
     site.cpp \
     column.cpp \
-    image.cpp \
     dashboard.cpp \
     content.cpp \
     contenteditor.cpp \
@@ -47,7 +46,6 @@ SOURCES += main.cpp\
     dropzone.cpp \
     columnsdialog.cpp \
     moduldialog.cpp \
-    animationlabel.cpp \
     menu.cpp \
     menuitem.cpp \
     rowpropertyeditor.cpp \
@@ -62,7 +60,6 @@ HEADERS  += mainwindow.h \
     hyperlink.h \
     site.h \
     column.h \
-    image.h \
     dashboard.h \
     content.h \
     contenteditor.h \
@@ -77,7 +74,6 @@ HEADERS  += mainwindow.h \
     dropzone.h \
     columnsdialog.h \
     moduldialog.h \
-    animationlabel.h \
     menu.h \
     menuitem.h \
     interfaces.h \

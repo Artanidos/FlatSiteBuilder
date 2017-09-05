@@ -20,7 +20,6 @@
 
 #include "contenteditor.h"
 #include "hyperlink.h"
-#include "animationlabel.h"
 #include "globals.h"
 #include "mainwindow.h"
 #include "pageeditor.h"
@@ -43,10 +42,9 @@
 #include <QAction>
 #include <QTest>
 
-ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
+ContentEditor::ContentEditor(Site *site, Content *content)
 {
     m_site = site;
-    m_win = win;
     m_content = content;
     m_editor = NULL;
     m_undoStack = new QUndoStack;
@@ -309,12 +307,12 @@ void ContentEditor::load()
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
     {
-        m_statusbar->showMessage("ContentEditor::load(): Unable to open " + m_filename);
+        m_win->statusBar()->showMessage("ContentEditor::load(): Unable to open " + m_filename);
         return;
     }
     if (!doc.setContent(&file))
     {
-        m_statusbar->showMessage("ContentEditor::load(): Unable to read the post content from XML");
+        m_win->statusBar()->showMessage("ContentEditor::load(): Unable to read the post content from XML");
         file.close();
         return;
     }
@@ -384,7 +382,7 @@ void ContentEditor::save()
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
-        m_statusbar->showMessage("ContentEditor::save(): Unable to open file " + m_filename);
+        m_win->statusBar()->showMessage("ContentEditor::save(): Unable to open file " + m_filename);
         return;
     }
     QDomDocument doc;

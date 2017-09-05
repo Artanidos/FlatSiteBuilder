@@ -45,8 +45,10 @@ class ContentEditor : public AbstractEditor
     Q_OBJECT
 
 public:
-    ContentEditor(MainWindow *win, Site *site, Content *content = NULL);
+    ContentEditor(Site *site, Content *content);
     ~ContentEditor();
+
+    void setWindow(MainWindow *win) {m_win = win;}
 
     bool eventFilter(QObject *watched, QEvent *event);
     void elementEdit(ElementEditor *);
@@ -56,8 +58,7 @@ public:
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
     void load();
-    void setStatusBar(QStatusBar *bar) {m_statusbar = bar;}\
-    void setContent(QDomElement) {/* unused */}
+    void setContent(QDomElement) {/* not used */}
 
 public slots:
     void editChanged(QString text);
@@ -122,7 +123,6 @@ private:
     FlatButton *m_undo;
     FlatButton *m_redo;
     QWidget *m_sourcewidget;
-    QStatusBar *m_statusbar;
     MainWindow *m_win;
     bool m_isNew;
 

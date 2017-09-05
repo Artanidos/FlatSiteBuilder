@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "column.h"
-#include "image.h"
 #include "globals.h"
 #include "interfaces.h"
 #include "mainwindow.h"

@@ -47,7 +47,6 @@
 #include "hyperlink.h"
 #include "generator.h"
 #include "commands.h"
-#include "animationlabel.h"
 #include "sitewizard.h"
 #include "expander.h"
 #include "site.h"
@@ -635,8 +634,9 @@ void MainWindow::showPages()
 void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
-    m_editor = new ContentEditor(this, m_site, content);
-    m_editor->setStatusBar(statusBar());
+    m_editor = new ContentEditor(m_site, content);
+    m_editor->setWindow(this);
+
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));
