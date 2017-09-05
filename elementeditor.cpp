@@ -25,6 +25,7 @@
 #include "mainwindow.h"
 #include "roweditor.h"
 #include "sectioneditor.h"
+#include "globals.h"
 #include "pageeditor.h"
 #include "contenteditor.h"
 #include <QMimeData>
@@ -212,8 +213,7 @@ void ElementEditor::enable()
     }
     else
     {
-        EditorInterface *editor = MainWindow::getPlugin(dlg->result());
-        //EditorInterface *editor = qobject_cast<EditorInterface*>(MainWindow::editorPlugins[dlg->result()]);
+        EditorInterface *editor = Globals::getPlugin(dlg->result());
         m_text->setText(editor->displayName());
         m_content = m_doc.createElement(editor->tagName());
         m_type = editor->className();

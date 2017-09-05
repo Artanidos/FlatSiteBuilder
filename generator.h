@@ -36,13 +36,12 @@ public:
 
     void generateSite(Site *site, Content *content = 0);
 
-    QString translateContent(QString content, QVariantMap vars);
-    /*
 #ifdef TEST
     void setSitesPath(QString path) {m_sitesPath = path;}
     void setThemePath(QString path) {m_themePath = path;}
+    void addSiteVar(QString name, QVariant value) {sitevars[name] = value;}
+    void addPageVar(QString name, QVariant value) {pagevars[name] = value;}
 #endif
-    */
 private:
     enum State
     {
@@ -67,14 +66,13 @@ private:
 
     void copyPath(QString src, QString dst);
 
-    /*
 #ifdef TEST
 public:
 #endif
-    */
-    //QString translateContent(QString content, QVariantMap vars);
+    QString translateContent(QString content, QVariantMap vars);
     QVariant translateVar(QString exp, QVariantMap vars);
     QString translateTemplate(QString layout, Mode mode);
+    bool nextTokens(QString content, QStringList tokens);
 };
 
 #endif // GENERATOR_H

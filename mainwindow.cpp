@@ -56,6 +56,7 @@
 #include "dashboard.h"
 #include "contentlist.h"
 #include "contenteditor.h"
+#include "globals.h"
 
 MainWindow::MainWindow()
 {
@@ -75,8 +76,6 @@ MainWindow::MainWindow()
     statusBar()->showMessage("Ready");
 }
 
-QMap<QString, EditorInterface*> MainWindow::editorPlugins;
-
 void MainWindow::loadPlugins()
 {
     QDir pluginsDir(QDir::homePath() + "/FlatSiteBuilder/plugins");
@@ -86,7 +85,7 @@ void MainWindow::loadPlugins()
         EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
         if(iEditor)
         {
-            MainWindow::editorPlugins.insert(iEditor->className(), iEditor);
+            Globals::insert(iEditor->className(), iEditor);
             qDebug() << "static plugin" << iEditor->className();
         }
     }
@@ -100,7 +99,7 @@ void MainWindow::loadPlugins()
             EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
             if(iEditor)
             {
-                MainWindow::editorPlugins.insert(iEditor->className(), iEditor);
+                Globals::insert(iEditor->className(), iEditor);
                 qDebug() << "Plugin loaded" << fileName;
             }
         }
@@ -796,17 +795,3 @@ void MainWindow::contentChanged(Content *content)
     m_list->item(m_row, 4)->setText(content->date().toString("dd.MM.yyyy"));
 }
 
-EditorInterface *MainWindow::getPlugin(QString name)
-{
-    return editorPlugins[name];
-}
-
-bool MainWindow::hasPlugin(QString name)
-{
-    return editorPlugins.contains(name);
-}
-
-QList<QString> MainWindow::pluginNames()
-{
-    return editorPlugins.keys();
-}

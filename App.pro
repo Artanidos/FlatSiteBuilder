@@ -54,6 +54,7 @@ SOURCES += main.cpp\
     sectionpropertyeditor.cpp \
     sitewizard.cpp \
     commands.cpp \
+    globals.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -84,6 +85,7 @@ HEADERS  += mainwindow.h \
     sectionpropertyeditor.h \
     sitewizard.h \
     commands.h \
+    globals.h
 
 
 DISTFILES += \

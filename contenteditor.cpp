@@ -21,6 +21,7 @@
 #include "contenteditor.h"
 #include "hyperlink.h"
 #include "animationlabel.h"
+#include "globals.h"
 #include "mainwindow.h"
 #include "pageeditor.h"
 #include "commands.h"
@@ -447,11 +448,11 @@ void ContentEditor::rowEdit(RowEditor *re)
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-    if(MainWindow::hasPlugin(ee->type()))
-        m_editor = dynamic_cast<AbstractEditor*>(MainWindow::getPlugin(ee->type()));
+    if(Globals::hasPlugin(ee->type()))
+        m_editor = dynamic_cast<AbstractEditor*>(Globals::getPlugin(ee->type()));
     else
     {
-        m_editor = dynamic_cast<AbstractEditor*>(MainWindow::getPlugin("TextEditor"));
+        m_editor = dynamic_cast<AbstractEditor*>(Globals::getPlugin("TextEditor"));
         qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
     m_editor->setSite(m_site);

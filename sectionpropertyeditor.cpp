@@ -131,6 +131,6 @@ QString SectionPropertyEditor::getHtml(QDomElement sec)
         html += RowPropertyEditor::getHtml(row);
         row = row.nextSiblingElement("Row");
     }
-    return html + "</section>\n";
+    return html + "</section>";
 }
 

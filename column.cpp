@@ -20,6 +20,7 @@
 
 #include "column.h"
 #include "image.h"
+#include "globals.h"
 #include "interfaces.h"
 #include "mainwindow.h"
 #include <QTest>
@@ -31,8 +32,8 @@ QString Column::getHtml(QDomElement col)
     QDomElement ele = col.firstChildElement();
     while(!ele.isNull())
     {
-        if(MainWindow::hasPlugin(ele.nodeName() + "Editor"))
-            html += MainWindow::getPlugin(ele.nodeName() + "Editor")->getHtml(ele);
+        if(Globals::hasPlugin(ele.nodeName() + "Editor"))
+            html += Globals::getPlugin(ele.nodeName() + "Editor")->getHtml(ele);
         else
             qDebug() << "Undefined element " + ele.nodeName();
         ele = ele.nextSiblingElement();

@@ -22,6 +22,7 @@
 #include "flatbutton.h"
 #include "interfaces.h"
 #include "mainwindow.h"
+#include "globals.h"
 #include <QGridLayout>
 #include <QPushButton>
 #include <QMap>
@@ -50,11 +51,11 @@ ModulDialog::ModulDialog()
     int row = 0;
     int col = 1;
 
-    foreach(QString name, MainWindow::pluginNames())
+    foreach(QString name, Globals::pluginNames())
     {
         if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
         {
-            EditorInterface *plugin = MainWindow::getPlugin(name);
+            EditorInterface *plugin = Globals::getPlugin(name);
             FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
             btn->setReturnCode(name);
             m_grid->addWidget(btn, row, col++);

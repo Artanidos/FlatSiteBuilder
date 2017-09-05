@@ -20,6 +20,7 @@
 
 #include "generator.h"
 #include "content.h"
+#include "globals.h"
 #include "sectionpropertyeditor.h"
 #include <QFile>
 #include <QTextStream>
@@ -29,7 +30,6 @@
 #include <QProcess>
 #include <QStack>
 #include <QDomDocument>
-#include "mainwindow.h"
 
 Q_DECLARE_METATYPE(QFile*)
 
@@ -170,9 +170,9 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                 }
 
                 pluginvars.clear();
-                foreach(QString key, MainWindow::pluginNames())
+                foreach(QString key, Globals::pluginNames())
                 {
-                    EditorInterface *editor = MainWindow::getPlugin(key);
+                    EditorInterface *editor = Globals::getPlugin(key);
                     if(root.elementsByTagName(editor->tagName()).count() > 0)
                     {
                         pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
@@ -258,6 +258,32 @@ public:
     QString m_elseContent;
 };
 
+bool Generator::nextTokens(QString content, QStringList tokens)
+{
+    int pos = 0;
+    int len = content.length();
+    int token = 0;
+    while(pos < len)
+    {
+        QChar ch = content.at(pos);
+        if(ch == " ")
+            pos++;
+        else
+        {
+            if(content.mid(pos).startsWith(tokens.at(token)) && true)
+            {
+                pos += tokens.at(token).length();
+                token++;
+                if(token == tokens.count())
+                    return true;
+            }
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
 QString Generator::translateContent(QString content, QVariantMap vars)
 {
     int state = NormalState;
@@ -293,17 +319,16 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             state = InVar;
                             break;
                         }
-                        // {% if bla == blub %} {{ if }} {% else %} {{ else }} {% endif %}
-                        else if(content.mid(pos, 10) == "{% else %}")
+                        else if(nextTokens(content.mid(pos), QStringList() << "{%" << "else"  << "%}"))
                         {
                             if(ifvars->m_isTrue && ifvars->m_inIf)
                                 rc += ifvars->m_ifContent;
                             ifvars->m_inIf = false;
                             ifvars->m_inElse = true;
-                            pos += 10;
+                            pos = content.indexOf("%}", pos) + 2;
                             break;
                         }
-                        else if(content.mid(pos, 11) == "{% endif %}")
+                        else if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
                         {
                             if(ifvars->m_inIf)
                             {
@@ -318,7 +343,7 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             ifvars->m_inIf = false;
                             ifvars->m_inElse = false;
                             ifvars->m_isTrue = false;
-                            pos += 11;
+                            pos = content.indexOf("%}", pos) + 2;
                             if(!stack.isEmpty())
                                 ifvars = stack.pop();
                             break;
@@ -398,6 +423,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                     loopArray = exp.mid(blank3).trimmed();
                     state = InLoop;
                     loopContent = "";
+                    if(content.at(pos) == "\n")
+                        pos++;
                 }
                 else if(exp.startsWith("if "))
                 {
@@ -414,9 +441,10 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             // skip to endif
                             while (pos < len)
                             {
-                                if(content.mid(pos, 11) == "{% endif %}")
+                                if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
                                 {
-                                    pos += 11;
+                                    pos = content.indexOf("%}", pos) + 2;
+                                    break;
                                 }
                                 else
                                     pos++;
@@ -431,9 +459,10 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             // skip to endif
                             while (pos < len)
                             {
-                                if(content.mid(pos, 11) == "{% endif %}")
+                                if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
                                 {
-                                    pos += 11;
+                                    pos = content.indexOf("%}", pos) + 2;
+                                    break;
                                 }
                                 else
                                     pos++;
@@ -481,14 +510,14 @@ QString Generator::translateContent(QString content, QVariantMap vars)
             {
                 while (pos < len)
                 {
-                    if(content.mid(pos, 7) == "{% for ")
+                    if(nextTokens(content.mid(pos), QStringList() << "{%" << "for "))
                     {
                         // found nested for
                         loopDeep++;
-                        loopContent += content.mid(pos, 7);
-                        pos += 7;
+                        loopContent += "{% for ";
+                        pos = content.indexOf("for ", pos) + 4;
                     }
-                    else if(content.mid(pos, 12) == "{% endfor %}")
+                    else if(nextTokens(content.mid(pos), QStringList() << "{%" << "endfor" << "%}"))
                     {
                         if(loopDeep == 0)
                         {
@@ -509,10 +538,10 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                         else
                         {
                             loopDeep--;
-                            loopContent += content.mid(pos, 12);
+                            loopContent += content.mid(pos, content.indexOf("%}", pos) - pos + 2);
                         }
-                        pos += 12;
-                        if(content.at(pos) == "\n")
+                        pos = content.indexOf("%}", pos) + 2;
+                        if(pos < len && content.at(pos) == "\n")
                             pos++;
                         break;
                     }
