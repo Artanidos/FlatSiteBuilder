@@ -33,7 +33,7 @@ ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUnd
     fileVersionNumber += 2;
     setText(text);
 
-    QString sitedir = m_contentEditor->site()->path().mid(m_contentEditor->site()->path().lastIndexOf("/") + 1);
+    QString sitedir = m_contentEditor->site()->sourcePath().mid(m_contentEditor->site()->sourcePath().lastIndexOf("/") + 1);
     QString subdir = m_contentEditor->getContent()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
     m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber);
     m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber + 1);
@@ -86,7 +86,7 @@ ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString 
     m_win = win;
     setText(text);
 
-    QString sitedir = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    QString sitedir = m_site->sourcePath().mid(m_site->sourcePath().lastIndexOf("/") + 1);
     m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber);
     m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/Site.xml." + QString::number(fileVersionNumber + 1);
 }
@@ -98,10 +98,10 @@ ChangeProjectCommand::~ChangeProjectCommand()
 
 void ChangeProjectCommand::undo()
 {
-    QFile dest(m_site->path() + "/Site.xml");
+    QFile dest(m_site->sourcePath() + "/Site.xml");
     if(dest.exists())
         dest.remove();
-    QFile::copy(m_tempFilename, m_site->path() + "/Site.xml");
+    QFile::copy(m_tempFilename, m_site->sourcePath() + "/Site.xml");
     m_win->reloadProject();
 }
 
@@ -110,16 +110,16 @@ void ChangeProjectCommand::redo()
     QFile redo(m_redoFilename);
     if(redo.exists())
     {
-        QFile dest(m_site->path() + "/Site.xml");
+        QFile dest(m_site->sourcePath() + "/Site.xml");
         if(dest.exists())
             dest.remove();
-        QFile::copy(m_redoFilename, m_site->path() + "/Site.xml");
+        QFile::copy(m_redoFilename, m_site->sourcePath() + "/Site.xml");
         m_win->reloadProject();
     }
     else
     {
-        QFile::copy(m_site->path() + "/Site.xml", m_tempFilename);
+        QFile::copy(m_site->sourcePath() + "/Site.xml", m_tempFilename);
         m_win->saveProject();
-        QFile::copy(m_site->path() + "/Site.xml", m_redoFilename);
+        QFile::copy(m_site->sourcePath() + "/Site.xml", m_redoFilename);
     }
 }

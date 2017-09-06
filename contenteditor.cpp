@@ -108,14 +108,14 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     m_title->setText(m_content->title());
     m_source->setText(m_content->source());
     if(m_content->contentType() == ContentType::Page)
-        m_filename = m_site->path() + "/pages/" + m_content->source();
+        m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
     else
     {
         m_excerptLabel = new QLabel("Excerpt");
         m_layout->addWidget(m_excerptLabel, 3, 0);
         m_layout->addWidget(m_excerpt, 4, 0, 1, 3);
         m_excerpt->setText(m_content->excerpt());
-        m_filename = m_site->path() + "/posts/" + m_content->source();
+        m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
     }
 
     if(m_content->source().isEmpty())
@@ -207,12 +207,12 @@ void ContentEditor::updateNewContent()
     if(m_content->contentType() == ContentType::Page)
     {
         m_content->setLayout("default");
-        m_filename = m_site->path() + "/pages/" + m_content->source();
+        m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
     }
     else
     {
         m_content->setLayout("post");
-        m_filename = m_site->path() + "/posts/" + m_content->source();
+        m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
     }
     m_content->setMenu("default");
 
@@ -274,9 +274,9 @@ void ContentEditor::sourceChanged()
         m_content->setDate(QDate::currentDate());
         m_content->setSource(m_source->text());
         if(m_content->contentType() == ContentType::Page)
-            m_filename = m_site->path() + "/pages/" + m_content->source();
+            m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
         else
-            m_filename = m_site->path() + "/pages/" + m_content->source();
+            m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
         emit contentChanged(m_content);
         emit contentUpdated("Permalink Changed");
     }

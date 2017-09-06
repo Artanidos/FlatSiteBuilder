@@ -401,7 +401,7 @@ void MainWindow::loadProject(QString filename)
     reloadProject();
 
     // create temp dir for undo redo
-    QString tempPath = m_site->path().mid(m_site->path().lastIndexOf("/") + 1);
+    QString tempPath = m_site->sourcePath().mid(m_site->sourcePath().lastIndexOf("/") + 1);
     QDir temp(QDir::tempPath() + "/FlatSiteBuilder");
     temp.mkdir(tempPath);
     temp.cd(tempPath);
@@ -415,10 +415,10 @@ void MainWindow::reloadProject()
     m_site->menus().clear();
 
     QDomDocument doc;
-    QFile file(m_site->path() + "/Site.xml");
+    QFile file(m_site->sourcePath() + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
     {
-        statusBar()->showMessage("Unable to open " + m_site->path() + "/Site.xml");
+        statusBar()->showMessage("Unable to open " + m_site->sourcePath() + "/Site.xml");
         return;
     }
     if (!doc.setContent(&file))
@@ -501,10 +501,10 @@ void MainWindow::saveProject()
 {
     QDomDocument doc;
     QDomElement root;
-    QFile file(m_site->path() + "/Site.xml");
+    QFile file(m_site->sourcePath() + "/Site.xml");
     if(!file.open(QFile::WriteOnly))
     {
-        statusBar()->showMessage("Unable to open file " + m_site->path() + "/Site.xml");
+        statusBar()->showMessage("Unable to open file " + m_site->sourcePath() + "/Site.xml");
         return;
     }
     root = doc.createElement("Site");
@@ -582,7 +582,7 @@ void MainWindow::writeSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
     if(m_site)
-        settings.setValue("lastSite", m_site->path());
+        settings.setValue("lastSite", m_site->sourcePath());
 }
 
 void MainWindow::readSettings()

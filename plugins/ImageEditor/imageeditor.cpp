@@ -226,10 +226,16 @@ void ImageEditor::seek()
     if (fileName.isEmpty())
         return;
 
+    // copy file to assets dir
     QFileInfo info(fileName);
-    QString path = m_site->path() + "/assets/images/" + info.fileName();
+    QString path = m_site->sourcePath() + "/assets/images/" + info.fileName();
     m_source->setText(path);
     QFile::copy(fileName, path);
+
+    // also copy file to deploy dir for previews
+    QString dpath = m_site->deployPath() + "/assets/images/" + info.fileName();
+    QFile::copy(fileName, dpath);
+
     m_image->setImage(QImage(path));
     contentChanged();
 }

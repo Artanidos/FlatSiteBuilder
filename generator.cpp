@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(QFile*)
 Generator::Generator()
 {
     m_themePath = QDir::homePath() + "/FlatSiteBuilder/themes";
-    m_sitesPath = QDir::homePath() + "/FlatSiteBuilder/sites";
+    m_sitesPath = Generator::sitesPath();
 }
 
 /*
@@ -49,7 +49,6 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
 
     if(contentToBuild == 0)
     {
-
         QDir old;
         old.setPath(m_sitesPath + "/" + m_site->title() + "/assets");
         old.removeRecursively();
@@ -113,7 +112,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["theme"] = m_site->theme();
     sitevars["theme_accent"] = m_site->themeAccent();
     sitevars["copyright"] = m_site->copyright();
-    sitevars["source"] = m_site->path();
+    sitevars["source"] = m_site->sourcePath();
     sitevars["github"] = m_site->github();
     sitevars["keywords"] = m_site->keywords();
     sitevars["author"] = m_site->author();
@@ -129,7 +128,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     if(contentToBuild == 0 || copyAssets)
     {
         // first copy assets from site, they will not be overridden by theme assets
-        copyPath(m_site->path() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
+        copyPath(m_site->sourcePath() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
         copyPath(m_themePath + "/" + m_site->theme() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
     }
 
@@ -154,7 +153,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
             continue;
 
         QDomDocument doc;
-        QFile file(m_site->path() + "/" + subdir + "/" + content->source());
+        QFile file(m_site->sourcePath() + "/" + subdir + "/" + content->source());
         if (file.open(QIODevice::ReadOnly))
         {
             if (doc.setContent(&file))
@@ -177,6 +176,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                     {
                         pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
                         pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
+                        editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");
                     }
                 }
 
@@ -203,17 +203,17 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
                     qWarning() << "Generator::generateSite(): Unable to create file " +  name;
             }
             else
-                qWarning() << "Generator::generateSite(): Unable to parse file " + m_site->path() + "/" + subdir + "/" + content->source();
+                qWarning() << "Generator::generateSite(): Unable to parse file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
         }
         else
-            qWarning() << "Generator::generateSite(): Unable to open file " + m_site->path() + "/" + subdir + "/" + content->source();
+            qWarning() << "Generator::generateSite(): Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
     }
 }
 
 QString Generator::translateTemplate(QString layout, Mode mode)
 {
     QString rc = "";
-    QString path = m_site->path() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
+    QString path = m_site->sourcePath() + (mode == Layout ? "/layouts/" : "/includes/") + layout;
 
     QFile site(path);
     if(!site.exists())

@@ -148,9 +148,9 @@ void ContentList::deleteButtonClicked()
             QTableWidgetItem *item = m_list->item(row, 1);
             Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
             if(content->contentType() == ContentType::Page)
-                filename = m_site->path() + "/pages/" + content->source();
+                filename = m_site->sourcePath() + "/pages/" + content->source();
             else
-                filename = m_site->path() + "/posts/" + content->source();
+                filename = m_site->sourcePath() + "/posts/" + content->source();
             QFile file(filename);
             file.remove();
 

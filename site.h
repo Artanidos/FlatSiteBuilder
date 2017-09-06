@@ -42,7 +42,7 @@ public:
     void setThemeAccent(QString accent) {m_themeAccent = accent;}
 
     QString title() {return m_title;}
-    void setTitle(QString title) {m_title = title;}
+    void setTitle(QString title);
 
     QString author() {return m_author;}
     void setAuthor(QString author) {m_author = author;}
@@ -65,11 +65,13 @@ public:
 
     QList<Menu *> menus() {return m_menus;}
     void addMenu(Menu *menu) {m_menus.append(menu);}
-    QString path() {return m_path;}
+    QString sourcePath() {return m_sourcePath;}
+    QString deployPath() {return m_deployPath;}
 
 private:
     QString m_filename;
-    QString m_path;
+    QString m_sourcePath;
+    QString m_deployPath;
     QString m_theme;
     QString m_author;
     QString m_themeAccent;

@@ -25,7 +25,9 @@
 #include <QHash>
 #include <QVariant>
 #include <QMap>
+#include <QDir>
 #include "site.h"
+#include "content.h"
 #include "interfaces.h"
 
 class Generator : public QObject
@@ -35,6 +37,8 @@ public:
     Generator();
 
     void generateSite(Site *site, Content *content = 0);
+
+    static QString sitesPath() {return QDir::homePath() + "/FlatSiteBuilder/sites";}
 
 #ifdef TEST
     void setSitesPath(QString path) {m_sitesPath = path;}

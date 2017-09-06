@@ -19,11 +19,18 @@
 ****************************************************************************/
 
 #include "site.h"
+#include "generator.h"
 #include <QTest>
 
 Site::Site(QString filename)
 {
     QFileInfo info(filename);
     m_filename = info.fileName();
-    m_path = info.path();
+    m_sourcePath = info.path();
+}
+
+void Site::setTitle(QString title)
+{
+    m_title = title;
+    m_deployPath = Generator::sitesPath() + "/" + m_title;
 }

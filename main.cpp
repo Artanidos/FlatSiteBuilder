@@ -22,7 +22,6 @@
 #include "site.h"
 #include "content.h"
 #include "column.h"
-#include "image.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QTest>
