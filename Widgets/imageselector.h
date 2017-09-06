@@ -34,7 +34,7 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void setImage(QImage image);
-    QSize sizeHint() const;
+    //QSize sizeHint() const;
 
 signals:
     void clicked();

@@ -26,45 +26,11 @@
 ImageSelector::ImageSelector()
 {
     setCursor(Qt::PointingHandCursor);
-    m_width = 300;
-    m_height = 300;
-}
-
-QSize ImageSelector::sizeHint() const
-{
-    return QSize(m_width, m_height);
 }
 
 void ImageSelector::setImage(QImage image)
 {
     m_image = image;
-    qreal w = image.width();
-    qreal h = image.height();
-
-    if(w > 300 || h > 300)
-    {
-        if(w > h)
-        {
-            m_width = 300;
-            m_height = 300.0 / w * h;
-        }
-        else if (h > w)
-        {
-            m_height = 300;
-            m_width = 300.0 / h * w;
-        }
-        else
-        {
-            m_width = 300;
-            m_height = 300;
-        }
-    }
-    else
-    {
-        m_width = w;
-        m_height = h;
-    }
-    updateGeometry();
     update();
 }
 
@@ -79,9 +45,14 @@ void ImageSelector::mouseReleaseEvent(QMouseEvent *event)
     emit clicked();
 }
 
-void ImageSelector::paintEvent(QPaintEvent *)
+void ImageSelector::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-
-    painter.drawImage(QRectF(0, 0, m_width, m_height), m_image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QSize pixSize = m_image.size();
+    pixSize.scale(event->rect().size(), Qt::KeepAspectRatio);
+    QImage scaledImage = m_image.scaled(pixSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    qreal x = (event->rect().size().width() - scaledImage.size().width()) / 2.0;
+    qreal y = (event->rect().size().height() - scaledImage.size().height()) / 2.0;
+    painter.drawImage(x, y, scaledImage);
 }

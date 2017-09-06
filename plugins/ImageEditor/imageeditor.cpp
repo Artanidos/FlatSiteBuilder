@@ -55,14 +55,6 @@ ImageEditor::ImageEditor()
     titleLabel->setFont(fnt);
     m_image = new ImageSelector();
     m_image->setImage(QImage(":/images/image_placeholder.png"));
-    QVBoxLayout *imageVBox = new QVBoxLayout();
-    QHBoxLayout *imageHBox = new QHBoxLayout();
-    imageHBox->addStretch();
-    imageHBox->addWidget(m_image);
-    imageHBox->addStretch();
-    imageVBox->addStretch();
-    imageVBox->addLayout(imageHBox);
-    imageVBox->addStretch();
 
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     close->setToolTip("Close Editor");
@@ -167,7 +159,8 @@ ImageEditor::ImageEditor()
     grid->addWidget(seek, 2, 2);
     grid->addWidget(new QLabel("Animation"), 3, 0);
     grid->addWidget(m_animationCombo, 4, 0);
-    grid->addLayout(imageVBox, 5, 0, 1, 3);
+    grid->addWidget(m_image, 5, 0, 1, 3);
+    grid->setRowStretch(5, 1);
     grid->addWidget(new QLabel("Alt"), 6, 0);
     grid->addWidget(m_alt, 7, 0);
     grid->addWidget(new QLabel("Title"), 8, 0);
