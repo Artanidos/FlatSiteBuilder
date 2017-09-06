@@ -221,12 +221,13 @@ void ImageEditor::seek()
 
     // copy file to assets dir
     QFileInfo info(fileName);
-    QString path = m_site->sourcePath() + "/assets/images/" + info.fileName();
+    QString name = info.fileName().replace(" ", "_");
+    QString path = m_site->sourcePath() + "/assets/images/" + name;
     m_source->setText(path);
     QFile::copy(fileName, path);
 
     // also copy file to deploy dir for previews
-    QString dpath = m_site->deployPath() + "/assets/images/" + info.fileName();
+    QString dpath = m_site->deployPath() + "/assets/images/" + name;
     QFile::copy(fileName, dpath);
 
     m_image->setImage(QImage(path));

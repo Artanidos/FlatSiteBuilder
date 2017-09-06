@@ -27,6 +27,7 @@
 #include <QPushButton>
 #include "interfaces.h"
 
+class SlideEditor;
 class Slide : public QObject
 {
     Q_OBJECT
@@ -39,7 +40,7 @@ public:
     QString source() {return m_source;}
 
     void setSource(QString source) {m_source = source;}
-    void setAdminLable(QString label) {m_adminlabel = label;}
+    void setAdminLabel(QString label) {m_adminlabel = label;}
 
 private:
     QString m_source;
@@ -75,8 +76,7 @@ private:
     QPushButton *m_deleteButton;
     QLineEdit *m_adminlabel;
     QTableWidget *m_list;
-    QList<Slide*> m_slides;
-    AbstractEditor *m_editor;
+    SlideEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;
@@ -90,24 +90,3 @@ private:
 };
 
 #endif // SLIDEREDITOR_H
-
-
-
-/*
-<div class="fullwidthbanner-container roundedcorners">
-    <div class="fullwidthbanner">
-        <ul>
-            <!-- SLIDE -->
-            <li data-transition="incube-horizontal" data-slotamount="5" data-masterspeed="700" >
-                <img src="assets/images/happypeople.png" alt="" data-bgfit="cover" data-bgposition="center top" data-bgrepeat="no-repeat">
-            </li>
-            <!-- SLIDE -->
-            <li data-transition="incube-horizontal" data-slotamount="5" data-masterspeed="700" >
-                <img src="assets/images/tagcloud.png" alt="" data-bgfit="cover" data-bgposition="center top" data-bgrepeat="no-repeat">
-            </li>
-        </ul>
-        <div class="tp-bannertimer"></div>
-    </div>
-</div>
-
- */

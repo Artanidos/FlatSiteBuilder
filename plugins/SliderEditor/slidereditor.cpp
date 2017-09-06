@@ -89,15 +89,13 @@ void SliderEditor::setContent(QDomElement element)
     m_element = element;
     m_adminlabel->setText(m_element.attribute("adminlabel"));
     m_list->setRowCount(0);
-    m_slides.clear();
 
     QDomElement slide = m_element.firstChildElement("Slide");
     while(!slide.isNull())
     {
         Slide *s = new Slide();
-        s->setSource(slide.attribute("source"));
-        s->setAdminLable(slide.attribute("adminlabel"));
-        m_slides.append(s);
+        s->setSource(slide.attribute("src"));
+        s->setAdminLabel(slide.attribute("adminlabel"));
         addListItem(s);
         slide = slide.nextSiblingElement("Slide");
     }
@@ -111,10 +109,12 @@ void SliderEditor::closeEditor()
         m_element = m_doc.createElement("Slider");
         m_element.setAttribute("adminlabel", m_adminlabel->text());
 
-        foreach(Slide *slide, m_slides)
+        for(int i = 0; i < m_list->rowCount(); i++)
         {
+            QTableWidgetItem *item = m_list->item(i, 1);
+            Slide *slide = qvariant_cast<Slide*>(item->data(Qt::UserRole));
             QDomElement slideelement = m_doc.createElement("Slide");
-            slideelement.setAttribute("source", slide->source());
+            slideelement.setAttribute("src", slide->source());
             slideelement.setAttribute("adminlabel", slide->adminLabel());
             m_element.appendChild(slideelement);
         }
@@ -125,10 +125,9 @@ void SliderEditor::closeEditor()
 void SliderEditor::addSlide()
 {
     Slide *slide = new Slide();
-    m_slides.append(slide);
-
     addListItem(slide);
     contentChanged();
+    tableDoubleClicked(m_list->rowCount() - 1, 0);
 }
 
 void SliderEditor::addListItem(Slide *slide)
@@ -167,7 +166,7 @@ void SliderEditor::tableDoubleClicked(int r, int)
 
     m_editor = new SlideEditor();
     m_editor->setSite(m_site);
-    //m_editor->setContent();
+    m_editor->setSlide(slide);
     connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));
     animate(item);
 }
@@ -179,9 +178,6 @@ void SliderEditor::deleteButtonClicked()
         TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
         if(cb->checked() == Qt::Checked)
         {
-            QTableWidgetItem *item = m_list->item(row, 1);
-            Slide *slide = qvariant_cast<Slide*>(item->data(Qt::UserRole));
-            m_slides.removeOne(slide);
             m_list->removeRow(row);
         }
     }
@@ -253,19 +249,39 @@ void SliderEditor::editorClosed()
     disconnect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomIn()));
     connect(m_animationgroup, SIGNAL(finished()), this, SLOT(animationFineshedZoomOut()));
     m_animationgroup->start();
+
+    QTableWidgetItem *item = m_list->item(m_row, 1);
+    item->setData(Qt::UserRole, QVariant::fromValue(m_editor->slide()));
+    item->setText(m_editor->slide()->title());
+    if(m_editor->changed())
+        contentChanged();
 }
 
 void SliderEditor::animationFineshedZoomOut()
 {
     delete m_animationgroup;
-    m_editor->hide();
-    // parent has to be set to NULL, otherwise the plugin will be dropped by parent
-    m_editor->setParent(NULL);
+    delete m_editor;
     m_editor = NULL;
 }
 
-QString SliderEditor::getHtml(QDomElement)
+QString SliderEditor::getHtml(QDomElement ele)
 {
-    //QString sampleproperty = ele.attribute("sampleproperty", "");
-    return "<div></div>";
+    QString html = "<div class=\"fullwidthbanner-container roundedcorners\">\n";
+    html += "<div class=\"fullwidthbanner\">\n";
+    html += "<ul>\n";
+    QDomElement slide = ele.firstChildElement("Slide");
+    while(!slide.isNull())
+    {
+        QString source = slide.attribute("src");
+        QString url = source.mid(source.indexOf("assets/images/"));
+        html += "<li data-transition=\"incube-horizontal\" data-slotamount=\"5\" data-masterspeed=\"700\">\n";
+        html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">";
+        html += "</li>";
+        slide = slide.nextSiblingElement("Slide");
+    }
+    html += "</ul>\n";
+    html += "<div class=\"tp-bannertimer\"></div>\n";
+    html += "</div>\n";
+    html += "</div>\n";
+    return html;
 }

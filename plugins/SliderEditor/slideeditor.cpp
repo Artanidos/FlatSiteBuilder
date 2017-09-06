@@ -21,6 +21,7 @@
 #include "slideeditor.h"
 #include "flatbutton.h"
 #include "imageselector.h"
+#include "slidereditor.h"
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QStandardPaths>
@@ -64,22 +65,27 @@ SlideEditor::SlideEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_image, SIGNAL(clicked()), this, SLOT(seek()));
     connect(seek, SIGNAL(clicked(bool)), this, SLOT(seek()));
+    connect(m_source, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
 void SlideEditor::setSlide(Slide *slide)
 {
-
+    m_slide = slide;
+    m_source->setText(slide->source());
+    if(!slide->source().isEmpty())
+        m_image->setImage(QImage(slide->source()));
+    else
+        m_image->setImage(QImage(":/images/image_placeholder.png"));
+    m_adminlabel->setText(slide->adminLabel());
 }
 
 void SlideEditor::closeEditor()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Slide");
-        }
-        m_element.setAttribute("adminlabel", m_adminlabel->text());
+        m_slide->setSource(m_source->text());
+        m_slide->setAdminLabel(m_adminlabel->text());
     }
     emit close();
 }
@@ -100,16 +106,20 @@ void SlideEditor::seek()
     if (fileName.isEmpty())
         return;
 
+
     // copy file to assets dir
     QFileInfo info(fileName);
-    QString path = m_site->sourcePath() + "/assets/images/" + info.fileName();
+    QString name = info.fileName().replace(" ", "_");
+    QString path = m_site->sourcePath() + "/assets/images/" + name;
     m_source->setText(path);
     QFile::copy(fileName, path);
 
     // also copy file to deploy dir for previews
-    QString dpath = m_site->deployPath() + "/assets/images/" + info.fileName();
+    QString dpath = m_site->deployPath() + "/assets/images/" + name;
     QFile::copy(fileName, dpath);
 
     m_image->setImage(QImage(path));
     contentChanged();
 }
+
+

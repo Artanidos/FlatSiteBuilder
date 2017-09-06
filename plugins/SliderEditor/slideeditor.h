@@ -32,8 +32,9 @@ class SlideEditor : public AbstractEditor
 public:
     SlideEditor();
 
-    void setContent(QDomElement) {/* not used */}
+    void setContent(QDomElement) {/* unused */}
     void setSlide(Slide *slide);
+    Slide *slide() {return m_slide;}
 
 signals:
     void close();
@@ -46,6 +47,7 @@ private:
     QLineEdit *m_adminlabel;
     QLineEdit *m_source;
     ImageSelector *m_image;
+    Slide *m_slide;
 };
 
 #endif // SLIDEEDITOR_H
