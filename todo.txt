@@ -10,7 +10,6 @@ Features
 - widget system ala wordpress
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - library to save pages, sections and rows as templates
-- imageeditor/slidereditor should copy the newly added images to deploy dir
 
 Postponend
 ----------

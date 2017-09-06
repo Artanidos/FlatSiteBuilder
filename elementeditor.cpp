@@ -94,25 +94,7 @@ void ElementEditor::save(QDomDocument doc, QDomElement de)
 {
     if(m_mode == Mode::Enabled)
     {
-        QDomElement ele = content();
-        QDomElement e = doc.createElement(ele.nodeName());
-        if(ele.hasChildNodes())
-        {
-            QDomNode data = ele.firstChild();
-            QDomCDATASection cdata = data.toCDATASection();
-            e.appendChild(doc.createCDATASection(cdata.data()));
-        }
-        if(ele.hasAttribute("adminlabel"))
-            e.setAttribute("adminlabel", ele.attribute("adminlabel"));
-        if(ele.hasAttribute("alt"))
-            e.setAttribute("alt", ele.attribute("alt"));
-        if(ele.hasAttribute("title"))
-            e.setAttribute("title", ele.attribute("title"));
-        if(ele.hasAttribute("animation"))
-            e.setAttribute("animation", ele.attribute("animation"));
-        if(ele.hasAttribute("src"))
-            e.setAttribute("src", ele.attribute("src"));
-        de.appendChild(e);
+        de.appendChild(content());
     }
 }
 

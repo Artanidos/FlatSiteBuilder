@@ -25,11 +25,13 @@ DEFINES += WIDGETS_LIBRARY
 
 SOURCES += \
     flatbutton.cpp \
-    imageselector.cpp
+    imageselector.cpp \
+    tablecheckbox.cpp
 
 HEADERS +=\
     flatbutton.h \
-    imageselector.h
+    imageselector.h \
+    tablecheckbox.h
 
 unix {
     target.path = /usr/lib

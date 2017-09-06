@@ -79,16 +79,6 @@ void MainWindow::loadPlugins()
 {
     QDir pluginsDir(QDir::homePath() + "/FlatSiteBuilder/plugins");
 
-    foreach (QObject *plugin, QPluginLoader::staticInstances())
-    {
-        EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
-        if(iEditor)
-        {
-            Globals::insert(iEditor->className(), iEditor);
-            qDebug() << "static plugin" << iEditor->className();
-        }
-    }
-
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
@@ -101,6 +91,10 @@ void MainWindow::loadPlugins()
                 Globals::insert(iEditor->className(), iEditor);
                 qDebug() << "Plugin loaded" << fileName;
             }
+        }
+        else
+        {
+            qDebug() << "Plugin could not ne loaded" << fileName << loader.errorString();
         }
     }
 }

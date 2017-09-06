@@ -36,7 +36,6 @@ SOURCES += main.cpp\
     content.cpp \
     contenteditor.cpp \
     contentlist.cpp \
-    tablecheckbox.cpp \
     sectioneditor.cpp \
     pageeditor.cpp \
     roweditor.cpp \
@@ -64,7 +63,6 @@ HEADERS  += mainwindow.h \
     content.h \
     contenteditor.h \
     contentlist.h \
-    tablecheckbox.h \
     sectioneditor.h \
     pageeditor.h \
     roweditor.h \

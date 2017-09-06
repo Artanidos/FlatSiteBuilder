@@ -510,6 +510,9 @@ void ContentEditor::animationFineshedZoomIn()
 
     m_title->setEnabled(false);
     m_previewLink->hide();
+    m_undo->hide();
+    m_redo->hide();
+    m_close->hide();
     m_source->setEnabled(false);
     if(m_content->contentType() == ContentType::Post)
         m_excerpt->setEnabled(false);
@@ -566,11 +569,15 @@ void ContentEditor::animationFineshedZoomOut()
     m_title->setEnabled(true);
     m_source->setEnabled(true);
     m_previewLink->show();
+    m_undo->show();
+    m_redo->show();
+    m_close->show();
     if(m_content->contentType() == ContentType::Post)
         m_excerpt->setEnabled(true);
     delete m_animationgroup;
     m_editor->hide();
     // parent has to be set to NULL, otherwise the plugin will be dropped by parent
     m_editor->setParent(NULL);
+    disconnect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
     m_editor = NULL;
 }
