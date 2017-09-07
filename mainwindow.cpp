@@ -245,7 +245,7 @@ void MainWindow::initGui()
 {
     installEventFilter(this);
     m_dashboardExpander = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
-    m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
+    //m_media = new Expander("Media", ":/images/media_normal.png", ":/images/media_hover.png", ":/images/media_selected.png");
     m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
     m_appearance = new Expander("Appearance", ":/images/appearance_normal.png", ":/images/appearance_hover.png", ":/images/appearance_selected.png");
     m_plugins = new Expander("Plugins", ":/images/plugin_normal.png", ":/images/plugin_hover.png", ":/images/plugin_selected.png");
@@ -254,7 +254,7 @@ void MainWindow::initGui()
     setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addWidget(m_dashboardExpander);
-    vbox->addWidget(m_media);
+    //vbox->addWidget(m_media);
     vbox->addWidget(m_content);
     vbox->addWidget(m_appearance);
     vbox->addWidget(m_plugins);
@@ -264,20 +264,20 @@ void MainWindow::initGui()
     QVBoxLayout *contentBox = new QVBoxLayout();
     Hyperlink *pagesButton = new Hyperlink("Pages");
     Hyperlink *postsButton = new Hyperlink("Posts");
-    Hyperlink *categoriesButton = new Hyperlink("Categories");
-    Hyperlink *tagsButton = new Hyperlink("Tags");
+    //Hyperlink *categoriesButton = new Hyperlink("Categories");
+    //Hyperlink *tagsButton = new Hyperlink("Tags");
     contentBox->addWidget(pagesButton);
     contentBox->addWidget(postsButton);
-    contentBox->addWidget(categoriesButton);
-    contentBox->addWidget(tagsButton);
+    //contentBox->addWidget(categoriesButton);
+    //contentBox->addWidget(tagsButton);
     m_content->addLayout(contentBox);
 
     QVBoxLayout *appBox = new QVBoxLayout();
     Hyperlink *themesButton = new Hyperlink("Themes");
-    Hyperlink *widgetsButton = new Hyperlink("Widgets");
+    //Hyperlink *widgetsButton = new Hyperlink("Widgets");
     Hyperlink *menusButton = new Hyperlink("Menus");
     appBox->addWidget(themesButton);
-    appBox->addWidget(widgetsButton);
+    //appBox->addWidget(widgetsButton);
     appBox->addWidget(menusButton);
     m_appearance->addLayout(appBox);
 
@@ -299,7 +299,7 @@ void MainWindow::initGui()
     addDockWidget(Qt::LeftDockWidgetArea, navigationdock);
 
     connect(m_dashboardExpander, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
-    connect(m_media, SIGNAL(expanded(bool)), this, SLOT(mediaExpanded(bool)));
+    //connect(m_media, SIGNAL(expanded(bool)), this, SLOT(mediaExpanded(bool)));
     connect(m_content, SIGNAL(expanded(bool)), this, SLOT(contentExpanded(bool)));
     connect(m_appearance, SIGNAL(expanded(bool)), this, SLOT(apearanceExpanded(bool)));
     connect(m_plugins, SIGNAL(expanded(bool)), this, SLOT(pluginsExpanded(bool)));
@@ -307,11 +307,11 @@ void MainWindow::initGui()
 
     connect(pagesButton, SIGNAL(clicked()), this, SLOT(showPages()));
     connect(postsButton, SIGNAL(clicked()), this, SLOT(showPosts()));
-    connect(categoriesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
-    connect(tagsButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    //connect(categoriesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    //connect(tagsButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
-    connect(m_media, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    //connect(m_media, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_appearance, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(notImplemented()));
@@ -321,7 +321,7 @@ void MainWindow::dashboardExpanded(bool value)
 {
     if(value)
     {
-        m_media->setExpanded(false);
+        //m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -346,7 +346,7 @@ void MainWindow::contentExpanded(bool value)
     if(value)
     {
         m_dashboardExpander->setExpanded(false);
-        m_media->setExpanded(false);
+        //m_media->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
@@ -358,7 +358,7 @@ void MainWindow::apearanceExpanded(bool value)
     if(value)
     {
         m_dashboardExpander->setExpanded(false);
-        m_media->setExpanded(false);
+        //m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
@@ -370,7 +370,7 @@ void MainWindow::pluginsExpanded(bool value)
     if(value)
     {
         m_dashboardExpander->setExpanded(false);
-        m_media->setExpanded(false);
+        //m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_settings->setExpanded(false);
@@ -382,7 +382,7 @@ void MainWindow::settingsExpanded(bool value)
     if(value)
     {
         m_dashboardExpander->setExpanded(false);
-        m_media->setExpanded(false);
+        //m_media->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
         m_plugins->setExpanded(false);
@@ -429,7 +429,6 @@ void MainWindow::reloadProject()
     m_site->setThemeAccent(site.attribute("theme_accent"));
     m_site->setTitle(site.attribute("title"));
     m_site->setDescription(site.attribute("description"));
-    m_site->setGithub(site.attribute("github"));
     m_site->setCopyright(site.attribute("copyright"));
     m_site->setKeywords(site.attribute("keywords"));
     m_site->setAuthor(site.attribute("author"));
@@ -506,7 +505,6 @@ void MainWindow::saveProject()
     root.setAttribute("theme_accent", m_site->themeAccent());
     root.setAttribute("title", m_site->title());
     root.setAttribute("description", m_site->description());
-    root.setAttribute("github", m_site->github());
     root.setAttribute("copyright", m_site->copyright());
     root.setAttribute("keywords", m_site->keywords());
     root.setAttribute("author", m_site->author());
@@ -628,8 +626,7 @@ void MainWindow::showPages()
 void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
-    m_editor = new ContentEditor(m_site, content);
-    m_editor->setWindow(this);
+    m_editor = new ContentEditor(this, m_site, content);
 
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
@@ -784,8 +781,9 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::contentChanged(Content *content)
 {
     m_list->item(m_row, 1)->setText(content->title());
-    m_list->item(m_row, 2)->setText(content->layout());
-    m_list->item(m_row, 3)->setText(content->author());
-    m_list->item(m_row, 4)->setText(content->date().toString("dd.MM.yyyy"));
+    m_list->item(m_row, 2)->setText(content->source());
+    m_list->item(m_row, 3)->setText(content->layout());
+    m_list->item(m_row, 4)->setText(content->author());
+    m_list->item(m_row, 5)->setText(content->date().toString("dd.MM.yyyy"));
 }
 

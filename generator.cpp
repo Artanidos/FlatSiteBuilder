@@ -35,7 +35,7 @@ Q_DECLARE_METATYPE(QFile*)
 
 Generator::Generator()
 {
-    m_themePath = QDir::homePath() + "/FlatSiteBuilder/themes";
+    m_themePath = Generator::themesPath();
     m_sitesPath = Generator::sitesPath();
 }
 
@@ -113,7 +113,6 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["theme_accent"] = m_site->themeAccent();
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->sourcePath();
-    sitevars["github"] = m_site->github();
     sitevars["keywords"] = m_site->keywords();
     sitevars["author"] = m_site->author();
 

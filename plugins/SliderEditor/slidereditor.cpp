@@ -32,6 +32,7 @@
 SliderEditor::SliderEditor()
 {
     m_changed = false;
+    m_editor = 0;
     setAutoFillBackground(true);
 
     QGridLayout *grid = new QGridLayout();
@@ -82,6 +83,17 @@ SliderEditor::SliderEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
     connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
+
+    installEventFilter(this);
+}
+
+bool SliderEditor::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == this && event->type() == QEvent::Resize && m_editor)
+    {
+        m_editor->resize(size());
+    }
+    return false;
 }
 
 void SliderEditor::setContent(QDomElement element)

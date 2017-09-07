@@ -48,7 +48,7 @@ ContentList::ContentList(Site *site, ContentType type)
     fnt.setPointSize(20);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
-    m_list = new QTableWidget(0, 5, this);
+    m_list = new QTableWidget(0, 6, this);
     m_list->verticalHeader()->hide();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
     m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -129,6 +129,13 @@ void ContentList::checkStateChanged(bool)
 void ContentList::buttonClicked()
 {
     Content *content = new Content(m_type);
+    if(m_type == ContentType::Page)
+        content->setLayout("default");
+    else
+        content->setLayout("post");
+    content->setAuthor(m_site->author());
+    content->setKeywords(m_site->keywords());
+    content->setMenu(m_site->menus().first()->name());
     m_site->addContent(content);
     addListItem(content);
 

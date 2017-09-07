@@ -53,9 +53,6 @@ public:
     QString description() {return m_description;}
     void setDescription(QString desc) {m_description = desc;}
 
-    QString github() {return m_github;}
-    void setGithub(QString github) {m_github = github;}
-
     QString copyright() {return m_copyright;}
     void setCopyright(QString copyright) {m_copyright = copyright;}
 
@@ -77,7 +74,6 @@ private:
     QString m_themeAccent;
     QString m_title;
     QString m_description;
-    QString m_github;
     QString m_copyright;
     QString m_keywords;
     QList<Content *> m_contents;

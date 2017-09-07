@@ -1,15 +1,10 @@
 Features
 --------
-- slider editor
-- other modules (plugins)
 - menu editor
-- theme editor (change colors, fonts and other styles)
-- media page
-- setting pages
+- theme chooser (theme_accent)
+- page settings (keywords, author, menu, layout)
+- site settings (keywords, copyright, author)
 - test on windows
-- widget system ala wordpress
-- test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
-- library to save pages, sections and rows as templates
 
 Postponend
 ----------
@@ -20,3 +15,13 @@ Postponend
 	editor where the columns can be selected
 - cascading rows / columns
 - support for cssgrid ?
+- theme editor (change colors, fonts and other styles)
+- other modules (plugins)
+- media page
+- widget system ala wordpress
+- test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
+- library to save pages, sections and rows as templates
+- plugin settings page (disable plugins, dependencies)
+- general plugin (settings)
+- plugin for publish
+

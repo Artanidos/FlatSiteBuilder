@@ -30,6 +30,7 @@
 #include <QUndoStack>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
+#include <QComboBox>
 #include "content.h"
 #include "interfaces.h"
 #include "site.h"
@@ -45,10 +46,8 @@ class ContentEditor : public AbstractEditor
     Q_OBJECT
 
 public:
-    ContentEditor(Site *site, Content *content);
+    ContentEditor(MainWindow *win, Site *site, Content *content);
     ~ContentEditor();
-
-    void setWindow(MainWindow *win) {m_win = win;}
 
     bool eventFilter(QObject *watched, QEvent *event);
     void elementEdit(ElementEditor *);
@@ -76,6 +75,10 @@ private slots:
     void titleChanged(QString title);
     void sourceChanged();
     void excerptChanged();
+    void authorChanged();
+    void keywordsChanged();
+    void menuChanged(QString);
+    void layoutChanged(QString);
     void siteLoaded(Site *);
     void showContextMenu(const QPoint &);
     void canUndoChanged(bool can);
@@ -125,6 +128,14 @@ private:
     QWidget *m_sourcewidget;
     MainWindow *m_win;
     bool m_isNew;
+    QLabel *m_labelKeyword;
+    QLabel *m_labelAuthor;
+    QLabel *m_labelMenu;
+    QLabel *m_labelLayout;
+    QLineEdit *m_keywords;
+    QLineEdit *m_author;
+    QComboBox *m_menus;
+    QComboBox *m_layouts;
 
     void init();
     void loadRows(QDomElement section, SectionEditor *se);

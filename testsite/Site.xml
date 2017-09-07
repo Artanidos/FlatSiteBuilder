@@ -1,4 +1,4 @@
-<Site theme_accent="" title="Test" keywords="site key words" description="A sample test site" github="https://github.com/Artanidos/FlatSiteBuilder.git" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp">
+<Site theme_accent="" title="Test" keywords="site key words" description="A sample test site" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp">
  <Content source="index.xml" logo="logo.png" title="Index" author="admin" keywords="" type="page" layout="default" date="21.08.2017" menu="default"/>
  <Menu name="default">
   <Item title="Home" url="#navigation"/>

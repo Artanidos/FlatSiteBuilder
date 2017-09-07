@@ -20,6 +20,7 @@
 
 #include "contenteditor.h"
 #include "hyperlink.h"
+#include "generator.h"
 #include "globals.h"
 #include "mainwindow.h"
 #include "pageeditor.h"
@@ -42,8 +43,9 @@
 #include <QAction>
 #include <QTest>
 
-ContentEditor::ContentEditor(Site *site, Content *content)
+ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
 {
+    m_win = win;
     m_site = site;
     m_content = content;
     m_editor = NULL;
@@ -70,11 +72,39 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     fnt.setPointSize(20);
     fnt.setBold(true);
     m_titleLabel->setFont(fnt);
-    m_title = new QLineEdit();
+    m_title = new QLineEdit;
     m_source = new QLineEdit;
-    m_excerpt = new QLineEdit();
+    m_excerpt = new QLineEdit;
     m_labelPermalink = new QLabel("Permalink");
     m_labelTitle = new QLabel("Title");
+    m_labelAuthor = new QLabel("Author");
+    m_labelKeyword = new QLabel("Keywords");
+    m_labelLayout = new QLabel("Layout");
+    m_labelMenu = new QLabel("Menu");
+    m_author = new QLineEdit;
+    m_keywords = new QLineEdit;
+    m_menus = new QComboBox;
+    m_layouts = new QComboBox;
+    m_layouts->setMaximumWidth(100);
+
+    foreach(Menu *menu, m_site->menus())
+    {
+        m_menus->addItem(menu->name());
+    }
+
+    QDir layouts(m_site->sourcePath() + "/layouts");
+    foreach(QString file, layouts.entryList(QDir::Files))
+    {
+        m_layouts->addItem(file.mid(0, file.indexOf(".html")));
+    }
+
+    QDir themelayouts(Generator::themesPath() + "/" + m_site->theme() + "/layouts");
+    foreach(QString file, themelayouts.entryList(QDir::Files))
+    {
+        QString layout = file.mid(0, file.indexOf(".html"));
+        if(m_layouts->findText(layout) < 0)
+            m_layouts->addItem(layout);
+    }
 
     m_close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     m_close->setToolTip("Close Content Editor");
@@ -96,24 +126,36 @@ ContentEditor::ContentEditor(Site *site, Content *content)
 
     m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addWidget(m_previewLink, 0, 1);
-    m_layout->addLayout(hbox, 0, 2);
+    m_layout->addLayout(hbox, 0, 3);
     m_layout->addWidget(m_labelTitle, 1, 0);
     m_layout->addWidget(m_title, 2, 0);
     m_layout->addWidget(m_labelPermalink, 1, 1);
     m_layout->addWidget(m_source, 2, 1);
-    m_layout->addWidget(m_scroll, 5, 0, 1, 3);
+    m_layout->addWidget(m_labelAuthor, 3, 0);
+    m_layout->addWidget(m_author, 4, 0);
+    m_layout->addWidget(m_labelKeyword, 3, 1);
+    m_layout->addWidget(m_keywords, 4, 1);
+    m_layout->addWidget(m_labelMenu, 3, 2);
+    m_layout->addWidget(m_menus, 4, 2);
+    m_layout->addWidget(m_labelLayout, 3, 3);
+    m_layout->addWidget(m_layouts, 4, 3);
+    m_layout->addWidget(m_scroll, 7, 0, 1, 4);
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
 
     m_title->setText(m_content->title());
     m_source->setText(m_content->source());
+    m_author->setText(m_content->author());
+    m_keywords->setText(m_content->keywords());
+    m_menus->setCurrentText(m_content->menu());
+    m_layouts->setCurrentText(m_content->layout());
     if(m_content->contentType() == ContentType::Page)
         m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
     else
     {
         m_excerptLabel = new QLabel("Excerpt");
-        m_layout->addWidget(m_excerptLabel, 3, 0);
-        m_layout->addWidget(m_excerpt, 4, 0, 1, 3);
+        m_layout->addWidget(m_excerptLabel, 5, 0);
+        m_layout->addWidget(m_excerpt, 6, 0, 1, 4);
         m_excerpt->setText(m_content->excerpt());
         m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
     }
@@ -130,6 +172,10 @@ ContentEditor::ContentEditor(Site *site, Content *content)
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged(QString)));
     connect(m_source, SIGNAL(editingFinished()), this, SLOT(sourceChanged()));
     connect(m_excerpt, SIGNAL(editingFinished()), this, SLOT(excerptChanged()));
+    connect(m_author, SIGNAL(editingFinished()), this, SLOT(authorChanged()));
+    connect(m_keywords, SIGNAL(editingFinished()), this, SLOT(keywordsChanged()));
+    connect(m_menus, SIGNAL(currentIndexChanged(QString)), this, SLOT(menuChanged(QString)));
+    connect(m_layouts, SIGNAL(currentIndexChanged(QString)), this, SLOT(layoutChanged(QString)));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
     connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
@@ -206,18 +252,16 @@ void ContentEditor::updateNewContent()
 
     if(m_content->contentType() == ContentType::Page)
     {
-        m_content->setLayout("default");
+        m_content->setLayout(m_layouts->currentText());
         m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
     }
     else
     {
-        m_content->setLayout("post");
+        m_content->setLayout(m_layouts->currentText());
         m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
     }
-    m_content->setMenu("default");
-
-    // TODO: real author here
-    m_content->setAuthor("author");
+    m_content->setMenu(m_menus->currentText());
+    m_content->setAuthor(m_author->text());
     m_content->setDate(QDate::currentDate());
     save();
     emit contentChanged(m_content);
@@ -290,6 +334,50 @@ void ContentEditor::excerptChanged()
         m_content->setExcerpt(m_excerpt->text());
         emit contentChanged(m_content);
         emit contentUpdated("Excerpt Changed");
+    }
+}
+
+void ContentEditor::authorChanged()
+{
+    if(m_author->text() != m_content->author())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setAuthor(m_author->text());
+        emit contentChanged(m_content);
+        emit contentUpdated("Author Changed");
+    }
+}
+
+void ContentEditor::keywordsChanged()
+{
+    if(m_keywords->text() != m_content->keywords())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setKeywords(m_keywords->text());
+        emit contentChanged(m_content);
+        emit contentUpdated("Keywords Changed");
+    }
+}
+
+void ContentEditor::menuChanged(QString menu)
+{
+    if(menu != m_content->menu())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setMenu(menu);
+        emit contentChanged(m_content);
+        emit contentUpdated("Menu Changed");
+    }
+}
+
+void ContentEditor::layoutChanged(QString layout)
+{
+    if(layout != m_content->layout())
+    {
+        m_content->setDate(QDate::currentDate());
+        m_content->setLayout(layout);
+        emit contentChanged(m_content);
+        emit contentUpdated("Layout Changed");
     }
 }
 
@@ -509,13 +597,26 @@ void ContentEditor::animationFineshedZoomIn()
     m_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_title->setEnabled(false);
+    m_author->setEnabled(false);
+    m_keywords->setEnabled(false);
+    m_menus->setEnabled(false);
+    m_layouts->setEnabled(false);
+    m_labelAuthor->setEnabled(false);
+    m_labelKeyword->setEnabled(false);
+    m_labelMenu->setEnabled(false);
+    m_labelLayout->setEnabled(false);
+    m_labelTitle->setEnabled(false);
+    m_labelPermalink->setEnabled(false);
     m_previewLink->hide();
     m_undo->hide();
     m_redo->hide();
     m_close->hide();
     m_source->setEnabled(false);
     if(m_content->contentType() == ContentType::Post)
+    {
         m_excerpt->setEnabled(false);
+        m_excerptLabel->setEnabled(false);
+    }
 }
 
 void ContentEditor::editorClosed()
@@ -568,12 +669,25 @@ void ContentEditor::animationFineshedZoomOut()
 {
     m_title->setEnabled(true);
     m_source->setEnabled(true);
+    m_author->setEnabled(true);
+    m_keywords->setEnabled(true);
+    m_menus->setEnabled(true);
+    m_layouts->setEnabled(true);
+    m_labelAuthor->setEnabled(true);
+    m_labelKeyword->setEnabled(true);
+    m_labelMenu->setEnabled(true);
+    m_labelLayout->setEnabled(true);
+    m_labelTitle->setEnabled(true);
+    m_labelPermalink->setEnabled(true);
     m_previewLink->show();
     m_undo->show();
     m_redo->show();
     m_close->show();
     if(m_content->contentType() == ContentType::Post)
+    {
         m_excerpt->setEnabled(true);
+        m_excerptLabel->setEnabled(true);
+    }
     delete m_animationgroup;
     m_editor->hide();
     // parent has to be set to NULL, otherwise the plugin will be dropped by parent

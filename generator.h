@@ -39,6 +39,7 @@ public:
     void generateSite(Site *site, Content *content = 0);
 
     static QString sitesPath() {return QDir::homePath() + "/FlatSiteBuilder/sites";}
+    static QString themesPath() {return QDir::homePath() + "/FlatSiteBuilder/themes";}
 
 #ifdef TEST
     void setSitesPath(QString path) {m_sitesPath = path;}

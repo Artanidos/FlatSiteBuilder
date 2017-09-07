@@ -55,6 +55,8 @@ class SliderEditor : public EditorInterface
 
 public:
     SliderEditor();
+
+    bool eventFilter(QObject *watched, QEvent *event);
     QString className() {return "SliderEditor";}
     QString displayName() {return "Slider";}
     QString tagName() {return "Slider";}
