@@ -23,7 +23,6 @@
 
 #include <QtPlugin>
 #include <QObject>
-#include <QComboBox>
 #include "interfaces.h"
 #include "imageselector.h"
 
@@ -35,14 +34,13 @@ class ImageEditor : public EditorInterface
 
 public:
     ImageEditor();
+
     QString className() {return "ImageEditor";}
     QString displayName() {return "Image";}
     QString tagName() {return "Image";}
     QImage icon() {return QImage(":/image.png");}
     QString getHtml(QDomElement ele);
     void setContent(QDomElement ele);
-    QString pluginStyles();
-    void installAssets(QString assetsPath);
 
 private slots:
     void seek();
@@ -51,13 +49,10 @@ private slots:
 private:
     QString m_animation;
     ImageSelector *m_image;
-    QComboBox *m_animationCombo;
     QLineEdit *m_source;
     QLineEdit *m_alt;
     QLineEdit *m_title;
     QLineEdit *m_adminlabel;
-
-    void addHeader(QString header);
 };
 
 #endif // IMAGEEDITOR_H

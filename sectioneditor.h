@@ -32,7 +32,7 @@ class SectionEditor : public QWidget
     Q_OBJECT
 
 public:
-    SectionEditor(bool fullwidth = false);
+    SectionEditor();
 
     void mousePressEvent(QMouseEvent *event);
     void addRow(RowEditor *re);
@@ -40,7 +40,7 @@ public:
     void enableColumnAcceptDrop(bool mode);
     SectionEditor *clone();
     void save(QDomDocument doc, QDomElement de);
-    void setFullwidth(bool fw) {m_fullwidth = fw;}
+    void setFullwidth(bool fw) {m_fullwidth = fw; setBGColor();}
     void setContent(QDomElement row);
     QDomElement content();
     void setCssClass(QString cls) {m_cssclass = cls;}
@@ -77,6 +77,7 @@ private:
     QDomDocument m_doc;
 
     ContentEditor* getContentEditor();
+    void setBGColor();
 };
 
 #endif // SECTIONEDITOR_H

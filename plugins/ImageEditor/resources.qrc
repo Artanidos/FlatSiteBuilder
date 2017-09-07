@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>image.png</file>
-        <file>animate.css</file>
     </qresource>
 </RCC>

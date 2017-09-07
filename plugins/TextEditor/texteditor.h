@@ -25,6 +25,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QComboBox>
 
 class TextEditor : public EditorInterface
 {

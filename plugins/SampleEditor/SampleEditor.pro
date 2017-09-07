@@ -24,7 +24,7 @@ INCLUDEPATH  += ../../
 SOURCES		 += sampleeditor.cpp
 HEADERS		 += sampleeditor.h \
     ../../interfaces.h
-DESTDIR       = ~/FlatSiteBuilder/plugins
+#DESTDIR       = ~/FlatSiteBuilder/plugins
 
 unix:!macx: LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 

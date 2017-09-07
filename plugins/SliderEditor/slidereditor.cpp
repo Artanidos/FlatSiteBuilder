@@ -275,8 +275,8 @@ QString SliderEditor::getHtml(QDomElement ele)
         QString source = slide.attribute("src");
         QString url = source.mid(source.indexOf("assets/images/"));
         html += "<li data-transition=\"incube-horizontal\" data-slotamount=\"5\" data-masterspeed=\"700\">\n";
-        html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">";
-        html += "</li>";
+        html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
+        html += "</li>\n";
         slide = slide.nextSiblingElement("Slide");
     }
     html += "</ul>\n";
@@ -284,4 +284,45 @@ QString SliderEditor::getHtml(QDomElement ele)
     html += "</div>\n";
     html += "</div>\n";
     return html;
+}
+
+QString SliderEditor::pluginStyles()
+{
+    return "<link href=\"assets/plugins/revolution-slider/css/settings.css\" rel=\"stylesheet\" type=\"text/css\"/>\n";
+}
+
+QString SliderEditor::pluginScripts()
+{
+    QString script = "";
+    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.plugins.min.js\"></script>\n";
+    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.revolution.min.js\"></script>\n";
+    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/slider_revolution.js\"></script>\n";
+    return script;
+}
+
+void SliderEditor::installAssets(QString assetsPath)
+{
+    QDir assets(assetsPath);
+    assets.mkdir("plugins");
+    assets.cd("plugins");
+    assets.mkdir("revolution-slider");
+    assets.cd("revolution-slider");
+    assets.mkdir("css");
+    assets.mkdir("js");
+    assets.mkdir("assets");
+    installFiles(":/css", assetsPath + "/plugins/revolution-slider/css");
+    installFiles(":/js", assetsPath + "/plugins/revolution-slider/js");
+    installFiles(":/assets", assetsPath + "/plugins/revolution-slider/assets");
+}
+
+void SliderEditor::installFiles(QString sourcedir, QString targetdir)
+{
+    QDir source(sourcedir);
+    if(!source.exists())
+        return;
+
+    foreach (QString filename, source.entryList(QDir::Files))
+    {
+        QFile::copy(sourcedir + QDir::separator() + filename, targetdir + QDir::separator() + filename);
+    }
 }

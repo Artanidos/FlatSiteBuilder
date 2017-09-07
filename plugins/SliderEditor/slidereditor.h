@@ -61,6 +61,9 @@ public:
     QImage icon() {return QImage(":/slider.png");}
     QString getHtml(QDomElement ele);
     void setContent(QDomElement ele);
+    QString pluginStyles();
+    QString pluginScripts();
+    void installAssets(QString assetsPath);
 
 private slots:
     void closeEditor();
@@ -87,6 +90,7 @@ private:
 
     void addListItem(Slide *slide);
     void animate(QTableWidgetItem *item);
+    void installFiles(QString sourcedir, QString targetdir);
 };
 
 #endif // SLIDEREDITOR_H

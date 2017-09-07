@@ -90,7 +90,7 @@ void ElementEditor::setContent(QDomElement content)
         m_text->setText(label);
 }
 
-void ElementEditor::save(QDomDocument doc, QDomElement de)
+void ElementEditor::save(QDomDocument, QDomElement de)
 {
     if(m_mode == Mode::Enabled)
     {

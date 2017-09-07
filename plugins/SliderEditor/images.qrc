@@ -1,5 +1,46 @@
 <RCC>
     <qresource prefix="/">
         <file>slider.png</file>
+        <file>js/jquery.themepunch.plugins.min.js</file>
+        <file>js/jquery.themepunch.revolution.min.js</file>
+        <file>js/slider_revolution.js</file>
+        <file>css/settings.css</file>
+        <file>assets/arrow_large_left.png</file>
+        <file>assets/arrow_large_right.png</file>
+        <file>assets/arrowleft.png</file>
+        <file>assets/arrow_left.png</file>
+        <file>assets/arrow_left2.png</file>
+        <file>assets/arrowright.png</file>
+        <file>assets/arrow_right.png</file>
+        <file>assets/arrow_right2.png</file>
+        <file>assets/black50.png</file>
+        <file>assets/boxed_bgtile.png</file>
+        <file>assets/bullet.png</file>
+        <file>assets/bullet_boxed.png</file>
+        <file>assets/bullets.png</file>
+        <file>assets/bullets2.png</file>
+        <file>assets/coloredbg.png</file>
+        <file>assets/grain.png</file>
+        <file>assets/gridtile.png</file>
+        <file>assets/gridtile_3x3.png</file>
+        <file>assets/gridtile_3x3_white.png</file>
+        <file>assets/gridtile_white.png</file>
+        <file>assets/large_left.png</file>
+        <file>assets/large_right.png</file>
+        <file>assets/loader.gif</file>
+        <file>assets/loader2.gif</file>
+        <file>assets/navigdots.png</file>
+        <file>assets/navigdots_bgtile.png</file>
+        <file>assets/shadow1.png</file>
+        <file>assets/shadow2.png</file>
+        <file>assets/shadow3.png</file>
+        <file>assets/small_left.png</file>
+        <file>assets/small_left_boxed.png</file>
+        <file>assets/small_right.png</file>
+        <file>assets/small_right_boxed.png</file>
+        <file>assets/timer.png</file>
+        <file>assets/timerdot.png</file>
+        <file>assets/transparent.jpg</file>
+        <file>assets/white50.png</file>
     </qresource>
 </RCC>

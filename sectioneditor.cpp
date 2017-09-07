@@ -27,18 +27,12 @@
 #include <QTest>
 #include <QDrag>
 
-SectionEditor::SectionEditor(bool fullwidth)
+SectionEditor::SectionEditor()
 {
-    m_fullwidth = fullwidth;
-    QPalette pal = palette();
-    if(m_fullwidth)
-        pal.setColor(QPalette::Background, QColor("#800080"));
-    else
-        pal.setColor(QPalette::Background, QColor(palette().base().color().name()));
-    setPalette(pal);
+    m_fullwidth = false;
     setAutoFillBackground(true);
     setAcceptDrops(true);
-
+    setBGColor();
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->setAlignment(Qt::AlignTop);
     vbox->setSpacing(5);
@@ -67,6 +61,16 @@ SectionEditor::SectionEditor(bool fullwidth)
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(m_copyButton, SIGNAL(clicked()), this, SLOT(copy()));
     connect(m_editButton, SIGNAL(clicked()), this, SLOT(edit()));
+}
+
+void SectionEditor::setBGColor()
+{
+    QPalette pal = palette();
+    if(m_fullwidth)
+        pal.setColor(QPalette::Background, QColor("#800080"));
+    else
+        pal.setColor(QPalette::Background, QColor(palette().base().color().name()));
+    setPalette(pal);
 }
 
 void SectionEditor::save(QDomDocument doc, QDomElement de)
@@ -153,11 +157,12 @@ void SectionEditor::edit()
 
 SectionEditor *SectionEditor::clone()
 {
-    SectionEditor *ne = new SectionEditor(m_fullwidth);
+    SectionEditor *ne = new SectionEditor();
     ne->setCssClass(m_cssclass);
     ne->setId(m_id);
     ne->setAttributes(m_attributes);
     ne->setStyle(m_style);
+    ne->setFullwidth(m_fullwidth);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ne->addRow(dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget())->clone());
@@ -340,6 +345,8 @@ void SectionEditor::setContent(QDomElement section)
     m_style = section.attribute("style");
     m_attributes = section.attribute("attributes");
     m_id = section.attribute("id");
+    m_fullwidth = section.attribute("fullwidth") == "true";
+    setBGColor();
 }
 
 QDomElement SectionEditor::content()
@@ -349,5 +356,6 @@ QDomElement SectionEditor::content()
     section.setAttribute("style", m_style);
     section.setAttribute("attributes", m_attributes);
     section.setAttribute("id", m_id);
+    section.setAttribute("fullwidth", m_fullwidth ? "true" : "false");
     return section;
 }

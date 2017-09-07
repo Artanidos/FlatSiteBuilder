@@ -24,6 +24,7 @@
 #include "interfaces.h"
 #include <QLineEdit>
 #include <QGridLayout>
+#include <QCheckBox>
 
 class SectionPropertyEditor : public AbstractEditor
 {
@@ -31,7 +32,6 @@ class SectionPropertyEditor : public AbstractEditor
 
 public:
     SectionPropertyEditor();
-    ~SectionPropertyEditor();
 
     void setContent(QDomElement ele);
     static QString getHtml(QDomElement ele);
@@ -45,7 +45,7 @@ private:
     QLineEdit *m_attributes;
     QLineEdit *m_id;
     QGridLayout *m_grid;
-    bool m_fullwidth;
+    QCheckBox *m_fullwidth;
 };
 
 #endif // SECTIONPROPERTYEDITOR_H

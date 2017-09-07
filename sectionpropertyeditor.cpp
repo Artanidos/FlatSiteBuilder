@@ -24,6 +24,7 @@
 #include "flatbutton.h"
 #include <QPushButton>
 #include <QLabel>
+#include <QTest>
 
 SectionPropertyEditor::SectionPropertyEditor()
 {
@@ -34,7 +35,7 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_attributes = new QLineEdit();
     m_id = new QLineEdit;
     m_changed = false;
-    m_fullwidth = false;
+    m_fullwidth = new QCheckBox("Full Width");
     setAutoFillBackground(true);
 
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
@@ -59,7 +60,8 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_grid->addWidget(m_attributes, 6, 0, 1, 2);
     m_grid->addWidget(new QLabel("Id"), 7, 0);
     m_grid->addWidget(m_id, 8, 0, 1, 2);
-    m_grid->addLayout(vbox, 9, 0);
+    m_grid->addWidget(m_fullwidth, 9, 0);
+    m_grid->addLayout(vbox, 10, 0);
     setLayout(m_grid);
 
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
@@ -67,12 +69,7 @@ SectionPropertyEditor::SectionPropertyEditor()
     connect(m_style, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_attributes, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
-
-}
-
-SectionPropertyEditor::~SectionPropertyEditor()
-{
-    delete m_grid;
+    connect(m_fullwidth, SIGNAL(clicked(bool)), this, SLOT(contentChanged()));
 }
 
 void SectionPropertyEditor::closeEditor()
@@ -87,7 +84,7 @@ void SectionPropertyEditor::closeEditor()
         m_element.setAttribute("style", m_style->text());
         m_element.setAttribute("attributes", m_attributes->text());
         m_element.setAttribute("id", m_id->text());
-        m_element.setAttribute("fullwidth", m_fullwidth ? "true" : "false");
+        m_element.setAttribute("fullwidth", m_fullwidth->isChecked() ? "true" : "false");
     }
     emit close();
 }
@@ -99,7 +96,7 @@ void SectionPropertyEditor::setContent(QDomElement element)
     m_style->setText(m_element.attribute("style", ""));
     m_attributes->setText(m_element.attribute("attributes", ""));
     m_id->setText(m_element.attribute("id", ""));
-    m_fullwidth = m_element.attribute("fullwidth") == "true";
+    m_fullwidth->setChecked(m_element.attribute("fullwidth") == "true");
     m_changed = false;
 }
 

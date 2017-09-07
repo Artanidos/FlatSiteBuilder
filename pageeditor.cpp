@@ -33,16 +33,13 @@ PageEditor::PageEditor()
     hbox->setAlignment(Qt::AlignLeft);
     hbox->setSpacing(10);
     Hyperlink *addSection = new Hyperlink("(+) Add Section");
-    Hyperlink *addFullSection = new Hyperlink("(+) Add Full Width Section");
     m_layout = new QVBoxLayout();
     hbox->addWidget(addSection);
-    hbox->addWidget(addFullSection);
     m_layout->addLayout(hbox);
     m_layout->addStretch();
     setLayout(m_layout);
     setAcceptDrops(true);
     connect(addSection, SIGNAL(clicked()), this, SLOT(addSection()));
-    connect(addFullSection, SIGNAL(clicked()), this, SLOT(addFullSection()));
 }
 
 void PageEditor::addSection(SectionEditor *se)
@@ -66,14 +63,6 @@ QList<SectionEditor*> PageEditor::sections()
 void PageEditor::addSection()
 {
     addSection(new SectionEditor());
-    ContentEditor *ce = getContentEditor();
-    if(ce)
-        ce->editChanged("Add Section");
-}
-
-void PageEditor::addFullSection()
-{
-    addSection(new SectionEditor(true));
     ContentEditor *ce = getContentEditor();
     if(ce)
         ce->editChanged("Add Section");

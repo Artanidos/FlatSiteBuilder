@@ -324,12 +324,12 @@ void ContentEditor::load()
     QDomElement section = content.firstChildElement("Section");
     while(!section.isNull())
     {
-        QString fw = section.attribute("fullwidth", "false");
-        SectionEditor *se = new SectionEditor(fw == "true");
+        SectionEditor *se = new SectionEditor();
         se->setCssClass(section.attribute("cssclass"));
         se->setStyle(section.attribute("style"));
         se->setAttributes(section.attribute("attributes"));
         se->setId(section.attribute("id"));
+        se->setFullwidth(section.attribute("fullwidth", "false") == "true");
         pe->addSection(se);
         loadRows(section, se);
         section = section.nextSiblingElement("Section");

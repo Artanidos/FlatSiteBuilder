@@ -605,7 +605,7 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
 void Generator::copyPath(QString src, QString dst)
 {
     QDir dir(src);
-    if (! dir.exists())
+    if (!dir.exists())
         return;
 
     foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))

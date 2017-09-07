@@ -31,7 +31,6 @@ class RowPropertyEditor : public AbstractEditor
 
 public:
     RowPropertyEditor();
-    ~RowPropertyEditor();
 
     void setContent(QDomElement ele);
     static QString getHtml(QDomElement ele);

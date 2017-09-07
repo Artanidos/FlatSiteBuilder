@@ -56,11 +56,6 @@ RowPropertyEditor::RowPropertyEditor()
     connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
-RowPropertyEditor::~RowPropertyEditor()
-{
-    delete m_grid;
-}
-
 void RowPropertyEditor::editorClose()
 {
     if(m_changed)
