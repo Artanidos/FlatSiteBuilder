@@ -36,12 +36,13 @@ class TextEditor : public EditorInterface
 public:
     TextEditor();
 
-    void setContent(QDomElement ele) override;
+    void setContent(QString content) override;
     QString className() override {return "TextEditor";}
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}
     QImage icon() override {return QImage(":/images/text.png");}
     QString getHtml(QDomElement ele) override;
+    QString load(QXmlStreamReader *stream) override;
 
 signals:
     void close();

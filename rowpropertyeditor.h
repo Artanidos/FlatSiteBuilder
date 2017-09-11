@@ -32,7 +32,7 @@ class RowPropertyEditor : public AbstractEditor
 public:
     RowPropertyEditor();
 
-    void setContent(QDomElement ele);
+    void setContent(QString ele);
     static QString getHtml(QDomElement ele);
 
 private slots:

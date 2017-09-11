@@ -149,12 +149,13 @@ class TextEditor : public EditorInterface
 public:
     TextEditor() {}
 
-    void setContent(QDomElement) override {}
+    void setContent(QString) override {}
     QString className() override {return "TextEditor";}
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}
     QImage icon() override {return QImage(":/images/text.png");}
     QString getHtml(QDomElement) {return "<h1>testPageTitle</h1>";}
+    QString load(QXmlStreamReader *) override {return "";}
 };
 
 void TestGenerator::generateSite()

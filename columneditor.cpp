@@ -28,6 +28,7 @@
 #include <QDragLeaveEvent>
 #include <QDragMoveEvent>
 #include <QMimeData>
+#include <QXmlStreamWriter>
 #include <QTest>
 
 ColumnEditor::ColumnEditor()
@@ -50,17 +51,18 @@ ColumnEditor::ColumnEditor()
     connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
 }
 
-void ColumnEditor::save(QDomDocument doc, QDomElement de)
+void ColumnEditor::save(QXmlStreamWriter *stream)
 {
-    QDomElement col = doc.createElement("Column");
-    col.setAttribute("span", m_span);
-    de.appendChild(col);
+    stream->writeStartElement("Column");
+    stream->writeAttribute("span", QString::number(m_span));
+    stream->writeCharacters("");
     for(int i = 0; i < m_layout->count(); i++)
     {
         ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
         if(ee)
-            ee->save(doc, col);
+            ee->save(stream);
     }
+    stream->writeEndElement();
 }
 
 void ColumnEditor::addElement()

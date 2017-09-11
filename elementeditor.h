@@ -23,11 +23,14 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QDomElement>
 #include "columneditor.h"
 #include "hyperlink.h"
 #include "flatbutton.h"
 
 class ContentEditor;
+class QXmlStreamWriter;
+class QXmlStreamReader;
 class ElementEditor : public QWidget
 {
     Q_OBJECT
@@ -38,13 +41,14 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
 
     ElementEditor *clone();
-    void setContent(QDomElement content);
-    QDomElement content() {return m_content;}
+    void setContent(QString content);
+    QString content() {return m_content;}
     enum Mode {Empty, Enabled, Dropzone};
     void setMode(Mode mode);
     Mode mode() {return m_mode;}
     QString type() {return m_type;}
-    void save(QDomDocument doc, QDomElement de);
+    void save(QXmlStreamWriter *);
+    void load(QXmlStreamReader *);
 
 public slots:
     void dropped();
@@ -69,11 +73,10 @@ private:
     QString m_normalColor;
     QString m_enabledColor;
     QString m_dropColor;
-    QDomElement m_content;
+    QString m_content;
     Mode m_mode;
     QString m_type;
     bool m_zoom;
-    QDomDocument m_doc;
 
     void setColor(QString name);
     ContentEditor* getContentEditor();

@@ -30,6 +30,7 @@
 #include <QComboBox>
 #include <QStandardItemModel>
 #include <QStandardPaths>
+#include <QXmlStreamWriter>
 
 ImageEditor::ImageEditor()
 {
@@ -83,18 +84,33 @@ ImageEditor::ImageEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
-void ImageEditor::setContent(QDomElement element)
+QString ImageEditor::load(QXmlStreamReader *streamin)
 {
-    m_element = element;
-    QString src = m_element.attribute("src", "");
+    QString content;
+    QXmlStreamWriter stream(&content);
+    stream.writeStartElement("Image");
+    stream.writeAttribute("src", streamin->attributes().value("src").toString());
+    stream.writeAttribute("alt", streamin->attributes().value("alt").toString());
+    stream.writeAttribute("title", streamin->attributes().value("title").toString());
+    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+    stream.writeEndElement();
+    return content;
+}
+
+void ImageEditor::setContent(QString content)
+{
+    m_content = content;
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    QString src = stream.attributes().value("src").toString();
     m_source->setText(src);
     if(!src.isEmpty())
         m_image->setImage(QImage(src));
     else
         m_image->setImage(QImage(":/images/image_placeholder.png"));
-    m_alt->setText(m_element.attribute("alt", ""));
-    m_title->setText(m_element.attribute("title", ""));
-    m_adminlabel->setText(m_element.attribute("adminlabel", ""));
+    m_alt->setText(stream.attributes().value("alt").toString());
+    m_title->setText(stream.attributes().value("title").toString());
+    m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
     m_changed = false;
 }
 
@@ -133,14 +149,14 @@ void ImageEditor::closeEditor()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Image");
-        }
-        m_element.setAttribute("src", m_source->text());
-        m_element.setAttribute("alt", m_alt->text());
-        m_element.setAttribute("title", m_title->text());
-        m_element.setAttribute("adminlabel", m_adminlabel->text());
+        m_content = "";
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Image");
+        stream.writeAttribute("src", m_source->text());
+        stream.writeAttribute("alt", m_alt->text());
+        stream.writeAttribute("title", m_title->text());
+        stream.writeAttribute("adminlabel", m_adminlabel->text());
+        stream.writeEndElement();
     }
     emit close();
 }

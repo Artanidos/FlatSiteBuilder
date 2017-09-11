@@ -26,6 +26,8 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 TextEditor::TextEditor()
 {
@@ -75,54 +77,42 @@ void TextEditor::closeEditor()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Text");
-            m_element.appendChild(m_doc.createCDATASection(m_html->toPlainText()));
-        }
-        else
-        {
-            if(m_element.nodeName() == "Text")
-            {
-                QDomNode data = m_element.firstChild();
-                QDomCDATASection cdata = data.toCDATASection();
-                cdata.setData(m_html->toPlainText());
-            }
-            else
-            {
-                m_doc.setContent(m_html->toPlainText());
-                m_element = m_doc.documentElement();
-            }
-        }
-        m_element.setAttribute("adminlabel", m_adminlabel->text());
+        m_content = "";
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Text");
+        stream.writeAttribute("adminlabel", m_adminlabel->text());
+        stream.writeCDATA(m_html->toPlainText());
+        stream.writeEndElement();
     }
     emit close();
 }
 
-void TextEditor::setContent(QDomElement element)
+QString TextEditor::load(QXmlStreamReader *streamin)
 {
-    m_element = element;
-    if(element.nodeName() == "Text")
+    QString content = "";
+    QXmlStreamWriter stream(&content);
+    stream.writeStartElement("Text");
+    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+    stream.writeCDATA(streamin->readElementText());
+    stream.writeEndElement();
+    return content;
+}
+
+void TextEditor::setContent(QString content)
+{
+    m_content = content;
+
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    if(stream.name() == "Text")
     {
-        m_adminlabel->setText(m_element.attribute("adminlabel", ""));
-        QDomNode data = m_element.firstChild();
-        QDomCDATASection cdata = data.toCDATASection();
-        m_html->setPlainText(cdata.data());
+        m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
+        m_html->setPlainText(stream.readElementText());
     }
     else
     {
-        QString txt = "<" + element.nodeName();
-        QDomNamedNodeMap attrs = element.attributes();
-        for(int i = 0; i < attrs.count(); i++)
-        {
-            QDomAttr att = attrs.item(i).toAttr();
-            if(att.name() == "adminlabel")
-                m_adminlabel->setText(m_element.attribute("adminlabel", ""));
-            else
-                txt += QString::fromLatin1(" %0=\"%1\"").arg(att.name()).arg(att.value());
-        }
-        txt += ">";
-        m_html->setPlainText(txt);
+        m_html->setPlainText(m_content);
+        m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
     }
     m_changed = false;
 }

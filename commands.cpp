@@ -30,13 +30,13 @@ ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUnd
     : QUndoCommand(parent)
 {
     m_contentEditor = ce;
-    fileVersionNumber += 2;
+    fileVersionNumber ++;
     setText(text);
 
     QString sitedir = m_contentEditor->site()->sourcePath().mid(m_contentEditor->site()->sourcePath().lastIndexOf("/") + 1);
     QString subdir = m_contentEditor->getContent()->contentType() == ContentType::Page ? "/pages/" : "/posts/";
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber + 1);
+    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber) + ".undo";
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber) + ".redo";
 }
 
 ChangeContentCommand::~ChangeContentCommand()

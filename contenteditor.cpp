@@ -41,6 +41,8 @@
 #include <QDomElement>
 #include <QApplication>
 #include <QAction>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QTest>
 
 ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
@@ -391,77 +393,86 @@ void ContentEditor::init()
 void ContentEditor::load()
 {
     m_isNew = false;
-    QDomDocument doc;
+
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
     {
         m_win->statusBar()->showMessage("ContentEditor::load(): Unable to open " + m_filename);
         return;
     }
-    if (!doc.setContent(&file))
-    {
-        m_win->statusBar()->showMessage("ContentEditor::load(): Unable to read the post content from XML");
-        file.close();
-        return;
-    }
-    file.close();
-
     PageEditor *pe = new PageEditor();
     m_scroll->setWidget(pe);
-    QDomElement content = doc.documentElement();
-    QDomElement section = content.firstChildElement("Section");
-    while(!section.isNull())
+
+    QXmlStreamReader stream(&file);
+    if(stream.readNextStartElement())
     {
-        SectionEditor *se = new SectionEditor();
-        se->setCssClass(section.attribute("cssclass"));
-        se->setStyle(section.attribute("style"));
-        se->setAttributes(section.attribute("attributes"));
-        se->setId(section.attribute("id"));
-        se->setFullwidth(section.attribute("fullwidth", "false") == "true");
-        pe->addSection(se);
-        loadRows(section, se);
-        section = section.nextSiblingElement("Section");
+        if(stream.name() == "Content")
+        {
+            while(stream.readNextStartElement())
+            {
+                if(stream.name() == "Section")
+                {
+                    SectionEditor *se = new SectionEditor();
+                    se->setCssClass(stream.attributes().value("cssclass").toString());
+                    se->setStyle(stream.attributes().value("style").toString());
+                    se->setAttributes(stream.attributes().value("attributes").toString());
+                    se->setId(stream.attributes().value("id").toString());
+                    se->setFullwidth(stream.attributes().value("fullwidth").toString() == "true");
+                    pe->addSection(se);
+                    loadRows(&stream, se);
+                    stream.readNext();
+                }
+                else
+                    stream.skipCurrentElement();
+            }
+        }
     }
+    file.close();
 }
 
-void ContentEditor::loadRows(QDomElement section, SectionEditor *se)
+void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
 {
-    QDomElement row = section.firstChildElement("Row");
-    while(!row.isNull())
+    while(stream->readNextStartElement())
     {
-        RowEditor *re = new RowEditor();
-        re->setCssClass(row.attribute("cssclass"));
-        se->addRow(re);
-        loadColumns(row, re);
-        row = row.nextSiblingElement("Row");
+        if(stream->name() == "Row")
+        {
+            RowEditor *re = new RowEditor();
+            re->setCssClass(stream->attributes().value("cssclass").toString());
+            se->addRow(re);
+            loadColumns(stream, re);
+            stream->readNext();
+        }
+        else
+            stream->skipCurrentElement();
     }
 }
 
-void ContentEditor::loadColumns(QDomElement row, RowEditor *re)
+void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
 {
     int i = 0;
-    QDomElement column = row.firstChildElement("Column");
-    while(!column.isNull())
+    while(stream->readNextStartElement())
     {
-        ColumnEditor *ce = new ColumnEditor();
-        ce->setSpan(column.attribute("span", "1").toInt());
-        re->addColumn(ce, i);
-        loadElements(column, ce);
-        column = column.nextSiblingElement("Column");
-        i++;
+        if(stream->name() == "Column")
+        {
+            ColumnEditor *ce = new ColumnEditor();
+            ce->setSpan(stream->attributes().value("span").toInt());
+            re->addColumn(ce, i++);
+            loadElements(stream, ce);
+            stream->readNext();
+        }
+        else
+            stream->skipCurrentElement();
     }
 }
 
-void ContentEditor::loadElements(QDomElement column, ColumnEditor *ce)
+void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
 {
-    QDomElement element = column.firstChildElement();
-    while(!element.isNull())
+    while(stream->readNextStartElement())
     {
         ElementEditor *ee = new ElementEditor();
         ee->setMode(ElementEditor::Mode::Enabled);
-        ee->setContent(element);
+        ee->load(stream);
         ce->addElement(ee);
-        element = element.nextSiblingElement();
     }
 }
 
@@ -473,17 +484,20 @@ void ContentEditor::save()
         m_win->statusBar()->showMessage("ContentEditor::save(): Unable to open file " + m_filename);
         return;
     }
-    QDomDocument doc;
-    QDomElement root;
-    root = doc.createElement("Content");
-    doc.appendChild(root);
+
+
+    QXmlStreamWriter stream(&file);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+    stream.writeStartElement("Content");
+
     PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
     foreach(SectionEditor *se, pe->sections())
     {
-        se->save(doc, root);
+        se->save(&stream);
     }
-    QTextStream stream(&file);
-    stream << doc.toString();
+    stream.writeEndElement();
+    stream.writeEndDocument();
     file.close();
 }
 

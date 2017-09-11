@@ -25,7 +25,8 @@
 #include "pageeditor.h"
 #include "columnsdialog.h"
 #include "contenteditor.h"
-
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QTest>
 #include <QDrag>
 
@@ -74,18 +75,18 @@ RowEditor::RowEditor(bool clone)
     connect(m_addColumns, SIGNAL(clicked()), this, SLOT(addColumns()));
 }
 
-void RowEditor::save(QDomDocument doc, QDomElement de)
+void RowEditor::save(QXmlStreamWriter *stream)
 {
-    QDomElement row = doc.createElement("Row");
+    stream->writeStartElement("Row");
     if(!m_cssclass.isEmpty())
-        row.setAttribute("cssclass", m_cssclass);
-    de.appendChild(row);
+        stream->writeAttribute("cssclass", m_cssclass);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ColumnEditor *ce = dynamic_cast<ColumnEditor*>(m_layout->itemAt(i)->widget());
         if(ce)
-            ce->save(doc, row);
+            ce->save(stream);
     }
+    stream->writeEndElement();
 }
 
 void RowEditor::close()
@@ -331,14 +332,20 @@ ContentEditor* RowEditor::getContentEditor()
     return NULL;
 }
 
-void RowEditor::setContent(QDomElement row)
+void RowEditor::setContent(QString content)
 {
-    m_cssclass = row.attribute("cssclass");
+    QXmlStreamReader stream(content);
+    stream.readNextStartElement();
+    m_cssclass = stream.attributes().value("cssclass").toString();
 }
 
-QDomElement RowEditor::content()
+QString RowEditor::content()
 {
-    QDomElement row = m_doc.createElement("Row");
-    row.setAttribute("cssclass", m_cssclass);
-    return row;
+    QString content;
+
+    QXmlStreamWriter stream(&content);
+    stream.writeStartElement("Row");
+    stream.writeAttribute("cssclass", m_cssclass);
+    stream.writeEndElement();
+    return content;
 }

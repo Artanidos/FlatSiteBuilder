@@ -23,6 +23,7 @@
 #include "mainwindow.h"
 #include "flatbutton.h"
 #include <QPushButton>
+#include <QXmlStreamReader>
 #include <QLabel>
 #include <QTest>
 
@@ -76,27 +77,29 @@ void SectionPropertyEditor::closeEditor()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Section");
-        }
-        m_element.setAttribute("cssclass", m_cssclass->text());
-        m_element.setAttribute("style", m_style->text());
-        m_element.setAttribute("attributes", m_attributes->text());
-        m_element.setAttribute("id", m_id->text());
-        m_element.setAttribute("fullwidth", m_fullwidth->isChecked() ? "true" : "false");
+        m_content = "";
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Section");
+        stream.writeAttribute("cssclass", m_cssclass->text());
+        stream.writeAttribute("style", m_style->text());
+        stream.writeAttribute("attributes", m_attributes->text());
+        stream.writeAttribute("id", m_id->text());
+        stream.writeAttribute("fullwidth", m_fullwidth->isChecked() ? "true" : "false");
+        stream.writeEndElement();
     }
     emit close();
 }
 
-void SectionPropertyEditor::setContent(QDomElement element)
+void SectionPropertyEditor::setContent(QString content)
 {
-    m_element = element;
-    m_cssclass->setText(m_element.attribute("cssclass", ""));
-    m_style->setText(m_element.attribute("style", ""));
-    m_attributes->setText(m_element.attribute("attributes", ""));
-    m_id->setText(m_element.attribute("id", ""));
-    m_fullwidth->setChecked(m_element.attribute("fullwidth") == "true");
+    m_content = content;
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    m_cssclass->setText(stream.attributes().value("cssclass").toString());
+    m_style->setText(stream.attributes().value("style").toString());
+    m_attributes->setText(stream.attributes().value("attributes").toString());
+    m_id->setText(stream.attributes().value("id").toString());
+    m_fullwidth->setChecked(stream.attributes().value("fullwidth").toString() == "true");
     m_changed = false;
 }
 

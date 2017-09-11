@@ -24,6 +24,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 SampleEditor::SampleEditor()
 {
@@ -62,23 +64,35 @@ SampleEditor::SampleEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
-void SampleEditor::setContent(QDomElement element)
+void SampleEditor::setContent(QString content)
 {
-    m_element = element;
-    m_sampleproperty->setText(m_element.attribute("sampleproperty"));
-    m_adminlabel->setText(m_element.attribute("adminlabel"));
+    m_content = content;
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    m_sampleproperty->setText(stream.attributes().value("sampleproperty").toString());
+    m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
+}
+
+QString SampleEditor::load(QXmlStreamReader *streamin)
+{
+    QString content;
+    QXmlStreamWriter stream(&content);
+    stream.writeStartElement("Sample");
+    stream.writeAttribute("sampleproperty", streamin->attributes().value("sampleproperty").toString());
+    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+    stream.writeEndElement();
+    return content;
 }
 
 void SampleEditor::closeEditor()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Sample");
-        }
-        m_element.setAttribute("sampleproperty", m_sampleproperty->text());
-        m_element.setAttribute("adminlabel", m_adminlabel->text());
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Sample");
+        stream.writeAttribute("sampleproperty", m_sampleproperty->text());
+        stream.writeAttribute("adminlabel", m_adminlabel->text());
+        stream.writeEndElement();
     }
     emit close();
 }

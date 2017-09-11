@@ -2,8 +2,8 @@ Features
 --------
 - menu editor
 - theme chooser (theme_accent)
-- page settings (keywords, author, menu, layout)
 - site settings (keywords, copyright, author)
+- plugin settings page (disable plugins, dependencies)
 - test on windows
 
 Postponend
@@ -21,7 +21,11 @@ Postponend
 - widget system ala wordpress
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - library to save pages, sections and rows as templates
-- plugin settings page (disable plugins, dependencies)
 - general plugin (settings)
 - plugin for publish
+
+Bug
+- when there are multiple elements in the column they are not loaded each time
+- if you want to delete one of the elements this will not reflect the data
+- also a crash after deleting an item occures from time to time
 

@@ -23,10 +23,10 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QDomElement>
 #include "roweditor.h"
 #include "flatbutton.h"
 
+class QXmlStreamWriter;
 class SectionEditor : public QWidget
 {
     Q_OBJECT
@@ -39,10 +39,10 @@ public:
     void removeRow(RowEditor *re);
     void enableColumnAcceptDrop(bool mode);
     SectionEditor *clone();
-    void save(QDomDocument doc, QDomElement de);
+    void save(QXmlStreamWriter *);
     void setFullwidth(bool fw) {m_fullwidth = fw; setBGColor();}
-    void setContent(QDomElement row);
-    QDomElement content();
+    void setContent(QString content);
+    QString content();
     void setCssClass(QString cls) {m_cssclass = cls;}
     void setStyle(QString style) {m_style = style;}
     void setAttributes(QString attributes) {m_attributes = attributes;}
@@ -74,7 +74,6 @@ private:
     QString m_style;
     QString m_attributes;
     QString m_id;
-    QDomDocument m_doc;
 
     ContentEditor* getContentEditor();
     void setBGColor();

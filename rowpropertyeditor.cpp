@@ -23,6 +23,7 @@
 #include "mainwindow.h"
 #include "flatbutton.h"
 #include <QGridLayout>
+#include <QXmlStreamWriter>
 #include <QPushButton>
 #include <QLabel>
 
@@ -60,19 +61,21 @@ void RowPropertyEditor::editorClose()
 {
     if(m_changed)
     {
-        if(m_element.isNull())
-        {
-            m_element = m_doc.createElement("Row");
-        }
-        m_element.setAttribute("cssclass", m_cssclass->text());
+        m_content = "";
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Row");
+        stream.writeAttribute("cssclass", m_cssclass->text());
+        stream.writeEndElement();
     }
     emit close();
 }
 
-void RowPropertyEditor::setContent(QDomElement element)
+void RowPropertyEditor::setContent(QString content)
 {
-    m_element = element;
-    m_cssclass->setText(m_element.attribute("cssclass", ""));
+    m_content = content;
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    m_cssclass->setText(stream.attributes().value("cssclass").toString());
     m_changed = false;
 }
 

@@ -41,6 +41,7 @@
 
 class QStatusBar;
 class MainWindow;
+class QXmlStreamReader;
 class ContentEditor : public AbstractEditor
 {
     Q_OBJECT
@@ -57,7 +58,7 @@ public:
     Site *site() {return m_site;}
     QString filename() {return m_filename;}
     void load();
-    void setContent(QDomElement) {/* not used */}
+    void setContent(QString) {/* not used */}
 
 public slots:
     void editChanged(QString text);
@@ -138,9 +139,9 @@ private:
     QComboBox *m_layouts;
 
     void init();
-    void loadRows(QDomElement section, SectionEditor *se);
-    void loadColumns(QDomElement row, RowEditor *re);
-    void loadElements(QDomElement column, ColumnEditor *ce);
+    void loadRows(QXmlStreamReader *stream, SectionEditor *se);
+    void loadColumns(QXmlStreamReader *stream, RowEditor *re);
+    void loadElements(QXmlStreamReader *stream, ColumnEditor *ce);
     void animate(QWidget *widget);
     void editorClosed();
     void updateNewContent();

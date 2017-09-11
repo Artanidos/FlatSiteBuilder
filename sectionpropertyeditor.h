@@ -33,7 +33,7 @@ class SectionPropertyEditor : public AbstractEditor
 public:
     SectionPropertyEditor();
 
-    void setContent(QDomElement ele);
+    void setContent(QString content);
     static QString getHtml(QDomElement ele);
 
 private slots:

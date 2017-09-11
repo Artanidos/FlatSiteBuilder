@@ -62,10 +62,11 @@ public:
     QString tagName() {return "Slider";}
     QImage icon() {return QImage(":/slider.png");}
     QString getHtml(QDomElement ele);
-    void setContent(QDomElement ele);
+    void setContent(QString content);
     QString pluginStyles();
     QString pluginScripts();
     void installAssets(QString assetsPath);
+    QString load(QXmlStreamReader *streamin) override;
 
 private slots:
     void closeEditor();

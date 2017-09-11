@@ -37,6 +37,7 @@
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QDomNamedNodeMap>
+#include <QXmlStreamWriter>
 
 ElementEditor::ElementEditor()
 {
@@ -78,23 +79,38 @@ ElementEditor::ElementEditor()
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-void ElementEditor::setContent(QDomElement content)
+void ElementEditor::load(QXmlStreamReader *stream)
+{
+    m_type = stream->name() + "Editor";
+    QString label = stream->attributes().value("adminlabel").toString();
+    if(label.isEmpty())
+        m_text->setText(stream->name().toString());
+    else
+        m_text->setText(label);
+    EditorInterface * editor = Globals::getPlugin(m_type);
+    if(editor)
+        m_content = editor->load(stream);
+}
+
+void ElementEditor::setContent(QString content)
 {
     m_content = content;
-    m_type = m_content.nodeName() + "Editor";
+    QXmlStreamReader stream(content);
+    stream.readNextStartElement();
+    m_type = stream.name() + "Editor";
 
-    QString label = content.attribute("adminlabel", "");
+    QString label = stream.attributes().value("adminlabel").toString();
     if(label.isEmpty())
-        m_text->setText(m_content.nodeName());
+        m_text->setText(stream.name().toString());
     else
         m_text->setText(label);
 }
 
-void ElementEditor::save(QDomDocument, QDomElement de)
+void ElementEditor::save(QXmlStreamWriter *stream)
 {
     if(m_mode == Mode::Enabled)
     {
-        de.appendChild(content());
+        stream->device()->write(m_content.toUtf8());
     }
 }
 
@@ -103,7 +119,7 @@ ElementEditor *ElementEditor::clone()
     ElementEditor *nee = new ElementEditor();
     nee->setMode(m_mode);
     nee->setText(m_text->text());
-    nee->setContent(content().cloneNode().toElement());
+    nee->setContent(m_content);
     return nee;
 }
 
@@ -186,20 +202,10 @@ void ElementEditor::enable()
     if(dlg->result().isEmpty())
         return;
 
-    if(dlg->result() == "TextEditor")
-    {
-        m_text->setText("Text");
-        m_type = "TextEditor";
-        m_content = m_doc.createElement("Text");
-        m_content.appendChild(m_doc.createCDATASection(""));
-    }
-    else
-    {
-        EditorInterface *editor = Globals::getPlugin(dlg->result());
-        m_text->setText(editor->displayName());
-        m_content = m_doc.createElement(editor->tagName());
-        m_type = editor->className();
-    }
+    EditorInterface *editor = Globals::getPlugin(dlg->result());
+    m_text->setText(editor->displayName());
+    m_content = "";
+    m_type = editor->className();
 
     setMode(Mode::Enabled);
     emit elementEnabled();
@@ -210,6 +216,7 @@ void ElementEditor::close()
 {
     parentWidget()->layout()->removeWidget(this);
     this->deleteLater();
+
     ContentEditor *ce = getContentEditor();
     if(ce)
         ce->editChanged("Delete Element");

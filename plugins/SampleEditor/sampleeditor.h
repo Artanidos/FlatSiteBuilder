@@ -39,7 +39,8 @@ public:
     QString tagName() {return "Sample";}
     QImage icon() {return QImage(":/sample.png");}
     QString getHtml(QDomElement ele);
-    void setContent(QDomElement ele);
+    void setContent(QString content);
+    QString load(QXmlStreamReader *streamin) override;
 
 private slots:
     void closeEditor();

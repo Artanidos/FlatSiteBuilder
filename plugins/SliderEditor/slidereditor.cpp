@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QHeaderView>
 #include <QHBoxLayout>
+#include <QXmlStreamWriter>
 #include <QTest>
 
 SliderEditor::SliderEditor()
@@ -96,40 +97,72 @@ bool SliderEditor::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-void SliderEditor::setContent(QDomElement element)
+void SliderEditor::setContent(QString content)
 {
-    m_element = element;
-    m_adminlabel->setText(m_element.attribute("adminlabel"));
+    m_content = content;
+    QXmlStreamReader stream(m_content);
+    stream.readNextStartElement();
+    m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
     m_list->setRowCount(0);
 
-    QDomElement slide = m_element.firstChildElement("Slide");
-    while(!slide.isNull())
+    while(stream.readNextStartElement())
     {
-        Slide *s = new Slide();
-        s->setSource(slide.attribute("src"));
-        s->setAdminLabel(slide.attribute("adminlabel"));
-        addListItem(s);
-        slide = slide.nextSiblingElement("Slide");
+        if(stream.name() == "Slide")
+        {
+            Slide *s = new Slide();
+            s->setSource(stream.attributes().value("src").toString());
+            s->setAdminLabel(stream.attributes().value("adminlabel").toString());
+            addListItem(s);
+            stream.readNext();
+        }
     }
     m_changed = false;
+}
+
+QString SliderEditor::load(QXmlStreamReader *streamin)
+{
+    QString content;
+    QXmlStreamWriter stream(&content);
+    if(streamin->name() == "Slider")
+    {
+        stream.writeStartElement("Slider");
+        stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+        while(streamin->readNextStartElement())
+        {
+            if(streamin->name() == "Slide")
+            {
+                stream.writeStartElement("Slide");
+                stream.writeAttribute("src", streamin->attributes().value("src").toString());
+                stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+                stream.writeEndElement();
+                streamin->readNext();
+            }
+            else
+                streamin->skipCurrentElement();
+        }
+        stream.writeEndElement();
+    }
+    return content;
 }
 
 void SliderEditor::closeEditor()
 {
     if(m_changed)
     {
-        m_element = m_doc.createElement("Slider");
-        m_element.setAttribute("adminlabel", m_adminlabel->text());
-
+        m_content = "";
+        QXmlStreamWriter stream(&m_content);
+        stream.writeStartElement("Slider");
+        stream.writeAttribute("adminlabel", m_adminlabel->text());
         for(int i = 0; i < m_list->rowCount(); i++)
         {
             QTableWidgetItem *item = m_list->item(i, 1);
             Slide *slide = qvariant_cast<Slide*>(item->data(Qt::UserRole));
-            QDomElement slideelement = m_doc.createElement("Slide");
-            slideelement.setAttribute("src", slide->source());
-            slideelement.setAttribute("adminlabel", slide->adminLabel());
-            m_element.appendChild(slideelement);
+            stream.writeStartElement("Slide");
+            stream.writeAttribute("src", slide->source());
+            stream.writeAttribute("adminlabel", slide->adminLabel());
+            stream.writeEndElement();
         }
+        stream.writeEndElement();
     }
     emit close();
 }

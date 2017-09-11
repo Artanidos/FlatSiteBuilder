@@ -32,7 +32,7 @@ class SlideEditor : public AbstractEditor
 public:
     SlideEditor();
 
-    void setContent(QDomElement) {/* unused */}
+    void setContent(QString) {/* unused */}
     void setSlide(Slide *slide);
     Slide *slide() {return m_slide;}
 

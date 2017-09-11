@@ -23,10 +23,10 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QDomElement>
 
 class ElementEditor;
 class ContentEditor;
+class QXmlStreamWriter;
 class ColumnEditor : public QWidget
 {
     Q_OBJECT
@@ -36,7 +36,7 @@ public:
 
     ColumnEditor* clone();
     void addElement(ElementEditor *);
-    void save(QDomDocument doc, QDomElement de);
+    void save(QXmlStreamWriter *);
     void setSpan(int s) {m_span = s;}
     int span() {return m_span;}
 

@@ -40,7 +40,8 @@ public:
     QString tagName() {return "Image";}
     QImage icon() {return QImage(":/image.png");}
     QString getHtml(QDomElement ele);
-    void setContent(QDomElement ele);
+    void setContent(QString content);
+    QString load(QXmlStreamReader *stream) override;
 
 private slots:
     void seek();
@@ -53,6 +54,7 @@ private:
     QLineEdit *m_alt;
     QLineEdit *m_title;
     QLineEdit *m_adminlabel;
+    void toString();
 };
 
 #endif // IMAGEEDITOR_H

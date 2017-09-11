@@ -25,6 +25,8 @@
 #include "pageeditor.h"
 #include "contenteditor.h"
 #include <QTest>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QDrag>
 
 SectionEditor::SectionEditor()
@@ -73,26 +75,26 @@ void SectionEditor::setBGColor()
     setPalette(pal);
 }
 
-void SectionEditor::save(QDomDocument doc, QDomElement de)
+void SectionEditor::save(QXmlStreamWriter *stream)
 {
-    QDomElement section = doc.createElement("Section");
+    stream->writeStartElement("Section");
     if(!m_id.isEmpty())
-        section.setAttribute("id", m_id);
+        stream->writeAttribute("id", m_id);
     if(!m_cssclass.isEmpty())
-        section.setAttribute("cssclass", m_cssclass);
+        stream->writeAttribute("cssclass", m_cssclass);
     if(!m_style.isEmpty())
-        section.setAttribute("style", m_style);
+        stream->writeAttribute("style", m_style);
     if(!m_attributes.isEmpty())
-        section.setAttribute("attributes", m_attributes);
+        stream->writeAttribute("attributes", m_attributes);
     if(m_fullwidth)
-        section.setAttribute("fullwidth", "true");
-    de.appendChild(section);
+        stream->writeAttribute("fullwidth", "true");
     for(int i = 0; i < m_layout->count(); i++)
     {
         RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());
         if(re)
-            re->save(doc, section);
+            re->save(stream);
     }
+    stream->writeEndElement();
 }
 
 void SectionEditor::addRow(RowEditor *re)
@@ -339,23 +341,28 @@ ContentEditor* SectionEditor::getContentEditor()
     return NULL;
 }
 
-void SectionEditor::setContent(QDomElement section)
+void SectionEditor::setContent(QString content)
 {
-    m_cssclass = section.attribute("cssclass");
-    m_style = section.attribute("style");
-    m_attributes = section.attribute("attributes");
-    m_id = section.attribute("id");
-    m_fullwidth = section.attribute("fullwidth") == "true";
+    QXmlStreamReader stream(content);
+    stream.readNextStartElement();
+    m_cssclass = stream.attributes().value("cssclass").toString();
+    m_style = stream.attributes().value("style").toString();
+    m_attributes = stream.attributes().value("attributes").toString();
+    m_id = stream.attributes().value("id").toString();
+    m_fullwidth = stream.attributes().value("fullwidth").toString() == "true";
     setBGColor();
 }
 
-QDomElement SectionEditor::content()
+QString SectionEditor::content()
 {
-    QDomElement section = m_doc.createElement("Section");
-    section.setAttribute("cssclass", m_cssclass);
-    section.setAttribute("style", m_style);
-    section.setAttribute("attributes", m_attributes);
-    section.setAttribute("id", m_id);
-    section.setAttribute("fullwidth", m_fullwidth ? "true" : "false");
-    return section;
+    QString content;
+    QXmlStreamWriter stream(&content);
+    stream.writeStartElement("Section");
+    stream.writeAttribute("cssclass", m_cssclass);
+    stream.writeAttribute("style", m_style);
+    stream.writeAttribute("attributes", m_attributes);
+    stream.writeAttribute("id", m_id);
+    stream.writeAttribute("fullwidth", m_fullwidth ? "true" : "false");
+    stream.writeEndElement();
+    return content;
 }
