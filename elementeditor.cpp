@@ -204,7 +204,7 @@ void ElementEditor::enable()
 
     EditorInterface *editor = Globals::getPlugin(dlg->result());
     m_text->setText(editor->displayName());
-    m_content = "";
+    m_content = "<" + editor->tagName() + "/>";
     m_type = editor->className();
 
     setMode(Mode::Enabled);
