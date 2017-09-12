@@ -41,8 +41,6 @@ MenuEditor::MenuEditor(Menu *menu)
 
     m_list = new QTableWidget(0, 4, this);
     m_list->verticalHeader()->hide();
-    m_list->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_list->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch );
     m_list->setToolTip("Double click to edit item");
     QStringList labels;
@@ -72,9 +70,28 @@ MenuEditor::MenuEditor(Menu *menu)
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
+    connect(m_list, SIGNAL(cellChanged(int,int)), this, SLOT(cellChanged(int, int)));
     connect(m_close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_name, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
     connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
+}
+
+void MenuEditor::cellChanged(int row, int column)
+{
+    MenuItem *item = qvariant_cast<MenuItem*>(m_list->item(row, 1)->data(Qt::UserRole));
+    switch(column)
+    {
+        case 1:
+            item->setTitle(m_list->item(row, 1)->text());
+            break;
+        case 2:
+            item->setUrl(m_list->item(row, 2)->text());
+            break;
+        case 3:
+            item->setIcon(m_list->item(row, 3)->text());
+            break;
+    }
+    emit contentUpdated("Menuitem changed");
 }
 
 void MenuEditor::addListItem(MenuItem *item)
@@ -87,16 +104,16 @@ void MenuEditor::addListItem(MenuItem *item)
     m_list->setRowHeight(rows, checkBox->sizeHint().height());
 
     QTableWidgetItem *titleItem = new QTableWidgetItem(item->title());
-    titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
+    //titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
     titleItem->setData(Qt::UserRole, QVariant::fromValue(item));
     m_list->setItem(rows, 1, titleItem);
 
     QTableWidgetItem *urlItem = new QTableWidgetItem(item->url());
-    urlItem->setFlags(urlItem->flags() ^ Qt::ItemIsEditable);
+    //urlItem->setFlags(urlItem->flags() ^ Qt::ItemIsEditable);
     m_list->setItem(rows, 2, urlItem);
 
     QTableWidgetItem *iconItem = new QTableWidgetItem(item->icon());
-    iconItem->setFlags(iconItem->flags() ^ Qt::ItemIsEditable);
+    //iconItem->setFlags(iconItem->flags() ^ Qt::ItemIsEditable);
     m_list->setItem(rows, 3, iconItem);
 }
 

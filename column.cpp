@@ -39,7 +39,7 @@ QString Column::getHtml(QXmlStreamReader *xml)
         }
         else
             qDebug() << "Undefined element " + pluginName;
-        xml->readNext();
+        //xml->readNext();
     }
     return html + "\n</div>\n";
 }

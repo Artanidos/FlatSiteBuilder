@@ -26,6 +26,7 @@ private slots:
     void deleteButtonClicked();
     void tableDoubleClicked(int, int);
     void checkStateChanged(bool);
+    void cellChanged(int, int);
 
 private:
     Menu *m_menu;
