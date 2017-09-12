@@ -37,13 +37,13 @@
 #include <QPalette>
 #include <QAction>
 #include <QDockWidget>
-#include <QDomDocument>
 #include <QDate>
 #include <QTextBrowser>
 #include <QProcess>
 #include <QDesktopServices>
 #include <QNetworkReply>
 #include <QStatusBar>
+#include <QXmlStreamWriter>
 #include "hyperlink.h"
 #include "generator.h"
 #include "commands.h"
@@ -55,7 +55,9 @@
 #include "dashboard.h"
 #include "contentlist.h"
 #include "contenteditor.h"
-#include "globals.h"
+#include "plugins.h"
+#include "menulist.h"
+#include "menueditor.h"
 
 MainWindow::MainWindow()
 {
@@ -88,7 +90,7 @@ void MainWindow::loadPlugins()
             EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
             if(iEditor)
             {
-                Globals::insert(iEditor->className(), iEditor);
+                Plugins::insert(iEditor->className(), iEditor);
                 qDebug() << "Plugin loaded" << fileName;
             }
         }
@@ -276,9 +278,10 @@ void MainWindow::initGui()
     Hyperlink *themesButton = new Hyperlink("Themes");
     //Hyperlink *widgetsButton = new Hyperlink("Widgets");
     Hyperlink *menusButton = new Hyperlink("Menus");
+    appBox->addWidget(menusButton);
     appBox->addWidget(themesButton);
     //appBox->addWidget(widgetsButton);
-    appBox->addWidget(menusButton);
+
     m_appearance->addLayout(appBox);
 
     QWidget *scrollContent = new QWidget();
@@ -304,7 +307,7 @@ void MainWindow::initGui()
     connect(m_appearance, SIGNAL(expanded(bool)), this, SLOT(apearanceExpanded(bool)));
     connect(m_plugins, SIGNAL(expanded(bool)), this, SLOT(pluginsExpanded(bool)));
     connect(m_settings, SIGNAL(expanded(bool)), this, SLOT(settingsExpanded(bool)));
-
+    connect(menusButton, SIGNAL(clicked()), this, SLOT(showMenus()));
     connect(pagesButton, SIGNAL(clicked()), this, SLOT(showPages()));
     connect(postsButton, SIGNAL(clicked()), this, SLOT(showPosts()));
     //connect(categoriesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
@@ -312,7 +315,8 @@ void MainWindow::initGui()
     connect(m_dashboardExpander, SIGNAL(clicked()), this, SLOT(showDashboard()));
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
     //connect(m_media, SIGNAL(clicked()), this, SLOT(notImplemented()));
-    connect(m_appearance, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(m_appearance, SIGNAL(clicked()), this, SLOT(showMenus()));
+    connect(themesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(notImplemented()));
 }
@@ -408,82 +412,90 @@ void MainWindow::reloadProject()
     m_site->contents().clear();
     m_site->menus().clear();
 
-    QDomDocument doc;
     QFile file(m_site->sourcePath() + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
     {
         statusBar()->showMessage("Unable to open " + m_site->sourcePath() + "/Site.xml");
         return;
     }
-    if (!doc.setContent(&file))
+    QXmlStreamReader xml(&file);
+    if(xml.readNextStartElement())
     {
-        statusBar()->showMessage("Unable to load the Site content from XML");
-        file.close();
-        return;
+        if(xml.name() == "Site")
+        {
+            m_site->setTheme(xml.attributes().value("theme").toString());
+            m_site->setThemeAccent(xml.attributes().value("theme_accent").toString());
+            m_site->setTitle(xml.attributes().value("title").toString());
+            m_site->setDescription(xml.attributes().value("description").toString());
+            m_site->setCopyright(xml.attributes().value("copyright").toString());
+            m_site->setKeywords(xml.attributes().value("keywords").toString());
+            m_site->setAuthor(xml.attributes().value("author").toString());
+
+            while(xml.readNextStartElement())
+            {
+                if(xml.name() == "Content")
+                {
+                    Content *p;
+                    if(xml.attributes().value("type") == "page")
+                        p = new Content(ContentType::Page);
+                    else
+                    {
+                        p = new Content(ContentType::Post);
+                        p->setExcerpt(xml.attributes().value("excerpt").toString());
+                    }
+                    p->setTitle(xml.attributes().value("title").toString());
+                    p->setSource(xml.attributes().value("source").toString());
+                    p->setMenu(xml.attributes().value("menu").toString());
+                    p->setLogo(xml.attributes().value("logo").toString());
+                    p->setAuthor(xml.attributes().value("author").toString());
+                    p->setLayout(xml.attributes().value("layout").toString());
+                    p->setKeywords(xml.attributes().value("keywords").toString());
+                    p->setDate(QDate::fromString(xml.attributes().value("date").toString(), "dd.MM.yyyy"));
+                    m_site->addContent(p);
+                    xml.readNext();
+                }
+                else if(xml.name() == "Menu")
+                {
+                    Menu *m = new Menu();
+                    m->setName(xml.attributes().value("name").toString());
+                    while(xml.readNextStartElement())
+                    {
+                        if(xml.name() == "Item")
+                        {
+                            MenuItem *item = new MenuItem();
+                            item->setTitle(xml.attributes().value("title").toString());
+                            item->setUrl(xml.attributes().value("url").toString());
+                            item->setIcon(xml.attributes().value("icon").toString());
+
+                            while(xml.readNextStartElement())
+                            {
+                                if(xml.name() == "Item")
+                                {
+                                    MenuItem *subitem = new MenuItem();
+                                    subitem->setTitle(xml.attributes().value("title").toString());
+                                    subitem->setUrl(xml.attributes().value("url").toString());
+                                    subitem->setIcon(xml.attributes().value("icon").toString());
+                                    item->addMenuitem(subitem);
+                                    xml.readNext();
+                                }
+                                else
+                                    xml.skipCurrentElement();
+
+                            }
+                            m->addMenuitem(item);
+                            xml.readNext();
+                        }
+                        else
+                            xml.skipCurrentElement();
+                    }
+                    m_site->addMenu(m);
+                }
+                else
+                    xml.skipCurrentElement();
+            }
+        }
     }
     file.close();
-
-    QDomElement site = doc.documentElement();
-
-    m_site->setTheme(site.attribute("theme"));
-    m_site->setThemeAccent(site.attribute("theme_accent"));
-    m_site->setTitle(site.attribute("title"));
-    m_site->setDescription(site.attribute("description"));
-    m_site->setCopyright(site.attribute("copyright"));
-    m_site->setKeywords(site.attribute("keywords"));
-    m_site->setAuthor(site.attribute("author"));
-
-    QDomElement content = site.firstChildElement("Content");
-    while(!content.isNull())
-    {
-        Content *p;
-        if(content.attribute("type", "page") == "page")
-            p = new Content(ContentType::Page);
-        else
-        {
-            p = new Content(ContentType::Post);
-            p->setExcerpt(content.attribute("excerpt", ""));
-        }
-        p->setTitle(content.attribute("title"));
-        p->setSource(content.attribute("source"));
-        p->setMenu(content.attribute("menu", "default"));
-        p->setLogo(content.attribute("logo", "logo.png"));
-        p->setAuthor(content.attribute("author"));
-        p->setLayout(content.attribute("layout", "default"));
-        p->setKeywords(content.attribute("keywords"));
-        p->setDate(QDate::fromString(content.attribute("date"), "dd.MM.yyyy"));
-        m_site->addContent(p);
-        content = content.nextSiblingElement("Content");
-    }
-
-    QDomElement menu = site.firstChildElement("Menu");
-    while(!menu.isNull())
-    {
-        Menu *m = new Menu();
-        m->setName(menu.attribute("name"));
-        QDomElement menuitem = menu.firstChildElement("Item");
-        while(!menuitem.isNull())
-        {
-            MenuItem *item = new MenuItem();
-            item->setTitle(menuitem.attribute("title"));
-            item->setUrl(menuitem.attribute("url"));
-            item->setIcon(menuitem.attribute("icon"));
-            QDomElement submenuitem = menuitem.firstChildElement("Item");
-            while(!submenuitem.isNull())
-            {
-                MenuItem *subitem = new MenuItem();
-                subitem->setTitle(submenuitem.attribute("title"));
-                subitem->setUrl(submenuitem.attribute("url"));
-                subitem->setIcon(submenuitem.attribute("icon"));
-                item->addMenuitem(subitem);
-                submenuitem = submenuitem.nextSiblingElement("Item");
-            }
-            m->addMenuitem(item);
-            menuitem = menuitem.nextSiblingElement("Item");
-        }
-        m_site->addMenu(m);
-        menu = menu.nextSiblingElement("Menu");
-    }
 
     emit siteLoaded(m_site);
 
@@ -492,65 +504,65 @@ void MainWindow::reloadProject()
 
 void MainWindow::saveProject()
 {
-    QDomDocument doc;
-    QDomElement root;
     QFile file(m_site->sourcePath() + "/Site.xml");
     if(!file.open(QFile::WriteOnly))
     {
         statusBar()->showMessage("Unable to open file " + m_site->sourcePath() + "/Site.xml");
         return;
     }
-    root = doc.createElement("Site");
-    root.setAttribute("theme", m_site->theme());
-    root.setAttribute("theme_accent", m_site->themeAccent());
-    root.setAttribute("title", m_site->title());
-    root.setAttribute("description", m_site->description());
-    root.setAttribute("copyright", m_site->copyright());
-    root.setAttribute("keywords", m_site->keywords());
-    root.setAttribute("author", m_site->author());
-    doc.appendChild(root);
+    QXmlStreamWriter xml(&file);
+    xml.setAutoFormatting(true);
+    xml.writeStartDocument();
+    xml.writeStartElement("Site");
+    xml.writeAttribute("theme", m_site->theme());
+    xml.writeAttribute("theme_accent", m_site->themeAccent());
+    xml.writeAttribute("title", m_site->title());
+    xml.writeAttribute("description", m_site->description());
+    xml.writeAttribute("copyright", m_site->copyright());
+    xml.writeAttribute("keywords", m_site->keywords());
+    xml.writeAttribute("author", m_site->author());
+
     foreach(Content *content, m_site->contents())
     {
-        QDomElement c = doc.createElement("Content");
-        c.setAttribute("type", content->contentType() == ContentType::Page ? "page" : "post");
-        c.setAttribute("source", content->source());
-        c.setAttribute("title", content->title());
-        c.setAttribute("menu", content->menu());
-        c.setAttribute("logo", content->logo());
-        c.setAttribute("author", content->author());
-        c.setAttribute("layout", content->layout());
-        c.setAttribute("keywords", content->keywords());
+        xml.writeStartElement("Content");
+        xml.writeAttribute("type", content->contentType() == ContentType::Page ? "page" : "post");
+        xml.writeAttribute("source", content->source());
+        xml.writeAttribute("title", content->title());
+        xml.writeAttribute("menu", content->menu());
+        xml.writeAttribute("logo", content->logo());
+        xml.writeAttribute("author", content->author());
+        xml.writeAttribute("layout", content->layout());
+        xml.writeAttribute("keywords", content->keywords());
         if(content->contentType() == ContentType::Post)
-            c.setAttribute("excerpt", content->excerpt());
-        c.setAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
-        root.appendChild(c);
+            xml.writeAttribute("excerpt", content->excerpt());
+        xml.writeAttribute("date", QString(content->date().toString("dd.MM.yyyy")));
+        xml.writeEndElement();
     }
 
     foreach(Menu *menu, m_site->menus())
     {
-        QDomElement m = doc.createElement("Menu");
-        m.setAttribute("name", menu->name());
+        xml.writeStartElement("Menu");
+        xml.writeAttribute("name", menu->name());
         foreach(MenuItem *item, menu->items())
         {
-            QDomElement i = doc.createElement("Item");
-            i.setAttribute("title", item->title());
-            i.setAttribute("url", item->url());
-            i.setAttribute("icon", item->icon());
+            xml.writeStartElement("Item");
+            xml.writeAttribute("title", item->title());
+            xml.writeAttribute("url", item->url());
+            xml.writeAttribute("icon", item->icon());
             foreach(MenuItem *subitem, item->items())
             {
-                QDomElement si = doc.createElement("Item");
-                si.setAttribute("title", subitem->title());
-                si.setAttribute("url", subitem->url());
-                si.setAttribute("icon", subitem->icon());
-                i.appendChild(si);
+                xml.writeStartElement("Item");
+                xml.writeAttribute("title", subitem->title());
+                xml.writeAttribute("url", subitem->url());
+                xml.writeAttribute("icon", subitem->icon());
+                xml.writeEndElement();
             }
-            m.appendChild(i);
+            xml.writeEndElement();
         }
-        root.appendChild(m);
+        xml.writeEndElement();
     }
-
-    QTextStream stream(&file);
-    stream << doc.toString();
+    xml.writeEndElement();
+    xml.writeEndDocument();
     file.close();
 
     statusBar()->showMessage(m_site->title() + " has been saved");
@@ -623,6 +635,14 @@ void MainWindow::showPages()
     setCentralWidget(list);
 }
 
+void MainWindow::showMenus()
+{
+    MenuList *edit = new MenuList(m_site);
+    connect(edit, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editMenu(QTableWidgetItem*)));
+    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
+    setCentralWidget(edit);
+}
+
 void MainWindow::editContent(QTableWidgetItem *item)
 {
     Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
@@ -631,8 +651,19 @@ void MainWindow::editContent(QTableWidgetItem *item)
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(preview(Content*)), this, SLOT(previewSite(Content*)));
     connect(this, SIGNAL(siteLoaded(Site*)), m_editor, SLOT(siteLoaded(Site*)));
-    connect(m_editor, SIGNAL(contentEditorClosed()), this, SLOT(contentEditorClosed()));
+    connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));
     connect(m_editor, SIGNAL(contentChanged(Content*)), this, SLOT(contentChanged(Content*)));
+    animate(item);
+}
+
+void MainWindow::editMenu(QTableWidgetItem *item)
+{
+    Menu *menu = qvariant_cast<Menu*>(item->data(Qt::UserRole));
+    m_editor = new MenuEditor(menu);
+
+    connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
+    connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));
+    connect(m_editor, SIGNAL(contentChanged(Menu*)), this, SLOT(menuChanged(Menu*)));
     animate(item);
 }
 
@@ -747,7 +778,7 @@ void MainWindow::fileIsReady(QNetworkReply *reply)
     connect(browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 }
 
-void MainWindow::contentEditorClosed()
+void MainWindow::editorClosed()
 {
     QPoint pos = m_cellWidget->mapTo(centralWidget(), QPoint(0,0));
     // correct end values in case of resizing the window
@@ -785,5 +816,10 @@ void MainWindow::contentChanged(Content *content)
     m_list->item(m_row, 3)->setText(content->layout());
     m_list->item(m_row, 4)->setText(content->author());
     m_list->item(m_row, 5)->setText(content->date().toString("dd.MM.yyyy"));
+}
+
+void MainWindow::menuChanged(Menu *menu)
+{
+    m_list->item(m_row, 1)->setText(menu->name());
 }
 

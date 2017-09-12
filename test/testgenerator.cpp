@@ -1,7 +1,7 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include "../generator.h"
-#include "../globals.h"
+#include "../plugins.h"
 
 
 class TestGenerator : public QObject
@@ -25,8 +25,8 @@ void TestGenerator::initTestCase()
 
 void TestGenerator::cleanupTestCase()
 {
-    QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
-    dir.removeRecursively();
+    //QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
+    //dir.removeRecursively();
 }
 
 void TestGenerator::nextTokens_data()
@@ -154,13 +154,13 @@ public:
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}
     QImage icon() override {return QImage(":/images/text.png");}
-    QString getHtml(QDomElement) {return "<h1>testPageTitle</h1>";}
+    QString getHtml(QXmlStreamReader *) {return "<h1>testPageTitle</h1>";}
     QString load(QXmlStreamReader *) override {return "";}
 };
 
 void TestGenerator::generateSite()
 {
-    Globals::insert("TextEditor", new TextEditor());
+    Plugins::insert("TextEditor", new TextEditor());
     QString dir = "/home/olaf/SourceCode/FlatSiteBuilder/test";
     Generator g;
     g.setSitesPath(dir + "/sites");

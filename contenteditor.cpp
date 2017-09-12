@@ -21,7 +21,7 @@
 #include "contenteditor.h"
 #include "hyperlink.h"
 #include "generator.h"
-#include "globals.h"
+#include "plugins.h"
 #include "mainwindow.h"
 #include "pageeditor.h"
 #include "commands.h"
@@ -37,8 +37,6 @@
 #include <QMenu>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
-#include <QDomDocument>
-#include <QDomElement>
 #include <QApplication>
 #include <QAction>
 #include <QXmlStreamWriter>
@@ -275,7 +273,7 @@ void ContentEditor::closeEditor()
     if(m_isNew)
         updateNewContent();
 
-    emit contentEditorClosed();
+    emit close();
 }
 
 void ContentEditor::siteLoaded(Site *site)
@@ -485,19 +483,18 @@ void ContentEditor::save()
         return;
     }
 
-
-    QXmlStreamWriter stream(&file);
-    stream.setAutoFormatting(true);
-    stream.writeStartDocument();
-    stream.writeStartElement("Content");
+    QXmlStreamWriter xml(&file);
+    xml.setAutoFormatting(true);
+    xml.writeStartDocument();
+    xml.writeStartElement("Content");
 
     PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
     foreach(SectionEditor *se, pe->sections())
     {
-        se->save(&stream);
+        se->save(&xml);
     }
-    stream.writeEndElement();
-    stream.writeEndDocument();
+    xml.writeEndElement();
+    xml.writeEndDocument();
     file.close();
 }
 
@@ -548,11 +545,11 @@ void ContentEditor::rowEdit(RowEditor *re)
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-    if(Globals::hasPlugin(ee->type()))
-        m_editor = dynamic_cast<AbstractEditor*>(Globals::getPlugin(ee->type()));
+    if(Plugins::hasPlugin(ee->type()))
+        m_editor = dynamic_cast<AbstractEditor*>(Plugins::getPlugin(ee->type()));
     else
     {
-        m_editor = dynamic_cast<AbstractEditor*>(Globals::getPlugin("TextEditor"));
+        m_editor = dynamic_cast<AbstractEditor*>(Plugins::getPlugin("TextEditor"));
         qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
     m_editor->setSite(m_site);

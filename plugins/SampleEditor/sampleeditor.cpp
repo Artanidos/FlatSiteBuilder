@@ -73,13 +73,13 @@ void SampleEditor::setContent(QString content)
     m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
 }
 
-QString SampleEditor::load(QXmlStreamReader *streamin)
+QString SampleEditor::load(QXmlStreamReader *xml)
 {
     QString content;
     QXmlStreamWriter stream(&content);
     stream.writeStartElement("Sample");
-    stream.writeAttribute("sampleproperty", streamin->attributes().value("sampleproperty").toString());
-    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+    stream.writeAttribute("sampleproperty", xml->attributes().value("sampleproperty").toString());
+    stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
     stream.writeEndElement();
     return content;
 }
@@ -97,8 +97,8 @@ void SampleEditor::closeEditor()
     emit close();
 }
 
-QString SampleEditor::getHtml(QDomElement ele)
+QString SampleEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString sampleproperty = ele.attribute("sampleproperty", "");
+    QString sampleproperty = xml->attributes().value("sampleproperty").toString();
     return "<div sampleproperty=\"" + sampleproperty + "\">\n";
 }

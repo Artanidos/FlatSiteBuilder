@@ -84,15 +84,15 @@ ImageEditor::ImageEditor()
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
 }
 
-QString ImageEditor::load(QXmlStreamReader *streamin)
+QString ImageEditor::load(QXmlStreamReader *xml)
 {
     QString content;
     QXmlStreamWriter stream(&content);
     stream.writeStartElement("Image");
-    stream.writeAttribute("src", streamin->attributes().value("src").toString());
-    stream.writeAttribute("alt", streamin->attributes().value("alt").toString());
-    stream.writeAttribute("title", streamin->attributes().value("title").toString());
-    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+    stream.writeAttribute("src", xml->attributes().value("src").toString());
+    stream.writeAttribute("alt", xml->attributes().value("alt").toString());
+    stream.writeAttribute("title", xml->attributes().value("title").toString());
+    stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
     stream.writeEndElement();
     return content;
 }
@@ -161,12 +161,12 @@ void ImageEditor::closeEditor()
     emit close();
 }
 
-QString ImageEditor::getHtml(QDomElement ele)
+QString ImageEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString source = ele.attribute("src");
+    QString source = xml->attributes().value("src").toString();
     QString url = source.mid(source.indexOf("assets/images/"));
-    QString alt = ele.attribute("alt", "");
-    QString title = ele.attribute("title", "");
+    QString alt = xml->attributes().value("alt").toString();
+    QString title = xml->attributes().value("title").toString();
 
     return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">\n";
 }

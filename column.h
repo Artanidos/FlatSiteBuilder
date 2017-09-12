@@ -22,9 +22,8 @@
 #define COLUMN_H
 
 #include <QObject>
-#include <QDomElement>
-#include "interfaces.h"
 
+class QXmlStreamReader;
 class Column : public QObject
 {
     Q_OBJECT
@@ -32,7 +31,7 @@ class Column : public QObject
 public:
     Column() {}
 
-    QString getHtml(QDomElement col);
+    QString getHtml(QXmlStreamReader *xml);
 };
 
 #endif // COLUMN_H

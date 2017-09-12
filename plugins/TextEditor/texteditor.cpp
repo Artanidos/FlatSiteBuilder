@@ -87,13 +87,13 @@ void TextEditor::closeEditor()
     emit close();
 }
 
-QString TextEditor::load(QXmlStreamReader *streamin)
+QString TextEditor::load(QXmlStreamReader *xml)
 {
     QString content = "";
     QXmlStreamWriter stream(&content);
     stream.writeStartElement("Text");
-    stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
-    stream.writeCDATA(streamin->readElementText());
+    stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+    stream.writeCDATA(xml->readElementText());
     stream.writeEndElement();
     return content;
 }
@@ -117,9 +117,7 @@ void TextEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString TextEditor::getHtml(QDomElement text)
+QString TextEditor::getHtml(QXmlStreamReader *xml)
 {
-    QDomNode data = text.firstChild();
-    QDomCDATASection cdata = data.toCDATASection();
-    return cdata.data();
+    return xml->readElementText();
 }

@@ -76,7 +76,7 @@ private:
     QPropertyAnimation *m_animy;
     QPropertyAnimation *m_animw;
     QPropertyAnimation *m_animh;
-    ContentEditor *m_editor;
+    AbstractEditor *m_editor;
     QTableWidget *m_list;
     QWidget *m_cellWidget;
     int m_row;
@@ -91,7 +91,9 @@ private slots:
     void showDashboard();
     void showPosts();
     void showPages();
+    void showMenus();
     void editContent(QTableWidgetItem *item);
+    void editMenu(QTableWidgetItem *item);
     void previewSite(Content *content);
     void publishSite();
     void createSite();
@@ -100,10 +102,11 @@ private slots:
     void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);
     void projectUpdated(QString text);
-    void contentEditorClosed();
+    void editorClosed();
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
     void contentChanged(Content *content);
+    void menuChanged(Menu *menu);
     void anchorClicked(QUrl url);
 };
 

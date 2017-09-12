@@ -21,11 +21,12 @@
 #ifndef SECTIONPROPERTYEDITOR_H
 #define SECTIONPROPERTYEDITOR_H
 
-#include "interfaces.h"
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QCheckBox>
+#include "interfaces.h"
 
+class QXmlStreamReader;
 class SectionPropertyEditor : public AbstractEditor
 {
     Q_OBJECT
@@ -34,7 +35,7 @@ public:
     SectionPropertyEditor();
 
     void setContent(QString content);
-    static QString getHtml(QDomElement ele);
+    static QString getHtml(QXmlStreamReader *xml);
 
 private slots:
     void closeEditor();

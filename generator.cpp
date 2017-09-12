@@ -20,7 +20,7 @@
 
 #include "generator.h"
 #include "content.h"
-#include "globals.h"
+#include "plugins.h"
 #include "sectionpropertyeditor.h"
 #include <QFile>
 #include <QTextStream>
@@ -29,7 +29,7 @@
 #include <QStringList>
 #include <QProcess>
 #include <QStack>
-#include <QDomDocument>
+#include <QXmlStreamReader>
 
 Q_DECLARE_METATYPE(QFile*)
 
@@ -151,58 +151,67 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
         if(contentToBuild != 0 && contentToBuild != content)
             continue;
 
-        QDomDocument doc;
         QFile file(m_site->sourcePath() + "/" + subdir + "/" + content->source());
         if (file.open(QIODevice::ReadOnly))
         {
-            if (doc.setContent(&file))
-            {
-                file.close();
-                QString cnt = "";
-                QDomElement root = doc.documentElement();
-                QDomElement section = root.firstChildElement("Section");
-                while(!section.isNull())
-                {
-                    cnt += SectionPropertyEditor::getHtml(section);
-                    section = section.nextSiblingElement("Section");
-                }
+            QXmlStreamReader xml(&file);
+            QString cnt = "";
+            Plugins::clearUsedPlugins();
 
-                pluginvars.clear();
-                foreach(QString key, Globals::pluginNames())
+            if(xml.readNextStartElement())
+            {
+                if(xml.name() == "Content")
                 {
-                    EditorInterface *editor = Globals::getPlugin(key);
-                    if(root.elementsByTagName(editor->tagName()).count() > 0)
+                    while(xml.readNextStartElement())
                     {
-                        pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
-                        pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
-                        editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");
+                        if(xml.name() == "Section")
+                        {
+                            cnt += SectionPropertyEditor::getHtml(&xml);
+                            xml.readNext();
+                        }
+                        else
+                        {
+                            xml.skipCurrentElement();
+                        }
                     }
                 }
+            }
+            file.close();
 
-                QString layout = content->layout();
-                if(layout == "")
-                    layout = "default";
-                layout = layout + ".html";
-
-                QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
-
-                pagevars = cm;
-                QVariantMap vars;
-                pagevars["content"] = translateContent(cnt, vars);
-
-                QFile out(name);
-                if(out.open(QFile::WriteOnly))
+            pluginvars.clear();
+            foreach(QString key, Plugins::pluginNames())
+            {
+                if(Plugins::isPluginUsed(key))
                 {
-                    QString rc = translateTemplate(layout, Layout);
-                    out.write(translateContent(rc, vars).toUtf8());
-                    out.close();
-                    qInfo() << "Created file " + name;
+                    EditorInterface *editor = Plugins::getPlugin(key);
+                    pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
+                    pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
+                    editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");
                 }
-                else
-                    qWarning() << "Generator::generateSite(): Unable to create file " +  name;
+            }
+
+            QString layout = content->layout();
+            if(layout == "")
+                layout = "default";
+            layout = layout + ".html";
+
+            QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
+
+            pagevars = cm;
+            QVariantMap vars;
+            pagevars["content"] = translateContent(cnt, vars);
+
+            QFile out(name);
+            if(out.open(QFile::WriteOnly))
+            {
+                QString rc = translateTemplate(layout, Layout);
+                out.write(translateContent(rc, vars).toUtf8());
+                out.close();
+                qInfo() << "Created file " + name;
+
             }
             else
-                qWarning() << "Generator::generateSite(): Unable to parse file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
+                qWarning() << "Generator::generateSite(): Unable to create file " +  name;
         }
         else
             qWarning() << "Generator::generateSite(): Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();

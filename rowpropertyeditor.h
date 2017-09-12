@@ -25,6 +25,7 @@
 #include <QGridLayout>
 #include "interfaces.h"
 
+class QXmlStreamReader;
 class RowPropertyEditor : public AbstractEditor
 {
     Q_OBJECT
@@ -33,7 +34,7 @@ public:
     RowPropertyEditor();
 
     void setContent(QString ele);
-    static QString getHtml(QDomElement ele);
+    static QString getHtml(QXmlStreamReader *xml);
 
 private slots:
     void editorClose();

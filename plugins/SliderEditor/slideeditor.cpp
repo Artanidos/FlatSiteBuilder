@@ -26,6 +26,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QPushButton>
+#include <QGridLayout>
 
 SlideEditor::SlideEditor()
 {

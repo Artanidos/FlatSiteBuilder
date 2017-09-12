@@ -18,7 +18,7 @@
 
 QT += core gui
 QT += testlib network
-QT += widgets xml
+QT += widgets
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app
@@ -51,7 +51,9 @@ SOURCES += main.cpp\
     sectionpropertyeditor.cpp \
     sitewizard.cpp \
     commands.cpp \
-    globals.cpp
+    plugins.cpp \
+    menulist.cpp \
+    menueditor.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -79,7 +81,9 @@ HEADERS  += mainwindow.h \
     sectionpropertyeditor.h \
     sitewizard.h \
     commands.h \
-    globals.h
+    plugins.h \
+    menulist.h \
+    menueditor.h
 
 
 DISTFILES += \

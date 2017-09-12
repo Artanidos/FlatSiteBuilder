@@ -79,16 +79,20 @@ void RowPropertyEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString RowPropertyEditor::getHtml(QDomElement row)
+QString RowPropertyEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString cls = row.attribute("cssclass");
+    QString cls = xml->attributes().value("cssclass").toString();
     QString html = "<div class=\"row" + (cls.isEmpty() ? "" : " " + cls) + "\">\n";
-    QDomElement col = row.firstChildElement("Column");
-    while(!col.isNull())
+    while(xml->readNextStartElement())
     {
-        Column *c = new Column();
-        html += c->getHtml(col);
-        col = col.nextSiblingElement("Column");
+        if(xml->name() == "Column")
+        {
+            Column *c = new Column();
+            html += c->getHtml(xml);
+            xml->readNext();
+        }
+        else
+            xml->skipCurrentElement();
     }
     return html + "</div>\n";
 }

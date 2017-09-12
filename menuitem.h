@@ -26,13 +26,4 @@ private:
     QList<MenuItem *> m_items;
 };
 
-class MenuItemWrapper : public QObject
-{
-    Q_OBJECT
-
-public Q_SLOTS:
-    QString url(MenuItem *o) {return o->url();}
-    QString title(MenuItem *o) {return o->title();}
-};
-
 #endif // MENUITEM_H

@@ -28,6 +28,8 @@
 #include "interfaces.h"
 
 class SlideEditor;
+class QParallelAnimationGroup;
+class QPropertyAnimation;
 class Slide : public QObject
 {
     Q_OBJECT
@@ -61,12 +63,12 @@ public:
     QString displayName() {return "Slider";}
     QString tagName() {return "Slider";}
     QImage icon() {return QImage(":/slider.png");}
-    QString getHtml(QDomElement ele);
+    QString getHtml(QXmlStreamReader *xml);
     void setContent(QString content);
     QString pluginStyles();
     QString pluginScripts();
     void installAssets(QString assetsPath);
-    QString load(QXmlStreamReader *streamin) override;
+    QString load(QXmlStreamReader *xml) override;
 
 private slots:
     void closeEditor();

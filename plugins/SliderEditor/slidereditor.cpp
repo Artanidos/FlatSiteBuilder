@@ -28,6 +28,8 @@
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QXmlStreamWriter>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
 #include <QTest>
 
 SliderEditor::SliderEditor()
@@ -119,26 +121,26 @@ void SliderEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString SliderEditor::load(QXmlStreamReader *streamin)
+QString SliderEditor::load(QXmlStreamReader *xml)
 {
     QString content;
     QXmlStreamWriter stream(&content);
-    if(streamin->name() == "Slider")
+    if(xml->name() == "Slider")
     {
         stream.writeStartElement("Slider");
-        stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
-        while(streamin->readNextStartElement())
+        stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+        while(xml->readNextStartElement())
         {
-            if(streamin->name() == "Slide")
+            if(xml->name() == "Slide")
             {
                 stream.writeStartElement("Slide");
-                stream.writeAttribute("src", streamin->attributes().value("src").toString());
-                stream.writeAttribute("adminlabel", streamin->attributes().value("adminlabel").toString());
+                stream.writeAttribute("src", xml->attributes().value("src").toString());
+                stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
                 stream.writeEndElement();
-                streamin->readNext();
+                xml->readNext();
             }
             else
-                streamin->skipCurrentElement();
+                xml->skipCurrentElement();
         }
         stream.writeEndElement();
     }
@@ -309,20 +311,24 @@ void SliderEditor::animationFineshedZoomOut()
     m_editor = NULL;
 }
 
-QString SliderEditor::getHtml(QDomElement ele)
+QString SliderEditor::getHtml(QXmlStreamReader *xml)
 {
     QString html = "<div class=\"fullwidthbanner-container roundedcorners\">\n";
     html += "<div class=\"fullwidthbanner\">\n";
     html += "<ul>\n";
-    QDomElement slide = ele.firstChildElement("Slide");
-    while(!slide.isNull())
+    while(xml->readNextStartElement())
     {
-        QString source = slide.attribute("src");
-        QString url = source.mid(source.indexOf("assets/images/"));
-        html += "<li data-transition=\"incube-horizontal\" data-slotamount=\"5\" data-masterspeed=\"700\">\n";
-        html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
-        html += "</li>\n";
-        slide = slide.nextSiblingElement("Slide");
+        if(xml->name() == "Slide")
+        {
+            QString source = xml->attributes().value("src").toString();
+            QString url = source.mid(source.indexOf("assets/images/"));
+            html += "<li data-transition=\"incube-horizontal\" data-slotamount=\"5\" data-masterspeed=\"700\">\n";
+            html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
+            html += "</li>\n";
+            xml->readNext();
+        }
+        else
+            xml->skipCurrentElement();
     }
     html += "</ul>\n";
     html += "<div class=\"tp-bannertimer\"></div>\n";

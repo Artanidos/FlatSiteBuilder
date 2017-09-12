@@ -62,6 +62,7 @@ public:
 
     QList<Menu *> menus() {return m_menus;}
     void addMenu(Menu *menu) {m_menus.append(menu);}
+    void removeMenu(Menu *menu) {m_menus.removeOne(menu);}
     QString sourcePath() {return m_sourcePath;}
     QString deployPath() {return m_deployPath;}
 

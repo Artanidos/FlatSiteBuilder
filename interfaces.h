@@ -3,10 +3,8 @@
 
 #include <QtPlugin>
 #include <QWidget>
-#include <QDomDocument>
 #include <QMap>
 #include "site.h"
-#include "mainwindow.h"
 
 QT_BEGIN_NAMESPACE
 class QString;
@@ -31,7 +29,7 @@ public:
     void setSite(Site *site) {m_site = site;}
     bool changed() {return m_changed;}
     QString content() {return m_content;}
-    virtual void setContent(QString content) = 0;
+    virtual void setContent(QString) = 0;
 
 signals:
     void close();
@@ -55,7 +53,7 @@ public:
     virtual QString displayName() = 0;
     virtual QString tagName() = 0;
     virtual QImage icon() = 0;
-    virtual QString getHtml(QDomElement properties) = 0;
+    virtual QString getHtml(QXmlStreamReader *) = 0;
     virtual QString load(QXmlStreamReader *) = 0;
     virtual QString pluginStyles() {return "";}
     virtual QString pluginScripts() {return "";}

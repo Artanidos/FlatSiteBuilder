@@ -25,7 +25,7 @@
 #include "mainwindow.h"
 #include "roweditor.h"
 #include "sectioneditor.h"
-#include "globals.h"
+#include "plugins.h"
 #include "pageeditor.h"
 #include "contenteditor.h"
 #include <QMimeData>
@@ -36,7 +36,6 @@
 #include <QTest>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
 ElementEditor::ElementEditor()
@@ -87,7 +86,7 @@ void ElementEditor::load(QXmlStreamReader *stream)
         m_text->setText(stream->name().toString());
     else
         m_text->setText(label);
-    EditorInterface * editor = Globals::getPlugin(m_type);
+    EditorInterface * editor = Plugins::getPlugin(m_type);
     if(editor)
         m_content = editor->load(stream);
 }
@@ -202,7 +201,7 @@ void ElementEditor::enable()
     if(dlg->result().isEmpty())
         return;
 
-    EditorInterface *editor = Globals::getPlugin(dlg->result());
+    EditorInterface *editor = Plugins::getPlugin(dlg->result());
     m_text->setText(editor->displayName());
     m_content = "<" + editor->tagName() + "/>";
     m_type = editor->className();

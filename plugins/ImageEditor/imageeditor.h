@@ -26,6 +26,7 @@
 #include "interfaces.h"
 #include "imageselector.h"
 
+class QLineEdit;
 class ImageEditor : public EditorInterface
 {
     Q_OBJECT
@@ -39,9 +40,9 @@ public:
     QString displayName() {return "Image";}
     QString tagName() {return "Image";}
     QImage icon() {return QImage(":/image.png");}
-    QString getHtml(QDomElement ele);
+    QString getHtml(QXmlStreamReader *xml);
     void setContent(QString content);
-    QString load(QXmlStreamReader *stream) override;
+    QString load(QXmlStreamReader *xml) override;
 
 private slots:
     void seek();

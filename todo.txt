@@ -24,8 +24,4 @@ Postponend
 - general plugin (settings)
 - plugin for publish
 
-Bug
-- when there are multiple elements in the column they are not loaded each time
-- if you want to delete one of the elements this will not reflect the data
-- also a crash after deleting an item occures from time to time
 

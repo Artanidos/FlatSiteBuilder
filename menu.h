@@ -15,6 +15,7 @@ public:
     QString name() {return m_name;}
     void addMenuitem(MenuItem *item) {m_items.append(item);}
     QList<MenuItem *> items() {return m_items;}
+    void removeItem(MenuItem *item) {m_items.removeOne(item);}
 
 private:
     QString m_name;

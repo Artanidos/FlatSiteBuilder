@@ -19,7 +19,7 @@
 QT += widgets testlib xml network
 SOURCES = testgenerator.cpp \
     ../generator.cpp \
-    ../globals.cpp \
+    ../plugins.cpp \
     ../sectionpropertyeditor.cpp \
     ../rowpropertyeditor.cpp \
     ../column.cpp \
@@ -33,7 +33,7 @@ DISTFILES += \
 
 HEADERS += \
     ../generator.h \
-    ../globals.h \
+    ../plugins.h \
     ../column.h \
     ../rowpropertyeditor.h \
     ../sectionpropertyeditor.h \

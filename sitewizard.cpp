@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QComboBox>
-#include <QDomDocument>
+#include <QXmlStreamWriter>
 #include <QTest>
 
 SiteWizard::SiteWizard()
@@ -39,49 +39,45 @@ void SiteWizard::accept()
     dir.mkdir("js");
     dir.mkdir("images");
 
-    QDomDocument doc;
-    QDomElement root;
     QFile file(path + "/Site.xml");
     if(!file.open(QFile::WriteOnly))
     {
         qDebug() << "Unable to open file " + path + "/Site.xml";
         return;
     }
-    root = doc.createElement("Site");
-    root.setAttribute("theme", field("theme").toString());
-    root.setAttribute("title", siteName);
+    QXmlStreamWriter xml(&file);
+    xml.writeStartDocument();
+    xml.writeStartElement("Site");
+    xml.writeAttribute("theme", field("theme").toString());
+    xml.writeAttribute("title", siteName);
     if(!description.isEmpty())
-        root.setAttribute("description", description);
+        xml.writeAttribute("description", description);
     if(!githubUrl.isEmpty())
-        root.setAttribute("github", githubUrl);
+        xml.writeAttribute("github", githubUrl);
     if(!copyright.isEmpty())
-        root.setAttribute("copyright", copyright);
-    doc.appendChild(root);
+        xml.writeAttribute("copyright", copyright);
 
+    xml.writeStartElement("Content");
+    xml.writeAttribute("type", "page");
+    xml.writeAttribute("source", "index.xml");
+    xml.writeAttribute("title", "Index");
+    xml.writeAttribute("menu", "default");
+    xml.writeAttribute("author", "admin");
+    xml.writeAttribute("layout", "default");
+    xml.writeAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
 
-    QDomElement c = doc.createElement("Content");
-    c.setAttribute("type", "page");
-    c.setAttribute("source", "index.xml");
-    c.setAttribute("title", "Index");
-    c.setAttribute("menu", "default");
-    c.setAttribute("author", "admin");
-    c.setAttribute("layout", "default");
-    c.setAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
-    root.appendChild(c);
+    xml.writeStartElement("Menu");
+    xml.writeAttribute("name", "default");
 
+    xml.writeStartElement("Item");
+    xml.writeAttribute("title", "Index");
+    xml.writeAttribute("url", "index.html");
 
-    QDomElement m = doc.createElement("Menu");
-    m.setAttribute("name", "default");
-
-    QDomElement i = doc.createElement("Item");
-    i.setAttribute("title", "Index");
-    i.setAttribute("url", "index.html");
-    m.appendChild(i);
-
-    root.appendChild(m);
-
-    QTextStream stream(&file);
-    stream << doc.toString();
+    xml.writeEndElement();
+    xml.writeEndElement();
+    xml.writeEndElement();
+    xml.writeEndElement();
+    xml.writeEndDocument();
     file.close();
 
     QFile index(path + "/pages/index.xml");
@@ -90,22 +86,21 @@ void SiteWizard::accept()
         qDebug() << "Unable to open file " + path + "/pages/index.xml";
         return;
     }
-    QDomDocument idoc;
-    QDomElement content = idoc.createElement("Content");
-    QDomElement section = idoc.createElement("Section");
-    QDomElement row = idoc.createElement("Row");
-    QDomElement column = idoc.createElement("Column");
-    column.setAttribute("span", "12");
-    QDomElement text = idoc.createElement("Text");
-    text.appendChild(idoc.createCDATASection("<h1>Welcome</h1>"));
-    column.appendChild(text);
-    row.appendChild(column);
-    section.appendChild(row);
-    content.appendChild(section);
-    idoc.appendChild(content);
-
-    QTextStream istream(&index);
-    istream << idoc.toString();
+    QXmlStreamWriter ind(&index);
+    ind.writeStartDocument();
+    ind.writeStartElement("Content");
+    ind.writeStartElement("Section");
+    ind.writeStartElement("Row");
+    ind.writeStartElement("Column");
+    ind.writeAttribute("span", "12");
+    ind.writeStartElement("Text");
+    ind.writeCDATA("<h1>Welcome</h1>");
+    ind.writeEndElement();
+    ind.writeEndElement();
+    ind.writeEndElement();
+    ind.writeEndElement();
+    ind.writeEndElement();
+    ind.writeEndDocument();
     index.close();
 
     QDialog::accept();

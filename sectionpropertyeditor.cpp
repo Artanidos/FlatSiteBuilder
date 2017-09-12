@@ -103,14 +103,14 @@ void SectionPropertyEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString SectionPropertyEditor::getHtml(QDomElement sec)
+QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString id = sec.attribute("id");
-    QString cls = sec.attribute("cssclass");
-    QString style = sec.attribute("style");
-    QString attributes = sec.attribute("attributes");
+    QString id = xml->attributes().value("id").toString();
+    QString cls = xml->attributes().value("cssclass").toString();
+    QString style = xml->attributes().value("style").toString();
+    QString attributes = xml->attributes().value("attributes").toString();
     QString html = "<section";
-    if(sec.attribute("fullwidth") != "true")
+    if(xml->attributes().value("fullwidth") != "true")
     {
         if(!cls.isEmpty())
             cls += " ";
@@ -125,11 +125,15 @@ QString SectionPropertyEditor::getHtml(QDomElement sec)
     if(!attributes.isEmpty())
         html += " " + attributes;
     html += ">\n";
-    QDomElement row = sec.firstChildElement("Row");
-    while(!row.isNull())
+    while(xml->readNextStartElement())
     {
-        html += RowPropertyEditor::getHtml(row);
-        row = row.nextSiblingElement("Row");
+        if(xml->name() == "Row")
+        {
+            html += RowPropertyEditor::getHtml(xml);
+            xml->readNext();
+        }
+        else
+            xml->skipCurrentElement();
     }
     return html + "</section>";
 }

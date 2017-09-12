@@ -23,7 +23,6 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QDomElement>
 #include "columneditor.h"
 #include "hyperlink.h"
 #include "flatbutton.h"

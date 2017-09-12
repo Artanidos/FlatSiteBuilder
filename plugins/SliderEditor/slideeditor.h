@@ -25,6 +25,7 @@
 
 class Slide;
 class ImageSelector;
+class QLineEdit;
 class SlideEditor : public AbstractEditor
 {
     Q_OBJECT

@@ -19,23 +19,27 @@
 ****************************************************************************/
 
 #include "column.h"
-#include "globals.h"
+#include "plugins.h"
 #include "interfaces.h"
 #include "mainwindow.h"
+#include <QXmlStreamReader>
 #include <QTest>
 
-QString Column::getHtml(QDomElement col)
+QString Column::getHtml(QXmlStreamReader *xml)
 {
-    QString span = col.attribute("span", "1");
+    QString span = xml->attributes().value("span").toString();
     QString html = "<div class=\"col-md-" + span + "\">\n";
-    QDomElement ele = col.firstChildElement();
-    while(!ele.isNull())
+    while(xml->readNextStartElement())
     {
-        if(Globals::hasPlugin(ele.nodeName() + "Editor"))
-            html += Globals::getPlugin(ele.nodeName() + "Editor")->getHtml(ele);
+        QString pluginName = xml->name() + "Editor";
+        if(Plugins::hasPlugin(pluginName))
+        {
+            html += Plugins::getPlugin(pluginName)->getHtml(xml);
+            Plugins::addUsedPlugin(pluginName);
+        }
         else
-            qDebug() << "Undefined element " + ele.nodeName();
-        ele = ele.nextSiblingElement();
+            qDebug() << "Undefined element " + pluginName;
+        xml->readNext();
     }
     return html + "\n</div>\n";
 }

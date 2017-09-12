@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
-#include <QDomElement>
 #include <QUndoStack>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -92,9 +91,7 @@ private slots:
 signals:
     void contentUpdated(QString text);
     void preview(Content *);
-    void contentEditorClosed();
     void contentChanged(Content *content);
-    void close();
 
 private:
     Site *m_site;
