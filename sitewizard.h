@@ -41,8 +41,6 @@ public:
 private:
     QLabel *m_siteNameLabel;
     QLineEdit *m_siteNameLineEdit;
-    QLabel *m_githubUrlLabel;
-    QLineEdit *m_githubUrlLineEdit;
     QLabel *m_copyrightLabel;
     QLineEdit *m_copyrightLineEdit;
     QLabel *m_descriptionLabel;

@@ -22,7 +22,6 @@ void SiteWizard::accept()
     QString siteName = field("siteName").toString();
     QString description = field("description").toString();
     QString copyright = field("copyright").toString();
-    QString githubUrl = field("githubUrl").toString();
     QString path = QDir::homePath() + "/FlatSiteBuilder/sources/" + siteName.toLower();
 
     QDir dir(QDir::homePath() + "/FlatSiteBuilder/sources/");
@@ -52,8 +51,6 @@ void SiteWizard::accept()
     xml.writeAttribute("title", siteName);
     if(!description.isEmpty())
         xml.writeAttribute("description", description);
-    if(!githubUrl.isEmpty())
-        xml.writeAttribute("github", githubUrl);
     if(!copyright.isEmpty())
         xml.writeAttribute("copyright", copyright);
 
@@ -148,11 +145,6 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     m_copyrightLabel->setBuddy(m_copyrightLineEdit);
     m_copyrightLineEdit->setPlaceholderText("&copy; 2017 My Company. All Rights Reserved.");
 
-    m_githubUrlLabel = new QLabel("&Github Url");
-    m_githubUrlLineEdit = new QLineEdit;
-    m_githubUrlLabel->setBuddy(m_githubUrlLineEdit);
-    m_githubUrlLineEdit->setPlaceholderText("https://github.com/mycompany/myproject.git");
-
     m_themeLabel = new QLabel("&Theme");
     m_theme = new QComboBox;
     m_themeLabel->setBuddy(m_theme);
@@ -162,7 +154,6 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     registerField("siteName*", m_siteNameLineEdit);
     registerField("description", m_descriptionLineEdit);
     registerField("copyright", m_copyrightLineEdit);
-    registerField("githubUrl", m_githubUrlLineEdit);
     registerField("theme", m_theme, "currentText");
 
     QGridLayout *layout = new QGridLayout;
@@ -172,10 +163,8 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     layout->addWidget(m_descriptionLineEdit, 1, 1);
     layout->addWidget(m_copyrightLabel, 2, 0);
     layout->addWidget(m_copyrightLineEdit, 2, 1);
-    layout->addWidget(m_githubUrlLabel, 3, 0);
-    layout->addWidget(m_githubUrlLineEdit, 3, 1);
-    layout->addWidget(m_themeLabel, 4, 0);
-    layout->addWidget(m_theme, 4, 1);
+    layout->addWidget(m_themeLabel, 3, 0);
+    layout->addWidget(m_theme, 3, 1);
     setLayout(layout);
 }
 
