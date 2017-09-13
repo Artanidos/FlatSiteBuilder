@@ -4,7 +4,7 @@ Features
 - theme chooser (theme_accent)
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)
-- test on windows
+- TextEditor.dll/.so must be installed also
 
 Postponend
 ----------

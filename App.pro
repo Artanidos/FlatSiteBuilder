@@ -144,7 +144,6 @@ linux-g++ {
 RESOURCES += \
     flatsitebuilder.qrc
 
-unix:!macx: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
-
+LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets

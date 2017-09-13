@@ -23,8 +23,9 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include "widgets_global.h"
 
-class TableCheckbox : public QWidget
+class WIDGETSSHARED_EXPORT TableCheckbox : public QWidget
 {
     Q_OBJECT
 public:

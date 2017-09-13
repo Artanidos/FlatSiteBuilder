@@ -28,8 +28,7 @@ HEADERS		 += slidereditor.h \
     slideeditor.h
 DESTDIR       = ~/FlatSiteBuilder/plugins
 
-unix:!macx: LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-
+LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
 

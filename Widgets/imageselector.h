@@ -22,8 +22,9 @@
 #define IMAGESELECTOR_H
 
 #include <QWidget>
+#include "widgets_global.h"
 
-class ImageSelector : public QWidget
+class WIDGETSSHARED_EXPORT ImageSelector : public QWidget
 {
     Q_OBJECT
 

@@ -22,6 +22,7 @@ TARGET = Widgets
 TEMPLATE = lib
 
 DEFINES += WIDGETS_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     flatbutton.cpp \
@@ -31,11 +32,10 @@ SOURCES += \
 HEADERS +=\
     flatbutton.h \
     imageselector.h \
-    tablecheckbox.h
+    tablecheckbox.h \
+    widgets_global.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
-
-RESOURCES +=

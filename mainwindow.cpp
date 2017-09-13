@@ -70,7 +70,8 @@ MainWindow::MainWindow()
     readSettings();
     if(!install())
     {
-        loadProject(m_defaultPath + "/Site.xml");
+        if(!m_defaultPath.isEmpty())
+            loadProject(m_defaultPath + "/Site.xml");
     }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
@@ -582,7 +583,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::writeSettings()
 {
-    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,  QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
     if(m_site)
@@ -591,7 +592,7 @@ void MainWindow::writeSettings()
 
 void MainWindow::readSettings()
 {
-    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,  QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
     if (geometry.isEmpty())
     {
