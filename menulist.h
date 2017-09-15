@@ -15,9 +15,9 @@ public:
 
 private slots:
     void buttonClicked();
-    void deleteButtonClicked();
     void tableDoubleClicked(int, int);
-    void checkStateChanged(bool);
+    void deleteMenu(QObject *menu);
+    void editMenu(QObject *menu);
 
 signals:
     void contentUpdated(QString text);
@@ -25,7 +25,6 @@ signals:
 
 private:
     Site *m_site;
-    QPushButton *m_deleteButton;
     QTableWidget *m_list;
 
     void addListItem(Menu *menu);

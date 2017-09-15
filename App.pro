@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     commands.cpp \
     plugins.cpp \
     menulist.cpp \
-    menueditor.cpp
+    menueditor.cpp \
+    tablecellbuttons.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -83,7 +84,8 @@ HEADERS  += mainwindow.h \
     commands.h \
     plugins.h \
     menulist.h \
-    menueditor.h
+    menueditor.h \
+    tablecellbuttons.h
 
 
 DISTFILES += \

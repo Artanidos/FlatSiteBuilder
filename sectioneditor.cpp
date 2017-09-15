@@ -40,7 +40,7 @@ SectionEditor::SectionEditor()
     vbox->setSpacing(5);
     m_editButton = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
     m_copyButton = new FlatButton(":/images/copy_normal.png", ":/images/copy_hover.png");
-    m_closeButton = new FlatButton(":/images/close_normal.png", ":/images/close_hover_red.png");
+    m_closeButton = new FlatButton(":/images/trash_normal.png", ":/images/trash_hover.png");
     m_editButton->setToolTip("Edit Section");
     m_closeButton->setToolTip("Delete Section");
     m_copyButton->setToolTip("Copy Section");

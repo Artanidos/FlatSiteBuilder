@@ -2,17 +2,14 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QHeaderView>
-#include "tablecheckbox.h"
+#include "flatbutton.h"
+#include "tablecellbuttons.h"
 
 MenuList::MenuList(Site *site)
 {
     m_site = site;
     QPushButton *button = new QPushButton("Add Menu");
     button->setMaximumWidth(120);
-    m_deleteButton = new QPushButton("Delete");
-    m_deleteButton->setMaximumWidth(120);
-    m_deleteButton->setEnabled(false);
-    m_deleteButton->setToolTip("Delete all marked items");
     QLabel *titleLabel = new QLabel("Menus");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(20);
@@ -33,7 +30,6 @@ MenuList::MenuList(Site *site)
     layout->addWidget(titleLabel, 0, 0);
     layout->addWidget(button, 1, 0);
     layout->addWidget(m_list, 2, 0, 1, 3);
-    layout->addWidget(m_deleteButton, 3, 0);
     setLayout(layout);
 
     if(m_site)
@@ -47,36 +43,22 @@ MenuList::MenuList(Site *site)
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
-    connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
 }
 
 void MenuList::addListItem(Menu *menu)
 {
     int rows = m_list->rowCount();
     m_list->setRowCount(rows + 1);
-    TableCheckbox *checkBox = new TableCheckbox();
-    connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
-    m_list->setCellWidget(rows, 0, checkBox);
-    m_list->setRowHeight(rows, checkBox->sizeHint().height());
+    TableCellButtons *tcb = new TableCellButtons;
+    tcb->setItem(menu);
+    connect(tcb, SIGNAL(deleteItem(QObject*)), this, SLOT(deleteMenu(QObject*)));
+    connect(tcb, SIGNAL(editItem(QObject*)), this, SLOT(editMenu(QObject*)));
+    m_list->setCellWidget(rows, 0, tcb);
+    m_list->setRowHeight(rows, tcb->sizeHint().height());
     QTableWidgetItem *titleItem = new QTableWidgetItem(menu->name());
     titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
     titleItem->setData(Qt::UserRole, QVariant::fromValue(menu));
     m_list->setItem(rows, 1, titleItem);
-}
-
-void MenuList::checkStateChanged(bool)
-{
-    int numberChecked = 0;
-    for(int row = 0; row < m_list->rowCount(); row++)
-    {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
-        {
-            numberChecked++;
-            break;
-        }
-    }
-    m_deleteButton->setEnabled(numberChecked > 0);
 }
 
 void MenuList::buttonClicked()
@@ -88,21 +70,35 @@ void MenuList::buttonClicked()
     tableDoubleClicked(m_list->rowCount() - 1, 0);
 }
 
-void MenuList::deleteButtonClicked()
+void MenuList::deleteMenu(QObject *menu)
 {
-    for(int row = m_list->rowCount() - 1; row >= 0; row--)
+    for(int row = 0; row < m_list->rowCount(); row++)
     {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Menu *m = qvariant_cast<Menu*>(item->data(Qt::UserRole));
+        if(m == menu)
         {
-            QTableWidgetItem *item = m_list->item(row, 1);
-            Menu *menu = qvariant_cast<Menu*>(item->data(Qt::UserRole));
-            m_site->removeMenu(menu);
+            m_site->removeMenu(dynamic_cast<Menu*>(menu));
             m_list->removeRow(row);
+            emit contentUpdated("Menu deleted");
+            break;
         }
     }
-    m_deleteButton->setEnabled(false);
-    emit contentUpdated("Menu deleted");
+}
+
+void MenuList::editMenu(QObject *menu)
+{
+    for(int row = 0; row < m_list->rowCount(); row++)
+    {
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Menu *m = qvariant_cast<Menu*>(item->data(Qt::UserRole));
+        if(m == menu)
+        {
+            m_list->selectRow(row);
+            emit editContent(item);
+            break;
+        }
+    }
 }
 
 void MenuList::tableDoubleClicked(int r, int)

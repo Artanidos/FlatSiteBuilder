@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "contentlist.h"
-#include "tablecheckbox.h"
+#include "tablecellbuttons.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -38,11 +38,6 @@ ContentList::ContentList(Site *site, ContentType type)
     QPushButton *button = new QPushButton();
     button->setText(m_type == ContentType::Page ? "Add Page" : "Add Post");
     button->setMaximumWidth(120);
-    m_deleteButton = new QPushButton();
-    m_deleteButton->setText("Delete");
-    m_deleteButton->setMaximumWidth(120);
-    m_deleteButton->setEnabled(false);
-    m_deleteButton->setToolTip("Delete all marked items");
     titleLabel->setText(m_type == ContentType::Page ? "Pages" : "Posts");
     QFont fnt = titleLabel->font();
     fnt.setPointSize(20);
@@ -72,23 +67,23 @@ ContentList::ContentList(Site *site, ContentType type)
     layout->addWidget(titleLabel, 0, 0);
     layout->addWidget(button, 1, 0);
     layout->addWidget(m_list, 2, 0, 1, 3);
-    layout->addWidget(m_deleteButton, 3, 0);
     vbox->addLayout(layout);
     setLayout(vbox);
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
-    connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
 }
 
 void ContentList::addListItem(Content *content)
 {
     int rows = m_list->rowCount();
     m_list->setRowCount(rows + 1);
-    TableCheckbox *checkBox = new TableCheckbox();
-    connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
-    m_list->setCellWidget(rows, 0, checkBox);
-    m_list->setRowHeight(rows, checkBox->sizeHint().height());
+    TableCellButtons *tcb = new TableCellButtons;
+    tcb->setItem(content);
+    connect(tcb, SIGNAL(deleteItem(QObject*)), this, SLOT(deleteContent(QObject*)));
+    connect(tcb, SIGNAL(editItem(QObject*)), this, SLOT(editContent(QObject*)));
+    m_list->setCellWidget(rows, 0, tcb);
+    m_list->setRowHeight(rows, tcb->sizeHint().height());
     QTableWidgetItem *titleItem = new QTableWidgetItem(content->title());
     titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
     titleItem->setData(Qt::UserRole, QVariant::fromValue(content));
@@ -111,21 +106,6 @@ void ContentList::addListItem(Content *content)
     m_list->setItem(rows, 5, dateItem);
 }
 
-void ContentList::checkStateChanged(bool)
-{
-    int numberChecked = 0;
-    for(int row = 0; row < m_list->rowCount(); row++)
-    {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
-        {
-            numberChecked++;
-            break;
-        }
-    }
-    m_deleteButton->setEnabled(numberChecked > 0);
-}
-
 void ContentList::buttonClicked()
 {
     Content *content = new Content(m_type);
@@ -144,33 +124,39 @@ void ContentList::buttonClicked()
     emit editContent(item);
 }
 
-void ContentList::deleteButtonClicked()
-{
-    QString filename;
-    for(int row = m_list->rowCount() - 1; row >= 0; row--)
-    {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
-        {
-            QTableWidgetItem *item = m_list->item(row, 1);
-            Content *content = qvariant_cast<Content*>(item->data(Qt::UserRole));
-            if(content->contentType() == ContentType::Page)
-                filename = m_site->sourcePath() + "/pages/" + content->source();
-            else
-                filename = m_site->sourcePath() + "/posts/" + content->source();
-            QFile file(filename);
-            file.remove();
-
-            m_site->removeContent(content);
-            m_list->removeRow(row);
-        }
-    }
-    m_deleteButton->setEnabled(false);
-    emit contentUpdated("Delete Content");
-}
-
 void ContentList::tableDoubleClicked(int r, int)
 {
     QTableWidgetItem *item = m_list->item(r, 1);
     emit editContent(item);
+}
+
+void ContentList::deleteContent(QObject *content)
+{
+    for(int row = 0; row < m_list->rowCount(); row++)
+    {
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Content *m = qvariant_cast<Content*>(item->data(Qt::UserRole));
+        if(m == content)
+        {
+            m_site->removeContent(dynamic_cast<Content*>(content));
+            m_list->removeRow(row);
+            emit contentUpdated("Delete Content");
+            break;
+        }
+    }
+}
+
+void ContentList::editContent(QObject *content)
+{
+    for(int row = 0; row < m_list->rowCount(); row++)
+    {
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Content *m = qvariant_cast<Content*>(item->data(Qt::UserRole));
+        if(m == content)
+        {
+            m_list->selectRow(row);
+            emit editContent(item);
+            break;
+        }
+    }
 }

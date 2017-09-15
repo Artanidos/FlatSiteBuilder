@@ -1,6 +1,5 @@
 Features
 --------
-- menu editor
 - theme chooser (theme_accent)
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)

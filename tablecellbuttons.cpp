@@ -18,39 +18,32 @@
 **
 ****************************************************************************/
 
-#ifndef CONTENTLIST_H
-#define CONTENTLIST_H
+#include "tablecellbuttons.h"
+#include "flatbutton.h"
+#include <QHBoxLayout>
 
-#include <QWidget>
-#include <QTableWidget>
-#include <QPushButton>
-#include "site.h"
-
-class ContentList  : public QWidget
+TableCellButtons::TableCellButtons()
 {
-    Q_OBJECT
+    m_delete = new FlatButton(":/images/trash_normal.png", ":/images/trash_hover.png");
+    m_edit = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
+    m_edit->setToolTip("Edit Item");
+    m_delete->setToolTip("Delete Item");
 
-public:
-    ContentList(Site *site, ContentType type);
+    QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->addWidget(m_edit);
+    hbox->addWidget(m_delete);
+    setLayout(hbox);
 
-    QTableWidget *list() {return m_list;}
+    connect(m_delete, SIGNAL(clicked()), this, SLOT(deleteItemClicked()));
+    connect(m_edit, SIGNAL(clicked()), this, SLOT(editItemClicked()));
+}
 
-private slots:
-    void buttonClicked();
-    void tableDoubleClicked(int, int);
-    void deleteContent(QObject *content);
-    void editContent(QObject *content);
+void TableCellButtons::deleteItemClicked()
+{
+    emit deleteItem(m_item);
+}
 
-signals:
-    void addContent();
-    void contentUpdated(QString text);
-    void editContent(QTableWidgetItem *item);
-
-private:
-    Site *m_site;
-    ContentType m_type;
-    QTableWidget *m_list;
-    void addListItem(Content *content);
-};
-
-#endif // CONTENTLIST_H
+void TableCellButtons::editItemClicked()
+{
+    emit editItem(m_item);
+}

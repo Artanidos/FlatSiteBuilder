@@ -18,39 +18,33 @@
 **
 ****************************************************************************/
 
-#ifndef CONTENTLIST_H
-#define CONTENTLIST_H
+#ifndef TABLECELLBUTTONS_H
+#define TABLECELLBUTTONS_H
 
 #include <QWidget>
-#include <QTableWidget>
-#include <QPushButton>
-#include "site.h"
 
-class ContentList  : public QWidget
+class FlatButton;
+class TableCellButtons : public QWidget
 {
     Q_OBJECT
 
 public:
-    ContentList(Site *site, ContentType type);
+    TableCellButtons();
 
-    QTableWidget *list() {return m_list;}
+    void setItem(QObject *item) {m_item = item;}
 
 private slots:
-    void buttonClicked();
-    void tableDoubleClicked(int, int);
-    void deleteContent(QObject *content);
-    void editContent(QObject *content);
+    void deleteItemClicked();
+    void editItemClicked();
 
 signals:
-    void addContent();
-    void contentUpdated(QString text);
-    void editContent(QTableWidgetItem *item);
+    void deleteItem(QObject *);
+    void editItem(QObject *);
 
 private:
-    Site *m_site;
-    ContentType m_type;
-    QTableWidget *m_list;
-    void addListItem(Content *content);
+    FlatButton *m_delete;
+    FlatButton *m_edit;
+    QObject *m_item;
 };
 
-#endif // CONTENTLIST_H
+#endif // TABLECELLBUTTONS_H

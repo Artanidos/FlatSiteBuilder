@@ -473,6 +473,7 @@ void MainWindow::reloadProject()
                                 if(xml.name() == "Item")
                                 {
                                     MenuItem *subitem = new MenuItem();
+                                    subitem->setSubitem(true);
                                     subitem->setTitle(xml.attributes().value("title").toString());
                                     subitem->setUrl(xml.attributes().value("url").toString());
                                     subitem->setIcon(xml.attributes().value("icon").toString());

@@ -203,5 +203,19 @@
         <file>images/module_hover.png</file>
         <file>images/module_normal.png</file>
         <file>images/text.png</file>
+        <file>images/left_disabled.png</file>
+        <file>images/left_hover.png</file>
+        <file>images/left_normal.png</file>
+        <file>images/right_disabled.png</file>
+        <file>images/right_hover.png</file>
+        <file>images/right_normal.png</file>
+        <file>images/up_disabled.png</file>
+        <file>images/up_hover.png</file>
+        <file>images/up_normal.png</file>
+        <file>images/down_disabled.png</file>
+        <file>images/down_hover.png</file>
+        <file>images/down_normal.png</file>
+        <file>images/trash_hover.png</file>
+        <file>images/trash_normal.png</file>
     </qresource>
 </RCC>
