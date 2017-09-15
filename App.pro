@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     plugins.cpp \
     menulist.cpp \
     menueditor.cpp \
-    tablecellbuttons.cpp
+    tablecellbuttons.cpp \
+    themechooser.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -85,7 +86,8 @@ HEADERS  += mainwindow.h \
     plugins.h \
     menulist.h \
     menueditor.h \
-    tablecellbuttons.h
+    tablecellbuttons.h \
+    themechooser.h
 
 
 DISTFILES += \

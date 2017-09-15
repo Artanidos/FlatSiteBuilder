@@ -4,3 +4,4 @@
 - Nested menus are now possible
 - Nested if statements are now possible
 - Nested for statements are now possible
+- Menu editor added

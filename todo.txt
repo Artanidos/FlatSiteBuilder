@@ -4,11 +4,11 @@ Features
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
+- IconChooser for menu editor
 
 Postponend
 ----------
 - bootstrap 4 support ?
-- ability to create and load plugins
 - support all 12 columns from bootstrap
     maybe resize column
 	editor where the columns can be selected
@@ -16,11 +16,11 @@ Postponend
 - support for cssgrid ?
 - theme editor (change colors, fonts and other styles)
 - other modules (plugins)
-- media page
+- media page (crop, alt, rename, resize, scale)
 - widget system ala wordpress
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - library to save pages, sections and rows as templates
-- general plugin (settings)
 - plugin for publish
+- image chooser instead of file dialog
 
 

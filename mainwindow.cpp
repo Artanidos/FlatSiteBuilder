@@ -20,6 +20,7 @@
 
 #include "mainwindow.h"
 #include "interfaces.h"
+#include "themechooser.h"
 #include <QCloseEvent>
 #include <QSettings>
 #include <QCoreApplication>
@@ -317,7 +318,7 @@ void MainWindow::initGui()
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
     //connect(m_media, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_appearance, SIGNAL(clicked()), this, SLOT(showMenus()));
-    connect(themesButton, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(themesButton, SIGNAL(clicked()), this, SLOT(showThemes()));
     connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(notImplemented()));
 }
@@ -643,6 +644,12 @@ void MainWindow::showMenus()
     connect(edit, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editMenu(QTableWidgetItem*)));
     connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(edit);
+}
+
+void MainWindow::showThemes()
+{
+    ThemeChooser *tc = new ThemeChooser(m_site);
+    setCentralWidget(tc);
 }
 
 void MainWindow::editContent(QTableWidgetItem *item)
