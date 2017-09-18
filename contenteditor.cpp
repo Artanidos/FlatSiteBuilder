@@ -465,12 +465,20 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
 
 void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
 {
-    while(stream->readNextStartElement())
+    while(stream->readNext())
     {
-        ElementEditor *ee = new ElementEditor();
-        ee->setMode(ElementEditor::Mode::Enabled);
-        ee->load(stream);
-        ce->addElement(ee);
+        if(stream->isStartElement())
+        {
+            ElementEditor *ee = new ElementEditor();
+            ee->setMode(ElementEditor::Mode::Enabled);
+            ee->load(stream);
+            ce->addElement(ee);
+        }
+        else if(stream->isEndElement())
+        {
+            if(stream->name() == "Column")
+                return;
+        }
     }
 }
 
