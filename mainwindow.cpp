@@ -575,6 +575,7 @@ void MainWindow::projectUpdated(QString text)
 {
     QUndoCommand *changeCommand = new ChangeProjectCommand(this, m_site, text);
     m_undoStack->push(changeCommand);
+    statusBar()->showMessage("The project should be rebuildet.");
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -649,6 +650,7 @@ void MainWindow::showMenus()
 void MainWindow::showThemes()
 {
     ThemeChooser *tc = new ThemeChooser(m_site);
+    connect(tc, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(tc);
 }
 
