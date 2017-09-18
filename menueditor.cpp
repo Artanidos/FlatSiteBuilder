@@ -1,6 +1,10 @@
 #include "menueditor.h"
 #include "flatbutton.h"
-#include "tablecheckbox.h"
+#include "imageselector.h"
+#include "generator.h"
+#include <QUndoStack>
+#include <QFileDialog>
+#include <QStandardPaths>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -96,10 +100,12 @@ void MenuEditorTableCellButtons::setEnableDown(bool mode)
     m_down->setEnabled(mode);
 }
 
-MenuEditor::MenuEditor(Menu *menu)
+MenuEditor::MenuEditor(Menu *menu, Site *site)
 {
     m_menu = menu;
+    m_site = site;
     m_changed = false;
+    m_undoStack = new QUndoStack;
     setAutoFillBackground(true);
 
     QLabel *titleLabel = new QLabel("Menu Editor");
@@ -138,6 +144,7 @@ MenuEditor::MenuEditor(Menu *menu)
     m_tree->header()->hideSection(4);
     m_tree->setSelectionMode(QAbstractItemView::NoSelection);
     m_tree->setToolTip("Double Click To Edit");
+    m_tree->setColumnWidth(2, 40);
 
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(titleLabel, 0, 0);
@@ -160,7 +167,48 @@ MenuEditor::MenuEditor(Menu *menu)
     connect(addButton, SIGNAL(clicked(bool)), this, SLOT(addButtonClicked()));
     connect(m_close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_name, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
+    connect(m_redo, SIGNAL(clicked()), this, SLOT(redo()));
+    connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
     connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(itemChanged(QTreeWidgetItem*,int)));
+    connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
+    connect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
+    connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
+    connect(m_undoStack, SIGNAL(redoTextChanged(QString)), this, SLOT(redoTextChanged(QString)));
+}
+
+MenuEditor::~MenuEditor()
+{
+    delete m_undoStack;
+}
+
+void MenuEditor::canUndoChanged(bool can)
+{
+    m_undo->setEnabled(can);
+}
+
+void MenuEditor::canRedoChanged(bool can)
+{
+    m_redo->setEnabled(can);
+}
+
+void MenuEditor::undoTextChanged(QString text)
+{
+    m_undo->setToolTip("Undo " + text);
+}
+
+void MenuEditor::redoTextChanged(QString text)
+{
+    m_redo->setToolTip("Redo " + text);
+}
+
+void MenuEditor::undo()
+{
+    m_undoStack->undo();
+}
+
+void MenuEditor::redo()
+{
+    m_undoStack->redo();
 }
 
 void MenuEditor::itemChanged(QTreeWidgetItem *twi, int column)
@@ -181,13 +229,54 @@ void MenuEditor::itemChanged(QTreeWidgetItem *twi, int column)
     emit contentUpdated("Menuitem changed");
 }
 
+void MenuEditor::iconClicked(ImageSelector *is, Qt::MouseButton button)
+{
+    MenuItem *mi = dynamic_cast<MenuItem*>(is->item());
+    if(button == Qt::LeftButton)
+    {
+        QString fileName;
+        QFileDialog *dialog = new QFileDialog();
+        dialog->setFileMode(QFileDialog::AnyFile);
+        dialog->setNameFilter(tr("Images (*.png *.gif *.jpg);;All (*)"));
+        dialog->setWindowTitle(tr("Load Image"));
+        dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+        dialog->setAcceptMode(QFileDialog::AcceptOpen);
+        dialog->setDirectory(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
+        if(dialog->exec())
+            fileName = dialog->selectedFiles().first();
+        delete dialog;
+        if (fileName.isEmpty())
+            return;
+
+        // copy file to assets dir
+        QFileInfo info(fileName);
+        QString name = info.fileName().replace(" ", "_");
+        QString path = m_site->sourcePath() + "/assets/images/" + name;
+        QFile::copy(fileName, path);
+
+        // also copy file to deploy dir for previews
+        QString dpath = m_site->deployPath() + "/assets/images/" + name;
+        QFile::copy(fileName, dpath);
+
+        mi->setIcon(path.mid(path.indexOf("assets/images/")));
+        is->setImage(QImage(path));
+    }
+    else if(button == Qt::RightButton)
+    {
+        mi->setIcon("");
+        is->setImage(QImage(":/images/image_placeholder.png"));
+    }
+    emit contentUpdated("Menuitem changed");
+}
+
 void MenuEditor::addTreeItem(MenuItem *item)
 {
     QTreeWidgetItem *twi = new QTreeWidgetItem();
     twi->setFlags(twi->flags() | Qt::ItemIsEditable);
     twi->setText(0, item->title());
     twi->setText(1, item->url());
-    twi->setText(2, item->icon());
+    //twi->setText(2, item->icon());
+
     twi->setText(4, QString::number(m_tree->topLevelItemCount()));
     twi->setData(0, Qt::UserRole, QVariant::fromValue(item));
     m_tree->addTopLevelItem(twi);
@@ -200,7 +289,7 @@ void MenuEditor::addTreeItem(MenuItem *item)
         stwi->setFlags(stwi->flags() | Qt::ItemIsEditable);
         stwi->setText(0, sub->title());
         stwi->setText(1, sub->url());
-        stwi->setText(2, sub->icon());
+        //stwi->setText(2, sub->icon());
         stwi->setText(4, QString::number(i));
         stwi->setData(0, Qt::UserRole, QVariant::fromValue(sub));
         twi->addChild(stwi);
@@ -227,6 +316,21 @@ void MenuEditor::addTableCellButtons(MenuItem *item, QTreeWidgetItem *twi)
         connect(tcb, SIGNAL(itemRight(MenuItem*)), this, SLOT(itemRight(MenuItem*)));
         connect(tcb, SIGNAL(editItem(MenuItem*)), this, SLOT(editItem(MenuItem*)));
     }
+
+    ImageSelector *is = new ImageSelector;
+    is->setToolTip("Click to select image, right click to reset image");
+    is->setItem(item);
+    is->setMaximumSize(24, 24);
+    QWidget *isw = new QWidget();
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(is);
+    isw->setLayout(vbox);
+    if(item->icon().isEmpty())
+        is->setImage(QImage(":/images/image_placeholder.png"));
+    else
+        is->setImage(QImage(Generator::sitesPath() + "/" + m_site->title() + "/" + item->icon()));
+    m_tree->setItemWidget(twi, 2, isw);
+    connect(is, SIGNAL(clicked(ImageSelector*,Qt::MouseButton)), this, SLOT(iconClicked(ImageSelector*,Qt::MouseButton)));
 }
 
 void MenuEditor::closeEditor()

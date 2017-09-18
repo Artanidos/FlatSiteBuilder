@@ -80,7 +80,6 @@ private slots:
     void menuChanged(QString);
     void layoutChanged(QString);
     void siteLoaded(Site *);
-    void showContextMenu(const QPoint &);
     void canUndoChanged(bool can);
     void canRedoChanged(bool can);
     void undoTextChanged(QString text);

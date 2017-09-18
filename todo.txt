@@ -1,10 +1,13 @@
 Features
 --------
-- theme chooser (theme_accent)
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
 - IconChooser for menu editor
+- Undo/Redo for content list
+- Undo/Redo for menus
+- Undo/Redo for menu editor
+- changing filename in contenteditor should also rename the input file
 
 Postponend
 ----------

@@ -35,15 +35,18 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void setImage(QImage image);
-    //QSize sizeHint() const;
+    void setItem(QObject *item) {m_item = item;}
+    QObject *item() {return m_item;}
 
 signals:
+    void clicked(ImageSelector *, Qt::MouseButton);
     void clicked();
 
 private:
     QImage m_image;
     qreal m_width;
     qreal m_height;
+    QObject *m_item;
 };
 
 #endif // IMAGESELECTOR_H

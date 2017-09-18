@@ -670,7 +670,7 @@ void MainWindow::editContent(QTableWidgetItem *item)
 void MainWindow::editMenu(QTableWidgetItem *item)
 {
     Menu *menu = qvariant_cast<Menu*>(item->data(Qt::UserRole));
-    m_editor = new MenuEditor(menu);
+    m_editor = new MenuEditor(menu, m_site);
 
     connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));

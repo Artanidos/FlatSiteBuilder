@@ -42,7 +42,10 @@ void ImageSelector::mousePressEvent(QMouseEvent *event)
 void ImageSelector::mouseReleaseEvent(QMouseEvent *event)
 {
     event->accept();
-    emit clicked();
+    if(m_item)
+        emit clicked(this, event->button());
+    else
+        emit clicked();
 }
 
 void ImageSelector::paintEvent(QPaintEvent *event)

@@ -3,12 +3,14 @@
 
 #include "interfaces.h"
 
+class QUndoStack;
 class FlatButton;
 class QLineEdit;
 class QPushButton;
 class QTableWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
+class ImageSelector;
 class MenuEditorTableCellButtons : public QWidget
 {
     Q_OBJECT
@@ -53,7 +55,9 @@ class MenuEditor : public AbstractEditor
     Q_OBJECT
 
 public:
-    MenuEditor(Menu *menu);
+    MenuEditor(Menu *menu, Site *site);
+    ~MenuEditor();
+
     void setContent(QString) {/* not used */}
 
 signals:
@@ -72,6 +76,13 @@ private slots:
     void itemRight(MenuItem *);
     void itemUp(MenuItem *);
     void itemDown(MenuItem *);
+    void canUndoChanged(bool can);
+    void canRedoChanged(bool can);
+    void undoTextChanged(QString text);
+    void redoTextChanged(QString text);
+    void undo();
+    void redo();
+    void iconClicked(ImageSelector*, Qt::MouseButton);
 
 private:
     Menu *m_menu;
@@ -81,6 +92,8 @@ private:
     QLineEdit *m_name;
     QTreeWidget *m_tree;
     QTreeWidgetItem *m_root;
+    QUndoStack *m_undoStack;
+    Site *m_site;
 
     void addTreeItem(MenuItem *item);
     int getRow(MenuItem *menuitem);

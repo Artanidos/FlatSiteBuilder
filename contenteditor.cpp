@@ -53,8 +53,6 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_changed = false;
     setAutoFillBackground(true);
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
-
     QString txt = "view ";
     if(m_content->contentType() == ContentType::Page)
         txt += "page";
@@ -177,7 +175,6 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     connect(m_menus, SIGNAL(currentIndexChanged(QString)), this, SLOT(menuChanged(QString)));
     connect(m_layouts, SIGNAL(currentIndexChanged(QString)), this, SLOT(layoutChanged(QString)));
     connect(m_previewLink, SIGNAL(clicked()), this, SLOT(preview()));
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
     connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
     connect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
     connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
@@ -219,18 +216,6 @@ void ContentEditor::redo()
     m_undoStack->redo();
 }
 
-void ContentEditor::showContextMenu(const QPoint &pos)
-{
-    QMenu contextMenu("Context menu", this);
-    QAction *undoAct = m_undoStack->createUndoAction(this, tr("&Undo"));
-    undoAct->setShortcuts(QKeySequence::Undo);
-    QAction *redoAct = m_undoStack->createRedoAction(this, tr("&Redo"));
-    redoAct->setShortcuts(QKeySequence::Redo);
-    contextMenu.addAction(undoAct);
-    contextMenu.addAction(redoAct);
-    contextMenu.exec(mapToGlobal(pos));
-}
-
 void ContentEditor::updateNewContent()
 {
     m_isNew = false;
@@ -263,7 +248,6 @@ void ContentEditor::updateNewContent()
     m_content->setMenu(m_menus->currentText());
     m_content->setAuthor(m_author->text());
     m_content->setDate(QDate::currentDate());
-    save();
     emit contentChanged(m_content);
     emit contentUpdated("Content updated");
 }
