@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     plugins.cpp \
     menulist.cpp \
     menueditor.cpp \
-    tablecellbuttons.cpp \
     themechooser.cpp
 
 HEADERS  += mainwindow.h \
@@ -86,7 +85,6 @@ HEADERS  += mainwindow.h \
     plugins.h \
     menulist.h \
     menueditor.h \
-    tablecellbuttons.h \
     themechooser.h
 
 

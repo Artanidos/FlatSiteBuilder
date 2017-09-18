@@ -73,15 +73,14 @@ public:
 private slots:
     void closeEditor();
     void addSlide();
-    void checkStateChanged(bool);
-    void deleteButtonClicked();
     void tableDoubleClicked(int r, int);
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
     void editorClosed();
+    void deleteSlide(QObject *);
+    void editSlide(QObject *);
 
 private:
-    QPushButton *m_deleteButton;
     QLineEdit *m_adminlabel;
     QTableWidget *m_list;
     SlideEditor *m_editor;

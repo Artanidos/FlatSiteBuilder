@@ -20,7 +20,7 @@
 
 #include "slidereditor.h"
 #include "slideeditor.h"
-#include "tablecheckbox.h"
+#include "tablecellbuttons.h"
 #include "flatbutton.h"
 #include <QLineEdit>
 #include <QGridLayout>
@@ -65,17 +65,10 @@ SliderEditor::SliderEditor()
     labels << "" << "Name";
     m_list->setHorizontalHeaderLabels(labels);
 
-    m_deleteButton = new QPushButton();
-    m_deleteButton->setText("Delete");
-    m_deleteButton->setMaximumWidth(120);
-    m_deleteButton->setEnabled(false);
-    m_deleteButton->setToolTip("Delete all marked items");
-
     grid->addWidget(titleLabel, 0, 0);
     grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(addSlide, 1, 0);
     grid->addWidget(m_list, 2, 0, 1, 3);
-    grid->addWidget(m_deleteButton, 3, 0);
     grid->addWidget(new QLabel("Admin Label"), 4, 0);
     grid->addWidget(m_adminlabel, 5, 0);
 
@@ -85,7 +78,6 @@ SliderEditor::SliderEditor()
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
-    connect(m_deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonClicked()));
 
     installEventFilter(this);
 }
@@ -181,29 +173,46 @@ void SliderEditor::addListItem(Slide *slide)
 {
     int rows = m_list->rowCount();
     m_list->setRowCount(rows + 1);
-    TableCheckbox *checkBox = new TableCheckbox();
-    connect(checkBox, SIGNAL(checkStateChanged(bool)), this, SLOT(checkStateChanged(bool)));
-    m_list->setCellWidget(rows, 0, checkBox);
-    m_list->setRowHeight(rows, checkBox->sizeHint().height());
+    TableCellButtons *tcb = new TableCellButtons;
+    tcb->setItem(slide);
+    connect(tcb, SIGNAL(deleteItem(QObject*)), this, SLOT(deleteSlide(QObject*)));
+    connect(tcb, SIGNAL(editItem(QObject*)), this, SLOT(editSlide(QObject*)));
+    m_list->setCellWidget(rows, 0, tcb);
+    m_list->setRowHeight(rows, tcb->sizeHint().height());
     QTableWidgetItem *titleItem = new QTableWidgetItem(slide->title());
     titleItem->setFlags(titleItem->flags() ^ Qt::ItemIsEditable);
     titleItem->setData(Qt::UserRole, QVariant::fromValue(slide));
     m_list->setItem(rows, 1, titleItem);
 }
 
-void SliderEditor::checkStateChanged(bool)
+void SliderEditor::deleteSlide(QObject *slide)
 {
-    int numberChecked = 0;
     for(int row = 0; row < m_list->rowCount(); row++)
     {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Slide *m = qvariant_cast<Slide*>(item->data(Qt::UserRole));
+        if(m == slide)
         {
-            numberChecked++;
+            m_list->removeRow(row);
+            contentChanged();
             break;
         }
     }
-    m_deleteButton->setEnabled(numberChecked > 0);
+}
+
+void SliderEditor::editSlide(QObject *slide)
+{
+    for(int row = 0; row < m_list->rowCount(); row++)
+    {
+        QTableWidgetItem *item = m_list->item(row, 1);
+        Slide *m = qvariant_cast<Slide*>(item->data(Qt::UserRole));
+        if(m == slide)
+        {
+            m_list->selectRow(row);
+            tableDoubleClicked(row, 0);
+            break;
+        }
+    }
 }
 
 void SliderEditor::tableDoubleClicked(int r, int)
@@ -216,20 +225,6 @@ void SliderEditor::tableDoubleClicked(int r, int)
     m_editor->setSlide(slide);
     connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));
     animate(item);
-}
-
-void SliderEditor::deleteButtonClicked()
-{
-    for(int row = m_list->rowCount() - 1; row >= 0; row--)
-    {
-        TableCheckbox *cb = dynamic_cast<TableCheckbox*>(m_list->cellWidget(row, 0));
-        if(cb->checked() == Qt::Checked)
-        {
-            m_list->removeRow(row);
-        }
-    }
-    m_deleteButton->setEnabled(false);
-    contentChanged();
 }
 
 void SliderEditor::animate(QTableWidgetItem *item)

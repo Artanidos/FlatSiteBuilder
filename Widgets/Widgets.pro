@@ -27,13 +27,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     flatbutton.cpp \
     imageselector.cpp \
-    tablecheckbox.cpp
+    tablecellbuttons.cpp
 
 HEADERS +=\
     flatbutton.h \
     imageselector.h \
-    tablecheckbox.h \
-    widgets_global.h
+    widgets_global.h \
+    tablecellbuttons.h
 
 unix {
     target.path = /usr/lib
