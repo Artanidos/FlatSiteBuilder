@@ -412,7 +412,6 @@ void MainWindow::loadProject(QString filename)
 void MainWindow::reloadProject()
 {
     m_site->contents().clear();
-    m_site->menus().clear();
 
     QFile file(m_site->sourcePath() + "/Site.xml");
     if (!file.open(QIODevice::ReadOnly))
@@ -455,43 +454,6 @@ void MainWindow::reloadProject()
                     p->setDate(QDate::fromString(xml.attributes().value("date").toString(), "dd.MM.yyyy"));
                     m_site->addContent(p);
                     xml.readNext();
-                }
-                else if(xml.name() == "Menu")
-                {
-                    Menu *m = new Menu();
-                    m->setName(xml.attributes().value("name").toString());
-                    while(xml.readNextStartElement())
-                    {
-                        if(xml.name() == "Item")
-                        {
-                            MenuItem *item = new MenuItem();
-                            item->setTitle(xml.attributes().value("title").toString());
-                            item->setUrl(xml.attributes().value("url").toString());
-                            item->setIcon(xml.attributes().value("icon").toString());
-
-                            while(xml.readNextStartElement())
-                            {
-                                if(xml.name() == "Item")
-                                {
-                                    MenuItem *subitem = new MenuItem();
-                                    subitem->setSubitem(true);
-                                    subitem->setTitle(xml.attributes().value("title").toString());
-                                    subitem->setUrl(xml.attributes().value("url").toString());
-                                    subitem->setIcon(xml.attributes().value("icon").toString());
-                                    item->addMenuitem(subitem);
-                                    xml.readNext();
-                                }
-                                else
-                                    xml.skipCurrentElement();
-
-                            }
-                            m->addMenuitem(item);
-                            xml.readNext();
-                        }
-                        else
-                            xml.skipCurrentElement();
-                    }
-                    m_site->addMenu(m);
                 }
                 else
                     xml.skipCurrentElement();
@@ -641,7 +603,7 @@ void MainWindow::showPages()
 
 void MainWindow::showMenus()
 {
-    MenuList *edit = new MenuList(m_site);
+    MenuList *edit = new MenuList(this, m_site);
     connect(edit, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editMenu(QTableWidgetItem*)));
     connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(edit);
@@ -670,12 +632,26 @@ void MainWindow::editContent(QTableWidgetItem *item)
 void MainWindow::editMenu(QTableWidgetItem *item)
 {
     Menu *menu = qvariant_cast<Menu*>(item->data(Qt::UserRole));
-    m_editor = new MenuEditor(menu, m_site);
-
-    connect(m_editor, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
+    MenuEditor *me = new MenuEditor(this, menu, m_site);
+    m_editor = me;
+    MenuList *list = dynamic_cast<MenuList*>(centralWidget());
+    if(list)
+    {
+        list->registerMenuEditor(me);
+        connect(list, SIGNAL(editedItemChanged(QTableWidgetItem*)), this, SLOT(editedItemChanged(QTableWidgetItem*)));
+    }
     connect(m_editor, SIGNAL(close()), this, SLOT(editorClosed()));
-    connect(m_editor, SIGNAL(contentChanged(Menu*)), this, SLOT(menuChanged(Menu*)));
+    connect(m_editor, SIGNAL(contentChanged(Menu*)), this, SLOT(menuChanged(Menu*)));    
     animate(item);
+}
+
+void MainWindow::editedItemChanged(QTableWidgetItem *item)
+{
+    // this will happen, if the MenuList.reloadMenu() has been called by the undo.command
+    m_list = item->tableWidget();
+    m_row = item->row();
+    m_cellWidget = new QWidget();
+    m_list->setCellWidget(m_row, 1, m_cellWidget);
 }
 
 void MainWindow::animate(QTableWidgetItem *item)
@@ -807,6 +783,13 @@ void MainWindow::animationFineshedZoomOut()
 {
     m_list->removeCellWidget(m_row, 1);
     delete m_animationgroup;
+
+    // in the case m_editor was a MenuEditor, we have to unregister it in the MenuList
+    // should be refactored some day :-)
+    MenuList *list = dynamic_cast<MenuList*>(centralWidget());
+    if(list)
+        list->unregisterMenuEditor();
+
     delete m_editor;
     m_editor = NULL;
 }

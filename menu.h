@@ -16,10 +16,13 @@ public:
     void addMenuitem(MenuItem *item) {m_items.append(item);}
     QList<MenuItem *> items() {return m_items;}
     void removeItem(MenuItem *item) {m_items.removeOne(item);}
+    int id() {return m_id;}
+    void setId(int id) {m_id = id;}
 
 private:
     QString m_name;
     QList<MenuItem *> m_items;
+    int m_id;
 };
 
 #endif // MENU_H

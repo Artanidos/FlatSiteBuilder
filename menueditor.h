@@ -55,14 +55,15 @@ class MenuEditor : public AbstractEditor
     Q_OBJECT
 
 public:
-    MenuEditor(Menu *menu, Site *site);
-    ~MenuEditor();
+    MenuEditor(MainWindow *win, Menu *menu, Site *site);
 
     void setContent(QString) {/* not used */}
+    void registerUndoStack(QUndoStack *stack);
+    void reloadMenu(Menu *menu);
 
 signals:
-    void contentUpdated(QString text);
     void contentChanged(Menu *menu);
+    void menuChanged(QString text);
 
 private slots:
     void closeEditor();
@@ -85,6 +86,7 @@ private slots:
     void iconClicked(ImageSelector*, Qt::MouseButton);
 
 private:
+    MainWindow *m_win;
     Menu *m_menu;
     FlatButton *m_close;
     FlatButton *m_undo;
@@ -100,6 +102,8 @@ private:
     void updateButtonStates();
     void resort();
     void addTableCellButtons(MenuItem *item, QTreeWidgetItem *twi);
+    void menuUpdated(QString text);
+    QString getUndoRedoText(MenuItem *item, QString action);
 };
 
 #endif // MENUEDITOR_H

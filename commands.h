@@ -27,6 +27,7 @@
 
 static int fileVersionNumber = 0;
 
+class MenuList;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
@@ -54,6 +55,23 @@ private:
     QString m_tempFilename;
     QString m_redoFilename;
     MainWindow *m_win;
+    QString m_filename;
+};
+
+class ChangeMenuCommand : public QUndoCommand
+{
+public:
+    ChangeMenuCommand(MenuList *list, Site *site, QString text, QUndoCommand *parent = 0);
+    ~ChangeMenuCommand();
+    void undo() override;
+    void redo() override;
+
+private:
+    Site *m_site;
+    QString m_tempFilename;
+    QString m_redoFilename;
+    MenuList *m_list;
+    QString m_filename;
 };
 
 #endif // COMMANDS_H

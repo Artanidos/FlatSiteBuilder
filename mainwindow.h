@@ -95,6 +95,7 @@ private slots:
     void showThemes();
     void editContent(QTableWidgetItem *item);
     void editMenu(QTableWidgetItem *item);
+    void editedItemChanged(QTableWidgetItem*);
     void previewSite(Content *content);
     void publishSite();
     void createSite();
