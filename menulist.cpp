@@ -270,7 +270,7 @@ void MenuList::buttonClicked()
     Menu *menu = new Menu();
     m_site->addMenu(menu);
     addListItem(menu);
-    emit contentUpdated("Menu added");
+    menuChanged("menu added");
     tableDoubleClicked(m_list->rowCount() - 1, 0);
 }
 
@@ -282,9 +282,9 @@ void MenuList::deleteMenu(QObject *menu)
         Menu *m = qvariant_cast<Menu*>(item->data(Qt::UserRole));
         if(m == menu)
         {
-            m_site->removeMenu(dynamic_cast<Menu*>(menu));
+            m_site->removeMenu(m);
             m_list->removeRow(row);
-            emit contentUpdated("Menu deleted");
+            menuChanged("menu \"" + m->name() + "\" deleted");
             break;
         }
     }

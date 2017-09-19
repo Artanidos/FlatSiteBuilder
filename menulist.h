@@ -37,7 +37,6 @@ private slots:
     void redoTextChanged(QString text);
 
 signals:
-    void contentUpdated(QString text);
     void editContent(QTableWidgetItem *item);
     void editedItemChanged(QTableWidgetItem *item);
 

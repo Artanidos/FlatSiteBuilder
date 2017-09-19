@@ -26,6 +26,7 @@
 ImageSelector::ImageSelector()
 {
     setCursor(Qt::PointingHandCursor);
+    m_item = NULL;
 }
 
 void ImageSelector::setImage(QImage image)

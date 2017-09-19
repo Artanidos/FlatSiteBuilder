@@ -5,8 +5,8 @@ Features
 - TextEditor.dll/.so must be installed also
 - Undo/Redo for content list
 - reload for content list
-- rename content file on source change
 - changing filename in contenteditor should also rename the input file
+- bug: when new menu is added and adding is redone (should close the menu editor)
 
 Postponend
 ----------

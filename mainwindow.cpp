@@ -681,7 +681,6 @@ void MainWindow::showMenus()
 {
     MenuList *edit = new MenuList(this, m_site);
     connect(edit, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editMenu(QTableWidgetItem*)));
-    connect(edit, SIGNAL(contentUpdated(QString)), this, SLOT(projectUpdated(QString)));
     setCentralWidget(edit);
 }
 

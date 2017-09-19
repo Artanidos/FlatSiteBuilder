@@ -48,7 +48,6 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_win = win;
     m_site = site;
     m_content = content;
-    m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
     m_editor = NULL;
     m_undoStack = new QUndoStack;
     m_changed = false;
@@ -145,6 +144,9 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
         m_layout->addWidget(m_excerptLabel, 5, 0);
         m_layout->addWidget(m_excerpt, 6, 0, 1, 4);
     }
+
+    if(!m_content->title().isEmpty())
+        m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
 
     if(m_filename.isEmpty())
         init();
