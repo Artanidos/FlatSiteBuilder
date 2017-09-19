@@ -54,28 +54,38 @@ void SiteWizard::accept()
     if(!copyright.isEmpty())
         xml.writeAttribute("copyright", copyright);
 
-    xml.writeStartElement("Content");
-    xml.writeAttribute("type", "page");
-    xml.writeAttribute("source", "index.xml");
-    xml.writeAttribute("title", "Index");
-    xml.writeAttribute("menu", "default");
-    xml.writeAttribute("author", "admin");
-    xml.writeAttribute("layout", "default");
-    xml.writeAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
-
-    xml.writeStartElement("Menu");
-    xml.writeAttribute("name", "default");
-
-    xml.writeStartElement("Item");
-    xml.writeAttribute("title", "Index");
-    xml.writeAttribute("url", "index.html");
-
-    xml.writeEndElement();
-    xml.writeEndElement();
-    xml.writeEndElement();
-    xml.writeEndElement();
+    //xml.writeStartElement("Content");
+    //xml.writeAttribute("type", "page");
+    //xml.writeAttribute("source", "index.xml");
+    //xml.writeAttribute("title", "Index");
+    //xml.writeAttribute("menu", "default");
+    //xml.writeAttribute("author", "admin");
+    //xml.writeAttribute("layout", "default");
+    //xml.writeAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
+    //xml.writeEndElement(); // Content
+    xml.writeEndElement(); // Site
     xml.writeEndDocument();
     file.close();
+
+    QFile menu(path + "/Menus.xml");
+    if(!file.open(QFile::WriteOnly))
+    {
+        qDebug() << "Unable to open file " + path + "/Menus.xml";
+        return;
+    }
+    QXmlStreamWriter men(&menu);
+    men.writeStartDocument();
+    men.writeStartElement("Menus");
+    men.writeStartElement("Menu");
+    men.writeAttribute("name", "default");
+    men.writeStartElement("Item");
+    men.writeAttribute("title", "Index");
+    men.writeAttribute("url", "index.html");
+    men.writeEndElement(); // Item
+    men.writeEndElement(); // Menu
+    men.writeEndElement(); // Menus
+    men.writeEndDocument();
+    menu.close();
 
     QFile index(path + "/pages/index.xml");
     if(!index.open(QFile::WriteOnly))
@@ -86,17 +96,22 @@ void SiteWizard::accept()
     QXmlStreamWriter ind(&index);
     ind.writeStartDocument();
     ind.writeStartElement("Content");
+    ind.writeAttribute("title", "Index");
+    ind.writeAttribute("menu", "default");
+    ind.writeAttribute("author", "admin");
+    ind.writeAttribute("layout", "default");
+    ind.writeAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
     ind.writeStartElement("Section");
     ind.writeStartElement("Row");
     ind.writeStartElement("Column");
     ind.writeAttribute("span", "12");
     ind.writeStartElement("Text");
     ind.writeCDATA("<h1>Welcome</h1>");
-    ind.writeEndElement();
-    ind.writeEndElement();
-    ind.writeEndElement();
-    ind.writeEndElement();
-    ind.writeEndElement();
+    ind.writeEndElement(); // Content
+    ind.writeEndElement(); // Section
+    ind.writeEndElement(); // Row
+    ind.writeEndElement(); // Column
+    ind.writeEndElement(); // Text
     ind.writeEndDocument();
     index.close();
 

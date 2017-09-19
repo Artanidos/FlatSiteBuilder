@@ -48,24 +48,22 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_win = win;
     m_site = site;
     m_content = content;
+    m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
     m_editor = NULL;
     m_undoStack = new QUndoStack;
     m_changed = false;
     setAutoFillBackground(true);
 
     QString txt = "view ";
-    if(m_content->contentType() == ContentType::Page)
-        txt += "page";
-    else
+    if(m_filename.contains("/posts/"))
         txt += "post";
+    else
+        txt += "page";
     m_previewLink = new Hyperlink(txt);
     m_vbox = new QVBoxLayout();
     m_layout = new QGridLayout();
     m_titleLabel = new QLabel();
-    if(!m_content->title().isEmpty())
-        m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Edit Page" : "Edit Post");
-    else
-        m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Add new Page" : "Add new Post");
+
     QFont fnt = m_titleLabel->font();
     fnt.setPointSize(20);
     fnt.setBold(true);
@@ -141,24 +139,14 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_vbox->addLayout(m_layout);
     setLayout(m_vbox);
 
-    m_title->setText(m_content->title());
-    m_source->setText(m_content->source());
-    m_author->setText(m_content->author());
-    m_keywords->setText(m_content->keywords());
-    m_menus->setCurrentText(m_content->menu());
-    m_layouts->setCurrentText(m_content->layout());
-    if(m_content->contentType() == ContentType::Page)
-        m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
-    else
+    if(m_content->contentType() == ContentType::Post)
     {
         m_excerptLabel = new QLabel("Excerpt");
         m_layout->addWidget(m_excerptLabel, 5, 0);
         m_layout->addWidget(m_excerpt, 6, 0, 1, 4);
-        m_excerpt->setText(m_content->excerpt());
-        m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
     }
 
-    if(m_content->source().isEmpty())
+    if(m_filename.isEmpty())
         init();
     else
         load();
@@ -249,7 +237,7 @@ void ContentEditor::updateNewContent()
     m_content->setAuthor(m_author->text());
     m_content->setDate(QDate::currentDate());
     emit contentChanged(m_content);
-    emit contentUpdated("Content updated");
+    editChanged("Content updated");
 }
 
 void ContentEditor::closeEditor()
@@ -291,7 +279,7 @@ void ContentEditor::titleChanged()
         m_content->setTitle(m_title->text());
         emit contentChanged(m_content);
         if(!m_isNew)
-            emit contentUpdated("Titel Changed");
+            editChanged("Titel Changed");
     }
 }
 
@@ -306,7 +294,7 @@ void ContentEditor::sourceChanged()
         else
             m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
         emit contentChanged(m_content);
-        emit contentUpdated("Permalink Changed");
+        editChanged("Permalink Changed");
     }
 }
 
@@ -317,7 +305,7 @@ void ContentEditor::excerptChanged()
         m_content->setDate(QDate::currentDate());
         m_content->setExcerpt(m_excerpt->text());
         emit contentChanged(m_content);
-        emit contentUpdated("Excerpt Changed");
+        editChanged("Excerpt Changed");
     }
 }
 
@@ -328,7 +316,7 @@ void ContentEditor::authorChanged()
         m_content->setDate(QDate::currentDate());
         m_content->setAuthor(m_author->text());
         emit contentChanged(m_content);
-        emit contentUpdated("Author Changed");
+        editChanged("Author Changed");
     }
 }
 
@@ -339,7 +327,7 @@ void ContentEditor::keywordsChanged()
         m_content->setDate(QDate::currentDate());
         m_content->setKeywords(m_keywords->text());
         emit contentChanged(m_content);
-        emit contentUpdated("Keywords Changed");
+        editChanged("Keywords Changed");
     }
 }
 
@@ -350,7 +338,7 @@ void ContentEditor::menuChanged(QString menu)
         m_content->setDate(QDate::currentDate());
         m_content->setMenu(menu);
         emit contentChanged(m_content);
-        emit contentUpdated("Menu Changed");
+        editChanged("Menu Changed");
     }
 }
 
@@ -361,7 +349,7 @@ void ContentEditor::layoutChanged(QString layout)
         m_content->setDate(QDate::currentDate());
         m_content->setLayout(layout);
         emit contentChanged(m_content);
-        emit contentUpdated("Layout Changed");
+        editChanged("Layout Changed");
     }
 }
 
@@ -390,6 +378,31 @@ void ContentEditor::load()
     {
         if(stream.name() == "Content")
         {
+            if(m_content->contentType() == ContentType::Post)
+            {
+                m_content->setExcerpt(stream.attributes().value("excerpt").toString());
+                m_excerpt->setText(m_content->excerpt());
+            }
+            m_content->setTitle(stream.attributes().value("title").toString());
+            m_content->setMenu(stream.attributes().value("menu").toString());
+            m_content->setLogo(stream.attributes().value("logo").toString());
+            m_content->setAuthor(stream.attributes().value("author").toString());
+            m_content->setLayout(stream.attributes().value("layout").toString());
+            m_content->setKeywords(stream.attributes().value("keywords").toString());
+            m_content->setDate(QDate::fromString(stream.attributes().value("date").toString(), "dd.MM.yyyy"));
+
+            if(!m_content->title().isEmpty())
+                m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Edit Page" : "Edit Post");
+            else
+                m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Add new Page" : "Add new Post");
+
+            m_title->setText(m_content->title());
+            m_source->setText(m_content->source());
+            m_author->setText(m_content->author());
+            m_keywords->setText(m_content->keywords());
+            m_menus->setCurrentText(m_content->menu());
+            m_layouts->setCurrentText(m_content->layout());
+
             while(stream.readNextStartElement())
             {
                 if(stream.name() == "Section")
@@ -479,6 +492,15 @@ void ContentEditor::save()
     xml.setAutoFormatting(true);
     xml.writeStartDocument();
     xml.writeStartElement("Content");
+    xml.writeAttribute("title", m_content->title());
+    xml.writeAttribute("menu", m_content->menu());
+    xml.writeAttribute("logo", m_content->logo());
+    xml.writeAttribute("author", m_content->author());
+    xml.writeAttribute("layout", m_content->layout());
+    xml.writeAttribute("keywords", m_content->keywords());
+    if(m_content->contentType() == ContentType::Post)
+        xml.writeAttribute("excerpt", m_content->excerpt());
+    xml.writeAttribute("date", QString(m_content->date().toString("dd.MM.yyyy")));
 
     PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
     foreach(SectionEditor *se, pe->sections())

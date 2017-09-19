@@ -4,7 +4,8 @@ Features
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
 - Undo/Redo for content list
-- Undo/Redo for menus
+- reload for content list
+- rename content file on source change
 - changing filename in contenteditor should also rename the input file
 
 Postponend

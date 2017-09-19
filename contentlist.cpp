@@ -138,8 +138,10 @@ void ContentList::deleteContent(QObject *content)
         Content *m = qvariant_cast<Content*>(item->data(Qt::UserRole));
         if(m == content)
         {
-            m_site->removeContent(dynamic_cast<Content*>(content));
+            m_site->removeContent(m);
             m_list->removeRow(row);
+            QFile file(m_site->sourcePath() + (m->contentType() == ContentType::Page ? "/pages/" : "/posts/") + m->source());
+            file.remove();
             emit contentUpdated("Delete Content");
             break;
         }

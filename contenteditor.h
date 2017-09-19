@@ -88,7 +88,6 @@ private slots:
     void redo();
 
 signals:
-    void contentUpdated(QString text);
     void preview(Content *);
     void contentChanged(Content *content);
 
