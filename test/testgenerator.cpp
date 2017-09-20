@@ -166,7 +166,7 @@ void TestGenerator::generateSite()
     g.setSitesPath(dir + "/sites");
     g.setThemePath(dir + "/themes");
 
-    Site *site = new Site(dir + "/Site.xml");
+    Site *site = new Site(NULL, dir + "/Site.xml");
     site->setCopyright("siteCopyright");
     site->setTheme("testSiteTheme");
     site->setTitle("testSiteTitle");
@@ -191,7 +191,7 @@ void TestGenerator::generateSite()
     item2->setUrl("testMenuItemUrl2");
     menu->addMenuitem(item2);
     site->addMenu(menu);
-    site->addContent(page);
+    site->addPage(page);
     g.generateSite(site);
 
     QStringList list;

@@ -5,6 +5,7 @@
 
 class Site;
 class QGridLayout;
+class MainWindow;
 class Theme
 {
 public:
@@ -20,12 +21,12 @@ class ThemeWidget : public QWidget
 public:
     ThemeWidget(Theme *theme);
 
+signals:
+    void themeChanged(QString theme);
+
 private slots:
     void clicked();
     void activate();
-
-signals:
-    void themeChanged(QString themename);
 
 private:
     QString m_url;
@@ -37,10 +38,7 @@ class ThemeChooser : public QWidget
     Q_OBJECT
 
 public:
-    ThemeChooser(Site *site);
-
-signals:
-    void contentUpdated(QString text);
+    ThemeChooser(MainWindow *win, Site *site);
 
 private slots:
     void themeChanged(QString themename);
@@ -49,6 +47,7 @@ private:
     QList<Theme*> m_themes;
     Site *m_site;
     QGridLayout *m_layout;
+    MainWindow *m_win;
 
     void loadThemes();
 };

@@ -63,6 +63,7 @@ public slots:
     void editChanged(QString text);
     void save();
     void closeEditor();
+    void contentRenamed(QString name);
 
 private slots:
     void preview();
@@ -123,7 +124,6 @@ private:
     FlatButton *m_redo;
     QWidget *m_sourcewidget;
     MainWindow *m_win;
-    bool m_isNew;
     QLabel *m_labelKeyword;
     QLabel *m_labelAuthor;
     QLabel *m_labelMenu;
@@ -132,6 +132,7 @@ private:
     QLineEdit *m_author;
     QComboBox *m_menus;
     QComboBox *m_layouts;
+    bool m_isNew;
 
     void init();
     void loadRows(QXmlStreamReader *stream, SectionEditor *se);
@@ -139,7 +140,6 @@ private:
     void loadElements(QXmlStreamReader *stream, ColumnEditor *ce);
     void animate(QWidget *widget);
     void editorClosed();
-    void updateNewContent();
 };
 
 #endif // CONTENTEDITOR_H

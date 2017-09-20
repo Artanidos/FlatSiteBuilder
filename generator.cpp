@@ -40,7 +40,7 @@ Generator::Generator()
 }
 
 /*
- * Parses all *.html files for a gives path
+ * Parses all *.xml files for a gives path
  * and translates them to html into a directory named "site".
  */
 void Generator::generateSite(Site *site, Content *contentToBuild)
@@ -61,7 +61,21 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
 
     QVariantList pages;
     QVariantList posts;
-    foreach (Content *content, m_site->contents())
+    foreach (Content *content, m_site->pages())
+    {
+        QVariantMap cm;
+        cm["author"] = content->author();
+        cm["date"] = content->date();
+        cm["layout"] = content->layout();
+        cm["logo"] = content->logo();
+        cm["menu"] = content->menu();
+        cm["source"] = content->source();
+        cm["title"] = content->title();
+        cm["url"] = content->url();
+        cm["keywords"] = content->keywords();
+        pages.append(cm);
+    }
+    foreach (Content *content, m_site->posts())
     {
         QVariantMap cm;
         cm["author"] = content->author();
@@ -74,10 +88,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
         cm["title"] = content->title();
         cm["url"] = content->url();
         cm["keywords"] = content->keywords();
-        if(content->contentType() == ContentType::Page)
-            pages.append(cm);
-        else
-            posts.append(cm);
+        posts.append(cm);
     }
     QVariantMap menus;
     foreach(Menu *menu, m_site->menus())
@@ -129,93 +140,121 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
         // first copy assets from site, they will not be overridden by theme assets
         copyPath(m_site->sourcePath() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
         copyPath(m_themePath + "/" + m_site->theme() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
+
+        foreach (Content *page, m_site->pages())
+        {
+            generateContent(page);
+        }
+
+        foreach (Content *post, m_site->posts())
+        {
+            generateContent(post);
+        }
+    }
+    else
+    {
+        generateContent(contentToBuild);
+    }
+}
+
+void Generator::generateContent(Content *content)
+{
+    QString subdir;
+    QVariantMap cm;
+    if(content->contentType() == ContentType::Page)
+    {
+        subdir = "pages";
+        //cm = sitevars["pages"].toList().at(sitevarindex).toMap();
+        cm["author"] = content->author();
+        cm["date"] = content->date();
+        cm["layout"] = content->layout();
+        cm["logo"] = content->logo();
+        cm["menu"] = content->menu();
+        cm["source"] = content->source();
+        cm["title"] = content->title();
+        cm["url"] = content->url();
+        cm["keywords"] = content->keywords();
+    }
+    else
+    {
+        subdir = "posts";
+        //cm = sitevars["posts"].toList().at(sitevarindex).toMap();
+        cm["author"] = content->author();
+        cm["date"] = content->date();
+        cm["excerpt"] = content->excerpt();
+        cm["layout"] = content->layout();
+        cm["logo"] = content->logo();
+        cm["menu"] = content->menu();
+        cm["source"] = content->source();
+        cm["title"] = content->title();
+        cm["url"] = content->url();
+        cm["keywords"] = content->keywords();
     }
 
-    int pa = 0;
-    int po = 0;
-    foreach (Content *content, m_site->contents())
+    QFile file(m_site->sourcePath() + "/" + subdir + "/" + content->source());
+    if (file.open(QIODevice::ReadOnly))
     {
-        QString subdir;
-        QVariantMap cm;
-        if(content->contentType() == ContentType::Page)
-        {
-            subdir = "pages";
-            cm = sitevars["pages"].toList().at(pa++).toMap();
-        }
-        else
-        {
-            subdir = "posts";
-            cm = sitevars["posts"].toList().at(po++).toMap();
-        }
+        QXmlStreamReader xml(&file);
+        QString cnt = "";
+        Plugins::clearUsedPlugins();
 
-        if(contentToBuild != 0 && contentToBuild != content)
-            continue;
-
-        QFile file(m_site->sourcePath() + "/" + subdir + "/" + content->source());
-        if (file.open(QIODevice::ReadOnly))
+        if(xml.readNextStartElement())
         {
-            QXmlStreamReader xml(&file);
-            QString cnt = "";
-            Plugins::clearUsedPlugins();
-
-            if(xml.readNextStartElement())
+            if(xml.name() == "Content")
             {
-                if(xml.name() == "Content")
+                while(xml.readNextStartElement())
                 {
-                    while(xml.readNextStartElement())
+                    if(xml.name() == "Section")
                     {
-                        if(xml.name() == "Section")
-                        {
-                            cnt += SectionPropertyEditor::getHtml(&xml);
-                            xml.readNext();
-                        }
-                        else
-                        {
-                            xml.skipCurrentElement();
-                        }
+                        cnt += SectionPropertyEditor::getHtml(&xml);
+                        xml.readNext();
+                    }
+                    else
+                    {
+                        xml.skipCurrentElement();
                     }
                 }
             }
-            file.close();
+        }
+        file.close();
 
-            pluginvars.clear();
-            foreach(QString key, Plugins::pluginNames())
+        pluginvars.clear();
+        foreach(QString key, Plugins::pluginNames())
+        {
+            if(Plugins::isPluginUsed(key))
             {
-                if(Plugins::isPluginUsed(key))
-                {
-                    EditorInterface *editor = Plugins::getPlugin(key);
-                    pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
-                    pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
-                    editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");
-                }
+                EditorInterface *editor = Plugins::getPlugin(key);
+                pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
+                pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
+                editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");
             }
+        }
 
-            QString layout = content->layout();
-            if(layout == "")
-                layout = "default";
-            layout = layout + ".html";
+        QString layout = content->layout();
+        if(layout == "")
+            layout = "default";
+        layout = layout + ".html";
 
-            QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
+        QString name = m_sitesPath + "/" + m_site->title() + "/" + content->url();
 
-            pagevars = cm;
-            QVariantMap vars;
-            pagevars["content"] = translateContent(cnt, vars);
+        pagevars = cm;
+        QVariantMap vars;
+        pagevars["content"] = translateContent(cnt, vars);
 
-            QFile out(name);
-            if(out.open(QFile::WriteOnly))
-            {
-                QString rc = translateTemplate(layout, Layout);
-                out.write(translateContent(rc, vars).toUtf8());
-                out.close();
-                qInfo() << "Created file " + name;
+        QFile out(name);
+        if(out.open(QFile::WriteOnly))
+        {
+            QString rc = translateTemplate(layout, Layout);
+            out.write(translateContent(rc, vars).toUtf8());
+            out.close();
+            qInfo() << "Created file " + name;
 
-            }
-            else
-                qWarning() << "Generator::generateSite(): Unable to create file " +  name;
         }
         else
-            qWarning() << "Generator::generateSite(): Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
+            qWarning() << "Generator::generateSite(): Unable to create file " +  name;
     }
+    else
+        qWarning() << "Generator::generateSite(): Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
 }
 
 QString Generator::translateTemplate(QString layout, Mode mode)

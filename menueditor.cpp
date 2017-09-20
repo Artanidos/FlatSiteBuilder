@@ -83,6 +83,11 @@ MenuEditor::MenuEditor(MainWindow *win, Menu *menu, Site *site)
 
 void MenuEditor::reloadMenu(Menu *menu)
 {
+    if(menu == NULL)
+    {
+        emit close();
+        return;
+    }
     m_menu = menu;
     m_tree->clear();
 

@@ -51,8 +51,6 @@ private slots:
     void publishClicked();
     void previewClicked();
     void siteLoaded(Site *site);
-    void fileIsReady(QNetworkReply *reply);
-    void anchorClicked(QUrl);
 
 private:
     FlatButton *m_loadButton;
@@ -63,7 +61,6 @@ private:
     QLabel *m_info;
     Site *m_site;
     QString m_defaultPath;
-    QTextBrowser *m_browser;
 };
 
 #endif // DASHBOARD_H

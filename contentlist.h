@@ -26,30 +26,46 @@
 #include <QPushButton>
 #include "site.h"
 
+class QUndoStack;
+class FlatButton;
 class ContentList  : public QWidget
 {
     Q_OBJECT
 
 public:
     ContentList(Site *site, ContentType type);
+    ~ContentList();
 
     QTableWidget *list() {return m_list;}
+    Site *site() {return m_site;}
+    ContentType type() {return m_type;}
+    void reload();
 
 private slots:
     void buttonClicked();
     void tableDoubleClicked(int, int);
     void deleteContent(QObject *content);
     void editContent(QObject *content);
+    void redo();
+    void undo();
+    void canUndoChanged(bool can);
+    void canRedoChanged(bool can);
+    void undoTextChanged(QString text);
+    void redoTextChanged(QString text);
 
 signals:
     void addContent();
-    void contentUpdated(QString text);
     void editContent(QTableWidgetItem *item);
 
 private:
     Site *m_site;
     ContentType m_type;
     QTableWidget *m_list;
+    QUndoStack *m_undoStack;
+    FlatButton *m_undo;
+    FlatButton *m_redo;
+    QString m_addedContentName;
+
     void addListItem(Content *content);
 };
 

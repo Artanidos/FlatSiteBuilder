@@ -120,66 +120,8 @@ void MenuList::reloadMenu()
 {
     m_list->clearContents();
     m_list->setRowCount(0);
-    m_site->removeAllMenus();
-
-    QFile file(m_site->sourcePath() + "/Menus.xml");
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        m_win->statusBar()->showMessage("Unable to open " + m_site->sourcePath() + "/Menus.xml");
-        return;
-    }
-    int id = 0;
-    QXmlStreamReader xml(&file);
-    if(xml.readNextStartElement())
-    {
-        if(xml.name() == "Menus")
-        {
-            while(xml.readNextStartElement())
-            {
-                if(xml.name() == "Menu")
-                {
-                    Menu *m = new Menu();
-                    m->setId(id++);
-                    m->setName(xml.attributes().value("name").toString());
-                    while(xml.readNextStartElement())
-                    {
-                        if(xml.name() == "Item")
-                        {
-                            MenuItem *item = new MenuItem();
-                            item->setTitle(xml.attributes().value("title").toString());
-                            item->setUrl(xml.attributes().value("url").toString());
-                            item->setIcon(xml.attributes().value("icon").toString());
-
-                            while(xml.readNextStartElement())
-                            {
-                                if(xml.name() == "Item")
-                                {
-                                    MenuItem *subitem = new MenuItem();
-                                    subitem->setSubitem(true);
-                                    subitem->setTitle(xml.attributes().value("title").toString());
-                                    subitem->setUrl(xml.attributes().value("url").toString());
-                                    subitem->setIcon(xml.attributes().value("icon").toString());
-                                    item->addMenuitem(subitem);
-                                    xml.readNext();
-                                }
-                                else
-                                    xml.skipCurrentElement();
-
-                            }
-                            m->addMenuitem(item);
-                            xml.readNext();
-                        }
-                        else
-                            xml.skipCurrentElement();
-                    }
-                    m_site->addMenu(m);
-                }
-                else
-                    xml.skipCurrentElement();
-            }
-        }
-    }
-    file.close();
+    m_site->reloadMenus();
+    m_menuInEditor = NULL;
 
     foreach(Menu *menu, m_site->menus())
     {
@@ -195,50 +137,13 @@ void MenuList::reloadMenu()
         }
     }
 
-    m_win->statusBar()->showMessage("Menus have been loaded");
     if(m_editor)
         m_editor->reloadMenu(m_menuInEditor);
 }
 
 void MenuList::saveMenu()
 {
-    QFile file(m_site->sourcePath() + "/Menus.xml");
-    if(!file.open(QFile::WriteOnly))
-    {
-        m_win->statusBar()->showMessage("Unable to open file " + m_site->sourcePath() + "/Menus.xml");
-        return;
-    }
-    QXmlStreamWriter xml(&file);
-    xml.setAutoFormatting(true);
-    xml.writeStartDocument();
-    xml.writeStartElement("Menus");
-    foreach(Menu *menu, m_site->menus())
-    {
-        xml.writeStartElement("Menu");
-        xml.writeAttribute("name", menu->name());
-        foreach(MenuItem *item, menu->items())
-        {
-            xml.writeStartElement("Item");
-            xml.writeAttribute("title", item->title());
-            xml.writeAttribute("url", item->url());
-            xml.writeAttribute("icon", item->icon());
-            foreach(MenuItem *subitem, item->items())
-            {
-                xml.writeStartElement("Item");
-                xml.writeAttribute("title", subitem->title());
-                xml.writeAttribute("url", subitem->url());
-                xml.writeAttribute("icon", subitem->icon());
-                xml.writeEndElement();
-            }
-            xml.writeEndElement();
-        }
-        xml.writeEndElement();
-    }
-    xml.writeEndElement();
-    xml.writeEndDocument();
-    file.close();
-
-    m_win->statusBar()->showMessage("Menus have been saved");
+    m_site->saveMenus();
 }
 
 void MenuList::menuChanged(QString text)

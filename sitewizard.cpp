@@ -53,16 +53,6 @@ void SiteWizard::accept()
         xml.writeAttribute("description", description);
     if(!copyright.isEmpty())
         xml.writeAttribute("copyright", copyright);
-
-    //xml.writeStartElement("Content");
-    //xml.writeAttribute("type", "page");
-    //xml.writeAttribute("source", "index.xml");
-    //xml.writeAttribute("title", "Index");
-    //xml.writeAttribute("menu", "default");
-    //xml.writeAttribute("author", "admin");
-    //xml.writeAttribute("layout", "default");
-    //xml.writeAttribute("date", QString(QDate::currentDate().toString("dd.MM.yyyy")));
-    //xml.writeEndElement(); // Content
     xml.writeEndElement(); // Site
     xml.writeEndDocument();
     file.close();

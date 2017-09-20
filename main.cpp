@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
-    QCoreApplication::setApplicationVersion("1.3 PreRelease");
+    QCoreApplication::setApplicationVersion("1.4");
 
     a.setStyle(QStyleFactory::create("Fusion"));
     a.setStyleSheet("QPushButton:hover { color: #45bbe6 }");

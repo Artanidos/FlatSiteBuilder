@@ -40,11 +40,6 @@ ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUnd
     m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + m_contentEditor->getContent()->source() + "." + QString::number(fileVersionNumber) + ".redo";
 }
 
-ChangeContentCommand::~ChangeContentCommand()
-{
-
-}
-
 void ChangeContentCommand::undo()
 {
     QFile dest(m_contentEditor->filename());
@@ -79,7 +74,38 @@ void ChangeContentCommand::redo()
     gen.generateSite(m_contentEditor->site(), m_contentEditor->getContent());
 }
 
-ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)
+DeleteContentCommand::DeleteContentCommand(ContentList *cl, QString filename, QString text, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_contentList = cl;
+    m_filename = filename;
+    fileVersionNumber++;
+    setText(text);
+    QFileInfo info(filename);
+    QString sitedir = m_contentList->site()->sourcePath().mid(m_contentList->site()->sourcePath().lastIndexOf("/") + 1);
+    QString subdir = m_contentList->type() == ContentType::Page ? "/pages/" : "/posts/";
+    m_undoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + subdir + info.fileName() + "." + QString::number(fileVersionNumber) + ".undo";
+}
+
+void DeleteContentCommand::undo()
+{
+    QFile file(m_undoFilename);
+    file.copy(m_filename);
+    m_contentList->reload();
+}
+
+void DeleteContentCommand::redo()
+{
+    QFile file(m_filename);
+    QFile undo(m_undoFilename);
+    if(!undo.exists())
+        file.copy(m_undoFilename);
+    file.remove();
+    m_contentList->reload();
+}
+
+
+ChangeSiteCommand::ChangeSiteCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     fileVersionNumber += 2;
@@ -93,12 +119,7 @@ ChangeProjectCommand::ChangeProjectCommand(MainWindow *win, Site *site, QString 
     m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber + 1);
 }
 
-ChangeProjectCommand::~ChangeProjectCommand()
-{
-
-}
-
-void ChangeProjectCommand::undo()
+void ChangeSiteCommand::undo()
 {
     QFile dest(m_site->sourcePath() + "/" + m_filename);
     if(dest.exists())
@@ -107,7 +128,7 @@ void ChangeProjectCommand::undo()
     m_win->reloadProject();
 }
 
-void ChangeProjectCommand::redo()
+void ChangeSiteCommand::redo()
 {
     QFile redo(m_redoFilename);
     if(redo.exists())
@@ -140,11 +161,6 @@ ChangeMenuCommand::ChangeMenuCommand(MenuList *list, Site *site, QString text, Q
     m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber + 1);
 }
 
-ChangeMenuCommand::~ChangeMenuCommand()
-{
-
-}
-
 void ChangeMenuCommand::undo()
 {
     QFile dest(m_site->sourcePath() + "/" + m_filename);
@@ -171,4 +187,49 @@ void ChangeMenuCommand::redo()
         m_list->saveMenu();
         QFile::copy(m_site->sourcePath() + "/" + m_filename, m_redoFilename);
     }
+}
+
+RenameContentCommand::RenameContentCommand(ContentEditor *ce, QString oldname, QString newname, QString text, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_contentEditor = ce;
+    m_oldname = oldname;
+    m_newname = newname;
+    setText(text);
+}
+
+void RenameContentCommand::undo()
+{
+    QFile file(m_newname);
+    file.copy(m_oldname);
+    file.remove();
+    m_contentEditor->contentRenamed(m_oldname);
+}
+
+void RenameContentCommand::redo()
+{
+    QFile newFile(m_newname);
+    if(newFile.exists())
+    {
+        QFileInfo info(m_newname);
+        int start = info.baseName().indexOf("(");
+        int end = info.baseName().indexOf(")");
+        int number = 0;
+        QString base = info.baseName();
+        if(start > 0 && end > start)
+        {
+            number = QString(base.mid(start + 1, base.length() - end)).toInt();
+            base = base.mid(0, start);
+        }
+        do
+        {
+            m_newname = info.path() + "/" + base + "(" + QString::number(++number) + ")." + info.suffix();
+            newFile.setFileName(m_newname);
+        }
+        while(newFile.exists());
+    }
+    QFile file(m_oldname);
+    file.copy(m_newname);
+    file.remove();
+    m_contentEditor->contentRenamed(m_newname);
 }

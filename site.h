@@ -25,6 +25,7 @@
 #include "content.h"
 #include "menu.h"
 
+class MainWindow;
 class Site : public QObject
 {
     Q_OBJECT
@@ -33,7 +34,7 @@ class Site : public QObject
 public:
     Site() {}
     Site(QObject *) {}
-    Site(QString filename);
+    Site(MainWindow *win, QString filename);
 
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
@@ -56,9 +57,13 @@ public:
     QString copyright() {return m_copyright;}
     void setCopyright(QString copyright) {m_copyright = copyright;}
 
-    QList<Content *> contents() {return m_contents;}
-    void addContent(Content *content) {m_contents.append(content);}
-    void removeContent(Content *content) {m_contents.removeOne(content);}
+    QList<Content *> pages() {return m_pages;}
+    void addPage(Content *content) {m_pages.append(content);}
+    void removePage(Content *content) {m_pages.removeOne(content);}
+
+    QList<Content *> posts() {return m_posts;}
+    void addPost(Content *content) {m_posts.append(content);}
+    void removePost(Content *content) {m_posts.removeOne(content);}
 
     QList<Menu *> menus() {return m_menus;}
     void addMenu(Menu *menu) {m_menus.append(menu);}
@@ -67,7 +72,16 @@ public:
     QString sourcePath() {return m_sourcePath;}
     QString deployPath() {return m_deployPath;}
 
+    void load();
+    void reloadPages();
+    void reloadPosts();
+    void reloadMenus();
+    void save();
+    void saveMenus();
+    QString createTemporaryContent(ContentType type);
+
 private:
+    MainWindow *m_win;
     QString m_filename;
     QString m_sourcePath;
     QString m_deployPath;
@@ -78,7 +92,8 @@ private:
     QString m_description;
     QString m_copyright;
     QString m_keywords;
-    QList<Content *> m_contents;
+    QList<Content *> m_pages;
+    QList<Content *> m_posts;
     QList<Menu *> m_menus;
 };
 

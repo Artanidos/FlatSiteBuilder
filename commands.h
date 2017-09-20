@@ -22,6 +22,7 @@
 #define COMMANDS_H
 
 #include <QUndoCommand>
+#include "contentlist.h"
 #include "contenteditor.h"
 #include "mainwindow.h"
 
@@ -32,7 +33,6 @@ class ChangeContentCommand : public QUndoCommand
 {
 public:
     ChangeContentCommand(ContentEditor *ce, QString text, QUndoCommand *parent = 0);
-    ~ChangeContentCommand();
     void undo() override;
     void redo() override;
 
@@ -42,11 +42,24 @@ private:
     QString m_redoFilename;
 };
 
-class ChangeProjectCommand : public QUndoCommand
+class DeleteContentCommand : public QUndoCommand
 {
 public:
-    ChangeProjectCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent = 0);
-    ~ChangeProjectCommand();
+    DeleteContentCommand(ContentList *cl, QString filename, QString text, QUndoCommand *parent = 0);
+    void undo() override;
+    void redo() override;
+
+private:
+    ContentList *m_contentList;
+    QString m_filename;
+    QString m_undoFilename;
+};
+
+
+class ChangeSiteCommand : public QUndoCommand
+{
+public:
+    ChangeSiteCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent = 0);
     void undo() override;
     void redo() override;
 
@@ -62,7 +75,6 @@ class ChangeMenuCommand : public QUndoCommand
 {
 public:
     ChangeMenuCommand(MenuList *list, Site *site, QString text, QUndoCommand *parent = 0);
-    ~ChangeMenuCommand();
     void undo() override;
     void redo() override;
 
@@ -72,6 +84,20 @@ private:
     QString m_redoFilename;
     MenuList *m_list;
     QString m_filename;
+};
+
+
+class RenameContentCommand : public QUndoCommand
+{
+public:
+    RenameContentCommand(ContentEditor *ce, QString oldname, QString newname, QString text, QUndoCommand *parent = 0);
+    void undo() override;
+    void redo() override;
+
+private:
+    ContentEditor *m_contentEditor;
+    QString m_oldname;
+    QString m_newname;
 };
 
 #endif // COMMANDS_H

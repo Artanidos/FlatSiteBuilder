@@ -69,6 +69,7 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_titleLabel->setFont(fnt);
     m_title = new QLineEdit;
     m_source = new QLineEdit;
+    m_source->setPlaceholderText("*.xml");
     m_excerpt = new QLineEdit;
     m_labelPermalink = new QLabel("Permalink");
     m_labelTitle = new QLabel("Title");
@@ -145,13 +146,9 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
         m_layout->addWidget(m_excerpt, 6, 0, 1, 4);
     }
 
-    if(!m_content->title().isEmpty())
-        m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
+    m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
 
-    if(m_filename.isEmpty())
-        init();
-    else
-        load();
+    load();
 
     connect(m_close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
@@ -206,59 +203,31 @@ void ContentEditor::redo()
     m_undoStack->redo();
 }
 
-void ContentEditor::updateNewContent()
-{
-    m_isNew = false;
-    if(m_title->text().isEmpty())
-    {
-        m_content->setTitle("New");
-        m_title->setText("New");
-    }
-    else
-        m_content->setTitle(m_title->text());
-
-    if(m_source->text().isEmpty())
-    {
-        m_content->setSource("new.xml");
-        m_source->setText("new.xml");
-    }
-    else
-        m_content->setSource(m_source->text());
-
-    if(m_content->contentType() == ContentType::Page)
-    {
-        m_content->setLayout(m_layouts->currentText());
-        m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
-    }
-    else
-    {
-        m_content->setLayout(m_layouts->currentText());
-        m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
-    }
-    m_content->setMenu(m_menus->currentText());
-    m_content->setAuthor(m_author->text());
-    m_content->setDate(QDate::currentDate());
-    emit contentChanged(m_content);
-    editChanged("Content updated");
-}
-
 void ContentEditor::closeEditor()
 {
-    if(m_isNew)
-        updateNewContent();
-
     emit close();
 }
 
 void ContentEditor::siteLoaded(Site *site)
 {
     m_site = site;
-    foreach(Content *c, m_site->contents())
+    if(m_content->contentType() == ContentType::Page)
     {
-        if(c->source() == m_content->source() && c->contentType() == m_content->contentType())
+        foreach(Content *c, m_site->pages())
         {
-            m_excerpt->setText(c->excerpt());
-            m_title->setText(c->title());
+            if(c->source() == m_content->source())
+                m_title->setText(c->title());
+        }
+    }
+    else
+    {
+        foreach(Content *c, m_site->posts())
+        {
+            if(c->source() == m_content->source())
+            {
+                m_excerpt->setText(c->excerpt());
+                m_title->setText(c->title());
+            }
         }
     }
 }
@@ -268,7 +237,6 @@ void ContentEditor::titleChanged(QString title)
     if(m_isNew)
     {
         QString source = title.toLower() + ".xml";
-        m_content->setSource(source);
         m_source->setText(source);
     }
 }
@@ -277,11 +245,13 @@ void ContentEditor::titleChanged()
 {
     if(m_title->text() != m_content->title())
     {
+        if(m_isNew)
+            sourceChanged();
+
         m_content->setDate(QDate::currentDate());
         m_content->setTitle(m_title->text());
         emit contentChanged(m_content);
-        if(!m_isNew)
-            editChanged("Titel Changed");
+        editChanged("Titel Changed");
     }
 }
 
@@ -289,15 +259,26 @@ void ContentEditor::sourceChanged()
 {
     if(m_source->text() != m_content->source())
     {
-        m_content->setDate(QDate::currentDate());
+        QString oldname = m_filename;
         m_content->setSource(m_source->text());
         if(m_content->contentType() == ContentType::Page)
             m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
         else
             m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
+
         emit contentChanged(m_content);
-        editChanged("Permalink Changed");
+
+        QUndoCommand *renameCommand = new RenameContentCommand(this, oldname, m_filename, "content file renamed");
+        m_undoStack->push(renameCommand);
     }
+}
+
+void ContentEditor::contentRenamed(QString name)
+{
+    m_filename = name;
+    QFileInfo info(name);
+    m_source->setText(info.fileName());
+    m_content->setSource(info.fileName());
 }
 
 void ContentEditor::excerptChanged()
@@ -355,17 +336,8 @@ void ContentEditor::layoutChanged(QString layout)
     }
 }
 
-void ContentEditor::init()
-{
-    m_isNew = true;
-    PageEditor *pe = new PageEditor();
-    m_scroll->setWidget(pe);
-}
-
 void ContentEditor::load()
 {
-    m_isNew = false;
-
     QFile file(m_filename);
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -398,8 +370,12 @@ void ContentEditor::load()
             else
                 m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Add new Page" : "Add new Post");
 
+            m_isNew = m_content->title().isEmpty();
             m_title->setText(m_content->title());
-            m_source->setText(m_content->source());
+            if(m_isNew)
+                m_source->setText("");
+            else
+                m_source->setText(m_content->source());
             m_author->setText(m_content->author());
             m_keywords->setText(m_content->keywords());
             m_menus->setCurrentText(m_content->menu());
@@ -516,9 +492,6 @@ void ContentEditor::save()
 
 void ContentEditor::editChanged(QString text)
 {
-    if(m_isNew)
-        updateNewContent();
-
     QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
     m_undoStack->push(changeCommand);
 }

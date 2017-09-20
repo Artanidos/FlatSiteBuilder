@@ -20,6 +20,8 @@
 
 #include "contentlist.h"
 #include "tablecellbuttons.h"
+#include "commands.h"
+#include "flatbutton.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -27,11 +29,15 @@
 #include <QHeaderView>
 #include <QTest>
 #include <QComboBox>
+#include <QUndoStack>
+#include <QUndoCommand>
 
 ContentList::ContentList(Site *site, ContentType type)
 {
     m_site = site;
+    m_addedContentName = "";
     m_type = type;
+    m_undoStack = new QUndoStack;
     QVBoxLayout *vbox = new QVBoxLayout();
     QGridLayout *layout = new QGridLayout();
     QLabel *titleLabel = new QLabel();
@@ -43,6 +49,18 @@ ContentList::ContentList(Site *site, ContentType type)
     fnt.setPointSize(20);
     fnt.setBold(true);
     titleLabel->setFont(fnt);
+
+    m_undo = new FlatButton(":/images/undo_normal.png", ":/images/undo_hover.png", "", ":/images/undo_disabled.png");
+    m_redo = new FlatButton(":/images/redo_normal.png", ":/images/redo_hover.png", "", ":/images/redo_disabled.png");
+    m_undo->setToolTip("Undo");
+    m_redo->setToolTip("Redo");
+    m_undo->setEnabled(false);
+    m_redo->setEnabled(false);
+    QHBoxLayout *hbox = new QHBoxLayout();
+    hbox->addStretch(0);
+    hbox->addWidget(m_undo);
+    hbox->addWidget(m_redo);
+
     m_list = new QTableWidget(0, 6, this);
     m_list->verticalHeader()->hide();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -53,18 +71,10 @@ ContentList::ContentList(Site *site, ContentType type)
     labels << "" << "Name" << "Source" << "Layout" << "Author" << "Date";
     m_list->setHorizontalHeaderLabels(labels);
 
-    if(m_site)
-    {
-        for(int i = 0; i < m_site->contents().count(); i++)
-        {
-            Content *content = m_site->contents().at(i);
-            if(content->contentType() == m_type)
-            {
-                addListItem(content);
-            }
-        }
-    }
+    reload();
+
     layout->addWidget(titleLabel, 0, 0);
+    layout->addLayout(hbox, 0, 2);
     layout->addWidget(button, 1, 0);
     layout->addWidget(m_list, 2, 0, 1, 3);
     vbox->addLayout(layout);
@@ -72,6 +82,90 @@ ContentList::ContentList(Site *site, ContentType type)
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
+    connect(m_redo, SIGNAL(clicked()), this, SLOT(redo()));
+    connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
+    connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
+    connect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
+    connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
+    connect(m_undoStack, SIGNAL(redoTextChanged(QString)), this, SLOT(redoTextChanged(QString)));
+}
+
+ContentList::~ContentList()
+{
+    delete m_undoStack;
+}
+
+void ContentList::canUndoChanged(bool can)
+{
+    m_undo->setEnabled(can);
+}
+
+void ContentList::canRedoChanged(bool can)
+{
+    m_redo->setEnabled(can);
+}
+
+void ContentList::undoTextChanged(QString text)
+{
+    m_undo->setToolTip("Undo " + text);
+}
+
+void ContentList::redoTextChanged(QString text)
+{
+    m_redo->setToolTip("Redo " + text);
+}
+
+void ContentList::undo()
+{
+    m_undoStack->undo();
+}
+
+void ContentList::redo()
+{
+    m_undoStack->redo();
+}
+
+void ContentList::reload()
+{
+    m_list->setRowCount(0);
+
+    Content *contentToEdit = NULL;
+    int row = -1;
+
+    if(m_type == ContentType::Page)
+    {
+        m_site->reloadPages();
+        for(int i = 0; i < m_site->pages().count(); i++)
+        {
+            Content *content = m_site->pages().at(i);
+            if(content->source() == m_addedContentName)
+            {
+                contentToEdit = content;
+                row = m_list->rowCount();
+            }
+            addListItem(content);
+        }
+    }
+    else
+    {
+        m_site->reloadPosts();
+        for(int i = 0; i < m_site->posts().count(); i++)
+        {
+            Content *content = m_site->posts().at(i);
+            if(content->source() == m_addedContentName)
+            {
+                contentToEdit = content;
+                row = m_list->rowCount();
+            }
+            addListItem(content);
+        }
+    }
+    if(contentToEdit != NULL)
+    {
+        m_addedContentName = "";
+        m_list->selectRow(row);
+        editContent(contentToEdit);
+    }
 }
 
 void ContentList::addListItem(Content *content)
@@ -108,25 +202,16 @@ void ContentList::addListItem(Content *content)
 
 void ContentList::buttonClicked()
 {
-    Content *content = new Content(m_type);
-    if(m_type == ContentType::Page)
-        content->setLayout("default");
-    else
-        content->setLayout("post");
-    content->setAuthor(m_site->author());
-    content->setKeywords(m_site->keywords());
-    content->setMenu(m_site->menus().first()->name());
-    m_site->addContent(content);
-    addListItem(content);
-
-    QTableWidgetItem *item = m_list->item(m_list->rowCount() - 1, 1);
-    m_list->selectRow(m_list->rowCount() - 1);
-    emit editContent(item);
+    m_addedContentName = m_site->createTemporaryContent(m_type);
+    QFileInfo info(m_addedContentName);
+    m_addedContentName =  info.fileName();
+    reload();
 }
 
 void ContentList::tableDoubleClicked(int r, int)
 {
     QTableWidgetItem *item = m_list->item(r, 1);
+    m_undoStack->clear();
     emit editContent(item);
 }
 
@@ -138,11 +223,8 @@ void ContentList::deleteContent(QObject *content)
         Content *m = qvariant_cast<Content*>(item->data(Qt::UserRole));
         if(m == content)
         {
-            m_site->removeContent(m);
-            m_list->removeRow(row);
-            QFile file(m_site->sourcePath() + (m->contentType() == ContentType::Page ? "/pages/" : "/posts/") + m->source());
-            file.remove();
-            emit contentUpdated("Delete Content");
+            QUndoCommand *delCommand = new DeleteContentCommand(this, m_site->sourcePath() + (m->contentType() == ContentType::Page ? "/pages/" : "/posts/") + m->source(), "delete content " + m->title());
+            m_undoStack->push(delCommand);
             break;
         }
     }
@@ -157,6 +239,7 @@ void ContentList::editContent(QObject *content)
         if(m == content)
         {
             m_list->selectRow(row);
+            m_undoStack->clear();
             emit editContent(item);
             break;
         }

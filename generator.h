@@ -78,6 +78,7 @@ public:
     QVariant translateVar(QString exp, QVariantMap vars);
     QString translateTemplate(QString layout, Mode mode);
     bool nextTokens(QString content, QStringList tokens);
+    void generateContent(Content *content);
 };
 
 #endif // GENERATOR_H

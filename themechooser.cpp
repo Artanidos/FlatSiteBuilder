@@ -1,7 +1,9 @@
 #include "themechooser.h"
 #include "generator.h"
+#include "mainwindow.h"
 #include "flatbutton.h"
 #include <QGridLayout>
+#include <QStatusBar>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTest>
@@ -9,8 +11,9 @@
 #include <QDesktopServices>
 #include <QPushButton>
 
-ThemeChooser::ThemeChooser(Site *site)
+ThemeChooser::ThemeChooser(MainWindow *win, Site *site)
 {
+    m_win = win;
     m_site = site;
     QLabel *titleLabel = new QLabel("Theme Chooser");
     QFont fnt = titleLabel->font();
@@ -33,9 +36,11 @@ ThemeChooser::ThemeChooser(Site *site)
 void ThemeChooser::themeChanged(QString themename)
 {
     m_site->setTheme(themename);
-    emit contentUpdated("Theme changed");
+    m_site->save();
 
     loadThemes();
+
+    m_win->statusBar()->showMessage("The project should be rebuildet.");
 }
 
 void ThemeChooser::loadThemes()

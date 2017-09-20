@@ -3,10 +3,7 @@ Features
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
-- Undo/Redo for content list
-- reload for content list
-- changing filename in contenteditor should also rename the input file
-- bug: when new menu is added and adding is redone (should close the menu editor)
+
 
 Postponend
 ----------

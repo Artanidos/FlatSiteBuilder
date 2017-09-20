@@ -79,7 +79,6 @@ private:
     QString m_keywords;
     ContentType m_type;
     QDate m_date;
-    bool m_published;
 };
 
 #endif // CONTENT_H
