@@ -264,7 +264,7 @@ void ContentEditor::sourceChanged()
         if(m_content->contentType() == ContentType::Page)
             m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
         else
-            m_filename = m_site->sourcePath() + "/pages/" + m_content->source();
+            m_filename = m_site->sourcePath() + "/posts/" + m_content->source();
 
         emit contentChanged(m_content);
 

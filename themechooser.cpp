@@ -40,7 +40,7 @@ void ThemeChooser::themeChanged(QString themename)
 
     loadThemes();
 
-    m_win->statusBar()->showMessage("The project should be rebuildet.");
+    m_win->statusBar()->showMessage("Theme has been changed. The site should be rebuildet.");
 }
 
 void ThemeChooser::loadThemes()
@@ -104,6 +104,7 @@ void ThemeChooser::loadThemes()
             }
         }
     }
+    m_win->statusBar()->showMessage("Themes have been loaded");
 }
 
 ThemeWidget::ThemeWidget(Theme *theme)

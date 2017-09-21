@@ -39,9 +39,6 @@ public:
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
 
-    QString themeAccent() {return m_themeAccent;}
-    void setThemeAccent(QString accent) {m_themeAccent = accent;}
-
     QString title() {return m_title;}
     void setTitle(QString title);
 
@@ -71,6 +68,7 @@ public:
     void removeAllMenus() {m_menus.clear();}
     QString sourcePath() {return m_sourcePath;}
     QString deployPath() {return m_deployPath;}
+    QString filename() {return m_filename;}
 
     void load();
     void reloadPages();
@@ -87,7 +85,6 @@ private:
     QString m_deployPath;
     QString m_theme;
     QString m_author;
-    QString m_themeAccent;
     QString m_title;
     QString m_description;
     QString m_copyright;

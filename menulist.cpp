@@ -20,7 +20,7 @@ MenuList::MenuList(MainWindow *win, Site *site)
     m_site = site;
     m_menuInEditor = NULL;
     m_editor = NULL;
-    m_undoStack = new QUndoStack;
+
     QPushButton *button = new QPushButton("Add Menu");
     button->setMaximumWidth(120);
     QLabel *titleLabel = new QLabel("Menus");
@@ -29,6 +29,7 @@ MenuList::MenuList(MainWindow *win, Site *site)
     fnt.setBold(true);
     titleLabel->setFont(fnt);
 
+    m_undoStack = new QUndoStack;
     m_undo = new FlatButton(":/images/undo_normal.png", ":/images/undo_hover.png", "", ":/images/undo_disabled.png");
     m_redo = new FlatButton(":/images/redo_normal.png", ":/images/redo_hover.png", "", ":/images/redo_disabled.png");
     m_undo->setToolTip("Undo");
@@ -121,19 +122,19 @@ void MenuList::reloadMenu()
     m_list->clearContents();
     m_list->setRowCount(0);
     m_site->reloadMenus();
-    m_menuInEditor = NULL;
 
+    int menuId = -1;
+    if(m_menuInEditor)
+        menuId = m_menuInEditor->id();
+    m_menuInEditor = NULL;
     foreach(Menu *menu, m_site->menus())
     {
         QTableWidgetItem *item = addListItem(menu);
-        if(m_menuInEditor)
+        if(menu->id() == menuId)
         {
-            if(menu->id() == m_menuInEditor->id())
-            {
-                m_list->selectRow(m_list->rowCount() - 1);
-                m_menuInEditor = menu;
-                emit editedItemChanged(item);
-            }
+            m_list->selectRow(m_list->rowCount() - 1);
+            m_menuInEditor = menu;
+            emit editedItemChanged(item);
         }
     }
 
@@ -150,7 +151,7 @@ void MenuList::menuChanged(QString text)
 {
     QUndoCommand *changeCommand = new ChangeMenuCommand(this, m_site, text);
     m_undoStack->push(changeCommand);
-    m_win->statusBar()->showMessage("Menu saved. The project should be rebuildet on the dasboard later to affect changes.");
+    m_win->statusBar()->showMessage("Menu saved. The site should be rebuildet on the dasboard later to affect changes.");
 }
 
 QTableWidgetItem *MenuList::addListItem(Menu *menu)
@@ -175,6 +176,7 @@ void MenuList::buttonClicked()
     Menu *menu = new Menu();
     m_site->addMenu(menu);
     addListItem(menu);
+    m_list->selectRow(m_list->rowCount() - 1);
     menuChanged("menu added");
     tableDoubleClicked(m_list->rowCount() - 1, 0);
 }

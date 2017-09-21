@@ -23,6 +23,9 @@
 #include "generator.h"
 #include "menulist.h"
 #include "site.h"
+#include "contenteditor.h"
+#include "contentlist.h"
+#include "undoableeditor.h"
 #include <QFile>
 #include <QDir>
 #include <QTest>
@@ -31,7 +34,7 @@ ChangeContentCommand::ChangeContentCommand(ContentEditor *ce, QString text, QUnd
     : QUndoCommand(parent)
 {
     m_contentEditor = ce;
-    fileVersionNumber ++;
+    fileVersionNumber++;
     setText(text);
 
     QString sitedir = m_contentEditor->site()->sourcePath().mid(m_contentEditor->site()->sourcePath().lastIndexOf("/") + 1);
@@ -104,61 +107,18 @@ void DeleteContentCommand::redo()
     m_contentList->reload();
 }
 
-
-ChangeSiteCommand::ChangeSiteCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent)
-    : QUndoCommand(parent)
-{
-    fileVersionNumber += 2;
-    m_site = site;
-    m_win = win;
-    m_filename = "Site.xml";
-    setText(text);
-
-    QString sitedir = m_site->sourcePath().mid(m_site->sourcePath().lastIndexOf("/") + 1);
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber + 1);
-}
-
-void ChangeSiteCommand::undo()
-{
-    QFile dest(m_site->sourcePath() + "/" + m_filename);
-    if(dest.exists())
-        dest.remove();
-    QFile::copy(m_tempFilename, m_site->sourcePath() + "/" + m_filename);
-    m_win->reloadProject();
-}
-
-void ChangeSiteCommand::redo()
-{
-    QFile redo(m_redoFilename);
-    if(redo.exists())
-    {
-        QFile dest(m_site->sourcePath() + "/" + m_filename);
-        if(dest.exists())
-            dest.remove();
-        QFile::copy(m_redoFilename, m_site->sourcePath() + "/" + m_filename);
-        m_win->reloadProject();
-    }
-    else
-    {
-        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_tempFilename);
-        m_win->saveProject();
-        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_redoFilename);
-    }
-}
-
 ChangeMenuCommand::ChangeMenuCommand(MenuList *list, Site *site, QString text, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
-    fileVersionNumber += 2;
+    fileVersionNumber++;
     m_site = site;
     m_list = list;
     m_filename = "Menus.xml";
     setText(text);
 
     QString sitedir = m_site->sourcePath().mid(m_site->sourcePath().lastIndexOf("/") + 1);
-    m_tempFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber);
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber + 1);
+    m_undoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber) + ".undo";
+    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber) + ".redo";
 }
 
 void ChangeMenuCommand::undo()
@@ -166,7 +126,7 @@ void ChangeMenuCommand::undo()
     QFile dest(m_site->sourcePath() + "/" + m_filename);
     if(dest.exists())
         dest.remove();
-    QFile::copy(m_tempFilename, m_site->sourcePath() + "/" + m_filename);
+    QFile::copy(m_undoFilename, m_site->sourcePath() + "/" + m_filename);
     m_list->reloadMenu();
 }
 
@@ -183,7 +143,7 @@ void ChangeMenuCommand::redo()
     }
     else
     {
-        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_tempFilename);
+        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_undoFilename);
         m_list->saveMenu();
         QFile::copy(m_site->sourcePath() + "/" + m_filename, m_redoFilename);
     }

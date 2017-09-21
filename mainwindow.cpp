@@ -21,6 +21,7 @@
 #include "mainwindow.h"
 #include "interfaces.h"
 #include "themechooser.h"
+#include "sitesettingseditor.h"
 #include <QCloseEvent>
 #include <QSettings>
 #include <QCoreApplication>
@@ -308,7 +309,7 @@ void MainWindow::initGui()
     connect(m_appearance, SIGNAL(clicked()), this, SLOT(showMenus()));
     connect(themesButton, SIGNAL(clicked()), this, SLOT(showThemes()));
     connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
-    connect(m_settings, SIGNAL(clicked()), this, SLOT(notImplemented()));
+    connect(m_settings, SIGNAL(clicked()), this, SLOT(showSettings()));
 }
 
 void MainWindow::dashboardExpanded(bool value)
@@ -404,13 +405,6 @@ void MainWindow::saveProject()
     m_site->save();
 }
 
-void MainWindow::projectUpdated(QString text)
-{
-    QUndoCommand *changeCommand = new ChangeSiteCommand(this, m_site, text);
-    m_undoStack->push(changeCommand);
-    statusBar()->showMessage("The project should be rebuildet.");
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     writeSettings();
@@ -481,6 +475,12 @@ void MainWindow::showThemes()
 {
     ThemeChooser *tc = new ThemeChooser(this, m_site);
     setCentralWidget(tc);
+}
+
+void MainWindow::showSettings()
+{
+    SiteSettingsEditor *sse = new SiteSettingsEditor(this, m_site);
+    setCentralWidget(sse);
 }
 
 void MainWindow::editContent(QTableWidgetItem *item)

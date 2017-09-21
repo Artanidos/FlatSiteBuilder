@@ -93,6 +93,7 @@ private slots:
     void showPages();
     void showMenus();
     void showThemes();
+    void showSettings();
     void editContent(QTableWidgetItem *item);
     void editMenu(QTableWidgetItem *item);
     void editedItemChanged(QTableWidgetItem*);
@@ -103,7 +104,6 @@ private slots:
     void notImplemented();
     void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);
-    void projectUpdated(QString text);
     void editorClosed();
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();

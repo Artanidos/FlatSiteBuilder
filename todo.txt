@@ -3,7 +3,7 @@ Features
 - site settings (keywords, copyright, author)
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
-
+- undo/redo for site settings
 
 Postponend
 ----------
@@ -21,5 +21,6 @@ Postponend
 - library to save pages, sections and rows as templates
 - plugin for publish
 - image chooser instead of file dialog
+- theme vars (theme_accent)
 
 

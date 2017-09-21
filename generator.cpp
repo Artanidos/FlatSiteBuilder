@@ -121,7 +121,6 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["title"] = m_site->title();
     sitevars["description"] = m_site->description();
     sitevars["theme"] = m_site->theme();
-    sitevars["theme_accent"] = m_site->themeAccent();
     sitevars["copyright"] = m_site->copyright();
     sitevars["source"] = m_site->sourcePath();
     sitevars["keywords"] = m_site->keywords();

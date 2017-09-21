@@ -55,7 +55,6 @@ void Site::load()
         if(xml.name() == "Site")
         {
             setTheme(xml.attributes().value("theme").toString());
-            setThemeAccent(xml.attributes().value("theme_accent").toString());
             setTitle(xml.attributes().value("title").toString());
             setDescription(xml.attributes().value("description").toString());
             setCopyright(xml.attributes().value("copyright").toString());
@@ -218,7 +217,6 @@ void Site::save()
     xml.writeStartDocument();
     xml.writeStartElement("Site");
     xml.writeAttribute("theme", theme());
-    xml.writeAttribute("theme_accent", themeAccent());
     xml.writeAttribute("title", title());
     xml.writeAttribute("description", description());
     xml.writeAttribute("copyright", copyright());

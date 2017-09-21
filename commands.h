@@ -22,13 +22,16 @@
 #define COMMANDS_H
 
 #include <QUndoCommand>
-#include "contentlist.h"
-#include "contenteditor.h"
-#include "mainwindow.h"
 
-static int fileVersionNumber = 0;
+extern int fileVersionNumber;
 
 class MenuList;
+class SiteSettingsEditor;
+class ContentList;
+class ContentEditor;
+class MainWindow;
+class Site;
+class UndoableEditor;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
@@ -55,22 +58,6 @@ private:
     QString m_undoFilename;
 };
 
-
-class ChangeSiteCommand : public QUndoCommand
-{
-public:
-    ChangeSiteCommand(MainWindow *win, Site *site, QString text, QUndoCommand *parent = 0);
-    void undo() override;
-    void redo() override;
-
-private:
-    Site *m_site;
-    QString m_tempFilename;
-    QString m_redoFilename;
-    MainWindow *m_win;
-    QString m_filename;
-};
-
 class ChangeMenuCommand : public QUndoCommand
 {
 public:
@@ -80,12 +67,11 @@ public:
 
 private:
     Site *m_site;
-    QString m_tempFilename;
+    QString m_undoFilename;
     QString m_redoFilename;
     MenuList *m_list;
     QString m_filename;
 };
-
 
 class RenameContentCommand : public QUndoCommand
 {
