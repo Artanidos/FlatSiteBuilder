@@ -51,11 +51,11 @@ ModulDialog::ModulDialog()
     int row = 0;
     int col = 1;
 
-    foreach(QString name, Plugins::pluginNames())
+    foreach(QString name, Plugins::elementPluginNames())
     {
         if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
         {
-            ElementEditorInterface *plugin = Plugins::getPlugin(name);
+            ElementEditorInterface *plugin = Plugins::getElementPlugin(name);
             FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
             btn->setReturnCode(name);
             m_grid->addWidget(btn, row, col++);

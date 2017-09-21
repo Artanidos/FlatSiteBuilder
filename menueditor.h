@@ -2,6 +2,7 @@
 #define MENUEDITOR_H
 
 #include "interfaces.h"
+#include "animateableeditor.h"
 
 class QUndoStack;
 class FlatButton;
@@ -50,7 +51,7 @@ private:
      MenuItem *m_item;
 };
 
-class MenuEditor : public AbstractEditor
+class MenuEditor : public AnimateableEditor
 {
     Q_OBJECT
 

@@ -24,9 +24,10 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include "interfaces.h"
+#include "animateableeditor.h"
 
 class QXmlStreamReader;
-class RowPropertyEditor : public AbstractEditor
+class RowPropertyEditor : public AnimateableEditor
 {
     Q_OBJECT
 

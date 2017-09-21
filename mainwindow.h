@@ -29,6 +29,7 @@
 #include "expander.h"
 #include "site.h"
 #include "interfaces.h"
+#include "animateableeditor.h"
 
 class QNetworkReply;
 class QTableWidgetItem;
@@ -44,6 +45,7 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void reloadProject();
     void saveProject();
+    void setCentralWidget(QWidget *widget);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -62,6 +64,7 @@ private:
     void animate(QTableWidgetItem *item);
     void loadPlugins();
 
+    Hyperlink *m_themeSettingsButton;
     Expander *m_dashboardExpander;
     Expander *m_media;
     Expander *m_content;
@@ -70,13 +73,14 @@ private:
     Expander *m_settings;
     Site *m_site;
     QString m_defaultPath;
+    QString m_themeEditor;
     QUndoStack *m_undoStack;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;
     QPropertyAnimation *m_animw;
     QPropertyAnimation *m_animh;
-    AbstractEditor *m_editor;
+    AnimateableEditor *m_editor;
     QTableWidget *m_list;
     QWidget *m_cellWidget;
     int m_row;
@@ -94,6 +98,7 @@ private slots:
     void showMenus();
     void showThemes();
     void showSettings();
+    void showThemesSettings();
     void editContent(QTableWidgetItem *item);
     void editMenu(QTableWidgetItem *item);
     void editedItemChanged(QTableWidgetItem*);

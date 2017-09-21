@@ -25,9 +25,10 @@
 #include <QGridLayout>
 #include <QCheckBox>
 #include "interfaces.h"
+#include "animateableeditor.h"
 
 class QXmlStreamReader;
-class SectionPropertyEditor : public AbstractEditor
+class SectionPropertyEditor : public AnimateableEditor
 {
     Q_OBJECT
 

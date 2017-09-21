@@ -218,11 +218,11 @@ void Generator::generateContent(Content *content)
         file.close();
 
         pluginvars.clear();
-        foreach(QString key, Plugins::pluginNames())
+        foreach(QString key, Plugins::elementPluginNames())
         {
             if(Plugins::isPluginUsed(key))
             {
-                ElementEditorInterface *editor = Plugins::getPlugin(key);
+                ElementEditorInterface *editor = Plugins::getElementPlugin(key);
                 pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
                 pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
                 editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");

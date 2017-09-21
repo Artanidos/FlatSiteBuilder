@@ -534,11 +534,11 @@ void ContentEditor::rowEdit(RowEditor *re)
 void ContentEditor::elementEdit(ElementEditor *ee)
 {
     m_elementEditor = ee;
-    if(Plugins::hasPlugin(ee->type()))
-        m_editor = dynamic_cast<AbstractEditor*>(Plugins::getPlugin(ee->type()));
+    if(Plugins::hasElementPlugin(ee->type()))
+        m_editor = dynamic_cast<AnimateableEditor*>(Plugins::getElementPlugin(ee->type()));
     else
     {
-        m_editor = dynamic_cast<AbstractEditor*>(Plugins::getPlugin("TextEditor"));
+        m_editor = dynamic_cast<AnimateableEditor*>(Plugins::getElementPlugin("TextEditor"));
         qDebug() << "Plugin for type " + ee->type() + " not loaded.";
     }
     m_editor->setSite(m_site);

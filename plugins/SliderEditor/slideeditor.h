@@ -22,11 +22,12 @@
 #define SLIDEEDITOR_H
 
 #include "interfaces.h"
+#include "animateableeditor.h"
 
 class Slide;
 class ImageSelector;
 class QLineEdit;
-class SlideEditor : public AbstractEditor
+class SlideEditor : public AnimateableEditor
 {
     Q_OBJECT
 

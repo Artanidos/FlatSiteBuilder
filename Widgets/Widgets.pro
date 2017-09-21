@@ -35,7 +35,8 @@ HEADERS +=\
     imageselector.h \
     widgets_global.h \
     tablecellbuttons.h \
-    undoableeditor.h
+    undoableeditor.h \
+    animateableeditor.h
 
 unix {
     target.path = /usr/lib

@@ -16,14 +16,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
+QT           += widgets xml gui core
+TEMPLATE      = lib
+CONFIG       += plugin
+TARGET		  = DefaultThemeEditor
+INCLUDEPATH  += ../../
+SOURCES		 += defaultthemeeditor.cpp
+HEADERS		 += defaultthemeeditor.h \
+    ../../interfaces.h
+DESTDIR       = ~/FlatSiteBuilder/plugins
 
-SUBDIRS += \
-    App.pro \
-    plugins/TextEditor \
-    plugins/ImageEditor \
-    plugins/SliderEditor \
-    plugins/SampleEditor \
-    plugins/DefaultThemeEditor \
-    test/Test.pro \
-    Widgets
+LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
+INCLUDEPATH += $$PWD/../../Widgets
+DEPENDPATH += $$PWD/../../Widgets
+
+RESOURCES += \
+    images.qrc

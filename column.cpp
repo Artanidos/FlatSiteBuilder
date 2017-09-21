@@ -34,9 +34,9 @@ QString Column::getHtml(QXmlStreamReader *xml)
         if(xml->isStartElement())
         {
             QString pluginName = xml->name() + "Editor";
-            if(Plugins::hasPlugin(pluginName))
+            if(Plugins::hasElementPlugin(pluginName))
             {
-                html += Plugins::getPlugin(pluginName)->getHtml(xml);
+                html += Plugins::getElementPlugin(pluginName)->getHtml(xml);
                 Plugins::addUsedPlugin(pluginName);
             }
             else

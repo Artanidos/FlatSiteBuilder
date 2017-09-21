@@ -65,6 +65,7 @@ MainWindow::MainWindow()
 {
     m_site = NULL;
     m_editor = NULL;
+    m_themeEditor = "";
 
     initUndoRedo();
     initGui();
@@ -93,8 +94,26 @@ void MainWindow::loadPlugins()
             ElementEditorInterface *iEditor = qobject_cast<ElementEditorInterface *>(plugin);
             if(iEditor)
             {
-                Plugins::insert(iEditor->className(), iEditor);
-                qDebug() << "Plugin loaded" << fileName;
+                AnimateableEditor *ae = dynamic_cast<AnimateableEditor*>(iEditor);
+                if(ae)
+                {
+                    Plugins::insert(iEditor->className(), iEditor);
+                    qDebug() << "Plugin loaded" << fileName;
+                }
+                else
+                    qDebug() << "Plugin does not implement AnimateableEditor " << fileName;
+            }
+            ThemeEditorInterface *iThemeEditor = qobject_cast<ThemeEditorInterface *>(plugin);
+            if(iThemeEditor)
+            {
+                QWidget *w = dynamic_cast<QWidget*>(iThemeEditor);
+                if(w)
+                {
+                    Plugins::insert(iThemeEditor->className(), iThemeEditor);
+                    qDebug() << "Plugin loaded" << fileName;
+                }
+                else
+                    qDebug() << "Plugin does not implement QWidget " << fileName;
             }
         }
         else
@@ -274,8 +293,11 @@ void MainWindow::initGui()
     QVBoxLayout *appBox = new QVBoxLayout();
     Hyperlink *themesButton = new Hyperlink("Themes");
     Hyperlink *menusButton = new Hyperlink("Menus");
+    m_themeSettingsButton = new Hyperlink("Theme Settings");
+    m_themeSettingsButton->setVisible(false);
     appBox->addWidget(menusButton);
     appBox->addWidget(themesButton);
+    appBox->addWidget(m_themeSettingsButton);
 
     m_appearance->addLayout(appBox);
 
@@ -308,6 +330,7 @@ void MainWindow::initGui()
     connect(m_content, SIGNAL(clicked()), this, SLOT(showPages()));
     connect(m_appearance, SIGNAL(clicked()), this, SLOT(showMenus()));
     connect(themesButton, SIGNAL(clicked()), this, SLOT(showThemes()));
+    connect(m_themeSettingsButton, SIGNAL(clicked()), this, SLOT(showThemesSettings()));
     connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(showSettings()));
 }
@@ -397,6 +420,19 @@ void MainWindow::reloadProject()
 {
     m_site->load();
     m_site->reloadMenus();
+    foreach(QString key, Plugins::themePluginNames())
+    {
+        ThemeEditorInterface *tei = Plugins::getThemePlugin(key);
+        if(tei)
+        {
+            if(tei->themeName() == m_site->theme())
+            {
+                m_themeEditor = tei->className();
+                m_themeSettingsButton->setVisible(true);
+                break;
+            }
+        }
+    }
     emit siteLoaded(m_site);
 }
 
@@ -477,10 +513,27 @@ void MainWindow::showThemes()
     setCentralWidget(tc);
 }
 
+void MainWindow::showThemesSettings()
+{
+    ThemeEditorInterface *tei = Plugins::getThemePlugin(m_themeEditor);
+    tei->setSourcePath(m_site->sourcePath());
+    setCentralWidget(dynamic_cast<QWidget*>(tei));
+}
+
 void MainWindow::showSettings()
 {
     SiteSettingsEditor *sse = new SiteSettingsEditor(this, m_site);
     setCentralWidget(sse);
+}
+
+void MainWindow::setCentralWidget(QWidget *widget)
+{
+    // do not delete plugin editors
+    QWidget *oldWidget = takeCentralWidget();
+    ThemeEditorInterface *tei = qobject_cast<ThemeEditorInterface*>(oldWidget);
+    if(!tei)
+        delete oldWidget;
+    QMainWindow::setCentralWidget(widget);
 }
 
 void MainWindow::editContent(QTableWidgetItem *item)

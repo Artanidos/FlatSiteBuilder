@@ -18,37 +18,40 @@
 **
 ****************************************************************************/
 
-#ifndef SAMPLEEDITOR_H
-#define SAMPLEEDITOR_H
+#ifndef ANIMATEABLEEDITOR_H
+#define ANIMATEABLEEDITOR_H
 
-#include <QtPlugin>
-#include <QObject>
-#include <QLineEdit>
-#include "interfaces.h"
-#include "animateableeditor.h"
+#include <QWidget>
 
-class SampleEditor : public AnimateableEditor, public ElementEditorInterface
+class Site;
+class AnimateableEditor : public QWidget
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface" FILE "sampleeditor.json")
-    Q_INTERFACES(ElementEditorInterface)
+    Q_PROPERTY(int x READ x WRITE setX)
+    Q_PROPERTY(int y READ y WRITE setY)
+    Q_PROPERTY(int width READ width WRITE setWidth)
+    Q_PROPERTY(int height READ height WRITE setHeight)
 
 public:
-    SampleEditor();
-    QString className() {return "SampleEditor";}
-    QString displayName() {return "Sample";}
-    QString tagName() {return "Sample";}
-    QImage icon() {return QImage(":/sample.png");}
-    QString getHtml(QXmlStreamReader *xml);
-    void setContent(QString content);
-    QString load(QXmlStreamReader *xml) override;
+    void setX(int x) {move(x, y());}
+    void setY(int y) {move(x(), y);}
+    void setWidth(int w) {resize(w, height());}
+    void setHeight(int h) {resize(width(), h);}
+    void setSite(Site *site) {m_site = site;}
+    bool changed() {return m_changed;}
+    QString content() {return m_content;}
+    virtual void setContent(QString) = 0;
 
-private slots:
-    void closeEditor();
+signals:
+    void close();
 
-private:
-    QLineEdit *m_sampleproperty;
-    QLineEdit *m_adminlabel;
+public slots:
+    void contentChanged() {m_changed = true;}
+
+protected:
+    bool m_changed;
+    Site *m_site;
+    QString m_content;
 };
 
-#endif // SAMPLEEDITOR_H
+#endif // ANIMATEABLEEDITOR_H

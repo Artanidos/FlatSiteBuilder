@@ -60,6 +60,10 @@ UndoableEditor::UndoableEditor(QString title, QString filename)
 
 UndoableEditor::~UndoableEditor()
 {
+    disconnect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
+    disconnect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
+    disconnect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
+    disconnect(m_undoStack, SIGNAL(redoTextChanged(QString)), this, SLOT(redoTextChanged(QString)));
     delete m_undoStack;
 }
 

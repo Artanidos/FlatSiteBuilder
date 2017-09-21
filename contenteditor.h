@@ -41,7 +41,7 @@
 class QStatusBar;
 class MainWindow;
 class QXmlStreamReader;
-class ContentEditor : public AbstractEditor
+class ContentEditor : public AnimateableEditor
 {
     Q_OBJECT
 
@@ -109,7 +109,7 @@ private:
     QLabel *m_excerptLabel;
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
-    AbstractEditor *m_editor;
+    AnimateableEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;
     QPropertyAnimation *m_animy;

@@ -149,7 +149,7 @@ class TextEditor : public ElementEditorInterface
 public:
     TextEditor() {}
 
-    void setContent(QString) override {}
+    //void setContent(QString) override {}
     QString className() override {return "TextEditor";}
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}

@@ -2,6 +2,8 @@ Features
 --------
 - plugin settings page (disable plugins, dependencies)
 - TextEditor.dll/.so must be installed also
+- scroll area for theme chooser
+- theme property editor for default theme
 
 Postponend
 ----------
@@ -11,7 +13,6 @@ Postponend
 	editor where the columns can be selected
 - cascading rows / columns
 - support for cssgrid ?
-- theme editor (change colors, fonts and other styles)
 - other modules (plugins)
 - media page (crop, alt, rename, resize, scale)
 - widget system ala wordpress
