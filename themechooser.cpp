@@ -2,6 +2,7 @@
 #include "generator.h"
 #include "mainwindow.h"
 #include "flatbutton.h"
+#include "undoableeditor.h"
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>
@@ -11,40 +12,43 @@
 #include <QDesktopServices>
 #include <QPushButton>
 
-ThemeChooser::ThemeChooser(MainWindow *win, Site *site)
+ThemeChooser::ThemeChooser(MainWindow *win, Site *site) :
+    UndoableEditor("Theme Chooser", site->sourcePath() + "/" + site->filename())
 {
     m_win = win;
     m_site = site;
-    QLabel *titleLabel = new QLabel("Theme Chooser");
-    QFont fnt = titleLabel->font();
-    fnt.setPointSize(20);
-    fnt.setBold(true);
-    titleLabel->setFont(fnt);
+    m_themename = site->theme();
 
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addStretch();
 
-    m_layout = new QGridLayout;
-    m_layout->addWidget(titleLabel, 0, 0);
-
-    loadThemes();
+    load();
 
     m_layout->addLayout(vbox, m_layout->rowCount(), 0);
-    setLayout(m_layout);
 }
 
 void ThemeChooser::themeChanged(QString themename)
 {
-    m_site->setTheme(themename);
-    m_site->save();
-
-    loadThemes();
-
-    m_win->statusBar()->showMessage("Theme has been changed. The site should be rebuildet.");
+    if(m_themename != themename)
+    {
+        m_themename = themename;
+        contentChanged("theme changed to " + themename);
+    }
 }
 
-void ThemeChooser::loadThemes()
+void ThemeChooser::save()
 {
+    m_site->setTheme(m_themename);
+    m_site->save();
+    m_win->statusBar()->showMessage("Theme has been changed. The site should be rebuildet on the dashboard.");
+    load();
+}
+
+void ThemeChooser::load()
+{
+    m_site->load();
+    m_themename = m_site->theme();
+
     QDir list(Generator::themesPath());
     m_themes.clear();
 

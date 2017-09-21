@@ -2,6 +2,7 @@
 #define THEMECHOOSER_H
 
 #include <QWidget>
+#include "undoableeditor.h"
 
 class Site;
 class QGridLayout;
@@ -33,12 +34,15 @@ private:
     QString m_themename;
 };
 
-class ThemeChooser : public QWidget
+class ThemeChooser : public UndoableEditor
 {
     Q_OBJECT
 
 public:
     ThemeChooser(MainWindow *win, Site *site);
+
+    void save() override;
+    void load() override;
 
 private slots:
     void themeChanged(QString themename);
@@ -46,10 +50,8 @@ private slots:
 private:
     QList<Theme*> m_themes;
     Site *m_site;
-    QGridLayout *m_layout;
     MainWindow *m_win;
-
-    void loadThemes();
+    QString m_themename;
 };
 
 #endif // THEMECHOOSER_H
