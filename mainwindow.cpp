@@ -90,7 +90,7 @@ void MainWindow::loadPlugins()
         QObject *plugin = loader.instance();
         if (plugin)
         {
-            EditorInterface *iEditor = qobject_cast<EditorInterface *>(plugin);
+            ElementEditorInterface *iEditor = qobject_cast<ElementEditorInterface *>(plugin);
             if(iEditor)
             {
                 Plugins::insert(iEditor->className(), iEditor);

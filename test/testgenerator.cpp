@@ -25,8 +25,8 @@ void TestGenerator::initTestCase()
 
 void TestGenerator::cleanupTestCase()
 {
-    //QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
-    //dir.removeRecursively();
+    QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
+    dir.removeRecursively();
 }
 
 void TestGenerator::nextTokens_data()
@@ -144,7 +144,7 @@ void TestGenerator::translateContent()
     QCOMPARE(rc, result);
 }
 
-class TextEditor : public EditorInterface
+class TextEditor : public ElementEditorInterface
 {
 public:
     TextEditor() {}

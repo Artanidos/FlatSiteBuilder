@@ -26,11 +26,11 @@
 #include <QLineEdit>
 #include "interfaces.h"
 
-class SampleEditor : public EditorInterface
+class SampleEditor : public ElementEditorInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "sampleeditor.json")
-    Q_INTERFACES(EditorInterface)
+    Q_INTERFACES(ElementEditorInterface)
 
 public:
     SampleEditor();

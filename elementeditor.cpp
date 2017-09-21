@@ -86,7 +86,7 @@ void ElementEditor::load(QXmlStreamReader *stream)
         m_text->setText(stream->name().toString());
     else
         m_text->setText(label);
-    EditorInterface * editor = Plugins::getPlugin(m_type);
+    ElementEditorInterface * editor = Plugins::getPlugin(m_type);
     if(editor)
         m_content = editor->load(stream);
 }
@@ -201,7 +201,7 @@ void ElementEditor::enable()
     if(dlg->result().isEmpty())
         return;
 
-    EditorInterface *editor = Plugins::getPlugin(dlg->result());
+    ElementEditorInterface *editor = Plugins::getPlugin(dlg->result());
     m_text->setText(editor->displayName());
     m_content = "<" + editor->tagName() + "/>";
     m_type = editor->className();

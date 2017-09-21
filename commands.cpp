@@ -107,48 +107,6 @@ void DeleteContentCommand::redo()
     m_contentList->reload();
 }
 
-ChangeMenuCommand::ChangeMenuCommand(MenuList *list, Site *site, QString text, QUndoCommand *parent)
-    : QUndoCommand(parent)
-{
-    fileVersionNumber++;
-    m_site = site;
-    m_list = list;
-    m_filename = "Menus.xml";
-    setText(text);
-
-    QString sitedir = m_site->sourcePath().mid(m_site->sourcePath().lastIndexOf("/") + 1);
-    m_undoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber) + ".undo";
-    m_redoFilename = QDir::tempPath() + "/FlatSiteBuilder/" + sitedir + "/" + m_filename + "." + QString::number(fileVersionNumber) + ".redo";
-}
-
-void ChangeMenuCommand::undo()
-{
-    QFile dest(m_site->sourcePath() + "/" + m_filename);
-    if(dest.exists())
-        dest.remove();
-    QFile::copy(m_undoFilename, m_site->sourcePath() + "/" + m_filename);
-    m_list->reloadMenu();
-}
-
-void ChangeMenuCommand::redo()
-{
-    QFile redo(m_redoFilename);
-    if(redo.exists())
-    {
-        QFile dest(m_site->sourcePath() + "/" + m_filename);
-        if(dest.exists())
-            dest.remove();
-        QFile::copy(m_redoFilename, m_site->sourcePath() + "/" + m_filename);
-        m_list->reloadMenu();
-    }
-    else
-    {
-        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_undoFilename);
-        m_list->saveMenu();
-        QFile::copy(m_site->sourcePath() + "/" + m_filename, m_redoFilename);
-    }
-}
-
 RenameContentCommand::RenameContentCommand(ContentEditor *ce, QString oldname, QString newname, QString text, QUndoCommand *parent)
     : QUndoCommand(parent)
 {

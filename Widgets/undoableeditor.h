@@ -53,11 +53,11 @@ private slots:
 
 protected:
     QGridLayout *m_layout;
+    QUndoStack *m_undoStack;
 
 private:
     FlatButton *m_undo;
     FlatButton *m_redo;
-    QUndoStack *m_undoStack;
     QString m_filename;
 };
 

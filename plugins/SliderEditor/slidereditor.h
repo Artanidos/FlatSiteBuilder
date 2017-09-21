@@ -49,11 +49,11 @@ private:
     QString m_adminlabel;
 };
 
-class SliderEditor : public EditorInterface
+class SliderEditor : public ElementEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "slidereditor.json")
-    Q_INTERFACES(EditorInterface)
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface" FILE "slidereditor.json")
+    Q_INTERFACES(ElementEditorInterface)
 
 public:
     SliderEditor();

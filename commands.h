@@ -25,13 +25,10 @@
 
 extern int fileVersionNumber;
 
-class MenuList;
-class SiteSettingsEditor;
 class ContentList;
 class ContentEditor;
 class MainWindow;
 class Site;
-class UndoableEditor;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
@@ -56,21 +53,6 @@ private:
     ContentList *m_contentList;
     QString m_filename;
     QString m_undoFilename;
-};
-
-class ChangeMenuCommand : public QUndoCommand
-{
-public:
-    ChangeMenuCommand(MenuList *list, Site *site, QString text, QUndoCommand *parent = 0);
-    void undo() override;
-    void redo() override;
-
-private:
-    Site *m_site;
-    QString m_undoFilename;
-    QString m_redoFilename;
-    MenuList *m_list;
-    QString m_filename;
 };
 
 class RenameContentCommand : public QUndoCommand

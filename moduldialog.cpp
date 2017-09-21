@@ -55,7 +55,7 @@ ModulDialog::ModulDialog()
     {
         if(name != "RowPropertyEditor" && name != "SectionPropertyEditor" && name != "TextEditor")
         {
-            EditorInterface *plugin = Plugins::getPlugin(name);
+            ElementEditorInterface *plugin = Plugins::getPlugin(name);
             FlatButton *btn = createButton(plugin->icon(), plugin->displayName());
             btn->setReturnCode(name);
             m_grid->addWidget(btn, row, col++);

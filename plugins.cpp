@@ -1,9 +1,9 @@
 #include "plugins.h"
 
-QMap<QString, EditorInterface*> Plugins::editorPlugins;
+QMap<QString, ElementEditorInterface*> Plugins::editorPlugins;
 QStringList Plugins::usedPlugins;
 
-EditorInterface *Plugins::getPlugin(QString name)
+ElementEditorInterface *Plugins::getPlugin(QString name)
 {
     return editorPlugins[name];
 }
@@ -18,7 +18,7 @@ QList<QString> Plugins::pluginNames()
     return editorPlugins.keys();
 }
 
-void Plugins::insert(QString name, EditorInterface* plugin)
+void Plugins::insert(QString name, ElementEditorInterface* plugin)
 {
     editorPlugins.insert(name, plugin);
 }

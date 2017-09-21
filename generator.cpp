@@ -222,7 +222,7 @@ void Generator::generateContent(Content *content)
         {
             if(Plugins::isPluginUsed(key))
             {
-                EditorInterface *editor = Plugins::getPlugin(key);
+                ElementEditorInterface *editor = Plugins::getPlugin(key);
                 pluginvars["styles"] = pluginvars["styles"].toString() + editor->pluginStyles();
                 pluginvars["scripts"] = pluginvars["scripts"].toString() + editor->pluginScripts();
                 editor->installAssets(m_sitesPath + "/" + m_site->title() + "/assets");

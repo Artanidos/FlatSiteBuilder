@@ -27,11 +27,11 @@
 #include "imageselector.h"
 
 class QLineEdit;
-class ImageEditor : public EditorInterface
+class ImageEditor : public ElementEditorInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
-    Q_INTERFACES(EditorInterface)
+    Q_INTERFACES(ElementEditorInterface)
 
 public:
     ImageEditor();

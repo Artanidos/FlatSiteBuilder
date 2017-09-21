@@ -14,7 +14,8 @@
 #include "flatbutton.h"
 #include "tablecellbuttons.h"
 
-MenuList::MenuList(MainWindow *win, Site *site)
+MenuList::MenuList(MainWindow *win, Site *site) :
+    UndoableEditor("Menus", site->sourcePath() + "/Menus.xml")
 {
     m_win = win;
     m_site = site;
@@ -23,23 +24,6 @@ MenuList::MenuList(MainWindow *win, Site *site)
 
     QPushButton *button = new QPushButton("Add Menu");
     button->setMaximumWidth(120);
-    QLabel *titleLabel = new QLabel("Menus");
-    QFont fnt = titleLabel->font();
-    fnt.setPointSize(20);
-    fnt.setBold(true);
-    titleLabel->setFont(fnt);
-
-    m_undoStack = new QUndoStack;
-    m_undo = new FlatButton(":/images/undo_normal.png", ":/images/undo_hover.png", "", ":/images/undo_disabled.png");
-    m_redo = new FlatButton(":/images/redo_normal.png", ":/images/redo_hover.png", "", ":/images/redo_disabled.png");
-    m_undo->setToolTip("Undo");
-    m_redo->setToolTip("Redo");
-    m_undo->setEnabled(false);
-    m_redo->setEnabled(false);
-    QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->addStretch(0);
-    hbox->addWidget(m_undo);
-    hbox->addWidget(m_redo);
 
     m_list = new QTableWidget(0, 2, this);
     m_list->verticalHeader()->hide();
@@ -51,58 +35,13 @@ MenuList::MenuList(MainWindow *win, Site *site)
     labels << "" << "Name";
     m_list->setHorizontalHeaderLabels(labels);
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(titleLabel, 0, 0);
-    layout->addLayout(hbox, 0, 2);
-    layout->addWidget(button, 1, 0);
-    layout->addWidget(m_list, 2, 0, 1, 3);
-    setLayout(layout);
+    m_layout->addWidget(button, 1, 0);
+    m_layout->addWidget(m_list, 2, 0, 1, 3);
 
-    reloadMenu();
+    load();
 
     connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
-    connect(m_redo, SIGNAL(clicked()), this, SLOT(redo()));
-    connect(m_undo, SIGNAL(clicked()), this, SLOT(undo()));
-    connect(m_undoStack, SIGNAL(canUndoChanged(bool)), this, SLOT(canUndoChanged(bool)));
-    connect(m_undoStack, SIGNAL(canRedoChanged(bool)), this, SLOT(canRedoChanged(bool)));
-    connect(m_undoStack, SIGNAL(undoTextChanged(QString)), this, SLOT(undoTextChanged(QString)));
-    connect(m_undoStack, SIGNAL(redoTextChanged(QString)), this, SLOT(redoTextChanged(QString)));
-}
-
-MenuList::~MenuList()
-{
-    delete m_undoStack;
-}
-
-void MenuList::canUndoChanged(bool can)
-{
-    m_undo->setEnabled(can);
-}
-
-void MenuList::canRedoChanged(bool can)
-{
-    m_redo->setEnabled(can);
-}
-
-void MenuList::undoTextChanged(QString text)
-{
-    m_undo->setToolTip("Undo " + text);
-}
-
-void MenuList::redoTextChanged(QString text)
-{
-    m_redo->setToolTip("Redo " + text);
-}
-
-void MenuList::undo()
-{
-    m_undoStack->undo();
-}
-
-void MenuList::redo()
-{
-    m_undoStack->redo();
 }
 
 void MenuList::registerMenuEditor(MenuEditor *editor)
@@ -117,7 +56,7 @@ void MenuList::unregisterMenuEditor()
     m_editor = NULL;
 }
 
-void MenuList::reloadMenu()
+void MenuList::load()
 {
     m_list->clearContents();
     m_list->setRowCount(0);
@@ -142,16 +81,14 @@ void MenuList::reloadMenu()
         m_editor->reloadMenu(m_menuInEditor);
 }
 
-void MenuList::saveMenu()
+void MenuList::save()
 {
     m_site->saveMenus();
 }
 
 void MenuList::menuChanged(QString text)
 {
-    QUndoCommand *changeCommand = new ChangeMenuCommand(this, m_site, text);
-    m_undoStack->push(changeCommand);
-    m_win->statusBar()->showMessage("Menu saved. The site should be rebuildet on the dasboard later to affect changes.");
+    contentChanged(text);
 }
 
 QTableWidgetItem *MenuList::addListItem(Menu *menu)

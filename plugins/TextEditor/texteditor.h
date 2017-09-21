@@ -27,11 +27,11 @@
 #include <QPushButton>
 #include <QComboBox>
 
-class TextEditor : public EditorInterface
+class TextEditor : public ElementEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.crowdware.FlatSiteBuilder.EditorInterface" FILE "texteditor.json")
-    Q_INTERFACES(EditorInterface)
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface" FILE "texteditor.json")
+    Q_INTERFACES(ElementEditorInterface)
 
 public:
     TextEditor();

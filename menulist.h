@@ -5,21 +5,23 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include "site.h"
+#include "undoableeditor.h"
 
 class QUndoStack;
 class MainWindow;
 class MenuEditor;
 class FlatButton;
-class MenuList : public QWidget
+class MenuList : public UndoableEditor
 {
     Q_OBJECT
 
 public:
     MenuList(MainWindow *win, Site *site);
-    ~MenuList();
+    //~MenuList();
 
-    void reloadMenu();
-    void saveMenu();
+    void load() override;
+    void save() override;
+
     void registerMenuEditor(MenuEditor *editor);
     void unregisterMenuEditor();
 
@@ -29,12 +31,12 @@ private slots:
     void deleteMenu(QObject *menu);
     void editMenu(QObject *menu);
     void menuChanged(QString text);
-    void redo();
-    void undo();
-    void canUndoChanged(bool can);
-    void canRedoChanged(bool can);
-    void undoTextChanged(QString text);
-    void redoTextChanged(QString text);
+    //void redo();
+    //void undo();
+    //void canUndoChanged(bool can);
+    //void canRedoChanged(bool can);
+    //void undoTextChanged(QString text);
+    //void redoTextChanged(QString text);
 
 signals:
     void editContent(QTableWidgetItem *item);
@@ -43,12 +45,12 @@ signals:
 private:
     Site *m_site;
     QTableWidget *m_list;
-    QUndoStack *m_undoStack;
+    //QUndoStack *m_undoStack;
     MainWindow *m_win;
     MenuEditor *m_editor;
     Menu *m_menuInEditor;
-    FlatButton *m_undo;
-    FlatButton *m_redo;
+    //FlatButton *m_undo;
+    //FlatButton *m_redo;
 
     QTableWidgetItem *addListItem(Menu *menu);
 };

@@ -67,12 +67,12 @@ protected:
     QString m_content;
 };
 
-class EditorInterface : public AbstractEditor
+class ElementEditorInterface : public AbstractEditor
 {
     Q_OBJECT
 
 public:
-    virtual ~EditorInterface() {}
+    virtual ~ElementEditorInterface() {}
     virtual QString className() = 0;
     virtual QString displayName() = 0;
     virtual QString tagName() = 0;
@@ -84,10 +84,26 @@ public:
     virtual void installAssets(QString assetsPath) {Q_UNUSED(assetsPath)}
 };
 
-QT_BEGIN_NAMESPACE
-#define EditorInterface_iid "org.crowdware.FlatSiteBuilder.EditorInterface"
+class ThemeEditorInterface : public AbstractEditor
+{
+    Q_OBJECT
 
-Q_DECLARE_INTERFACE(EditorInterface, EditorInterface_iid)
+public:
+    virtual ~ThemeEditorInterface() {}
+    virtual QString className() = 0;
+    virtual QString displayName() = 0;
+};
+
+QT_BEGIN_NAMESPACE
+#define ElementEditorInterface_iid "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface"
+
+Q_DECLARE_INTERFACE(ElementEditorInterface, ElementEditorInterface_iid)
+QT_END_NAMESPACE
+
+QT_BEGIN_NAMESPACE
+#define ThemeEditorInterface_iid "com.github.Artanidos.FlatSiteBuilder.ThemeEditorInterface"
+
+Q_DECLARE_INTERFACE(ThemeEditorInterface, ThemeEditorInterface_iid)
 QT_END_NAMESPACE
 
 #endif // INTERFACES_H
