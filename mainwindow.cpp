@@ -65,7 +65,6 @@ MainWindow::MainWindow()
 {
     m_site = NULL;
     m_editor = NULL;
-    m_themeEditor = "";
 
     initUndoRedo();
     initGui();
@@ -419,7 +418,11 @@ void MainWindow::loadProject(QString filename)
 void MainWindow::reloadProject()
 {
     m_site->load();
-    m_site->reloadMenus();
+    m_site->loadMenus();
+    m_site->loadPages();
+    m_site->loadPosts();
+
+    m_themeSettingsButton->setVisible(false);
     foreach(QString key, Plugins::themePluginNames())
     {
         ThemeEditorInterface *tei = Plugins::getThemePlugin(key);
@@ -427,13 +430,30 @@ void MainWindow::reloadProject()
         {
             if(tei->themeName() == m_site->theme())
             {
-                m_themeEditor = tei->className();
+                Plugins::setActualThemeEditor(tei->className());
                 m_themeSettingsButton->setVisible(true);
                 break;
             }
         }
     }
     emit siteLoaded(m_site);
+}
+
+void MainWindow::actualThemeChanged(QString themename)
+{
+    m_themeSettingsButton->setVisible(false);
+    foreach(QString key, Plugins::themePluginNames())
+    {
+        ThemeEditorInterface *tei = Plugins::getThemePlugin(key);
+        if(tei)
+        {
+            if(tei->themeName() == themename)
+            {
+                m_themeSettingsButton->setVisible(true);
+                break;
+            }
+        }
+    }
 }
 
 void MainWindow::saveProject()
@@ -515,7 +535,7 @@ void MainWindow::showThemes()
 
 void MainWindow::showThemesSettings()
 {
-    ThemeEditorInterface *tei = Plugins::getThemePlugin(m_themeEditor);
+    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditor());
     tei->setSourcePath(m_site->sourcePath());
     setCentralWidget(dynamic_cast<QWidget*>(tei));
 }
@@ -633,9 +653,19 @@ void MainWindow::previewSite(Content *content)
     QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
     QDir path(dir + "/" + m_site->title());
     if(!content)
-        content = m_site->pages().at(0);
-    file = content->url();
-    QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));
+    {
+        if(m_site->pages().count() > 0)
+            content = m_site->pages().at(0);
+        else if(m_site->posts().count() > 0)
+            content = m_site->posts().at(0);
+    }
+    if(content)
+    {
+        file = content->url();
+        QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));
+    }
+    else
+        statusBar()->showMessage("Site has no pages or posts to preview.");
 }
 
 void MainWindow::publishSite()
@@ -645,9 +675,14 @@ void MainWindow::publishSite()
 
 void MainWindow::buildSite()
 {
-    Generator gen;
-    gen.generateSite(m_site);
-    statusBar()->showMessage(m_site->title() + " has been generated");
+    if(m_site->pages().count() == 0 && m_site->posts().count() == 0)
+        statusBar()->showMessage("Site has no pages or posts to build.");
+    else
+    {
+        Generator gen;
+        gen.generateSite(m_site);
+        statusBar()->showMessage(m_site->title() + " has been generated");
+    }
 }
 
 void MainWindow::createSite()

@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "flatbutton.h"
 #include "undoableeditor.h"
+#include "plugins.h"
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>
@@ -40,6 +41,8 @@ void ThemeChooser::save()
 {
     m_site->setTheme(m_themename);
     m_site->save();
+    Plugins::setActualThemeEditor(m_themename);
+    m_win->actualThemeChanged(m_themename);
     m_win->statusBar()->showMessage("Theme has been changed. The site should be rebuildet on the dashboard.");
     load();
 }

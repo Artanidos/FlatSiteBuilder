@@ -44,6 +44,7 @@ public:
 #ifdef TEST
     void setSitesPath(QString path) {m_sitesPath = path;}
     void setThemePath(QString path) {m_themePath = path;}
+    void addThemeVar(QString name, QVariant value) {themevars[name] = value;}
     void addSiteVar(QString name, QVariant value) {sitevars[name] = value;}
     void addPageVar(QString name, QVariant value) {pagevars[name] = value;}
 #endif
@@ -66,6 +67,7 @@ private:
     QVariantMap pluginvars;
     QVariantMap pagevars;
     QVariantMap sitevars;
+    QVariantMap themevars;
     QString m_themePath;
     QString m_sitesPath;
 

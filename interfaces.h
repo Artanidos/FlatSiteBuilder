@@ -61,6 +61,7 @@ public:
     virtual QString displayName() = 0;
     virtual QString themeName() = 0;
     virtual void setSourcePath(QString path) = 0;
+    virtual QVariantMap themeVars() = 0;
 };
 
 QT_BEGIN_NAMESPACE

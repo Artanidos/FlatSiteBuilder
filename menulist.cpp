@@ -60,7 +60,7 @@ void MenuList::load()
 {
     m_list->clearContents();
     m_list->setRowCount(0);
-    m_site->reloadMenus();
+    m_site->loadMenus();
 
     int menuId = -1;
     if(m_menuInEditor)

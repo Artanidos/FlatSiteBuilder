@@ -71,9 +71,9 @@ public:
     QString filename() {return m_filename;}
 
     void load();
-    void reloadPages();
-    void reloadPosts();
-    void reloadMenus();
+    void loadPages();
+    void loadPosts();
+    void loadMenus();
     void save();
     void saveMenus();
     QString createTemporaryContent(ContentType type);

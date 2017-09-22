@@ -40,17 +40,16 @@ public:
     QString displayName() override {return "Default Theme Editor";}
     QString themeName() override {return "default";}
     void setSourcePath(QString path) override {m_filename = path + "/DefaultTheme.xml"; load();}
-
+    QVariantMap themeVars();
     void load() override;
     void save() override;
 
 private slots:
-    void sampleChanged();
     void showPoweredChanged();
 
 private:
-    QLineEdit *m_sampleproperty;
-    QCheckBox *m_showPoweredBy;
+    QCheckBox *m_hidePoweredBy;
+    bool m_isHidePoweredByEnabled;
 };
 
 #endif // DEFAULTTHEMEEDITOR_H

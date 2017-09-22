@@ -134,7 +134,7 @@ void ContentList::reload()
 
     if(m_type == ContentType::Page)
     {
-        m_site->reloadPages();
+        m_site->loadPages();
         for(int i = 0; i < m_site->pages().count(); i++)
         {
             Content *content = m_site->pages().at(i);
@@ -148,7 +148,7 @@ void ContentList::reload()
     }
     else
     {
-        m_site->reloadPosts();
+        m_site->loadPosts();
         for(int i = 0; i < m_site->posts().count(); i++)
         {
             Content *content = m_site->posts().at(i);

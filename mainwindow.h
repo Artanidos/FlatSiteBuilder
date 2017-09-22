@@ -46,6 +46,7 @@ public:
     void reloadProject();
     void saveProject();
     void setCentralWidget(QWidget *widget);
+    void actualThemeChanged(QString themename);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -73,7 +74,6 @@ private:
     Expander *m_settings;
     Site *m_site;
     QString m_defaultPath;
-    QString m_themeEditor;
     QUndoStack *m_undoStack;
     QParallelAnimationGroup *m_animationgroup;
     QPropertyAnimation *m_animx;

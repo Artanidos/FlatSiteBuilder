@@ -3,6 +3,7 @@
 QMap<QString, ElementEditorInterface*> Plugins::elementPlugins;
 QMap<QString, ThemeEditorInterface*> Plugins::themePlugins;
 QStringList Plugins::usedPlugins;
+QString Plugins::_actualThemeEditor;
 
 ElementEditorInterface *Plugins::getElementPlugin(QString name)
 {

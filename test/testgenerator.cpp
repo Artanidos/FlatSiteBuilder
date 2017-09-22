@@ -3,7 +3,6 @@
 #include "../generator.h"
 #include "../plugins.h"
 
-
 class TestGenerator : public QObject
 {
     Q_OBJECT
@@ -15,6 +14,19 @@ private slots:
     void nextTokens();
     void initTestCase();
     void cleanupTestCase();
+};
+
+class TextEditor : public ElementEditorInterface
+{
+public:
+    TextEditor() {}
+
+    QString className() override {return "TextEditor";}
+    QString displayName() override {return "Text";}
+    QString tagName() override {return "Text";}
+    QImage icon() override {return QImage(":/images/text.png");}
+    QString getHtml(QXmlStreamReader *) {return "<h1>testPageTitle</h1>";}
+    QString load(QXmlStreamReader *) override {return "";}
 };
 
 void TestGenerator::initTestCase()
@@ -64,6 +76,8 @@ void TestGenerator::translateContent_data()
     QTest::newRow("page") << "{{ page.title }}" << "PageTitle";
     QTest::newRow("site") << "{{ site.title }}" << "SiteTitle";
     QTest::newRow("loop") << "{{ item.title }}" << "ItemTitle";
+    QTest::newRow("wrong loop") << "{{ ite.title }}" << "";
+
     QTest::newRow("loop without spaces") << "{{item.title}}" << "ItemTitle";
     QTest::newRow("loop left space") << "{{ item.title}}" << "ItemTitle";
     QTest::newRow("loop left spaces") << "{{  item.title}}" << "ItemTitle";
@@ -75,6 +89,7 @@ void TestGenerator::translateContent_data()
     QTest::newRow("for c") << "{% for item in site.menus[page.menu] %}{{ item.title }}{% endfor%}" << "MenuItemTitle";
     QTest::newRow("for d") << "{% for item in site.menus[page.menu] %}{{ item.title }}{%endfor%}" << "MenuItemTitle";
     QTest::newRow("for e") << "{% for item in site.menus[page.menu] %}\n{{ item.title }}\n{%endfor%}\n" << "MenuItemTitle\n";
+    QTest::newRow("for wrong index") << "{% for item in site.menus[page.menus] %}{{ item.title }}{% endfor %}" << "";
 
     QTest::newRow("for nested a") << "{% for item in site.menus[page.menu] %}{% for subitem in item.items %}{{ subitem.title }}{% endfor %}{% endfor %}" << "SubItemTitle";
     QTest::newRow("for nested b") << "{% for item in site.menus[page.menu] %}{%  for subitem in item.items %}{{ subitem.title }}{% endfor %}{% endfor %}" << "SubItemTitle";
@@ -86,7 +101,26 @@ void TestGenerator::translateContent_data()
     QTest::newRow("for nested h") << "{% for item in site.menus[page.menu] %}{% for subitem in item.items %}{{ subitem.title }}{% endfor%}{% endfor %}" << "SubItemTitle";
     QTest::newRow("for nested i") << "{% for item in site.menus[page.menu] %}{% for subitem in item.items %}{{ subitem.title }}{%endfor%}{% endfor %}" << "SubItemTitle";
 
-    QTest::newRow("if equal") << "{% if site.title == \"SiteTitle\" %}true{% endif %}" << "true";
+    QTest::newRow("if equal theme a") << "{% if theme.switch %}left{% endif %}" << "left";
+    QTest::newRow("if equal theme b") << "{% if theme.switch == true %}left{% endif %}" << "left";
+    QTest::newRow("if equal theme c") << "{% if theme.switch == false %}left{% endif %}" << "";
+    QTest::newRow("if equal theme d") << "{% if theme.noswitch %}left{% endif %}" << "";
+    QTest::newRow("if equal theme e") << "{% if theme.noswitch == true %}left{% endif %}" << "";
+    QTest::newRow("if equal theme f") << "{% if theme.noswitch == false %}left{% endif %}" << "left";
+
+    QTest::newRow("if equal theme undef a") << "{% if theme.switc %}left{% endif %}" << "";
+    QTest::newRow("if equal theme undef b") << "{% if theme.switc == true %}left{% endif %}" << "";
+
+    QTest::newRow("if not equal theme a") << "{% if theme.switch != true %}left{% endif %}" << "";
+    QTest::newRow("if not equal theme c") << "{% if theme.switch != false %}left{% endif %}" << "left";
+    QTest::newRow("if not equal theme d") << "{% if theme.noswitch != true %}left{% endif %}" << "left";
+    QTest::newRow("if not equal theme e") << "{% if theme.noswitch != false %}left{% endif %}" << "";
+
+    QTest::newRow("if not equal theme undef a") << "{% if theme.switc != true %}left{% endif %}" << "left";
+    QTest::newRow("if not equal theme undef b") << "{% if theme.switc == false %}left{% endif %}" << "left";
+
+    QTest::newRow("if equal a") << "{% if site.title == \"SiteTitle\" %}true{% endif %}" << "true";
+    QTest::newRow("if equal b") << "{% if site.title == \"SiteTitl\" %}true{% endif %}" << "";
     QTest::newRow("if not equal") << "{% if site.title != \"Siteitle\" %}false{% endif %}" << "false";
     QTest::newRow("if else a") << "{% if site.title == \"Siteitle\" %}true{% else %}false{% endif %}" << "false";
     QTest::newRow("if else b") << "{% if site.title == \"SiteTitle\" %}true{% else %}false{% endif %}" << "true";
@@ -138,25 +172,13 @@ void TestGenerator::translateContent()
 
     g.addSiteVar("menus", menus);
     g.addSiteVar("title", "SiteTitle");
+    g.addThemeVar("switch", "true");
+    g.addThemeVar("noswitch", "false");
     g.addPageVar("title", "PageTitle");
     g.addPageVar("menu", "MenuName");
     QString rc = g.translateContent(var, loopvars);
     QCOMPARE(rc, result);
 }
-
-class TextEditor : public ElementEditorInterface
-{
-public:
-    TextEditor() {}
-
-    //void setContent(QString) override {}
-    QString className() override {return "TextEditor";}
-    QString displayName() override {return "Text";}
-    QString tagName() override {return "Text";}
-    QImage icon() override {return QImage(":/images/text.png");}
-    QString getHtml(QXmlStreamReader *) {return "<h1>testPageTitle</h1>";}
-    QString load(QXmlStreamReader *) override {return "";}
-};
 
 void TestGenerator::generateSite()
 {

@@ -126,6 +126,13 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["keywords"] = m_site->keywords();
     sitevars["author"] = m_site->author();
 
+    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditor());
+    if(tei)
+    {
+        tei->setSourcePath(m_site->sourcePath());
+        themevars = tei->themeVars();
+    }
+
     QDir siteDir(m_sitesPath + "/" + m_site->title());
     bool copyAssets = false;
     if(!siteDir.exists())
@@ -528,7 +535,10 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                         QString rightVar = exp.mid(equal + 2).trimmed();
                         QString left = translateVar(leftVar, loopvars).toString();
                         QString right = translateVar(rightVar, loopvars).toString();
-                        ifvars->m_isTrue = left == right;
+                        if(right == "false")
+                            ifvars->m_isTrue = left == "" || left == "false";
+                        else
+                            ifvars->m_isTrue = left == right;
                     }
                     else
                     {
@@ -540,6 +550,12 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             QString left = translateVar(leftVar, loopvars).toString();
                             QString right = translateVar(rightVar, loopvars).toString();
                             ifvars->m_isTrue = left != right;
+                        }
+                        else // {% if value %}
+                        {
+                            QString var = exp.mid(2).trimmed();
+                            QString value = translateVar(var, loopvars).toString();
+                            ifvars->m_isTrue = value == "true";
                         }
                     }
                     ifvars->m_inIf = true;
@@ -612,6 +628,12 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
     if(exp.startsWith("\"") && exp.endsWith("\""))
         return exp.mid(1, exp.length() - 2);
 
+    if(exp == "true")
+        return true;
+
+    if(exp == "false")
+        return false;
+
     int posOpen = exp.indexOf("[");
     if(posOpen > 0)
     {
@@ -619,32 +641,79 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
         QString index = exp.mid(posOpen + 1, posClose - posOpen - 1).trimmed();
         QString var = exp.mid(0, posOpen).trimmed();
         indexValue = translateVar(index, loopvars).toString();
+        if(indexValue.isEmpty())
+            return "";
         exp = var;
     }
 
     if(exp.startsWith("page."))
-        return pagevars[exp.mid(5)];
+    {
+        if(pagevars.contains(exp.mid(5)))
+            return pagevars.value(exp.mid(5));
+        else
+            return "";
+        //return pagevars[exp.mid(5)];
+    }
     else if(exp.startsWith("site."))
     {
         if(indexValue.isEmpty())
-            return sitevars[exp.mid(5)];
+        {
+            if(sitevars.contains(exp.mid(5)))
+                return sitevars.value(exp.mid(5));
+            else
+                return "";
+            //return sitevars[exp.mid(5)];
+        }
         else
-            return sitevars[exp.mid(5)].toMap()[indexValue];
+        {
+            if(sitevars.contains(exp.mid(5)))
+            {
+                QVariantMap map = sitevars.value(exp.mid(5)).toMap();
+                if(map.contains(indexValue))
+                    return map.value(indexValue);
+                else
+                    return "";
+            }
+            else
+                return "";
+            //return sitevars[exp.mid(5)].toMap()[indexValue];
+        }
     }
     else if(exp.startsWith("plugin."))
     {
-        return pluginvars[exp.mid(7)];
+        if(pluginvars.contains(exp.mid(7)))
+            return pluginvars.value(exp.mid(7));
+        else
+            return "";
+        //return pluginvars[exp.mid(7)];
+    }
+    else if(exp.startsWith("theme."))
+    {
+        if(themevars.contains(exp.mid(6)))
+            return themevars.value(exp.mid(6));
+        else
+            return "";
     }
     else
     {
         int dot = exp.indexOf(".");
         if(dot <= 0)
-            return pagevars[exp];
+        {
+            if(pagevars.contains(exp))
+                return pagevars.value(exp);
+            else
+                return "";
+            //return pagevars[exp];
+        }
         QString var = exp.mid(0, dot);
         QString value = exp.mid(dot + 1);
         QVariant obj = loopvars[var];
         QVariantMap map = obj.toMap();
-        return map[value];
+        if(map.contains(value))
+            return map.value(value);
+        else
+            return "";
+        //return map[value];
     }
 }
 

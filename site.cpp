@@ -66,7 +66,7 @@ void Site::load()
     m_win->statusBar()->showMessage("Site has been loaded");
 }
 
-void Site::reloadPages()
+void Site::loadPages()
 {
     m_pages.clear();
 
@@ -102,7 +102,7 @@ void Site::reloadPages()
     m_win->statusBar()->showMessage("Pages have been loaded");
 }
 
-void Site::reloadPosts()
+void Site::loadPosts()
 {
     m_posts.clear();
 
@@ -139,7 +139,7 @@ void Site::reloadPosts()
     m_win->statusBar()->showMessage("Posts have been loaded");
 }
 
-void Site::reloadMenus()
+void Site::loadMenus()
 {
     m_menus.clear();
 

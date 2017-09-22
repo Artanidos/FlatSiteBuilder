@@ -31,35 +31,32 @@
 DefaultThemeEditor::DefaultThemeEditor() :
     UndoableEditor("Default Theme Editor", "")
 {
-    m_sampleproperty = new QLineEdit;
-    m_showPoweredBy = new QCheckBox("Show powered by FlatSiteBuilder in footer");
+    m_hidePoweredBy = new QCheckBox("Hide powered by FlatSiteBuilder in footer");
 
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch();
 
-    m_layout->addWidget(new QLabel("Sample Property"), 1, 0);
-    m_layout->addWidget(m_sampleproperty, 2, 0, 1, 3);
-    m_layout->addWidget(m_showPoweredBy, 3, 0, 1, 3);
-    m_layout->addLayout(vbox, 4, 0); // for stretching only
+    m_layout->addWidget(m_hidePoweredBy, 1, 0, 1, 3);
+    m_layout->addWidget(new QLabel(""), 2, 0);
+    m_layout->addWidget(new QLabel("Looks a bit empty here, right?"), 3, 0, 1, 3);
+    m_layout->addWidget(new QLabel("This is just a sample theme editor."), 4, 0, 1, 3);
+    m_layout->addWidget(new QLabel("To give theme creators an overview of what is possible."), 5, 0, 1, 3);
+    m_layout->addLayout(vbox, 6, 0); // for stretching only
 
-	connect(m_sampleproperty, SIGNAL(textChanged(QString)), this, SLOT(sampleChanged()));
-	connect(m_showPoweredBy, SIGNAL(stateChanged(int)), this, SLOT(showPoweredChanged()));
-}
-
-void DefaultThemeEditor::sampleChanged()
-{
-    //if(m_site->title() != m_sampleproperty->text())
-        contentChanged("sample property changed");
+    connect(m_hidePoweredBy, SIGNAL(stateChanged(int)), this, SLOT(showPoweredChanged()));
 }
 
 void DefaultThemeEditor::showPoweredChanged()
 {
-    //if(m_site->title() != m_showPoweredBy->checkState())
+    if(m_isHidePoweredByEnabled != m_hidePoweredBy->isChecked())
         contentChanged("show powered by changed");
 }
 
 void DefaultThemeEditor::load()
 {
+    // set default values in case load failes
+    m_isHidePoweredByEnabled = false;
+
     QFile theme(m_filename);
     if (!theme.open(QIODevice::ReadOnly))
     {
@@ -71,8 +68,8 @@ void DefaultThemeEditor::load()
     {
         if(xml.name() == "Settings")
         {
-            m_sampleproperty->setText(xml.attributes().value("sampleProperty").toString());
-            m_showPoweredBy->setChecked(xml.attributes().value("showPoweredBy").toString() == "true");
+            m_isHidePoweredByEnabled = xml.attributes().value("hidePoweredBy").toString() == "true";
+            m_hidePoweredBy->setChecked(m_isHidePoweredByEnabled);
         }
     }
     theme.close();
@@ -90,9 +87,16 @@ void DefaultThemeEditor::save()
     xml.setAutoFormatting(true);
     xml.writeStartDocument();
     xml.writeStartElement("Settings");
-    xml.writeAttribute("sampleProperty", m_sampleproperty->text());
-    xml.writeAttribute("showPoweredBy", (m_showPoweredBy->isChecked() ? "true" : "false"));
+    xml.writeAttribute("hidePoweredBy", (m_hidePoweredBy->isChecked() ? "true" : "false"));
     xml.writeEndElement();
     xml.writeEndDocument();
     file.close();
+}
+
+QVariantMap DefaultThemeEditor::themeVars()
+{
+    load();
+    QVariantMap vars;
+    vars["hidePoweredBy"] = m_isHidePoweredByEnabled;
+    return vars;
 }

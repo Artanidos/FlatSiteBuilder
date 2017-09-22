@@ -19,11 +19,14 @@ public:
     static void clearUsedPlugins() {usedPlugins.clear();}
     static void addUsedPlugin(QString plugin) {usedPlugins.append(plugin);}
     static bool isPluginUsed(QString plugin) {return usedPlugins.contains(plugin);}
+    static void setActualThemeEditor(QString te) {_actualThemeEditor = te;}
+    static QString actualThemeEditor() {return _actualThemeEditor;}
 
 private:
     static QMap<QString, ElementEditorInterface*> elementPlugins;
     static QMap<QString, ThemeEditorInterface*> themePlugins;
     static QStringList usedPlugins;
+    static QString _actualThemeEditor;
 };
 
 #endif // PLUGINS_H
