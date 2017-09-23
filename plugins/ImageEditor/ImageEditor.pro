@@ -24,7 +24,7 @@ INCLUDEPATH  += ../../
 SOURCES		 += imageeditor.cpp
 HEADERS		 += imageeditor.h \
     ../../interfaces.h
-#DESTDIR       = ~/FlatSiteBuilder/plugins
+DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets

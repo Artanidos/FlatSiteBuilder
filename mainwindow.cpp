@@ -536,9 +536,15 @@ void MainWindow::showThemes()
 void MainWindow::showThemesSettings()
 {
     ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
-    tei->setSourcePath(m_site->sourcePath());
-    tei->setWindow(this);
-    setCentralWidget(dynamic_cast<QWidget*>(tei));
+    if(tei)
+    {
+        QString path = m_site->sourcePath();
+        tei->setWindow(this);
+        tei->setSourcePath(path);
+        setCentralWidget(dynamic_cast<QWidget*>(tei));
+    }
+    else
+        statusBar()->showMessage("Unable to load plugin " + Plugins::actualThemeEditorPlugin());
 }
 
 void MainWindow::showSettings()
