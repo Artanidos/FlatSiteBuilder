@@ -28,10 +28,10 @@
 #include "interfaces.h"
 #include "undoableeditor.h"
 
-class DefaultThemeEditor : public UndoableEditor, public ThemeEditorInterface
+class DefaultThemeEditor : public ThemeEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ThemeEditorInterface" FILE "defaultthemeeditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ThemeEditorInterface")
     Q_INTERFACES(ThemeEditorInterface)
 
 public:

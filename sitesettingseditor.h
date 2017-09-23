@@ -28,6 +28,7 @@ class MainWindow;
 class Site;
 class QGridLayout;
 class QLineEdit;
+class QComboBox;
 class SiteSettingsEditor : public UndoableEditor
 {
     Q_OBJECT
@@ -44,6 +45,7 @@ private slots:
     void descriptionChanged();
     void keywordsChanged();
     void copyrightChanged();
+    void publisherChanged(QString publisher);
 
 private:
     MainWindow *m_win;
@@ -53,6 +55,7 @@ private:
     QLineEdit *m_copyright;
     QLineEdit *m_keywords;
     QLineEdit *m_author;
+    QComboBox *m_publisher;
 };
 
 #endif // SITESETTINGSEDITOR_H

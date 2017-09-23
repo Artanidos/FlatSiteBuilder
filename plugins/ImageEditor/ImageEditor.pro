@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets xml gui core
+QT           += widgets gui core
 TEMPLATE      = lib
 CONFIG       += plugin
 TARGET		  = ImageEditor
@@ -24,7 +24,7 @@ INCLUDEPATH  += ../../
 SOURCES		 += imageeditor.cpp
 HEADERS		 += imageeditor.h \
     ../../interfaces.h
-DESTDIR       = ~/FlatSiteBuilder/plugins
+#DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets

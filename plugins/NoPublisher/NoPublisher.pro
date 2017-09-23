@@ -16,19 +16,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets gui core
+QT           += widgets gui core network
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET		  = SampleEditor
+TARGET		  = NoPublisher
 INCLUDEPATH  += ../../
-SOURCES		 += sampleeditor.cpp
-HEADERS		 += sampleeditor.h \
+SOURCES		 += nopublisher.cpp
+HEADERS		 += nopublisher.h \
     ../../interfaces.h
 #DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
-
-RESOURCES += \
-    images.qrc

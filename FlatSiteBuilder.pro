@@ -25,5 +25,6 @@ SUBDIRS += \
     plugins/SliderEditor \
     plugins/SampleEditor \
     plugins/DefaultThemeEditor \
+    plugins/NoPublisher \
     test/Test.pro \
     Widgets

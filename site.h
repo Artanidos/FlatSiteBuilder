@@ -42,6 +42,9 @@ public:
     QString title() {return m_title;}
     void setTitle(QString title);
 
+    QString publisher() {return m_publisher;}
+    void setPublisher(QString publisher) {m_publisher = publisher;}
+
     QString author() {return m_author;}
     void setAuthor(QString author) {m_author = author;}
 
@@ -89,6 +92,7 @@ private:
     QString m_description;
     QString m_copyright;
     QString m_keywords;
+    QString m_publisher;
     QList<Content *> m_pages;
     QList<Content *> m_posts;
     QList<Menu *> m_menus;

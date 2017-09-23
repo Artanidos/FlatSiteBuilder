@@ -126,7 +126,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     sitevars["keywords"] = m_site->keywords();
     sitevars["author"] = m_site->author();
 
-    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditor());
+    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
     if(tei)
     {
         tei->setSourcePath(m_site->sourcePath());

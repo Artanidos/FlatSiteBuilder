@@ -60,6 +60,7 @@ void Site::load()
             setCopyright(xml.attributes().value("copyright").toString());
             setKeywords(xml.attributes().value("keywords").toString());
             setAuthor(xml.attributes().value("author").toString());
+            setPublisher(xml.attributes().value("publisher").toString());
         }
     }
     file.close();
@@ -222,6 +223,7 @@ void Site::save()
     xml.writeAttribute("copyright", copyright());
     xml.writeAttribute("keywords", keywords());
     xml.writeAttribute("author", author());
+    xml.writeAttribute("publisher", publisher());
     xml.writeEndElement();
     xml.writeEndDocument();
     file.close();

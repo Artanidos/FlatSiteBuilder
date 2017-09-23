@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "themechooser.h"
 #include "generator.h"
 #include "mainwindow.h"
@@ -13,12 +33,13 @@
 #include <QDesktopServices>
 #include <QPushButton>
 
-ThemeChooser::ThemeChooser(MainWindow *win, Site *site) :
-    UndoableEditor("Theme Chooser", site->sourcePath() + "/" + site->filename())
+ThemeChooser::ThemeChooser(MainWindow *win, Site *site)
 {
     m_win = win;
     m_site = site;
     m_themename = site->theme();
+    m_titleLabel->setText("Theme Chooser");
+    m_filename = site->sourcePath() + "/" + site->filename();
 
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addStretch();
@@ -41,7 +62,7 @@ void ThemeChooser::save()
 {
     m_site->setTheme(m_themename);
     m_site->save();
-    Plugins::setActualThemeEditor(m_themename);
+    Plugins::setActualThemeEditorPlugin(m_themename);
     m_win->actualThemeChanged(m_themename);
     m_win->statusBar()->showMessage("Theme has been changed. The site should be rebuildet on the dashboard.");
     load();

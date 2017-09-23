@@ -25,13 +25,12 @@
 #include <QObject>
 #include "interfaces.h"
 #include "imageselector.h"
-#include "animateableeditor.h"
 
 class QLineEdit;
-class ImageEditor : public AnimateableEditor, public ElementEditorInterface
+class ImageEditor : public ElementEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface" FILE "imageeditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.EditorInterface")
     Q_INTERFACES(ElementEditorInterface)
 
 public:

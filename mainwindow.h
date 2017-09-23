@@ -47,6 +47,7 @@ public:
     void saveProject();
     void setCentralWidget(QWidget *widget);
     void actualThemeChanged(QString themename);
+    void showHtml(QString url);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -61,7 +62,6 @@ private:
     bool install();
     void initUndoRedo();
     void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
-    void showHtml(QString url);
     void animate(QTableWidgetItem *item);
     void loadPlugins();
 
@@ -90,7 +90,7 @@ private slots:
     void contentExpanded(bool value);
     void mediaExpanded(bool value);
     void apearanceExpanded(bool value);
-    void pluginsExpanded(bool value);
+//    void pluginsExpanded(bool value);
     void settingsExpanded(bool value);
     void showDashboard();
     void showPosts();

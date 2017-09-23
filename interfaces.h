@@ -28,17 +28,15 @@
 #include <QHBoxLayout>
 #include <QUndoStack>
 #include "site.h"
-#include "flatbutton.h"
 #include "undoableeditor.h"
+#include "animateableeditor.h"
 
 QT_BEGIN_NAMESPACE
 class QString;
-class Site;
-class MainWindow;
 class QXmlStreamReader;
 QT_END_NAMESPACE
 
-class ElementEditorInterface
+class ElementEditorInterface : public AnimateableEditor
 {
 public:
     virtual ~ElementEditorInterface() {}
@@ -53,7 +51,7 @@ public:
     virtual void installAssets(QString assetsPath) {Q_UNUSED(assetsPath)}
 };
 
-class ThemeEditorInterface
+class ThemeEditorInterface : public UndoableEditor
 {
 public:
     virtual ~ThemeEditorInterface() {}
@@ -62,6 +60,16 @@ public:
     virtual QString themeName() = 0;
     virtual void setSourcePath(QString path) = 0;
     virtual QVariantMap themeVars() = 0;
+};
+
+
+class PublisherInterface : public QWidget
+{
+public:
+    virtual ~PublisherInterface() {}
+    virtual QString className() = 0;
+    virtual QString displayName() = 0;
+    virtual void setSitePath(QString path) = 0;
 };
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +82,12 @@ QT_BEGIN_NAMESPACE
 #define ThemeEditorInterface_iid "com.github.Artanidos.FlatSiteBuilder.ThemeEditorInterface"
 
 Q_DECLARE_INTERFACE(ThemeEditorInterface, ThemeEditorInterface_iid)
+QT_END_NAMESPACE
+
+QT_BEGIN_NAMESPACE
+#define PublisherInterface_iid "com.github.Artanidos.FlatSiteBuilder.PublisherInterface"
+
+Q_DECLARE_INTERFACE(PublisherInterface, PublisherInterface_iid)
 QT_END_NAMESPACE
 
 #endif // INTERFACES_H

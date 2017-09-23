@@ -18,36 +18,34 @@
 **
 ****************************************************************************/
 
-#ifndef SAMPLEEDITOR_H
-#define SAMPLEEDITOR_H
+#ifndef NOPUBLISHER_H
+#define NOPUBLISHER_H
 
 #include <QtPlugin>
 #include <QObject>
-#include <QLineEdit>
+#include <QUrl>
 #include "interfaces.h"
 
-class SampleEditor : public ElementEditorInterface
+class QNetworkReply;
+class QTextBrowser;
+class NoPublisher : public PublisherInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface")
-    Q_INTERFACES(ElementEditorInterface)
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.PublisherInterface")
+    Q_INTERFACES(PublisherInterface)
 
 public:
-    SampleEditor();
-    QString className() {return "SampleEditor";}
-    QString displayName() {return "Sample";}
-    QString tagName() {return "Sample";}
-    QImage icon() {return QImage(":/sample.png");}
-    QString getHtml(QXmlStreamReader *xml);
-    void setContent(QString content);
-    QString load(QXmlStreamReader *xml) override;
+    NoPublisher();
+    QString className() override {return "NoPublisher";}
+    QString displayName() override {return "Not really a publisher but a description";}
+    void setSitePath(QString path) override;
 
 private slots:
-    void closeEditor();
+    void fileIsReady(QNetworkReply *reply);
+    void anchorClicked(QUrl url);
 
 private:
-    QLineEdit *m_sampleproperty;
-    QLineEdit *m_adminlabel;
-};
+    QTextBrowser *m_browser;
+ };
 
-#endif // SAMPLEEDITOR_H
+#endif // NOPUBLISHER_H

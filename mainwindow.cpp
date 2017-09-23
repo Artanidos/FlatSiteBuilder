@@ -114,6 +114,12 @@ void MainWindow::loadPlugins()
                 else
                     qDebug() << "Plugin does not implement QWidget " << fileName;
             }
+            PublisherInterface *iPublisher = qobject_cast<PublisherInterface*>(plugin);
+            if(iPublisher)
+            {
+                Plugins::insert(iPublisher->className(), iPublisher);
+                qDebug() << "Plugin loaded" << fileName;
+            }
         }
         else
         {
@@ -203,6 +209,9 @@ bool MainWindow::install()
     installDir.mkdir("js");
     installDir.mkdir("images");
 
+    QString pluginDir = QDir::homePath() + "/FlatSiteBuilder/plugins";
+    installFiles(":/plugins/", pluginDir);
+
     QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
     installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
     installFiles(":/themes/default/includes/", themeDir + "/includes/");
@@ -270,7 +279,6 @@ void MainWindow::initGui()
     m_dashboardExpander = new Expander("Dashboard", ":/images/dashboard_normal.png", ":/images/dashboard_hover.png", ":/images/dashboard_selected.png");
     m_content = new Expander("Content", ":/images/pages_normal.png", ":/images/pages_hover.png", ":/images/pages_selected.png");
     m_appearance = new Expander("Appearance", ":/images/appearance_normal.png", ":/images/appearance_hover.png", ":/images/appearance_selected.png");
-    m_plugins = new Expander("Plugins", ":/images/plugin_normal.png", ":/images/plugin_hover.png", ":/images/plugin_selected.png");
     m_settings = new Expander("Settings", ":/images/settings_normal.png", ":/images/settings_hover.png", ":/images/settings_selected.png");
 
     setWindowTitle(QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion());
@@ -278,7 +286,6 @@ void MainWindow::initGui()
     vbox->addWidget(m_dashboardExpander);
     vbox->addWidget(m_content);
     vbox->addWidget(m_appearance);
-    vbox->addWidget(m_plugins);
     vbox->addWidget(m_settings);
     vbox->addStretch();
 
@@ -320,7 +327,6 @@ void MainWindow::initGui()
     connect(m_dashboardExpander, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
     connect(m_content, SIGNAL(expanded(bool)), this, SLOT(contentExpanded(bool)));
     connect(m_appearance, SIGNAL(expanded(bool)), this, SLOT(apearanceExpanded(bool)));
-    connect(m_plugins, SIGNAL(expanded(bool)), this, SLOT(pluginsExpanded(bool)));
     connect(m_settings, SIGNAL(expanded(bool)), this, SLOT(settingsExpanded(bool)));
     connect(menusButton, SIGNAL(clicked()), this, SLOT(showMenus()));
     connect(pagesButton, SIGNAL(clicked()), this, SLOT(showPages()));
@@ -330,7 +336,6 @@ void MainWindow::initGui()
     connect(m_appearance, SIGNAL(clicked()), this, SLOT(showMenus()));
     connect(themesButton, SIGNAL(clicked()), this, SLOT(showThemes()));
     connect(m_themeSettingsButton, SIGNAL(clicked()), this, SLOT(showThemesSettings()));
-    connect(m_plugins, SIGNAL(clicked()), this, SLOT(notImplemented()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(showSettings()));
 }
 
@@ -340,7 +345,6 @@ void MainWindow::dashboardExpanded(bool value)
     {
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
-        m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
     }
 }
@@ -352,7 +356,6 @@ void MainWindow::mediaExpanded(bool value)
         m_dashboardExpander->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
-        m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
     }
 }
@@ -363,7 +366,6 @@ void MainWindow::contentExpanded(bool value)
     {
         m_dashboardExpander->setExpanded(false);
         m_appearance->setExpanded(false);
-        m_plugins->setExpanded(false);
         m_settings->setExpanded(false);
     }
 }
@@ -374,18 +376,6 @@ void MainWindow::apearanceExpanded(bool value)
     {
         m_dashboardExpander->setExpanded(false);
         m_content->setExpanded(false);
-        m_plugins->setExpanded(false);
-        m_settings->setExpanded(false);
-    }
-}
-
-void MainWindow::pluginsExpanded(bool value)
-{
-    if(value)
-    {
-        m_dashboardExpander->setExpanded(false);
-        m_content->setExpanded(false);
-        m_appearance->setExpanded(false);
         m_settings->setExpanded(false);
     }
 }
@@ -397,7 +387,6 @@ void MainWindow::settingsExpanded(bool value)
         m_dashboardExpander->setExpanded(false);
         m_content->setExpanded(false);
         m_appearance->setExpanded(false);
-        m_plugins->setExpanded(false);
     }
 }
 
@@ -430,12 +419,16 @@ void MainWindow::reloadProject()
         {
             if(tei->themeName() == m_site->theme())
             {
-                Plugins::setActualThemeEditor(tei->className());
+                Plugins::setActualThemeEditorPlugin(tei->className());
                 m_themeSettingsButton->setVisible(true);
                 break;
             }
         }
     }
+    if(m_site->publisher().isEmpty())
+        m_site->setPublisher(Plugins::publishPluginNames().at(0));
+    Plugins::setActualPublishPlugin(m_site->publisher());
+
     emit siteLoaded(m_site);
 }
 
@@ -535,8 +528,9 @@ void MainWindow::showThemes()
 
 void MainWindow::showThemesSettings()
 {
-    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditor());
+    ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
     tei->setSourcePath(m_site->sourcePath());
+    tei->setWindow(this);
     setCentralWidget(dynamic_cast<QWidget*>(tei));
 }
 
@@ -551,7 +545,8 @@ void MainWindow::setCentralWidget(QWidget *widget)
     // do not delete plugin editors
     QWidget *oldWidget = takeCentralWidget();
     ThemeEditorInterface *tei = qobject_cast<ThemeEditorInterface*>(oldWidget);
-    if(!tei)
+    PublisherInterface *pi = qobject_cast<PublisherInterface*>(oldWidget);
+    if(!tei && !pi && oldWidget)
         delete oldWidget;
     QMainWindow::setCentralWidget(widget);
 }
@@ -670,7 +665,13 @@ void MainWindow::previewSite(Content *content)
 
 void MainWindow::publishSite()
 {   
-    showHtml("https://artanidos.github.io/FlatSiteBuilder/publish.html");
+    QString pluginName = Plugins::actualPublishPlugin();
+    PublisherInterface *pi = Plugins::getPublishPlugin(pluginName);
+    if(pi)
+    {
+        setCentralWidget(pi);
+        pi->setSitePath(m_site->deployPath());
+    }
 }
 
 void MainWindow::buildSite()

@@ -123,7 +123,6 @@ void ImageEditor::seek()
     dialog->setWindowTitle(tr("Load Image"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    dialog->setDirectory(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
     if(dialog->exec())
         fileName = dialog->selectedFiles().first();
     delete dialog;

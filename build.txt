@@ -1,5 +1,6 @@
 Create an AppImage
 -----------------
 - build FlatSiteBuilder in release mode
+- update all plugins in the plugins directory so that they were linked into the resource file
 - run buildAppImage.sh
 

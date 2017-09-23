@@ -22,24 +22,34 @@
 #include "mainwindow.h"
 #include "site.h"
 #include "commands.h"
+#include "plugins.h"
 #include "generator.h"
 #include <QStatusBar>
 #include <QGridLayout>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QDir>
 #include <QTest>
 
-SiteSettingsEditor::SiteSettingsEditor(MainWindow *win, Site *site) :
-    UndoableEditor("Site Setting", site->sourcePath() + "/" + site->filename())
+SiteSettingsEditor::SiteSettingsEditor(MainWindow *win, Site *site)
 {
     m_win = win;
     m_site = site;
     m_title = new QLineEdit();
+    m_titleLabel->setText("Site Settings");
+    m_filename = site->sourcePath() + "/" + site->filename();
     m_description = new QLineEdit();
     m_copyright = new QLineEdit();
     m_keywords = new QLineEdit();
     m_author = new QLineEdit();
     m_copyright->setPlaceholderText("&copy; 2017 MyCompany");
+    m_publisher = new QComboBox;
+
+    foreach(QString key, Plugins::publishPluginNames())
+    {
+        PublisherInterface *pi = Plugins::getPublishPlugin(key);
+        m_publisher->addItem(pi->displayName(), key);
+    }
 
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addStretch();
@@ -54,7 +64,9 @@ SiteSettingsEditor::SiteSettingsEditor(MainWindow *win, Site *site) :
     m_layout->addWidget(m_keywords, 8, 0, 1, 3);
     m_layout->addWidget(new QLabel("Author"), 9, 0);
     m_layout->addWidget(m_author, 10, 0);
-    m_layout->addLayout(vbox, 11, 0);
+    m_layout->addWidget(new QLabel("Plugin to be used for publishing"), 11, 0);
+    m_layout->addWidget(m_publisher, 12, 0);
+    m_layout->addLayout(vbox, 13, 0);
 
     load();
 
@@ -63,6 +75,7 @@ SiteSettingsEditor::SiteSettingsEditor(MainWindow *win, Site *site) :
     connect(m_copyright, SIGNAL(editingFinished()), this, SLOT(copyrightChanged()));
     connect(m_keywords, SIGNAL(editingFinished()), this, SLOT(keywordsChanged()));
     connect(m_author, SIGNAL(editingFinished()), this, SLOT(authorChanged()));
+    connect(m_publisher, SIGNAL(currentIndexChanged(QString)), this, SLOT(publisherChanged(QString)));
 }
 
 void SiteSettingsEditor::load()
@@ -74,6 +87,7 @@ void SiteSettingsEditor::load()
     m_copyright->setText(m_site->copyright());
     m_keywords->setText(m_site->keywords());
     m_author->setText(m_site->author());
+    m_publisher->setCurrentText(m_site->publisher());
     if(oldTitle != m_site->title())
     {
         QDir dir(Generator::sitesPath());
@@ -99,9 +113,16 @@ void SiteSettingsEditor::save()
         m_site->setCopyright(m_copyright->text());
         m_site->setDescription(m_description->text());
         m_site->setKeywords(m_keywords->text());
+        m_site->setPublisher(m_publisher->currentText());
         m_site->save();
         m_win->statusBar()->showMessage("Site settings have been saved. Site should be rebuilded on the dashboard.");
     }
+}
+
+void SiteSettingsEditor::publisherChanged(QString publisher)
+{
+    if(m_site->publisher() != publisher)
+        contentChanged("publisher changed");
 }
 
 void SiteSettingsEditor::titleChanged()

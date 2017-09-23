@@ -26,7 +26,6 @@
 #include <QTableWidget>
 #include <QPushButton>
 #include "interfaces.h"
-#include "animateableeditor.h"
 
 class SlideEditor;
 class QParallelAnimationGroup;
@@ -50,10 +49,10 @@ private:
     QString m_adminlabel;
 };
 
-class SliderEditor : public AnimateableEditor, public ElementEditorInterface
+class SliderEditor : public ElementEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface" FILE "slidereditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface")
     Q_INTERFACES(ElementEditorInterface)
 
 public:

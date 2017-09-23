@@ -28,17 +28,19 @@
 extern int fileVersionNumber;
 
 class QGridLayout;
-
+class MainWindow;
 class UndoableEditor : public QWidget
 {
     Q_OBJECT
 
 public:
-    UndoableEditor(QString title, QString filename);
+    UndoableEditor();
     ~UndoableEditor();
 
     virtual void load() = 0;
     virtual void save() = 0;
+
+    void setWindow(MainWindow *win) {m_win = win;}
 
 protected:
     void contentChanged(QString text);
@@ -55,6 +57,8 @@ protected:
     QGridLayout *m_layout;
     QUndoStack *m_undoStack;
     QString m_filename;
+    MainWindow *m_win;
+    QLabel *m_titleLabel;
 
 private:
     FlatButton *m_undo;

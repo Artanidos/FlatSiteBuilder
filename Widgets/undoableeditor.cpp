@@ -25,9 +25,9 @@
 #include <QFileInfo>
 #include <QDir>
 
-UndoableEditor::UndoableEditor(QString title, QString filename)
+UndoableEditor::UndoableEditor()
 {
-    m_filename = filename;
+    m_filename = "";
     m_undoStack = new QUndoStack;
     m_undo = new FlatButton(":/images/undo_normal.png", ":/images/undo_hover.png", "", ":/images/undo_disabled.png");
     m_redo = new FlatButton(":/images/redo_normal.png", ":/images/redo_hover.png", "", ":/images/redo_disabled.png");
@@ -40,13 +40,13 @@ UndoableEditor::UndoableEditor(QString title, QString filename)
     hbox->addWidget(m_undo);
     hbox->addWidget(m_redo);
 
-    QLabel *titleLabel = new QLabel(title);
-    QFont fnt = titleLabel->font();
+    m_titleLabel = new QLabel();
+    QFont fnt = m_titleLabel->font();
     fnt.setPointSize(20);
     fnt.setBold(true);
-    titleLabel->setFont(fnt);
+    m_titleLabel->setFont(fnt);
     m_layout = new QGridLayout;
-    m_layout->addWidget(titleLabel, 0, 0);
+    m_layout->addWidget(m_titleLabel, 0, 0);
     m_layout->addLayout(hbox, 0, 2);
     setLayout(m_layout);
 

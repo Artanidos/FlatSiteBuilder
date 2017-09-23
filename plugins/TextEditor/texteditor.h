@@ -22,16 +22,15 @@
 #define TEXTEDITOR_H
 
 #include "interfaces.h"
-#include "animateableeditor.h"
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QComboBox>
 
-class TextEditor : public AnimateableEditor, public ElementEditorInterface
+class TextEditor : public ElementEditorInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface" FILE "texteditor.json")
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.FlatSiteBuilder.ElementEditorInterface")
     Q_INTERFACES(ElementEditorInterface)
 
 public:

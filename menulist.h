@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #ifndef MENUELIST_H
 #define MENUELIST_H
 
@@ -17,7 +37,6 @@ class MenuList : public UndoableEditor
 
 public:
     MenuList(MainWindow *win, Site *site);
-    //~MenuList();
 
     void load() override;
     void save() override;
@@ -31,12 +50,6 @@ private slots:
     void deleteMenu(QObject *menu);
     void editMenu(QObject *menu);
     void menuChanged(QString text);
-    //void redo();
-    //void undo();
-    //void canUndoChanged(bool can);
-    //void canRedoChanged(bool can);
-    //void undoTextChanged(QString text);
-    //void redoTextChanged(QString text);
 
 signals:
     void editContent(QTableWidgetItem *item);
@@ -45,12 +58,9 @@ signals:
 private:
     Site *m_site;
     QTableWidget *m_list;
-    //QUndoStack *m_undoStack;
     MainWindow *m_win;
     MenuEditor *m_editor;
     Menu *m_menuInEditor;
-    //FlatButton *m_undo;
-    //FlatButton *m_redo;
 
     QTableWidgetItem *addListItem(Menu *menu);
 };

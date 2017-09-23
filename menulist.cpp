@@ -1,3 +1,23 @@
+/****************************************************************************
+** Copyright (C) 2017 Olaf Japp
+**
+** This file is part of FlatSiteBuilder.
+**
+**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation, either version 3 of the License, or
+**  (at your option) any later version.
+**
+**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**
+**  You should have received a copy of the GNU General Public License
+**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**
+****************************************************************************/
+
 #include "menulist.h"
 #include "mainwindow.h"
 #include "menueditor.h"
@@ -14,14 +34,14 @@
 #include "flatbutton.h"
 #include "tablecellbuttons.h"
 
-MenuList::MenuList(MainWindow *win, Site *site) :
-    UndoableEditor("Menus", site->sourcePath() + "/Menus.xml")
+MenuList::MenuList(MainWindow *win, Site *site)
 {
     m_win = win;
     m_site = site;
     m_menuInEditor = NULL;
     m_editor = NULL;
-
+    m_titleLabel->setText("Menus");
+    m_filename = site->sourcePath() + "/Menus.xml";
     QPushButton *button = new QPushButton("Add Menu");
     button->setMaximumWidth(120);
 

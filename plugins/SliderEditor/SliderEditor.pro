@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets xml gui core testlib
+QT           += widgets gui core testlib
 TEMPLATE      = lib
 CONFIG       += plugin
 TARGET		  = SliderEditor
@@ -26,7 +26,7 @@ SOURCES		 += slidereditor.cpp \
 HEADERS		 += slidereditor.h \
     ../../interfaces.h \
     slideeditor.h
-DESTDIR       = ~/FlatSiteBuilder/plugins
+#DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets

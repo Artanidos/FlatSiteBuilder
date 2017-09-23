@@ -20,7 +20,9 @@
 
 #include "defaultthemeeditor.h"
 #include "flatbutton.h"
+#include "mainwindow.h"
 #include <QLineEdit>
+#include <QStatusBar>
 #include <QGridLayout>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -28,11 +30,10 @@
 #include <QXmlStreamReader>
 #include <QFile>
 
-DefaultThemeEditor::DefaultThemeEditor() :
-    UndoableEditor("Default Theme Editor", "")
+DefaultThemeEditor::DefaultThemeEditor()
 {
     m_hidePoweredBy = new QCheckBox("Hide powered by FlatSiteBuilder in footer");
-
+    m_titleLabel->setText("Default Theme Settings");
     QVBoxLayout *vbox = new QVBoxLayout();
     vbox->addStretch();
 
@@ -60,7 +61,7 @@ void DefaultThemeEditor::load()
     QFile theme(m_filename);
     if (!theme.open(QIODevice::ReadOnly))
     {
-        //m_win->statusBar()->showMessage("Unable to open " + filename);
+        m_win->statusBar()->showMessage("Unable to open " + m_filename);
         return;
     }
     QXmlStreamReader xml(&theme);
@@ -80,7 +81,7 @@ void DefaultThemeEditor::save()
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
-        //m_win->statusBar()->showMessage("Unable to open file " + m_sourcePath + "/Site.xml");
+        m_win->statusBar()->showMessage("Unable to open file " + m_filename);
         return;
     }
     QXmlStreamWriter xml(&file);
@@ -91,6 +92,8 @@ void DefaultThemeEditor::save()
     xml.writeEndElement();
     xml.writeEndDocument();
     file.close();
+
+    m_win->statusBar()->showMessage("Theme settings have been saved.");
 }
 
 QVariantMap DefaultThemeEditor::themeVars()
