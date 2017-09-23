@@ -137,7 +137,8 @@ DISTFILES += \
     web/assets/css/style.css \
     web/includes/footercontent.html \
     web/layouts/simple.html \
-    changelog.txt
+    changelog.txt \
+    testsite/Menus.xml
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

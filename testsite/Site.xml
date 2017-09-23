@@ -1,13 +1,2 @@
-<Site theme_accent="" title="Test" keywords="site key words" description="A sample test site" theme="himu" copyright="&amp;copy; Copyright 2017 Olaf Japp">
- <Content source="index.xml" logo="logo.png" title="Index" author="admin" keywords="" type="page" layout="default" date="21.08.2017" menu="default"/>
- <Menu name="default">
-  <Item title="Home" url="#navigation"/>
-  <Item title="About Us" url="#about-us"/>
-  <Item title="Services" url="#services"/>
-  <Item title="Our Team" url="#our-team"/>
-  <Item title="Portfolio" url="#portfolio"/>
-  <Item title="Clients" url="#clients"/>
-  <Item title="Blog" url="#blog"/>
-  <Item title="Contact" url="#contact"/>
- </Menu>
-</Site>
+<?xml version="1.0" encoding="UTF-8"?>
+<Site author="admin" title="Test" keywords="site key words" description="A sample test site" theme="himu" copyright="&amp;copy; Copyright 2017 MyCompany" publisher=""/>

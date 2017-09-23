@@ -223,5 +223,9 @@
         <file>plugins/libNoPublisher.so</file>
         <file>plugins/libSliderEditor.so</file>
         <file>plugins/libTextEditor.so</file>
+        <file>testsite/Menus.xml</file>
+        <file>themes/default/sample.html</file>
+        <file>themes/default/sample.png</file>
+        <file>themes/himu/sample.png</file>
     </qresource>
 </RCC>

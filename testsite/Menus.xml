@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Menus>
+    <Menu name="default">
+	    <Item title="Home" url="#navigation"/>
+		<Item title="About Us" url="#about-us"/>
+		<Item title="Services" url="#services"/>
+		<Item title="Our Team" url="#our-team"/>
+		<Item title="Portfolio" url="#portfolio"/>
+		<Item title="Clients" url="#clients"/>
+		<Item title="Blog" url="#blog"/>
+		<Item title="Contact" url="#contact"/>
+	</Menu>
+</Menus>

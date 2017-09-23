@@ -68,12 +68,22 @@ MainWindow::MainWindow()
 
     initUndoRedo();
     initGui();
-    loadPlugins();
     readSettings();
-    if(!install())
+    install();
+    loadPlugins();
+
+    if(!m_defaultPath.isEmpty())
     {
-        if(!m_defaultPath.isEmpty())
-            loadProject(m_defaultPath + "/Site.xml");
+        loadProject(m_defaultPath + "/Site.xml");
+
+        // if site has never been generated (after install)
+        // generate the site
+        QDir site(Generator::sitesPath() + "/" + m_site->title());
+        if(!site.exists())
+        {
+            Generator gen;
+            gen.generateSite(m_site);
+        }
     }
     m_dashboardExpander->setExpanded(true);
     showDashboard();
@@ -210,9 +220,10 @@ bool MainWindow::install()
     installDir.mkdir("images");
 
     QString pluginDir = QDir::homePath() + "/FlatSiteBuilder/plugins";
-    installFiles(":/plugins/", pluginDir);
+    installFiles(":/plugins/", pluginDir + "/");
 
     QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
+    installFiles(":/themes/default/", themeDir + "/");
     installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
     installFiles(":/themes/default/includes/", themeDir + "/includes/");
     installFiles(":/themes/default/assets/css/", themeDir + "/assets/css/");
@@ -250,10 +261,6 @@ bool MainWindow::install()
     installFiles(":/testsite/pages/", siteDir + "/pages/", false);
 
     m_defaultPath = siteDir;
-    loadProject(m_defaultPath + "/Site.xml");
-
-    Generator gen;
-    gen.generateSite(m_site);
 
     return true;
 }
