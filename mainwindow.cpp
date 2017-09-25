@@ -69,7 +69,9 @@ MainWindow::MainWindow()
     initUndoRedo();
     initGui();
     readSettings();
+#ifdef Q_OS_LINUX
     install();
+#endif
     loadPlugins();
 
     if(!m_defaultPath.isEmpty())
@@ -219,9 +221,6 @@ bool MainWindow::install()
     installDir.mkdir("js");
     installDir.mkdir("images");
 
-    QString pluginDir = QDir::homePath() + "/FlatSiteBuilder/plugins";
-    installFiles(":/plugins/", pluginDir + "/");
-
     QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
     installFiles(":/themes/default/", themeDir + "/");
     installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
@@ -255,10 +254,13 @@ bool MainWindow::install()
     installFiles(":/themes/himu/assets/images/services/", themeDir + "/assets/images/services/");
     installFiles(":/themes/himu/assets/images/slider/", themeDir + "/assets/images/slider/");
 
-
     QString siteDir = QDir::homePath() + "/FlatSiteBuilder/sources/testsite";
     installFiles(":/testsite/", siteDir + "/", false);
     installFiles(":/testsite/pages/", siteDir + "/pages/", false);
+
+    // works only in an AppImage on Linux
+    QString pluginDir = QDir::homePath() + "/FlatSiteBuilder/plugins";
+    installFiles(QCoreApplication::applicationDirPath() + "/plugins/", pluginDir + "/");
 
     m_defaultPath = siteDir;
 
@@ -267,16 +269,17 @@ bool MainWindow::install()
 
 void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly)
 {
-    QDir layouts(sourceDir);
-    foreach(QString source, layouts.entryList(QDir::NoDotAndDotDot | QDir::Files))
+
+    QDir dir(sourceDir);
+    foreach(QString source, dir.entryList(QDir::NoDotAndDotDot | QDir::Files))
     {
+        qDebug() << "installing file" << targetDir + source;
         QFile::copy(sourceDir + source, targetDir + source);
         if(!readOnly)
         {
             QFile file(targetDir + source);
             file.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
         }
-        statusBar()->showMessage("Installing file " + targetDir + source);
     }
 }
 

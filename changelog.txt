@@ -1,7 +1,15 @@
-1.3
+1.4
 ---
 - Added the ability to load editor plugins
+- Added the abilty to load theme plugins
+- Added the ability to load publish plugins
 - Nested menus are now possible
 - Nested if statements are now possible
 - Nested for statements are now possible
 - Menu editor added
+- Site setting editor added
+- Text editor plugin added
+- Image editor plugin added
+- Slider editor plugin added
+- Default theme editor plugin added
+- NoPublish plugin added

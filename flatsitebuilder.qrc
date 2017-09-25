@@ -218,11 +218,6 @@
         <file>images/trash_hover.png</file>
         <file>images/trash_normal.png</file>
         <file>images/theme.png</file>
-        <file>plugins/libDefaultThemeEditor.so</file>
-        <file>plugins/libImageEditor.so</file>
-        <file>plugins/libNoPublisher.so</file>
-        <file>plugins/libSliderEditor.so</file>
-        <file>plugins/libTextEditor.so</file>
         <file>testsite/Menus.xml</file>
         <file>themes/default/sample.html</file>
         <file>themes/default/sample.png</file>

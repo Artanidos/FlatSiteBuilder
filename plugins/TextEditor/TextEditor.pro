@@ -26,7 +26,7 @@ SOURCES		 += texteditor.cpp \
 HEADERS		 += texteditor.h \
     ../../interfaces.h \
     htmlhighlighter.h
-DESTDIR       = ~/FlatSiteBuilder/plugins
+#DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
