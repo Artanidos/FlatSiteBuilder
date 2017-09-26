@@ -19,7 +19,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    App.pro \
+    Widgets \
     plugins/TextEditor \
     plugins/ImageEditor \
     plugins/SliderEditor \
@@ -27,4 +27,4 @@ SUBDIRS += \
     plugins/DefaultThemeEditor \
     plugins/NoPublisher \
     test/Test.pro \
-    Widgets
+    App.pro \

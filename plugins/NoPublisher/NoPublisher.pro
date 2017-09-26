@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets gui core network
+QT           += widgets gui core
 TEMPLATE      = lib
 CONFIG       += plugin
 TARGET		  = NoPublisher
@@ -29,3 +29,6 @@ HEADERS		 += nopublisher.h \
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
+
+RESOURCES += \
+    html.qrc

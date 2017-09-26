@@ -275,7 +275,7 @@ QString Generator::translateTemplate(QString layout, Mode mode)
     QFile file(path);
     if(file.open(QIODevice::ReadOnly))
     {
-        QString content = QString::fromLatin1(file.readAll());
+        QString content = QString::fromUtf8(file.readAll());
         file.close();
         int pos = content.indexOf("{% include ");
         int end = 0;
@@ -727,7 +727,7 @@ void Generator::copyPath(QString src, QString dst)
     {
         QString dst_path = dst + QDir::separator() + d;
         dir.mkpath(dst_path);
-        copyPath(src+ QDir::separator() + d, dst_path);
+        copyPath(src + QDir::separator() + d, dst_path);
     }
 
     foreach (QString f, dir.entryList(QDir::Files))

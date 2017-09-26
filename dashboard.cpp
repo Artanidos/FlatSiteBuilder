@@ -28,7 +28,6 @@
 #include <QScrollArea>
 #include <QDesktopServices>
 #include <QFileDialog>
-#include <QNetworkAccessManager>
 
 Dashboard::Dashboard(Site *site, QString defaultPath)
 {

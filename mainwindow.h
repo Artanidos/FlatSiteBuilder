@@ -47,7 +47,6 @@ public:
     void saveProject();
     void setCentralWidget(QWidget *widget);
     void actualThemeChanged(QString themename);
-    void showHtml(QString url);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -59,9 +58,10 @@ private:
     void writeSettings();
     void readSettings();
     void initGui();
-    bool install();
+    void install();
     void initUndoRedo();
-    void installFiles(QString sourceDir, QString targetDir, bool readOnly = true);
+    void installFiles(QString sourceDir, QString targetDir, bool readOnly = true, bool recursive = true);
+    void installFile(QString sourceFile, QString targetFile, bool readOnly);
     void animate(QTableWidgetItem *item);
     void loadPlugins();
 
@@ -90,7 +90,6 @@ private slots:
     void contentExpanded(bool value);
     void mediaExpanded(bool value);
     void apearanceExpanded(bool value);
-//    void pluginsExpanded(bool value);
     void settingsExpanded(bool value);
     void showDashboard();
     void showPosts();
@@ -106,15 +105,12 @@ private slots:
     void publishSite();
     void createSite();
     void buildSite();
-    void notImplemented();
-    void fileIsReady(QNetworkReply *reply);
     void loadProject(QString path);
     void editorClosed();
     void animationFineshedZoomIn();
     void animationFineshedZoomOut();
     void contentChanged(Content *content);
     void menuChanged(Menu *menu);
-    void anchorClicked(QUrl url);
 };
 
 #endif // MAINWINDOW_H

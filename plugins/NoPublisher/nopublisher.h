@@ -23,7 +23,6 @@
 
 #include <QtPlugin>
 #include <QObject>
-#include <QUrl>
 #include "interfaces.h"
 
 class QNetworkReply;
@@ -39,10 +38,6 @@ public:
     QString className() override {return "NoPublisher";}
     QString displayName() override {return "Not really a publisher but a description";}
     void setSitePath(QString path) override;
-
-private slots:
-    void fileIsReady(QNetworkReply *reply);
-    void anchorClicked(QUrl url);
 
 private:
     QTextBrowser *m_browser;

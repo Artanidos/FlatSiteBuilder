@@ -87,7 +87,8 @@ void SiteSettingsEditor::load()
     m_copyright->setText(m_site->copyright());
     m_keywords->setText(m_site->keywords());
     m_author->setText(m_site->author());
-    m_publisher->setCurrentText(m_site->publisher());
+    int index = m_publisher->findData(m_site->publisher());
+    m_publisher->setCurrentIndex(index);
     if(oldTitle != m_site->title())
     {
         QDir dir(Generator::sitesPath());
@@ -113,7 +114,7 @@ void SiteSettingsEditor::save()
         m_site->setCopyright(m_copyright->text());
         m_site->setDescription(m_description->text());
         m_site->setKeywords(m_keywords->text());
-        m_site->setPublisher(m_publisher->currentText());
+        m_site->setPublisher(m_publisher->currentData().toString());
         m_site->save();
         m_win->statusBar()->showMessage("Site settings have been saved. Site should be rebuilded on the dashboard.");
     }

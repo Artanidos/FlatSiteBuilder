@@ -1,4 +1,10 @@
 1.4
+- Install now overrides changed plugins and themes
+- Standard font changed to "Sans Serif, 10"
+- Bugfix: Site settings publisher
+- Bugfix: now UTF8 instead of Latin1
+
+1.4 Beta
 ---
 - Added the ability to load editor plugins
 - Added the abilty to load theme plugins

@@ -31,12 +31,15 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
-    QCoreApplication::setApplicationVersion("1.4 Beta");
+    QCoreApplication::setApplicationVersion("1.4 Beta 2");
+
+    QFont newFont("Sans Serif", 10);
+    a.setFont(newFont);
 
     a.setStyle(QStyleFactory::create("Fusion"));
     a.setStyleSheet("QPushButton:hover { color: #45bbe6 }");
-    QPalette p = a.palette();
 
+    QPalette p = a.palette();
     p.setColor(QPalette::Window, QColor(53,53,53));
     p.setColor(QPalette::WindowText, Qt::white);
     p.setColor(QPalette::Base, QColor(64, 66, 68));

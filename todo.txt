@@ -1,11 +1,8 @@
 Features
 --------
-- plugin settings page (disable plugins, dependencies)
-- TextEditor.dll/.so must be installed also
 - scroll area for theme chooser
-- theme property editor for default theme
-- save content move to Site
-- load content from generator move to Site
+- save content method -> move to Site
+- load content method -> move from generator to Site
 
 Postponend
 ----------

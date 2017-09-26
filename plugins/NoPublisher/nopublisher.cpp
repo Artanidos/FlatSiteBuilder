@@ -20,10 +20,8 @@
 
 #include "nopublisher.h"
 #include <QVBoxLayout>
-#include <QNetworkReply>
 #include <QTextBrowser>
-#include <QDesktopServices>
-#include <QUrl>
+#include <QFile>
 
 /*
  * Just a sample plugin to demonstrate how to build a publishing plugin
@@ -33,12 +31,17 @@
  */
 NoPublisher::NoPublisher()
 {
-    QString url = "https://artanidos.github.io/FlatSiteBuilder/publish.html";
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileIsReady(QNetworkReply*)));
-    manager->get(QNetworkRequest(QUrl(url)));
+    QString html = "";
+    QFile htmlFile(":/publish.html");
+    if(!htmlFile.open(QFile::ReadOnly))
+    {
+        html = "Unable to open file publish.html";
+    }
+    html = QString::fromUtf8(htmlFile.readAll());
+    htmlFile.close();
 
     m_browser = new QTextBrowser;
+    m_browser->setHtml(html);
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_browser);
     setLayout(layout);
@@ -50,15 +53,4 @@ void NoPublisher::setSitePath(QString path)
     // all html files and assets have been copied to this (path) directory
     // normally ~/FlatSiteBuilder/YourSiteName
     // you should copy them to your desired location or push them to github or whereever
-}
-
-void NoPublisher::fileIsReady(QNetworkReply *reply)
-{
-    m_browser->setHtml(reply->readAll());
-    connect(m_browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
-}
-
-void NoPublisher::anchorClicked(QUrl url)
-{
-    QDesktopServices::openUrl(url);
 }

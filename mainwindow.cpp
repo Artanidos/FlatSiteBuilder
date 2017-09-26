@@ -23,6 +23,7 @@
 #include "themechooser.h"
 #include "sitesettingseditor.h"
 #include <QCloseEvent>
+#include <QCryptographicHash>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QApplication>
@@ -43,7 +44,6 @@
 #include <QTextBrowser>
 #include <QProcess>
 #include <QDesktopServices>
-#include <QNetworkReply>
 #include <QStatusBar>
 #include <QXmlStreamWriter>
 #include "hyperlink.h"
@@ -69,9 +69,7 @@ MainWindow::MainWindow()
     initUndoRedo();
     initGui();
     readSettings();
-#ifdef Q_OS_LINUX
     install();
-#endif
     loadPlugins();
 
     if(!m_defaultPath.isEmpty())
@@ -150,137 +148,82 @@ void MainWindow::initUndoRedo()
     temp.mkdir("FlatSiteBuilder");
 }
 
-bool MainWindow::install()
+void MainWindow::install()
 {
-    statusBar()->showMessage("Installing themes and demosite");
     QDir installDir(QDir::homePath() + "/FlatSiteBuilder");
-    if(installDir.exists())
-        return false;
-    installDir.setPath(QDir::homePath());
-    installDir.mkdir("FlatSiteBuilder");
-    installDir.cd("FlatSiteBuilder");
-    installDir.mkdir("sites");
-    installDir.mkdir("sources");
-    installDir.mkdir("themes");
-    installDir.mkdir("plugins");
-    installDir.cd("themes");
-    installDir.mkdir("default");
-    installDir.cd("default");
-    installDir.mkdir("layouts");
-    installDir.mkdir("includes");
-    installDir.mkdir("assets");
-    installDir.cd("assets");
-    installDir.mkdir("css");
-    installDir.mkdir("fonts");
-    installDir.mkdir("js");
-    installDir.cdUp();
-    installDir.cdUp();
-    installDir.mkdir("himu");
-    installDir.cd("himu");
-    installDir.mkdir("layouts");
-    installDir.mkdir("includes");
-    installDir.mkdir("assets");
-    installDir.cd("assets");
-    installDir.mkdir("css");
-    installDir.mkdir("fonts");
-    installDir.mkdir("js");
-    installDir.mkdir("images");
-    installDir.cd("images");
-    installDir.mkdir("about-us");
-    installDir.mkdir("blog");
-    installDir.mkdir("clients");
-    installDir.mkdir("ico");
-    installDir.mkdir("our-team");
-    installDir.mkdir("portfolio");
-    installDir.mkdir("services");
-    installDir.mkdir("slider");
-    installDir.mkdir("prettyPhoto");
-    installDir.cd("prettyPhoto");
-    installDir.mkdir("dark_rounded");
-    installDir.mkdir("dark_square");
-    installDir.mkdir("default");
-    installDir.mkdir("facebook");
-    installDir.mkdir("light_rounded");
-    installDir.mkdir("light_square");
-    installDir.cdUp();
-    installDir.cdUp();
-    installDir.cdUp();
-    installDir.cdUp();
-    installDir.cdUp();
-    installDir.cd("sources");
-    installDir.mkdir("testsite");
-    installDir.cd("testsite");
-    installDir.mkdir("layouts");
-    installDir.mkdir("includes");
-    installDir.mkdir("pages");
-    installDir.mkdir("posts");
-    installDir.mkdir("assets");
-    installDir.cd("assets");
-    installDir.mkdir("css");
-    installDir.mkdir("fonts");
-    installDir.mkdir("js");
-    installDir.mkdir("images");
+    if(!installDir.exists())
+    {
+        qDebug() << "Installing themes and demosite";
+        installDir.setPath(QDir::homePath());
+        installDir.mkdir("FlatSiteBuilder");
+        installDir.cd("FlatSiteBuilder");
+        m_defaultPath = installDir.absolutePath() + "/sources/testsite";
+    }
 
-    QString themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/default";
-    installFiles(":/themes/default/", themeDir + "/");
-    installFiles(":/themes/default/layouts/", themeDir + "/layouts/");
-    installFiles(":/themes/default/includes/", themeDir + "/includes/");
-    installFiles(":/themes/default/assets/css/", themeDir + "/assets/css/");
-    installFiles(":/themes/default/assets/fonts/", themeDir + "/assets/fonts/");
-    installFiles(":/themes/default/assets/js/", themeDir + "/assets/js/");
-
-    themeDir = QDir::homePath() + "/FlatSiteBuilder/themes/himu";
-    installFiles(":/themes/himu/", themeDir + "/");
-    installFiles(":/themes/himu/layouts/", themeDir + "/layouts/");
-    installFiles(":/themes/himu/includes/", themeDir + "/includes/");
-    installFiles(":/themes/himu/assets/css/", themeDir + "/assets/css/");
-    installFiles(":/themes/himu/assets/fonts/", themeDir + "/assets/fonts/");
-    installFiles(":/themes/himu/assets/js/", themeDir + "/assets/js/");
-    installFiles(":/themes/himu/assets/images/", themeDir + "/assets/images/");
-    installFiles(":/themes/himu/assets/images/about-us/", themeDir + "/assets/images/about-us/");
-    installFiles(":/themes/himu/assets/images/blog/", themeDir + "/assets/images/blog/");
-    installFiles(":/themes/himu/assets/images/clients/", themeDir + "/assets/images/clients/");
-    installFiles(":/themes/himu/assets/images/ico/", themeDir + "/assets/images/ico/");
-    installFiles(":/themes/himu/assets/images/our-team/", themeDir + "/assets/images/our-team/");
-    installFiles(":/themes/himu/assets/images/portfolio/", themeDir + "/assets/images/portfolio/");
-    installFiles(":/themes/himu/assets/images/blog/", themeDir + "/assets/images/blog/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/", themeDir + "/assets/images/prettyPhoto/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/dark_rounded/", themeDir + "/assets/images/prettyPhoto/dark_rounded/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/dark_square/", themeDir + "/assets/images/prettyPhoto/dark_square/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/default/", themeDir + "/assets/images/prettyPhoto/default/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/facebook/", themeDir + "/assets/images/prettyPhoto/facebook/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/light_rounded/", themeDir + "/assets/images/prettyPhoto/light_rounded/");
-    installFiles(":/themes/himu/assets/images/prettyPhoto/light_square/", themeDir + "/assets/images/prettyPhoto/light_square/");
-    installFiles(":/themes/himu/assets/images/services/", themeDir + "/assets/images/services/");
-    installFiles(":/themes/himu/assets/images/slider/", themeDir + "/assets/images/slider/");
-
-    QString siteDir = QDir::homePath() + "/FlatSiteBuilder/sources/testsite";
-    installFiles(":/testsite/", siteDir + "/", false);
-    installFiles(":/testsite/pages/", siteDir + "/pages/", false);
-
-    // works only in an AppImage on Linux
-    QString pluginDir = QDir::homePath() + "/FlatSiteBuilder/plugins";
-    installFiles(QCoreApplication::applicationDirPath() + "/plugins/", pluginDir + "/");
-
-    m_defaultPath = siteDir;
-
-    return true;
+    installFiles(QCoreApplication::applicationDirPath() + "/plugins", installDir.absolutePath() + "/plugins", true, false);
+    installFiles(QCoreApplication::applicationDirPath() + "/testsite", installDir.absolutePath() + "/sources/testsite", false);
+    installFiles(QCoreApplication::applicationDirPath() + "/themes", installDir.absolutePath() + "/themes");
 }
 
-void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly)
+void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly, bool recursive)
 {
-
     QDir dir(sourceDir);
-    foreach(QString source, dir.entryList(QDir::NoDotAndDotDot | QDir::Files))
+    dir.mkpath(targetDir);
+    if(recursive)
     {
-        qDebug() << "installing file" << targetDir + source;
-        QFile::copy(sourceDir + source, targetDir + source);
-        if(!readOnly)
+        foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
         {
-            QFile file(targetDir + source);
-            file.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
+            QString dst_path = targetDir + QDir::separator() + d;
+            dir.mkpath(dst_path);
+            installFiles(sourceDir + QDir::separator() + d, dst_path, readOnly, recursive);
         }
     }
+    foreach(QString source, dir.entryList(QDir::NoDotAndDotDot | QDir::Files))
+    {
+        QFile target(targetDir + QDir::separator() + source);
+        // only override readonly files like plugins or themes
+
+        if(target.exists())
+        {
+            if(readOnly)
+            {
+                QCryptographicHash md5genTarget(QCryptographicHash::Md5);
+                if(target.open(QFile::ReadOnly))
+                {
+                    md5genTarget.addData(target.readAll());
+                    target.close();
+                }
+                QFile sourceFile(sourceDir + QDir::separator() + source);
+                QCryptographicHash md5genSource(QCryptographicHash::Md5);
+                if(sourceFile.open(QFile::ReadOnly))
+                {
+                    md5genSource.addData(sourceFile.readAll());
+                    sourceFile.close();
+                }
+
+                if(md5genTarget.result() != md5genSource.result())
+                {
+                    target.remove();
+                    installFile(sourceDir + QDir::separator() + source, targetDir + QDir::separator() + source, readOnly);
+                }
+            }
+        }
+        else
+        {
+            installFile(sourceDir + QDir::separator() + source, targetDir + QDir::separator() + source, readOnly);
+        }
+    }
+}
+
+void MainWindow::installFile(QString sourceFile, QString targetFile, bool readOnly)
+{
+    qDebug() << "installing file" << targetFile;
+    QFile::copy(sourceFile, targetFile);
+    QFile target(targetFile);
+    if(readOnly)
+        target.setPermissions(QFileDevice::ReadOwner);
+    else
+        target.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
 }
 
 void MainWindow::initGui()
@@ -422,6 +365,7 @@ void MainWindow::reloadProject()
     m_site->loadPosts();
 
     m_themeSettingsButton->setVisible(false);
+    Plugins::setActualThemeEditorPlugin("");
     foreach(QString key, Plugins::themePluginNames())
     {
         ThemeEditorInterface *tei = Plugins::getThemePlugin(key);
@@ -708,32 +652,6 @@ void MainWindow::createSite()
     connect(wiz, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
     connect(wiz, SIGNAL(buildSite()), this, SLOT(buildSite()));
     wiz->show();
-}
-
-void MainWindow::notImplemented()
-{
-    showHtml("https://artanidos.github.io/FlatSiteBuilder/notimpl.html");
-}
-
-void MainWindow::showHtml(QString url)
-{
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileIsReady(QNetworkReply*)));
-    manager->get(QNetworkRequest(QUrl(url)));
-}
-
-void MainWindow::anchorClicked(QUrl url)
-{
-    QDesktopServices::openUrl(url);
-}
-
-void MainWindow::fileIsReady(QNetworkReply *reply)
-{
-    QTextBrowser *browser = new QTextBrowser();
-    setCentralWidget(browser);
-    browser->show();
-    browser->setHtml(reply->readAll());
-    connect(browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 }
 
 void MainWindow::editorClosed()
