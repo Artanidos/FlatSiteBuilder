@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
-    QCoreApplication::setApplicationVersion("1.4 Beta 2");
+    QCoreApplication::setApplicationVersion("1.4.2 Beta");
 
     QFont newFont("Sans Serif", 10);
     a.setFont(newFont);
