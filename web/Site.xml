@@ -1,14 +1,2 @@
-<Site title="FlatSiteBuilder" github="https://github.com/Artanidos/FlatSiteBuilder.git" keywords="" theme="atropos" theme_accent="blue" description="" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved.">
- <Content title="Index" date="11.08.2017" type="page" layout="default" logo="logo.png" author="Olaf Japp" keywords="" source="index.xml" menu="mainmenu"/>
- <Content title="NotImpl" date="16.08.2017" type="page" layout="simple" logo="logo.png" author="Olaf Japp" keywords="" source="notimpl.xml" menu=""/>
- <Content title="Publish" date="16.08.2017" type="page" layout="simple" logo="logo.png" author="Olaf Japp" keywords="" source="publish.xml" menu=""/>
- <Content title="Intro" date="24.08.2017" type="page" layout="simple" logo="" author="Olaf Japp" keywords="" source="intro.xml" menu=""/>
- <Menu name="mainmenu">
-  <Item title="Home" url="#wrapper"/>
-  <Item title="Slides" url="#slides"/>
-<Item title="Downloads" url="#downloads"/>
-<Item title="Portfolio" url="#portfolio"/>
-<Item title="FAQ" url="#faq"/>
-  <Item title="Contact" url="#contact"/>
- </Menu>
-</Site>
+<?xml version="1.0" encoding="UTF-8"?>
+<Site theme="atropos" title="FlatSiteBuilder" description="FlatSiteBuilder is a content management system for deploying flat files on github pages" copyright="&amp;copy; Copyright 2017 - Olaf Japp. All Rights Reserved." keywords="cms content management system" author="Olaf" publisher="NoPublisher"/>

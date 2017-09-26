@@ -1,27 +1,13 @@
-<Content>
- <Section fullwidth="true">
-  <Row>
-   <Column span="12">
-    <Text adminlabel="Slider"><![CDATA[<!-- REVOLUTION SLIDER -->
-<div class="fullwidthbanner-container roundedcorners">
-	<div class="fullwidthbanner">
-		<ul>	
-			<!-- SLIDE -->
-			<li data-transition="incube-horizontal" data-slotamount="5" data-masterspeed="700" >
-				<img src="assets/images/tagcloud.png" alt="" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
-			</li>
-		</ul>
-		<div class="tp-bannertimer"></div>
-	</div>
-	</div>
-<!-- /REVOLUTION SLIDER -->]]></Text>
-   </Column>
-  </Row>
- </Section>
- <Section>
-  <Row>
-   <Column span="12">
-    <Text adminlabel="Welcome"><![CDATA[<!-- welcome -->
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="FlatSiteBuilder" menu="default" logo="logo.png" author="" layout="default" keywords="" date="26.09.2017">
+    <Section fullwidth="true">
+        <Row>
+            <Column span="12"><Slider adminlabel=""><Slide src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/tagcloud.png" adminlabel=""/></Slider></Column>
+        </Row>
+    </Section>
+    <Section>
+        <Row>
+            <Column span="12"><Text adminlabel="Welcome"><![CDATA[<!-- welcome -->
 <h1>
 	<strong>Welcome</strong> to {{ site.title }}
 	<span class="subtitle">Good to see you here.</span>
@@ -29,77 +15,57 @@
 <p class="lead">Did you knew that you are able to host your project website on Github-Pages for free?</p>
 <p class="lead">And the FlatSiteBuilder is our solution to create amazing web content.</p>
 <!-- welcome (end) -->
-<div class="divider styleColor"/>]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="4">
-    <Image animation="fadeInLeft" adminlabel="" title="" src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt=""/>
-   </Column>
-   <Column span="8">
-    <Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
+<div class="divider styleColor"/>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="4"><Image src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt="" title="" adminlabel=""/></Column>
+            <Column span="8"><Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
 <p class="lead">The FlatSiteBuilder is a very easy to use content management system and content creation tool running as a desktop application on Linux.</p>
-<p class="lead">It is also planned to release versions for Windows and Mac OS.</p>]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="12">
-    <Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="3">
-    <Text adminlabel="Fatests CMS"><![CDATA[<div class="featured-box nobg border-only">
+<p class="lead">It is also planned to release versions for Windows and Mac OS.</p>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="3"><Text adminlabel="Fatests CMS"><![CDATA[<div class="featured-box nobg border-only">
 	<div class="box-content">
 		<i class="fa fa-thumbs-up"></i>
 		<h4>Fatest CMS</h4>
 		<p>Because of the fact the FlatSiteBuilder only creates flat HTML files it is therefore the fatest CMS available.</p>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3">
-    <Text adminlabel="Easiest to use"><![CDATA[<div class="featured-box nobg border-only">
+</div>]]></Text></Column>
+            <Column span="3"><Text adminlabel="Easiest to use"><![CDATA[<div class="featured-box nobg border-only">
 	<div class="box-content">
 		<i class="fa fa-thumbs-up"></i>
 		<h4>Easiest CMS</h4>
 		<p>Because of the fact that FlatSiteBuilder runs on the desktop it is therefore one of the easiest to use CMS avaiable.</p>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3">
-    <Text adminlabel="Safest CMS"><![CDATA[<div class="featured-box nobg border-only">
+</div>]]></Text></Column>
+            <Column span="3"><Text adminlabel="Safest CMS"><![CDATA[<div class="featured-box nobg border-only">
 	<div class="box-content">
 		<i class="fa fa-thumbs-up"></i>
 		<h4>Safest CMS</h4>
 		<p>Because of the fact that we use github as version control for the content, FlatSiteBuilder is therefore the safest CMS available.</p>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3">
-    <Text adminlabel="Cheapest CMS"><![CDATA[<div class="featured-box nobg border-only">
+</div>]]></Text></Column>
+            <Column span="3"><Text adminlabel="Cheapest CMS"><![CDATA[<div class="featured-box nobg border-only">
 	<div class="box-content">
 		<i class="fa fa-thumbs-up"></i>
 		<h4>Cheapest CMS</h4>
 		<p>Because of the fact that hosting on github pages is free, FlatSiteBuilder is therefore the cheapest CMS available.</p>
 	</div>
-</div>]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="12">
-    <Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>
-<div id="slides" class="margin-top100"/>
-]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="4">
-    <Text adminlabel=""><![CDATA[<h3><strong>Preview</strong></h3>
+</div>]]></Text></Column>
+        </Row>
+    </Section>
+    <Section id="slides">
+        <Row>
+            <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="4"><Text adminlabel="Preview"><![CDATA[<h3><strong>Preview</strong></h3>
 <p class="lead">Here are sample preview pictures of the FlatSiteBuilder in action.</p>
-<p class="lead">FlatSiteBuilder is still under development.</p>]]></Text>
-   </Column>
-   <Column span="8">
-    <Text adminlabel="Slider"><![CDATA[<div class="owl-carousel controlls-over" data-plugin-options='{"items": 1, "singleItem": true, "navigation": false, "pagination": false, "transitionStyle":"fadeUp", "autoPlay": true}'>
+<p class="lead">FlatSiteBuilder is still under development.</p>]]></Text></Column>
+            <Column span="8"><Text adminlabel="Slider"><![CDATA[<div class="owl-carousel controlls-over" data-plugin-options='{"items": 1, "singleItem": true, "navigation": false, "pagination": false, "transitionStyle":"fadeUp", "autoPlay": true}'>
 	<div>
 		<img alt="" class="img-responsive" src="assets/images/Editor.png">
 	</div>
@@ -113,32 +79,18 @@
 		<img alt="" class="img-responsive" src="assets/images/Modules.png">
 	</div>
 </div>
-]]></Text>
-   </Column>
-  </Row>
- </Section>
- <Section id="downloads">
-  <Row>
-   <Column span="12">
-    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
-<h3><strong>Downloads</strong></h3>
-<p class="lead">Here you can download our first pre-release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
-]]></Text>
-   </Column>
-  </Row>
- </Section>
- <Section id="portfolio">
-  <Row>
-   <Column span="12">
-    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+]]></Text></Column>
+        </Row>
+    </Section>
+    <Section id="portfolio">
+        <Row>
+            <Column span="12"><Text adminlabel="Portfolio"><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>Portfolio</strong></h3>
 <p class="lead">Here you can see some pages which has been created using the FlatSiteBuilder.</p>
-]]></Text>
-   </Column>
-  </Row>
-  <Row>
-   <Column span="3">
-    <Text adminlabel="Crowdware"><![CDATA[<div class="item-box">
+]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="3"><Text adminlabel="Crowdware"><![CDATA[<div class="item-box">
 	<figure>
 		<a class="item-hover" href="https://crowdware.github.io/web/">
 			<span class="overlay color2"></span>
@@ -153,10 +105,8 @@
 		<h4>CrowdWare</h4>
 		<small class="styleColor">2017</small>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3">
-    <Text adminlabel="Gradido"><![CDATA[<div class="item-box">
+</div>]]></Text></Column>
+            <Column span="3"><Text adminlabel="Gradido"><![CDATA[<div class="item-box">
 	<figure>
 		<a class="item-hover" href="#">
 			<span class="overlay color2"></span>
@@ -171,10 +121,8 @@
 		<h4>Gradido</h4>
 		<small class="styleColor">2017</small>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3">
-    <Text adminlabel="Masterplan"><![CDATA[<div class="item-box">
+</div>]]></Text></Column>
+            <Column span="3"><Text adminlabel="Masterplan"><![CDATA[<div class="item-box">
 	<figure>
 		<a class="item-hover" href="#">
 			<span class="overlay color2"></span>
@@ -189,35 +137,27 @@
 		<h4>Masterplan</h4>
 		<small class="styleColor">2017</small>
 	</div>
-</div>]]></Text>
-   </Column>
-   <Column span="3"/>
-  </Row>
- </Section>
- <Section id="faq">
-  <Row>
-   <Column span="12">
-    <Text adminlabel="FAQ"><![CDATA[<div class="divider styleColor"></div>
+</div>]]></Text></Column>
+            <Column span="3"></Column>
+        </Row>
+    </Section>
+    <Section id="faq">
+        <Row>
+            <Column span="12"><Text adminlabel="FAQ"><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>FAQ</strong></h3>
-]]></Text>
-   </Column>
-  </Row>
-  <Row cssclass="featured-box-minimal margin-bottom30">
-   <Column span="4">
-    <Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> Where can I host my website?</h4>
-<p>You can host your website with every hosting provider. We recommend to host your website with <a href="https://pages.github.com/">github-pages</a> because it is free of charge.</p>]]></Text>
-   </Column>
-   <Column span="4">
-    <Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> How can I integrate dynamic content?</h4>
-<p>You can use services like <a href="https://disqus.com/">disqus</a> to integrate comments for your blog posts for example. We are also using disqus, see below under comments.</p>]]></Text>
-   </Column>
-   <Column span="4"/>
-  </Row>
- </Section>
- <Section>
-  <Row>
-   <Column span="12">
-    <Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+]]></Text></Column>
+        </Row>
+        <Row cssclass="featured-box-minimal margin-bottom30">
+            <Column span="4"><Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> Where can I host my website?</h4>
+<p>You can host your website with every hosting provider. We recommend to host your website with <a href="https://pages.github.com/">github-pages</a> because it is free of charge.</p>]]></Text></Column>
+            <Column span="4"><Text adminlabel=""><![CDATA[<h4><i class="fa fa-question"></i> How can I integrate dynamic content?</h4>
+<p>You can use services like <a href="https://disqus.com/">disqus</a> to integrate comments for your blog posts for example. We are also using disqus, see below under comments.</p>]]></Text></Column>
+            <Column span="4"></Column>
+        </Row>
+    </Section>
+    <Section>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>Comments</strong></h3>
 
 <div id="disqus_thread"></div>
@@ -240,8 +180,15 @@ s.setAttribute('data-timestamp', +new Date());
 })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                            ]]></Text>
-   </Column>
-  </Row>
- </Section>
+                            ]]></Text></Column>
+        </Row>
+    </Section>
+    <Section id="downloads">
+        <Row>
+            <Column span="12"><Text adminlabel="Download"><![CDATA[<div class="divider styleColor"></div>
+<h3><strong>Downloads</strong></h3>
+<p class="lead">Here you can download our first pre-release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
+]]></Text></Column>
+        </Row>
+    </Section>
 </Content>

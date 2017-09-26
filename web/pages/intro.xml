@@ -1,8 +1,8 @@
-<Content>
- <Section>
-  <Row>
-   <Column span="12">
-    <Text adminlabel=""><![CDATA[<h3>Introduction</h3>
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="intro" menu="" logo="" author="" layout="default" keywords="" date="26.09.2017">
+    <Section>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<h3>Introduction</h3>
 <p>This version of FlatSiteBuilder is a preview to show possibilities.<br>
 It is not meant to be a ready made product.<br>
 There are still some features not implemented yet.</p>
@@ -15,8 +15,7 @@ Have a look at ~/FlatSiteBuilder/ </p>
 <p>Also have a look at our <a href="https://github.com/Artanidos/FlatSiteBuilder/wiki">wiki</a>.</p>
 <h3>Feature Requests</h3>
 <p>If you have any ideas or feature requests let us know. Just send an email to <a href="mailto:artanidos@gmail.com">artanidos@gmail.com</a></p>
-]]></Text>
-   </Column>
-  </Row>
- </Section>
+]]></Text></Column>
+        </Row>
+    </Section>
 </Content>
