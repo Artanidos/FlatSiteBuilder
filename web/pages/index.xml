@@ -15,16 +15,18 @@
 <p class="lead">Did you knew that you are able to host your project website on Github-Pages for free?</p>
 <p class="lead">And the FlatSiteBuilder is our solution to create amazing web content.</p>
 <!-- welcome (end) -->
-<div class="divider styleColor"/>]]></Text></Column>
-        </Row>
-        <Row>
-            <Column span="4"><Image src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt="" title="" adminlabel=""/></Column>
-            <Column span="8"><Text adminlabel=""><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
-<p class="lead">The FlatSiteBuilder is a very easy to use content management system and content creation tool running as a desktop application on Linux.</p>
-<p class="lead">It is also planned to release versions for Windows and Mac OS.</p>]]></Text></Column>
+]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text></Column>
+        </Row>
+    </Section>
+    <Section>
+        <Row>
+            <Column span="4"><Image src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt="" title="" adminlabel=""/></Column>
+            <Column span="8"><Text adminlabel="FlatSiteBuilder"><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
+<p class="lead">The FlatSiteBuilder is a very easy to use content management system and content creation tool running as a desktop application on Linux.</p>
+<p class="lead">It is also planned to release versions for Windows and Mac OS.</p>]]></Text></Column>
         </Row>
         <Row>
             <Column span="3"><Text adminlabel="Fatests CMS"><![CDATA[<div class="featured-box nobg border-only">
@@ -56,11 +58,11 @@
 	</div>
 </div>]]></Text></Column>
         </Row>
-    </Section>
-    <Section id="slides">
         <Row>
             <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>]]></Text></Column>
         </Row>
+    </Section>
+    <Section id="slides">
         <Row>
             <Column span="4"><Text adminlabel="Preview"><![CDATA[<h3><strong>Preview</strong></h3>
 <p class="lead">Here are sample preview pictures of the FlatSiteBuilder in action.</p>
@@ -157,7 +159,7 @@
     </Section>
     <Section>
         <Row>
-            <Column span="12"><Text adminlabel=""><![CDATA[<div class="divider styleColor"></div>
+            <Column span="12"><Text adminlabel="Comments"><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>Comments</strong></h3>
 
 <div id="disqus_thread"></div>
@@ -187,7 +189,7 @@ s.setAttribute('data-timestamp', +new Date());
         <Row>
             <Column span="12"><Text adminlabel="Download"><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>Downloads</strong></h3>
-<p class="lead">Here you can download our first pre-release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
+<p class="lead">Here you can download a beta release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
 ]]></Text></Column>
         </Row>
     </Section>

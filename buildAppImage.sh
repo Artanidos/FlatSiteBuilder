@@ -23,7 +23,7 @@ cp --parents -r testsite/* AppImage
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/SourceCode/FlatSiteBuilder/AppImage/lib
 /home/olaf/linuxdeployqt/linuxdeployqt-continuous-x86_64.AppImage AppImage/FlatSiteBuilder -appimage
-mv Application-x86_64.AppImage FlatSiteBuilder-Linux-x86_64-1.4.2.beta.AppImage
+mv FlatSiteBuilder-x86_64.AppImage FlatSiteBuilder-Linux-x86_64-1.4.2.beta.AppImage
 
 # Clean up
 rm -r AppImage/lib/*
