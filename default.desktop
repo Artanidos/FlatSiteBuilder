@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=FlatSiteBuilder
+Exec=usr/bin/FlatSiteBuilder
+Icon=default
+Categories=Graphics;
+Comment=FlatSiteBuilder
+Terminal=true
