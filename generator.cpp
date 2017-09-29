@@ -43,8 +43,9 @@ Generator::Generator()
  * Parses all *.xml files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(Site *site, Content *contentToBuild)
+void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuild)
 {
+    m_win = win;
     m_site = site;
 
     if(contentToBuild == 0)
@@ -129,6 +130,7 @@ void Generator::generateSite(Site *site, Content *contentToBuild)
     ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
     if(tei)
     {
+        tei->setWindow(m_win);
         tei->setSourcePath(m_site->sourcePath());
         themevars = tei->themeVars();
     }

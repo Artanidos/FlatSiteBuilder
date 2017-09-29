@@ -492,7 +492,7 @@ void ContentEditor::save()
 
 void ContentEditor::editChanged(QString text)
 {
-    QUndoCommand *changeCommand = new ChangeContentCommand(this, text);
+    QUndoCommand *changeCommand = new ChangeContentCommand(m_win, this, text);
     m_undoStack->push(changeCommand);
 }
 

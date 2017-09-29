@@ -214,7 +214,7 @@ void TestGenerator::generateSite()
     menu->addMenuitem(item2);
     site->addMenu(menu);
     site->addPage(page);
-    g.generateSite(site);
+    g.generateSite(NULL, site);
 
     QStringList list;
     list << "<html>\n";

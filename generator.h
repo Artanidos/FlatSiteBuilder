@@ -36,7 +36,7 @@ class Generator : public QObject
 public:
     Generator();
 
-    void generateSite(Site *site, Content *content = 0);
+    void generateSite(MainWindow *m_win, Site *site, Content *content = 0);
 
     static QString sitesPath() {return QDir::homePath() + "/FlatSiteBuilder/sites";}
     static QString themesPath() {return QDir::homePath() + "/FlatSiteBuilder/themes";}
@@ -64,6 +64,7 @@ private:
     };
 
     Site *m_site;
+    MainWindow *m_win;
     QVariantMap pluginvars;
     QVariantMap pagevars;
     QVariantMap sitevars;

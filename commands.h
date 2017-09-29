@@ -32,7 +32,7 @@ class Site;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
-    ChangeContentCommand(ContentEditor *ce, QString text, QUndoCommand *parent = 0);
+    ChangeContentCommand(MainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent = 0);
     void undo() override;
     void redo() override;
 
@@ -40,6 +40,7 @@ private:
     ContentEditor *m_contentEditor;
     QString m_tempFilename;
     QString m_redoFilename;
+    MainWindow *m_win;
 };
 
 class DeleteContentCommand : public QUndoCommand

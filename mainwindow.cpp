@@ -82,7 +82,7 @@ MainWindow::MainWindow()
         if(!site.exists())
         {
             Generator gen;
-            gen.generateSite(m_site);
+            gen.generateSite(this, m_site);
         }
     }
     m_dashboardExpander->setExpanded(true);
@@ -641,7 +641,7 @@ void MainWindow::buildSite()
     else
     {
         Generator gen;
-        gen.generateSite(m_site);
+        gen.generateSite(this, m_site);
         statusBar()->showMessage(m_site->title() + " has been generated");
     }
 }
