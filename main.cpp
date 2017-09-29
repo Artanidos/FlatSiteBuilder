@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
     p.setColor(QPalette::Link, QColor("#bbb"));
     a.setPalette(p);
 
+    a.setWindowIcon(QIcon(QLatin1String(":/images/icon.svg")));
+
     MainWindow w;
     w.show();
 

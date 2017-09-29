@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=FlatSiteBuilder
-Exec=AppRun %F
-Icon=default
-Categories=Graphics;
-Comment=FlatSiteBuilder
-Terminal=true

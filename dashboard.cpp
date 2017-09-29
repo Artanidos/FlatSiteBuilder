@@ -42,6 +42,7 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     fnt.setPointSize(20);
     fnt.setBold(true);
     title->setFont(fnt);
+
     m_loadButton = new FlatButton(":/images/load_normal.png", ":/images/load_hover.png", ":/images/load_pressed.png");
     m_loadButton->setToolTip("Load an existing website project");
 
