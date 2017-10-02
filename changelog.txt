@@ -1,4 +1,10 @@
+1.4.3
+-----
+- scroll area for theme chooser
+- icon for taskbar
+
 1.4.2
+-----
 - Install now overrides changed plugins and themes
 - Standard font changed to "Sans Serif, 10"
 - Bugfix: Site settings publisher

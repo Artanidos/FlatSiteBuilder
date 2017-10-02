@@ -72,6 +72,7 @@ private:
     Site *m_site;
     MainWindow *m_win;
     QString m_themename;
+    QGridLayout *m_themeLayout;
 };
 
 #endif // THEMECHOOSER_H

@@ -1,8 +1,6 @@
 Features
 --------
-- scroll area for theme chooser
-- save content method -> move to Site
-- load content method -> move from generator to Site
+
 
 Postponend
 ----------
@@ -17,8 +15,6 @@ Postponend
 - widget system ala wordpress
 - test and approve gitting (use oAuth with gitlib to be mentioned by WorksWithGithub)
 - library to save pages, sections and rows as templates
-- plugin for publish
 - image chooser instead of file dialog
-- theme vars (theme_accent)
-
+- sample for dynamic content a la DISQUS incl. Plugin
 

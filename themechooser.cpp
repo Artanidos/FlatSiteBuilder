@@ -32,6 +32,7 @@
 #include <QPaintEngine>
 #include <QDesktopServices>
 #include <QPushButton>
+#include <QScrollArea>
 
 ThemeChooser::ThemeChooser(MainWindow *win, Site *site)
 {
@@ -40,13 +41,17 @@ ThemeChooser::ThemeChooser(MainWindow *win, Site *site)
     m_themename = site->theme();
     m_titleLabel->setText("Theme Chooser");
     m_filename = site->sourcePath() + "/" + site->filename();
-
-    QVBoxLayout *vbox = new QVBoxLayout;
-    vbox->addStretch();
+    m_themeLayout = new QGridLayout;
+    QWidget *scrollContent = new QWidget;
+    scrollContent->setLayout(m_themeLayout);
+    QScrollArea *scroll = new QScrollArea;
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setWidget(scrollContent);
+    scroll->setWidgetResizable(true);
+    m_layout->addWidget(scroll, 1, 0, 1, 3);
 
     load();
-
-    m_layout->addLayout(vbox, m_layout->rowCount(), 0);
 }
 
 void ThemeChooser::themeChanged(QString themename)
@@ -92,38 +97,35 @@ void ThemeChooser::load()
         m_themes.append(theme);
     }
 
-    // delete the previous themes
-    for(int row = 1; row < m_layout->rowCount(); row++)
+    // delete the previous theme widgets
+    for(int row = 0; row < m_themeLayout->rowCount(); row++)
     {
-        for(int col = 0; col < m_layout->columnCount(); col++)
+        for(int col = 0; col < m_themeLayout->columnCount(); col++)
         {
-            QLayoutItem *item = m_layout->itemAtPosition(row, col);
+            QLayoutItem *item = m_themeLayout->itemAtPosition(row, col);
             if(item)
             {
-                ThemeWidget *tw = dynamic_cast<ThemeWidget*>(item->widget());
-                if(tw)
-                {
-                    m_layout->removeWidget(tw);
-                    delete tw;
-                }
+                QWidget *w = item->widget();
+                m_themeLayout->removeWidget(w);
+                delete w;
             }
         }
     }
 
     // load the actual themes
-    int row = 1;
+    int row = 0;
     int col = 1;
     foreach(Theme *theme, m_themes)
     {
         ThemeWidget *tw = new ThemeWidget(theme);
         if(theme->aktiv)
         {
-            m_layout->addWidget(tw, 1, 0);
+            m_themeLayout->addWidget(tw, 0, 0);
         }
         else
         {
             connect(tw, SIGNAL(themeChanged(QString)), this, SLOT(themeChanged(QString)));
-            m_layout->addWidget(tw, row, col);
+            m_themeLayout->addWidget(tw, row, col);
             col++;
             if(col > 1)
             {
@@ -132,6 +134,9 @@ void ThemeChooser::load()
             }
         }
     }
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addStretch();
+    m_themeLayout->addLayout(vbox, row + 1, 0);
     m_win->statusBar()->showMessage("Themes have been loaded");
 }
 

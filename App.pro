@@ -248,7 +248,10 @@ DISTFILES += \
     themes/default/sample.html \
     themes/himu/includes/nav.html \
     themes/himu/layouts/default.html \
-    themes/himu/sample.html
+    themes/himu/sample.html \
+    default.desktop \
+    default.svg \
+    AppRun
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -3,6 +3,6 @@ Type=Application
 Name=FlatSiteBuilder
 Exec=usr/bin/FlatSiteBuilder
 Icon=default
-Categories=Graphics;
+Categories=Web;
 Comment=FlatSiteBuilder
 Terminal=true
