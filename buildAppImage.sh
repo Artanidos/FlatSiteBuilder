@@ -36,4 +36,3 @@ mv FlatSiteBuilder-x86_64.AppImage FlatSiteBuilder-Linux-x86_64-1.4.3.AppImage
 
 # Clean up
 rm -r AppImage/*
-rmdir AppImage
