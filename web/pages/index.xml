@@ -158,6 +158,14 @@ Because all of the pages are beeing build on the desktop it is the fastest conte
             <Column span="4"></Column>
         </Row>
     </Section>
+    <Section id="downloads">
+        <Row>
+            <Column span="12"><Text adminlabel="Download"><![CDATA[<div class="divider styleColor"></div> 
+<h3><strong>Downloads</strong></h3> 
+<p class="lead">Here you can download our latest release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
+]]></Text></Column>
+        </Row>
+    </Section>
     <Section>
         <Row>
             <Column span="12"><Text adminlabel="Comments"><![CDATA[<div class="divider styleColor"></div>
@@ -184,14 +192,6 @@ s.setAttribute('data-timestamp', +new Date());
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
                             ]]></Text></Column>
-        </Row>
-    </Section>
-    <Section id="downloads">
-        <Row>
-            <Column span="12"><Text adminlabel="Download"><![CDATA[<div class="divider styleColor"></div>
-<h3><strong>Downloads</strong></h3>
-<p class="lead">Here you can download a beta release. <a href="https://github.com/Artanidos/FlatSiteBuilder/releases"><img src="assets/images/download.png"></a></p>
-]]></Text></Column>
         </Row>
     </Section>
 </Content>

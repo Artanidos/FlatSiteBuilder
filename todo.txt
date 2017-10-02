@@ -1,6 +1,7 @@
 Features
 --------
-
+- edit footer content
+- edit google analytics
 
 Postponend
 ----------
