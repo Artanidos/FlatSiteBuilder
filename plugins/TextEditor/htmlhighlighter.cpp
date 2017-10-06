@@ -20,7 +20,7 @@
 
 #include "htmlhighlighter.h"
 
-HtmlHighlighter::HtmlHighlighter(QTextDocument *document)
+XmlHighlighter::XmlHighlighter(QTextDocument *document)
     : QSyntaxHighlighter(document)
 {
     QTextCharFormat entityFormat;
@@ -43,14 +43,14 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *document)
     setFormatFor(Code, codeFormat);
 }
 
-void HtmlHighlighter::setFormatFor(Construct construct, const QTextCharFormat &format)
+void XmlHighlighter::setFormatFor(Construct construct, const QTextCharFormat &format)
 {
     m_formats[construct] = format;
     rehighlight();
 }
 
 
-void HtmlHighlighter::highlightBlock(const QString &text)
+void XmlHighlighter::highlightBlock(const QString &text)
 {
     int state = previousBlockState();
     int len = text.length();

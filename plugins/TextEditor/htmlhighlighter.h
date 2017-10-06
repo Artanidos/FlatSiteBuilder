@@ -28,7 +28,7 @@ QT_BEGIN_NAMESPACE
 class QTextDocument;
 QT_END_NAMESPACE
 
-class HtmlHighlighter : public QSyntaxHighlighter
+class XmlHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
@@ -42,7 +42,7 @@ public:
         LastConstruct = Comment
     };
 
-    HtmlHighlighter(QTextDocument *document);
+    XmlHighlighter(QTextDocument *document);
 
     void setFormatFor(Construct construct, const QTextCharFormat &format);
     QTextCharFormat formatFor(Construct construct) const

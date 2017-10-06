@@ -50,7 +50,7 @@ TextEditor::TextEditor()
     QFontMetrics metrics(font);
     m_html->setTabStopWidth(4 * metrics.width(' '));
 
-    new HtmlHighlighter(m_html->document());
+    new XmlHighlighter(m_html->document());
 
     m_adminlabel = new QLineEdit();
     m_adminlabel->setMaximumWidth(200);

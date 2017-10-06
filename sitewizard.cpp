@@ -78,7 +78,7 @@ void SiteWizard::accept()
     file.close();
 
     QFile menu(path + "/Menus.xml");
-    if(!file.open(QFile::WriteOnly))
+    if(!menu.open(QFile::WriteOnly))
     {
         qDebug() << "Unable to open file " + path + "/Menus.xml";
         return;

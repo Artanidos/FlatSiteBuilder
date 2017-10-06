@@ -22,8 +22,6 @@ QT += widgets
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app
-#target.path += /bin
-#INSTALLS += target
 
 SOURCES += main.cpp\
     mainwindow.cpp \

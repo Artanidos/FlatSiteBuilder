@@ -1,3 +1,7 @@
+1.4.4
+-----
+- Bugfix: create new site
+
 1.4.3
 -----
 - scroll area for theme chooser
