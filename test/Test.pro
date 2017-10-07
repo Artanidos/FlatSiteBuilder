@@ -29,7 +29,9 @@ SOURCES = testgenerator.cpp \
     ../menuitem.cpp
 DEFINES += TEST
 DISTFILES += \
-    pages/test.xml
+    pages/test.xml \
+    themes/testSiteTheme/includes/nav.html \
+    themes/testSiteTheme/layouts/testPageLayout.html
 
 HEADERS += \
     ../generator.h \

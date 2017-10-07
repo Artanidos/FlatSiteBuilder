@@ -381,6 +381,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             ifvars->m_inIf = false;
                             ifvars->m_inElse = true;
                             pos = content.indexOf("%}", pos) + 2;
+                            if(pos < len && content.at(pos) == "\n")
+                                pos++;
                             break;
                         }
                         else if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
@@ -399,6 +401,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                             ifvars->m_inElse = false;
                             ifvars->m_isTrue = false;
                             pos = content.indexOf("%}", pos) + 2;
+                            if(pos < len && content.at(pos) == "\n")
+                                pos++;
                             if(!stack.isEmpty())
                                 ifvars = stack.pop();
                             break;
@@ -463,6 +467,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                     {
                         pos += 2;
                         state = NormalState;
+                        if(pos < len && content.at(pos) == "\n")
+                            pos++;
                         break;
                     }
                     else
@@ -488,6 +494,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                     {
                         if(ifvars->m_isTrue)
                         {
+                            rc += ifvars->m_ifContent;
+                            ifvars->m_ifContent = "";
                             stack.push(ifvars);
                             ifvars = new IfVars;
                         }
@@ -499,6 +507,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                                 if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
                                 {
                                     pos = content.indexOf("%}", pos) + 2;
+                                    if(pos < len && content.at(pos) == "\n")
+                                        pos++;
                                     break;
                                 }
                                 else
@@ -517,6 +527,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                                 if(nextTokens(content.mid(pos), QStringList() << "{%" << "endif" << "%}"))
                                 {
                                     pos = content.indexOf("%}", pos) + 2;
+                                    if(pos < len && content.at(pos) == "\n")
+                                        pos++;
                                     break;
                                 }
                                 else
@@ -526,6 +538,8 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                         }
                         else
                         {
+                            rc += ifvars->m_elseContent;
+                            ifvars->m_elseContent = "";
                             stack.push(ifvars);
                             ifvars = new IfVars;
                         }
@@ -565,7 +579,7 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                     ifvars->m_ifContent = "";
                     ifvars->m_elseContent = "";
 
-                    if(content.at(pos) == "\n")
+                    if(pos < len && content.at(pos) == "\n")
                         pos++;
                 }
                 break;

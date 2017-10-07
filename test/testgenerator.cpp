@@ -144,6 +144,9 @@ void TestGenerator::translateContent_data()
     QTest::newRow("if nested c") << "{% if site.title == \"Sitetitle\" %}{% if page.title == site.title %}A{% else %}B{% endif %}{% else %}C{% endif %}" << "C";
     QTest::newRow("if nested d") << "{% if site.title == \"Sitetitle\" %}{% if page.title == site.title %}A{% else %}B{%  endif %}{% else %}C{% endif %}" << "C";
     QTest::newRow("if nested e") << "{% if site.title == \"SiteTitle\" %}A{% else %}{% if page.title == site.title %}B{% else %}C{%  endif %}{% endif %}D" << "AD";
+    QTest::newRow("if nested f") << "{% if true == false %}A{% else %}B{% if true == true %}C{% else %}D{% endif %}E{% endif %}F" << "BCEF";
+    QTest::newRow("if nested g") << "{% if true == true %}A{% if true == true %}B{% endif %}C{% endif %}D" << "ABCD";
+    QTest::newRow("if nested h") << "{% if true == true %}A{% if true == true %}B{% else %}C{% endif %}D{% endif %}E" << "ABDE";
 }
 
 void TestGenerator::translateContent()

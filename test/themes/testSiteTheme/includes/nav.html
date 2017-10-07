@@ -1,5 +1,20 @@
 <ul>
 {% for item in site.menus[page.menu] %}
+{% if item.hasItems == "true" %}
+<li class="dropdown">
+<a class="dropdown-toggle" href="#">
+<img src="{{ item.icon }}" width="16" height="11" alt="{{ item.title }}" /> {{ item.title }} <i class="fa fa-angle-down"></i>
+</a>
+<ul class="dropdown-menu">
+{% for subitem in item.items %}
+<li>
+<a href="{{ subitem.url }}"><img src="{{ subitem.icon }}" width="16" height="11" alt="{{ subitem.title }}" /> {{ subitem.title }}</a>
+</li>
+{% endfor %}
+</ul>
+</li>
+{% else %}
 <li{% if item.url == page.url %} class="active"{% endif %}><a href="{{ item.url }}">{{ item.title }}</a></li>
+{% endif %}
 {% endfor %}
 </ul>
