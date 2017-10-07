@@ -38,7 +38,7 @@ void TestGenerator::initTestCase()
 void TestGenerator::cleanupTestCase()
 {
     QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
-    //dir.removeRecursively();
+    dir.removeRecursively();
 }
 
 void TestGenerator::nextTokens_data()
