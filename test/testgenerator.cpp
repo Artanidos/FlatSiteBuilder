@@ -38,7 +38,7 @@ void TestGenerator::initTestCase()
 void TestGenerator::cleanupTestCase()
 {
     QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
-    dir.removeRecursively();
+    //dir.removeRecursively();
 }
 
 void TestGenerator::nextTokens_data()
@@ -214,6 +214,10 @@ void TestGenerator::generateSite()
     MenuItem *item2 = new MenuItem();
     item2->setTitle("testMenuItemTitle2");
     item2->setUrl("testMenuItemUrl2");
+    MenuItem *item3 = new MenuItem();
+    item3->setTitle("testMenuItemTitle3");
+    item3->setUrl("testMenuItemUrl3");
+    item2->addMenuitem(item3);
     menu->addMenuitem(item2);
     site->addMenu(menu);
     site->addPage(page);
@@ -230,7 +234,16 @@ void TestGenerator::generateSite()
     list << "<body>\n";
     list << "<ul>\n";
     list << "<li class=\"active\"><a href=\"test.html\">testMenuItemTitle</a></li>\n";
-    list << "<li><a href=\"testMenuItemUrl2\">testMenuItemTitle2</a></li>\n";
+    list << "<li class=\"dropdown\">\n";
+    list << "<a class=\"dropdown-toggle\" href=\"#\">\n";
+    list << "<img src=\"\" width=\"16\" height=\"11\" alt=\"testMenuItemTitle2\" /> testMenuItemTitle2 <i class=\"fa fa-angle-down\"></i>\n";
+    list << "</a>\n";
+    list << "<ul class=\"dropdown-menu\">\n";
+    list << "<li>\n";
+    list << "<a href=\"testMenuItemUrl3\"><img src=\"\" width=\"16\" height=\"11\" alt=\"testMenuItemTitle3\" /> testMenuItemTitle3</a>\n";
+    list << "</li>\n";
+    list << "</ul>\n";
+    list << "</li>\n";
     list << "</ul>\n";
     list << "<section class=\"container\">\n";
     list << "<div class=\"row\">\n";

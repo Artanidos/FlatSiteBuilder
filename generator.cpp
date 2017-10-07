@@ -467,8 +467,6 @@ QString Generator::translateContent(QString content, QVariantMap vars)
                     {
                         pos += 2;
                         state = NormalState;
-                        if(pos < len && content.at(pos) == "\n")
-                            pos++;
                         break;
                     }
                     else
