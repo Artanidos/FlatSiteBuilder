@@ -23,7 +23,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QFileDialog>
 #include <QComboBox>
 #include <QXmlStreamWriter>
 #include <QTest>

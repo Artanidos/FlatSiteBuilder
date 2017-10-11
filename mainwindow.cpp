@@ -160,9 +160,9 @@ void MainWindow::install()
         m_defaultPath = installDir.absolutePath() + "/sources/testsite";
     }
 
-    installFiles(QCoreApplication::applicationDirPath() + "/plugins", installDir.absolutePath() + "/plugins", true, false);
-    installFiles(QCoreApplication::applicationDirPath() + "/testsite", installDir.absolutePath() + "/sources/testsite", false);
-    installFiles(QCoreApplication::applicationDirPath() + "/themes", installDir.absolutePath() + "/themes");
+    installFiles(QCoreApplication::applicationDirPath() + "/../../plugins", installDir.absolutePath() + "/plugins", true, false);
+    installFiles(QCoreApplication::applicationDirPath() + "/../../testsite", installDir.absolutePath() + "/sources/testsite", false);
+    installFiles(QCoreApplication::applicationDirPath() + "/../../themes", installDir.absolutePath() + "/themes");
 }
 
 void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly, bool recursive)

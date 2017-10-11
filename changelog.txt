@@ -1,3 +1,7 @@
+1.4.6
+-----
+- Bugfix: install has been fixed (wrong sourcedir used)
+
 1.4.5
 -----
 - Bugfix: generate nested if statements
