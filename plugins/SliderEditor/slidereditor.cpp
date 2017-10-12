@@ -319,6 +319,7 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
             QString url = source.mid(source.indexOf("assets/images/"));
             html += "<li data-transition=\"slideleft\" data-masterspeed=\"700\">\n";
             html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
+            html += "<!-- layer -->\n" + xml->readElementText() + "\n<!-- layer end -->\n";
             html += "</li>\n";
             xml->readNext();
         }
