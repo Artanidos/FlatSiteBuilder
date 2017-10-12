@@ -2,6 +2,9 @@ Features
 --------
 - edit footer content
 - edit google analytics
+- create should not override existing sources
+- create does not list all themes
+- warning if expression does not end like: "{% else", atm the content will be cutted if included
 
 Postponend
 ----------

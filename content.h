@@ -40,9 +40,6 @@ public:
     QString menu() {return m_menu;}
     void setMenu(QString menu) {m_menu = menu;}
 
-    QString logo() {return m_logo;}
-    void setLogo(QString logo) {m_logo = logo;}
-
     QString source() {return m_source;}
     void setSource(QString source) {m_source = source;}
     QString url()
@@ -67,6 +64,8 @@ public:
     void setExcerpt(QString excerpt) {m_excerpt = excerpt;}
 
     ContentType contentType() {return m_type;}
+    QHash<QString,QString> additionalAttributes() {return m_additionalAttributes;}
+    void addAttribute(QString attName, QString value) {m_additionalAttributes.insert(attName, value);}
 
 private:
     QString m_title;
@@ -75,10 +74,10 @@ private:
     QString m_author;
     QString m_excerpt;
     QString m_menu;
-    QString m_logo;
     QString m_keywords;
     ContentType m_type;
     QDate m_date;
+    QHash<QString,QString> m_additionalAttributes;
 };
 
 #endif // CONTENT_H

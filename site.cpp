@@ -87,14 +87,8 @@ void Site::loadPages()
             if(stream.name() == "Content")
             {
                 Content *content = new Content(ContentType::Page);
-                content->setTitle(stream.attributes().value("title").toString());
-                content->setAuthor(stream.attributes().value("author").toString());
-                content->setLayout(stream.attributes().value("layout").toString());
-                content->setLogo(stream.attributes().value("logo").toString());
-                content->setKeywords(stream.attributes().value("keywords").toString());
-                content->setMenu(stream.attributes().value("menu").toString());
-                content->setDate(QDate::fromString(stream.attributes().value("date").toString(), "dd.MM.yyyy"));
                 content->setSource(filename);
+                loadContent(content, &stream);
                 addPage(content);
             }
         }
@@ -123,21 +117,39 @@ void Site::loadPosts()
             if(stream.name() == "Content")
             {
                 Content *content = new Content(ContentType::Post);
-                content->setTitle(stream.attributes().value("title").toString());
-                content->setAuthor(stream.attributes().value("author").toString());
-                content->setLayout(stream.attributes().value("layout").toString());
-                content->setLogo(stream.attributes().value("logo").toString());
-                content->setExcerpt(stream.attributes().value("excerpt").toString());
-                content->setKeywords(stream.attributes().value("keywords").toString());
-                content->setMenu(stream.attributes().value("menu").toString());
-                content->setDate(QDate::fromString(stream.attributes().value("date").toString(), "dd.MM.yyyy"));
                 content->setSource(filename);
+                loadContent(content, &stream);
                 addPost(content);
             }
         }
         postfile.close();
     }
     m_win->statusBar()->showMessage("Posts have been loaded");
+}
+
+void Site::loadContent(Content *content, QXmlStreamReader *stream)
+{
+    foreach(QXmlStreamAttribute att, stream->attributes())
+    {
+        QString attName = att.name().toString();
+        QString value = att.value().toString();
+        if(attName == "excerpt")
+            content->setExcerpt(value);
+        else if(attName == "title")
+            content->setTitle(value);
+        else if(attName == "menu")
+            content->setMenu(value);
+        else if(attName == "author")
+            content->setAuthor(value);
+        else if(attName == "layout")
+            content->setLayout(value);
+        else if(attName == "keywords")
+            content->setKeywords(value);
+        else if(attName == "date")
+            content->setDate(QDate::fromString(value, "dd.MM.yyyy"));
+        else
+            content->addAttribute(attName, value);
+    }
 }
 
 void Site::loadMenus()

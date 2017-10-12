@@ -38,7 +38,7 @@ void TestGenerator::initTestCase()
 void TestGenerator::cleanupTestCase()
 {
     QDir dir("/home/olaf/SourceCode/FlatSiteBuilder/test/sites");
-    dir.removeRecursively();
+    //dir.removeRecursively();
 }
 
 void TestGenerator::nextTokens_data()
@@ -203,6 +203,7 @@ void TestGenerator::generateSite()
     page->setSource("test.xml");
     page->setTitle("testPageTitle");
     page->setLayout("testPageLayout");
+    page->addAttribute("language", "de");
     page->setMenu("testMenu");
 
     Menu *menu = new Menu();
@@ -245,6 +246,10 @@ void TestGenerator::generateSite()
     list << "</ul>\n";
     list << "</li>\n";
     list << "</ul>\n";
+    list << "<!-- language = \"de\" -->\n";
+    list << "<!-- german -->\n";
+    list << "<!-- german -->\n";
+    list << "<!-- end of language -->\n";
     list << "<section class=\"container\">\n";
     list << "<div class=\"row\">\n";
     list << "<div class=\"col-md-12\">\n";

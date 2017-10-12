@@ -26,6 +26,7 @@
 #include "menu.h"
 
 class MainWindow;
+class QXmlStreamReader;
 class Site : public QObject
 {
     Q_OBJECT
@@ -80,6 +81,7 @@ public:
     void save();
     void saveMenus();
     QString createTemporaryContent(ContentType type);
+    void loadContent(Content *content, QXmlStreamReader *stream);
 
 private:
     MainWindow *m_win;

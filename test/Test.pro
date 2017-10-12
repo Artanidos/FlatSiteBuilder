@@ -31,7 +31,9 @@ DEFINES += TEST
 DISTFILES += \
     pages/test.xml \
     themes/testSiteTheme/includes/nav.html \
-    themes/testSiteTheme/layouts/testPageLayout.html
+    themes/testSiteTheme/layouts/testPageLayout.html \
+    includes/de.html \
+    includes/en.html
 
 HEADERS += \
     ../generator.h \

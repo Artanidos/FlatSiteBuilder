@@ -68,12 +68,15 @@ void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuil
         cm["author"] = content->author();
         cm["date"] = content->date();
         cm["layout"] = content->layout();
-        cm["logo"] = content->logo();
         cm["menu"] = content->menu();
         cm["source"] = content->source();
         cm["title"] = content->title();
         cm["url"] = content->url();
         cm["keywords"] = content->keywords();
+        foreach(QString attName, content->additionalAttributes().keys())
+        {
+            cm.insert(attName, content->additionalAttributes().value(attName));
+        }
         pages.append(cm);
     }
     foreach (Content *content, m_site->posts())
@@ -83,12 +86,15 @@ void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuil
         cm["date"] = content->date();
         cm["excerpt"] = content->excerpt();
         cm["layout"] = content->layout();
-        cm["logo"] = content->logo();
         cm["menu"] = content->menu();
         cm["source"] = content->source();
         cm["title"] = content->title();
         cm["url"] = content->url();
         cm["keywords"] = content->keywords();
+        foreach(QString attName, content->additionalAttributes().keys())
+        {
+            cm.insert(attName, content->additionalAttributes().value(attName));
+        }
         posts.append(cm);
     }
     QVariantMap menus;
@@ -172,11 +178,9 @@ void Generator::generateContent(Content *content)
     if(content->contentType() == ContentType::Page)
     {
         subdir = "pages";
-        //cm = sitevars["pages"].toList().at(sitevarindex).toMap();
         cm["author"] = content->author();
         cm["date"] = content->date();
         cm["layout"] = content->layout();
-        cm["logo"] = content->logo();
         cm["menu"] = content->menu();
         cm["source"] = content->source();
         cm["title"] = content->title();
@@ -186,19 +190,20 @@ void Generator::generateContent(Content *content)
     else
     {
         subdir = "posts";
-        //cm = sitevars["posts"].toList().at(sitevarindex).toMap();
         cm["author"] = content->author();
         cm["date"] = content->date();
         cm["excerpt"] = content->excerpt();
         cm["layout"] = content->layout();
-        cm["logo"] = content->logo();
         cm["menu"] = content->menu();
         cm["source"] = content->source();
         cm["title"] = content->title();
         cm["url"] = content->url();
         cm["keywords"] = content->keywords();
     }
-
+    foreach(QString attName, content->additionalAttributes().keys())
+    {
+        cm.insert(attName, content->additionalAttributes().value(attName));
+    }
     QFile file(m_site->sourcePath() + "/" + subdir + "/" + content->source());
     if (file.open(QIODevice::ReadOnly))
     {
@@ -279,17 +284,22 @@ QString Generator::translateTemplate(QString layout, Mode mode)
     {
         QString content = QString::fromUtf8(file.readAll());
         file.close();
+
         int pos = content.indexOf("{% include ");
         int end = 0;
         if(pos >= 0)
         {
             while(pos >= 0)
             {
-                rc += content.mid(end, pos - end);
+                QString rest = content.mid(end, pos - end);
+                rc += rest;
                 end = content.indexOf("%}", pos + 11) + 2;
                 QString include = content.mid(pos + 11, end - pos - 13).trimmed();
-                rc += translateTemplate(include, Include);
+                QString trans = translateTemplate(include, Include);
+                rc += trans;
                 pos = content.indexOf("{% include ", end + 1);
+                if(content.at(end) == "\n")
+                    end++;
             }
             if(content.at(end) == "\n")
                 end++;

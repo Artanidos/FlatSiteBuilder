@@ -1,3 +1,7 @@
+1.4.7
+-----
+- Added the ability to add page variables in xml files for example '<Content language="en">'
+
 1.4.6
 -----
 - Bugfix: install has been fixed (wrong sourcedir used)

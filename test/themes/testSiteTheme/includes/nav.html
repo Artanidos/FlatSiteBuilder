@@ -18,3 +18,15 @@
 {% endif %}
 {% endfor %}
 </ul>
+<!-- language = "{{ page.language }}" -->
+{% if page.language == "en" %}
+{% include en.html %}
+{% else %}
+{% include de.html %}
+{% endif %}
+{% if page.language == "de" %}
+{% include de.html %}
+{% else %}
+{% include en.html %}
+{% endif %}
+<!-- end of language -->

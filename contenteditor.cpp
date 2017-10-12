@@ -352,18 +352,9 @@ void ContentEditor::load()
     {
         if(stream.name() == "Content")
         {
+            m_site->loadContent(m_content, &stream);
             if(m_content->contentType() == ContentType::Post)
-            {
-                m_content->setExcerpt(stream.attributes().value("excerpt").toString());
                 m_excerpt->setText(m_content->excerpt());
-            }
-            m_content->setTitle(stream.attributes().value("title").toString());
-            m_content->setMenu(stream.attributes().value("menu").toString());
-            m_content->setLogo(stream.attributes().value("logo").toString());
-            m_content->setAuthor(stream.attributes().value("author").toString());
-            m_content->setLayout(stream.attributes().value("layout").toString());
-            m_content->setKeywords(stream.attributes().value("keywords").toString());
-            m_content->setDate(QDate::fromString(stream.attributes().value("date").toString(), "dd.MM.yyyy"));
 
             if(!m_content->title().isEmpty())
                 m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Edit Page" : "Edit Post");
@@ -472,13 +463,17 @@ void ContentEditor::save()
     xml.writeStartElement("Content");
     xml.writeAttribute("title", m_content->title());
     xml.writeAttribute("menu", m_content->menu());
-    xml.writeAttribute("logo", m_content->logo());
     xml.writeAttribute("author", m_content->author());
     xml.writeAttribute("layout", m_content->layout());
     xml.writeAttribute("keywords", m_content->keywords());
     if(m_content->contentType() == ContentType::Post)
         xml.writeAttribute("excerpt", m_content->excerpt());
     xml.writeAttribute("date", QString(m_content->date().toString("dd.MM.yyyy")));
+
+    foreach(QString attName, m_content->additionalAttributes().keys())
+    {
+        xml.writeAttribute(attName, m_content->additionalAttributes().value(attName));
+    }
 
     PageEditor *pe = dynamic_cast<PageEditor*>(m_scroll->widget());
     foreach(SectionEditor *se, pe->sections())
