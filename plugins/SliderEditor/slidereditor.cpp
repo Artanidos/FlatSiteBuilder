@@ -99,16 +99,18 @@ void SliderEditor::setContent(QString content)
     m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
     m_list->setRowCount(0);
 
-    while(stream.readNextStartElement())
+    while(stream.readNext())
     {
-        if(stream.name() == "Slide")
+        if(stream.isStartElement() && stream.name() == "Slide")
         {
             Slide *s = new Slide();
             s->setSource(stream.attributes().value("src").toString());
             s->setAdminLabel(stream.attributes().value("adminlabel").toString());
+            s->setInnerHtml(stream.readElementText());
             addListItem(s);
-            stream.readNext();
         }
+        else if(stream.isEndElement() && stream.name() == "Slider")
+            break;
     }
     m_changed = false;
 }
@@ -121,18 +123,19 @@ QString SliderEditor::load(QXmlStreamReader *xml)
     {
         stream.writeStartElement("Slider");
         stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
-        while(xml->readNextStartElement())
+        while(xml->readNext())
         {
-            if(xml->name() == "Slide")
+            if(xml->isStartElement() && xml->name() == "Slide")
             {
                 stream.writeStartElement("Slide");
                 stream.writeAttribute("src", xml->attributes().value("src").toString());
                 stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+                stream.writeCDATA(xml->readElementText());
                 stream.writeEndElement();
-                xml->readNext();
             }
-            else
-                xml->skipCurrentElement();
+            else if(xml->isEndElement() && xml->name() == "Slider")
+                break;
+
         }
         stream.writeEndElement();
     }
@@ -154,6 +157,7 @@ void SliderEditor::closeEditor()
             stream.writeStartElement("Slide");
             stream.writeAttribute("src", slide->source());
             stream.writeAttribute("adminlabel", slide->adminLabel());
+            stream.writeCDATA(slide->innerHtml());
             stream.writeEndElement();
         }
         stream.writeEndElement();
@@ -311,20 +315,19 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
     QString html = "<div class=\"fullwidthbanner-container roundedcorners\">\n";
     html += "<div class=\"fullwidthbanner\">\n";
     html += "<ul>\n";
-    while(xml->readNextStartElement())
+    while(xml->readNext())
     {
-        if(xml->name() == "Slide")
+        if(xml->isStartElement() && xml->name() == "Slide")
         {
             QString source = xml->attributes().value("src").toString();
             QString url = source.mid(source.indexOf("assets/images/"));
             html += "<li data-transition=\"slideleft\" data-masterspeed=\"700\">\n";
             html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
-            html += "<!-- layer -->\n" + xml->readElementText() + "\n<!-- layer end -->\n";
+            html += xml->readElementText() + "\n";
             html += "</li>\n";
-            xml->readNext();
         }
-        else
-            xml->skipCurrentElement();
+        else if(xml->isEndElement() && xml->name() == "Slider")
+            break;
     }
     html += "</ul>\n";
     html += "<div class=\"tp-bannertimer\"></div>\n";

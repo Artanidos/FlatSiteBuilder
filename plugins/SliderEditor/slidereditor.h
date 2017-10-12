@@ -40,13 +40,16 @@ public:
     QString title() {return m_adminlabel.isEmpty() ? "New Slide" : m_adminlabel;}
     QString adminLabel() {return m_adminlabel;}
     QString source() {return m_source;}
+    QString innerHtml() {return m_innerhtml;}
 
     void setSource(QString source) {m_source = source;}
     void setAdminLabel(QString label) {m_adminlabel = label;}
+    void setInnerHtml(QString html) {m_innerhtml = html;}
 
 private:
     QString m_source;
     QString m_adminlabel;
+    QString m_innerhtml;
 };
 
 class SliderEditor : public ElementEditorInterface
