@@ -18,7 +18,7 @@
 **
 ****************************************************************************/
 
-#include "htmlhighlighter.h"
+#include "xmlhighlighter.h"
 
 XmlHighlighter::XmlHighlighter(QTextDocument *document)
     : QSyntaxHighlighter(document)

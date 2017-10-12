@@ -21,11 +21,9 @@ TEMPLATE      = lib
 CONFIG       += plugin
 TARGET		  = TextEditor
 INCLUDEPATH  += ../../
-SOURCES		 += texteditor.cpp \
-    htmlhighlighter.cpp
+SOURCES		 += texteditor.cpp
 HEADERS		 += texteditor.h \
-    ../../interfaces.h \
-    htmlhighlighter.h
+    ../../interfaces.h
 #DESTDIR       = ~/FlatSiteBuilder/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets

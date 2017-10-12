@@ -27,6 +27,7 @@
 class Slide;
 class ImageSelector;
 class QLineEdit;
+class QTextEdit;
 class SlideEditor : public AnimateableEditor
 {
     Q_OBJECT
@@ -50,6 +51,7 @@ private:
     QLineEdit *m_source;
     ImageSelector *m_image;
     Slide *m_slide;
+    QTextEdit *m_innerHtml;
 };
 
 #endif // SLIDEEDITOR_H

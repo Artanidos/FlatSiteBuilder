@@ -18,8 +18,8 @@
 **
 ****************************************************************************/
 
-#ifndef HTMLHIGHLIGHTER_H
-#define HTMLHIGHLIGHTER_H
+#ifndef XMLHIGHLIGHTER_H
+#define XMLHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
@@ -66,4 +66,4 @@ private:
     QTextCharFormat m_formats[LastConstruct + 1];
 };
 
-#endif // HTMLHIGHLIGHTER_H
+#endif // XMLHIGHLIGHTER_H

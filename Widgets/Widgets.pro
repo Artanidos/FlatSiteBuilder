@@ -28,7 +28,8 @@ SOURCES += \
     flatbutton.cpp \
     imageselector.cpp \
     tablecellbuttons.cpp \
-    undoableeditor.cpp
+    undoableeditor.cpp \
+    xmlhighlighter.cpp
 
 HEADERS +=\
     flatbutton.h \
@@ -36,7 +37,8 @@ HEADERS +=\
     widgets_global.h \
     tablecellbuttons.h \
     undoableeditor.h \
-    animateableeditor.h
+    animateableeditor.h \
+    xmlhighlighter.h
 
 unix {
     target.path = /usr/lib

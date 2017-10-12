@@ -30,6 +30,7 @@
 #include <QXmlStreamWriter>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
+#include <QTextEdit>
 #include <QTest>
 
 SliderEditor::SliderEditor()

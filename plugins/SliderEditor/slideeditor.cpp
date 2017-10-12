@@ -22,6 +22,8 @@
 #include "flatbutton.h"
 #include "imageselector.h"
 #include "slidereditor.h"
+#include <QTextEdit>
+#include "xmlhighlighter.h"
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QStandardPaths>
@@ -52,6 +54,19 @@ SlideEditor::SlideEditor()
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
     close->setToolTip("Close Editor");
 
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(13);
+    m_innerHtml = new QTextEdit;
+    m_innerHtml->setMaximumHeight(120);
+    m_innerHtml->setFont(font);
+    m_innerHtml->setAcceptRichText(false);
+    m_innerHtml->setLineWrapMode(QTextEdit::NoWrap);
+    QFontMetrics metrics(font);
+    m_innerHtml->setTabStopWidth(4 * metrics.width(' '));
+    new XmlHighlighter(m_innerHtml->document());
+
     grid->addWidget(titleLabel, 0, 0);
     grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(new QLabel("Path"), 1, 0);
@@ -59,8 +74,9 @@ SlideEditor::SlideEditor()
     grid->addWidget(seek, 2, 2);
     grid->addWidget(m_image, 3, 0, 1, 2);
     grid->setRowStretch(3, 1);
-    grid->addWidget(new QLabel("Admin Label"), 4, 0);
-    grid->addWidget(m_adminlabel, 5, 0);
+    grid->addWidget(m_innerHtml, 4, 0, 1, 3);
+    grid->addWidget(new QLabel("Admin Label"), 5, 0);
+    grid->addWidget(m_adminlabel, 6, 0);
     setLayout(grid);
 
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
@@ -78,6 +94,7 @@ void SlideEditor::setSlide(Slide *slide)
         m_image->setImage(QImage(slide->source()));
     else
         m_image->setImage(QImage(":/images/image_placeholder.png"));
+    m_innerHtml->setPlainText(slide->innerHtml());
     m_adminlabel->setText(slide->adminLabel());
 }
 
@@ -86,6 +103,7 @@ void SlideEditor::closeEditor()
     if(m_changed)
     {
         m_slide->setSource(m_source->text());
+        m_slide->setInnerHtml(m_innerHtml->toPlainText());
         m_slide->setAdminLabel(m_adminlabel->text());
     }
     emit close();
