@@ -228,8 +228,12 @@ void ElementEditor::edit()
         ce->elementEdit(this);;
 }
 
-ContentEditor* ElementEditor::getContentEditor()
+SectionEditor *ElementEditor::getSectionEditor()
 {
+    SectionEditor *se = dynamic_cast<SectionEditor*>(parentWidget());
+    if(se)
+        return se;
+
     ColumnEditor *ce = dynamic_cast<ColumnEditor*>(parentWidget());
     if(ce)
     {
@@ -239,20 +243,30 @@ ContentEditor* ElementEditor::getContentEditor()
             SectionEditor *se = dynamic_cast<SectionEditor*>(re->parentWidget());
             if(se)
             {
-                PageEditor *pe = dynamic_cast<PageEditor*>(se->parentWidget());
-                if(pe)
+                return se;
+            }
+        }
+    }
+    return NULL;
+}
+
+ContentEditor *ElementEditor::getContentEditor()
+{
+    SectionEditor *se = getSectionEditor();
+    if(se)
+    {
+        PageEditor *pe = dynamic_cast<PageEditor*>(se->parentWidget());
+        if(pe)
+        {
+            QWidget *sa = dynamic_cast<QWidget*>(pe->parentWidget());
+            if(sa)
+            {
+                QWidget *vp = dynamic_cast<QWidget*>(sa->parentWidget());
+                if(vp)
                 {
-                    QWidget *sa = dynamic_cast<QWidget*>(pe->parentWidget());
-                    if(sa)
-                    {
-                        QWidget *vp = dynamic_cast<QWidget*>(sa->parentWidget());
-                        if(vp)
-                        {
-                            ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
-                            if(cee)
-                                return cee;
-                        }
-                    }
+                    ContentEditor *cee = dynamic_cast<ContentEditor*>(vp->parentWidget());
+                    if(cee)
+                        return cee;
                 }
             }
         }

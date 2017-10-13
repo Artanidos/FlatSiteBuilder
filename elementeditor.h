@@ -28,6 +28,7 @@
 #include "flatbutton.h"
 
 class ContentEditor;
+class SectionEditor;
 class QXmlStreamWriter;
 class QXmlStreamReader;
 class ElementEditor : public QWidget
@@ -79,6 +80,7 @@ private:
 
     void setColor(QString name);
     ContentEditor* getContentEditor();
+    SectionEditor *getSectionEditor();
     void setText(QString text) {m_text->setText(text);}
 };
 

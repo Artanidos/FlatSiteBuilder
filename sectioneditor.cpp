@@ -29,9 +29,9 @@
 #include <QXmlStreamReader>
 #include <QDrag>
 
-SectionEditor::SectionEditor()
+SectionEditor::SectionEditor(bool fullwidth)
 {
-    m_fullwidth = false;
+    m_fullwidth = fullwidth;
     setAutoFillBackground(true);
     setAcceptDrops(true);
     setBGColor();
@@ -55,7 +55,16 @@ SectionEditor::SectionEditor()
     layout->addLayout(vbox);
     Hyperlink *addRow = new Hyperlink("(+) Add Row");
     vboxRight->addLayout(m_layout);
-    vboxRight->addWidget(addRow);
+
+    ElementEditor *ee = new ElementEditor();
+    connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+
+    if(m_fullwidth)
+        m_layout->addWidget(ee, 0, Qt::AlignTop);
+    else
+        vboxRight->addWidget(addRow);
     layout->addLayout(vboxRight);
     setLayout(layout);
 
@@ -88,11 +97,15 @@ void SectionEditor::save(QXmlStreamWriter *stream)
         stream->writeAttribute("attributes", m_attributes);
     if(m_fullwidth)
         stream->writeAttribute("fullwidth", "true");
+    stream->writeCharacters("");
     for(int i = 0; i < m_layout->count(); i++)
     {
         RowEditor *re = dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget());
         if(re)
             re->save(stream);
+        ElementEditor *ee = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+        if(ee)
+            ee->save(stream);
     }
     stream->writeEndElement();
 }
@@ -101,6 +114,14 @@ void SectionEditor::addRow(RowEditor *re)
 {
     connect(re, SIGNAL(rowEditorCopied(RowEditor*)), this, SLOT(copyRowEditor(RowEditor *)));
     m_layout->addWidget(re);
+}
+
+void SectionEditor::addElement(ElementEditor *ee)
+{
+    connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+    m_layout->insertWidget(m_layout->count() - 1, ee, 0, Qt::AlignTop);
 }
 
 void SectionEditor::removeRow(RowEditor *re)
@@ -159,12 +180,11 @@ void SectionEditor::edit()
 
 SectionEditor *SectionEditor::clone()
 {
-    SectionEditor *ne = new SectionEditor();
+    SectionEditor *ne = new SectionEditor(m_fullwidth);
     ne->setCssClass(m_cssclass);
     ne->setId(m_id);
     ne->setAttributes(m_attributes);
     ne->setStyle(m_style);
-    ne->setFullwidth(m_fullwidth);
     for(int i = 0; i < m_layout->count(); i++)
     {
         ne->addRow(dynamic_cast<RowEditor*>(m_layout->itemAt(i)->widget())->clone());
@@ -185,7 +205,24 @@ void SectionEditor::dragEnterEvent(QDragEnterEvent *event)
             event->accept();
         }
         else
-            event->ignore();
+        {
+            ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+            if(m_fullwidth && ee)
+            {
+                for(int i = 0; i < m_layout->count(); i++)
+                {
+                    ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                    if(editor && editor->mode() == ElementEditor::Mode::Empty)
+                    {
+                        editor->setMode(ElementEditor::Mode::Dropzone);
+                        break;
+                    }
+                }
+                event->accept();
+            }
+            else
+                event->ignore();
+        }
     }
     else
         event->ignore();
@@ -202,7 +239,17 @@ void SectionEditor::dragLeaveEvent(QDragLeaveEvent *event)
             delete dz;
             break;
         }
+        ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+        if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+        {
+            // put editor to the end of the list
+            editor->setMode(ElementEditor::Mode::Empty);
+            m_layout->removeWidget(editor);
+            m_layout->addWidget(editor);
+            break;
+        }
     }
+
     event->accept();
 }
 
@@ -251,7 +298,31 @@ void SectionEditor::dragMoveEvent(QDragMoveEvent *event)
             event->accept();
         }
         else
-            event->ignore();
+        {
+            ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+            if(ee)
+            {
+                int row = event->pos().y() / (50 + m_layout->margin());
+                for(int i = 0; i < m_layout->count(); i++)
+                {
+                    ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                    if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+                    {
+                        if(i != row)
+                        {
+                            // put dropzone under mouse pointer
+                            m_layout->insertWidget(row, editor);
+                        }
+                        break;
+                    }
+                }
+                event->setDropAction(Qt::MoveAction);
+                event->accept();
+            }
+            else
+                event->ignore();
+        }
+
     }
     else
         event->ignore();
@@ -284,7 +355,41 @@ void SectionEditor::dropEvent(QDropEvent *event)
             event->accept();
         }
         else
-            event->ignore();
+        {
+            ElementEditor *ee = dynamic_cast<ElementEditor*>(myData->getData());
+            if(ee)
+            {
+                for(int i = 0; i < m_layout->count(); i++)
+                {
+                    ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                    if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+                    {
+                        // put editor to the end of the list
+                        editor->setMode(ElementEditor::Mode::Empty);
+                        m_layout->removeWidget(editor);
+                        m_layout->addWidget(editor);
+                        break;
+                    }
+                }
+
+                m_layout->insertWidget(0, ee, 0, Qt::AlignTop);
+                ee->dropped();
+                ee->show();
+                ee->disconnect(SIGNAL(elementEnabled()));
+                ee->disconnect(SIGNAL(elementDragged()));
+                ee->disconnect(SIGNAL(elementCopied(ElementEditor*)));
+                ContentEditor *ce = getContentEditor();
+                if(ce)
+                    ce->editChanged("Move Element");
+                connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+                connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+                connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+                event->setDropAction(Qt::MoveAction);
+                event->accept();
+            }
+            else
+                event->ignore();
+        }
     }
     else
         event->ignore();
@@ -365,4 +470,25 @@ QString SectionEditor::content()
     stream.writeAttribute("fullwidth", m_fullwidth ? "true" : "false");
     stream.writeEndElement();
     return content;
+}
+
+void SectionEditor::addElement()
+{
+    ElementEditor *ee = new ElementEditor();
+    m_layout->addWidget(ee, 0, Qt::AlignTop);
+
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged("Add Element");
+    connect(ee, SIGNAL(elementEnabled()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementDragged()), this, SLOT(addElement()));
+    connect(ee, SIGNAL(elementCopied(ElementEditor*)), this, SLOT(copyElement(ElementEditor*)));
+}
+
+void SectionEditor::copyElement(ElementEditor *e)
+{
+    addElement(e->clone());
+    ContentEditor *ce = getContentEditor();
+    if(ce)
+        ce->editChanged("Copy Element");
 }

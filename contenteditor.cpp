@@ -376,14 +376,33 @@ void ContentEditor::load()
             {
                 if(stream.name() == "Section")
                 {
-                    SectionEditor *se = new SectionEditor();
+                    bool fullwidth = stream.attributes().value("fullwidth").toString()  == "true";
+                    SectionEditor *se = new SectionEditor(fullwidth);
                     se->setCssClass(stream.attributes().value("cssclass").toString());
                     se->setStyle(stream.attributes().value("style").toString());
                     se->setAttributes(stream.attributes().value("attributes").toString());
                     se->setId(stream.attributes().value("id").toString());
-                    se->setFullwidth(stream.attributes().value("fullwidth").toString() == "true");
                     pe->addSection(se);
-                    loadRows(&stream, se);
+                    if(fullwidth)
+                    {
+                        while(stream.readNext())
+                        {
+                            if(stream.isStartElement())
+                            {
+                                ElementEditor *ee = new ElementEditor();
+                                ee->setMode(ElementEditor::Mode::Enabled);
+                                ee->load(&stream);
+                                se->addElement(ee);
+                            }
+                            else if(stream.isEndElement())
+                            {
+                                if(stream.name() == "Section")
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                        loadRows(&stream, se);
                     stream.readNext();
                 }
                 else
@@ -447,6 +466,7 @@ void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
         }
     }
 }
+
 
 void ContentEditor::save()
 {

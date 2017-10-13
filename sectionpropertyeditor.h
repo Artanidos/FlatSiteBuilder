@@ -47,7 +47,7 @@ private:
     QLineEdit *m_attributes;
     QLineEdit *m_id;
     QGridLayout *m_grid;
-    QCheckBox *m_fullwidth;
+    bool m_fullwidth;
 };
 
 #endif // SECTIONPROPERTYEDITOR_H

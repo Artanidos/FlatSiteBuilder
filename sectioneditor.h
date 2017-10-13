@@ -32,15 +32,15 @@ class SectionEditor : public QWidget
     Q_OBJECT
 
 public:
-    SectionEditor();
+    SectionEditor(bool fullwidth = false);
 
     void mousePressEvent(QMouseEvent *event);
     void addRow(RowEditor *re);
+    void addElement(ElementEditor *ee);
     void removeRow(RowEditor *re);
     void enableColumnAcceptDrop(bool mode);
     SectionEditor *clone();
     void save(QXmlStreamWriter *);
-    void setFullwidth(bool fw) {m_fullwidth = fw; setBGColor();}
     void setContent(QString content);
     QString content();
     void setCssClass(QString cls) {m_cssclass = cls;}
@@ -49,6 +49,8 @@ public:
     void setId(QString id) {m_id = id;}
 
 private slots:
+    void addElement();
+    void copyElement(ElementEditor*);
     void addRow();
     void close();
     void copy();

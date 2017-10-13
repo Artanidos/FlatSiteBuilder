@@ -19,6 +19,8 @@
 ****************************************************************************/
 
 #include "dropzone.h"
+#include <QHBoxLayout>
+#include <QLabel>
 
 DropZone::DropZone(int w, int h)
 {
@@ -30,4 +32,9 @@ DropZone::DropZone(int w, int h)
     setMaximumWidth(w);
     setMinimumHeight(h);
     setMaximumHeight(h);
+    QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->addStretch(1);
+    hbox->addWidget(new QLabel("Drop Here"));
+    hbox->addStretch(1);
+    setLayout(hbox);
 }

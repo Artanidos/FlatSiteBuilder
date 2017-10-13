@@ -22,6 +22,7 @@
 #include "rowpropertyeditor.h"
 #include "mainwindow.h"
 #include "flatbutton.h"
+#include "plugins.h"
 #include <QPushButton>
 #include <QXmlStreamReader>
 #include <QLabel>
@@ -36,7 +37,6 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_attributes = new QLineEdit();
     m_id = new QLineEdit;
     m_changed = false;
-    m_fullwidth = new QCheckBox("Full Width");
     setAutoFillBackground(true);
 
     FlatButton *close = new FlatButton(":/images/close_normal.png", ":/images/close_hover.png");
@@ -61,7 +61,6 @@ SectionPropertyEditor::SectionPropertyEditor()
     m_grid->addWidget(m_attributes, 6, 0, 1, 2);
     m_grid->addWidget(new QLabel("Id"), 7, 0);
     m_grid->addWidget(m_id, 8, 0, 1, 2);
-    m_grid->addWidget(m_fullwidth, 9, 0);
     m_grid->addLayout(vbox, 10, 0);
     setLayout(m_grid);
 
@@ -70,8 +69,7 @@ SectionPropertyEditor::SectionPropertyEditor()
     connect(m_style, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_attributes, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
-    connect(m_fullwidth, SIGNAL(clicked(bool)), this, SLOT(contentChanged()));
-}
+ }
 
 void SectionPropertyEditor::closeEditor()
 {
@@ -84,7 +82,7 @@ void SectionPropertyEditor::closeEditor()
         stream.writeAttribute("style", m_style->text());
         stream.writeAttribute("attributes", m_attributes->text());
         stream.writeAttribute("id", m_id->text());
-        stream.writeAttribute("fullwidth", m_fullwidth->isChecked() ? "true" : "false");
+        stream.writeAttribute("fullwidth", m_fullwidth ? "true" : "false");
         stream.writeEndElement();
     }
     emit close();
@@ -99,7 +97,7 @@ void SectionPropertyEditor::setContent(QString content)
     m_style->setText(stream.attributes().value("style").toString());
     m_attributes->setText(stream.attributes().value("attributes").toString());
     m_id->setText(stream.attributes().value("id").toString());
-    m_fullwidth->setChecked(stream.attributes().value("fullwidth").toString() == "true");
+    m_fullwidth = stream.attributes().value("fullwidth").toString() == "true";
     m_changed = false;
 }
 
@@ -109,32 +107,59 @@ QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
     QString cls = xml->attributes().value("cssclass").toString();
     QString style = xml->attributes().value("style").toString();
     QString attributes = xml->attributes().value("attributes").toString();
-    QString html = "<section";
-    if(xml->attributes().value("fullwidth") != "true")
+    bool fullwidth = xml->attributes().value("fullwidth") == "true";
+    QString html = "";
+
+    if(fullwidth)
     {
+        while(xml->readNext())
+        {
+            if(xml->isStartElement())
+            {
+                QString pluginName = xml->name() + "Editor";
+                if(Plugins::hasElementPlugin(pluginName))
+                {
+                    html += Plugins::getElementPlugin(pluginName)->getHtml(xml);
+                    Plugins::addUsedPlugin(pluginName);
+                }
+                else
+                    qDebug() << "Undefined element " + pluginName;
+            }
+            else if(xml->isEndElement())
+            {
+                if(xml->name() == "Section")
+                    break;
+            }
+        }
+    }
+    else
+    {
+        html += "<section";
         if(!cls.isEmpty())
             cls += " ";
         cls += "container";
-    }
-    if(!id.isEmpty())
-        html += " id=\"" + id +"\"";
-    if(!cls.isEmpty())
-        html += " class=\"" + cls + "\"";
-    if(!style.isEmpty())
-        html += " style=\"" + style + "\"";
-    if(!attributes.isEmpty())
-        html += " " + attributes;
-    html += ">\n";
-    while(xml->readNextStartElement())
-    {
-        if(xml->name() == "Row")
+        if(!id.isEmpty())
+            html += " id=\"" + id +"\"";
+        if(!cls.isEmpty())
+            html += " class=\"" + cls + "\"";
+        if(!style.isEmpty())
+            html += " style=\"" + style + "\"";
+        if(!attributes.isEmpty())
+            html += " " + attributes;
+        html += ">\n";
+
+        while(xml->readNextStartElement())
         {
-            html += RowPropertyEditor::getHtml(xml);
-            xml->readNext();
+            if(xml->name() == "Row")
+            {
+                html += RowPropertyEditor::getHtml(xml);
+                xml->readNext();
+            }
+            else
+                xml->skipCurrentElement();
         }
-        else
-            xml->skipCurrentElement();
+        html + "</section>";
     }
-    return html + "</section>";
+    return html;
 }
 
