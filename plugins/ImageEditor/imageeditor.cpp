@@ -89,10 +89,14 @@ QString ImageEditor::load(QXmlStreamReader *xml)
     QString content;
     QXmlStreamWriter stream(&content);
     stream.writeStartElement("Image");
-    stream.writeAttribute("src", xml->attributes().value("src").toString());
-    stream.writeAttribute("alt", xml->attributes().value("alt").toString());
-    stream.writeAttribute("title", xml->attributes().value("title").toString());
-    stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+    //stream.writeAttribute("src", xml->attributes().value("src").toString());
+    //stream.writeAttribute("alt", xml->attributes().value("alt").toString());
+    //stream.writeAttribute("title", xml->attributes().value("title").toString());
+    //stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+    foreach(QXmlStreamAttribute att, xml->attributes())
+    {
+        stream.writeAttribute(att.name().toString(), att.value().toString());
+    }
     stream.writeEndElement();
     return content;
 }
@@ -102,15 +106,27 @@ void ImageEditor::setContent(QString content)
     m_content = content;
     QXmlStreamReader stream(m_content);
     stream.readNextStartElement();
-    QString src = stream.attributes().value("src").toString();
+    QString src = "";
+    foreach(QXmlStreamAttribute att, stream.attributes())
+    {
+        QString attName = att.name().toString();
+        QString value = att.value().toString();
+        if(attName == "alt")
+            m_alt->setText(value);
+        else if(attName == "title")
+            m_title->setText(value);
+        else if(attName == "src")
+            src = value;
+        else if(attName == "adminlabel")
+            m_adminlabel->setText(value);
+        else
+            m_attributes.insert(attName, value);
+    }
     m_source->setText(src);
     if(!src.isEmpty())
         m_image->setImage(QImage(src));
     else
         m_image->setImage(QImage(":/images/image_placeholder.png"));
-    m_alt->setText(stream.attributes().value("alt").toString());
-    m_title->setText(stream.attributes().value("title").toString());
-    m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
     m_changed = false;
 }
 
@@ -154,6 +170,10 @@ void ImageEditor::closeEditor()
         stream.writeAttribute("src", m_source->text());
         stream.writeAttribute("alt", m_alt->text());
         stream.writeAttribute("title", m_title->text());
+        foreach(QString attName, m_attributes.keys())
+        {
+            stream.writeAttribute(attName, m_attributes.value(attName));
+        }
         stream.writeAttribute("adminlabel", m_adminlabel->text());
         stream.writeEndElement();
     }
@@ -162,10 +182,22 @@ void ImageEditor::closeEditor()
 
 QString ImageEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString source = xml->attributes().value("src").toString();
-    QString url = source.mid(source.indexOf("assets/images/"));
-    QString alt = xml->attributes().value("alt").toString();
-    QString title = xml->attributes().value("title").toString();
+    QString html = "<img";
+    QString classValue = "img-responsive pull-left inner";
+    foreach(QXmlStreamAttribute att, xml->attributes())
+    {
+        QString attName = att.name().toString();
+        QString value = att.value().toString();
+        if(attName == "src")
+            html += " src=\"" + value.mid(value.indexOf("assets/images/")) + "\"";
+        else if(attName == "class") // overrides class
+           classValue = value;
+        else if(attName == "adminlabel")
+            ; // ignore
+        else
+            html += " " + attName + "=\"" + value + "\"";
 
-    return "<img alt=\"" + alt + "\" title=\"" + title + "\" class=\"img-responsive pull-left inner\" src=\"" + url + "\">\n";
+    }
+    html += " class=\"" + classValue + "\">\n";
+    return html;
 }

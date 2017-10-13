@@ -24,7 +24,9 @@ INCLUDEPATH  += ../../
 SOURCES		 += texteditor.cpp
 HEADERS		 += texteditor.h \
     ../../interfaces.h
-#DESTDIR       = ~/FlatSiteBuilder/plugins
+CONFIG(debug, debug|release) {
+    DESTDIR = ~/FlatSiteBuilder/plugins
+}
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets

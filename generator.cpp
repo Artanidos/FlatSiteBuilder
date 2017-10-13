@@ -107,6 +107,14 @@ void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuil
             menuitem["title"] = item->title();
             menuitem["url"] = item->url();
             menuitem["icon"] = item->icon();
+            QString attributes = "";
+            foreach(QString attName, item->attributes().keys())
+            {
+                if(!attributes.isEmpty())
+                    attributes += " ";
+                attributes += attName + "=\"" + item->attributes().value(attName) + "\"";
+            }
+            menuitem["attributes"] = attributes;
             QVariantList subitems;
             foreach(MenuItem *subitem, item->items())
             {
@@ -114,6 +122,14 @@ void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuil
                 submenuitem["title"] = subitem->title();
                 submenuitem["url"] = subitem->url();
                 submenuitem["icon"] = subitem->icon();
+                attributes = "";
+                foreach(QString attName, subitem->attributes().keys())
+                {
+                    if(!attributes.isEmpty())
+                        attributes += " ";
+                    attributes += attName + "=\"" + subitem->attributes().value(attName) + "\"";
+                }
+                submenuitem["attributes"] = attributes;
                 subitems.append(submenuitem);
             }
             menuitem["items"] = subitems;

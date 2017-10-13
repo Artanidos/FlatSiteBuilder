@@ -1,7 +1,11 @@
 1.4.7
 -----
-- Added the ability to add page variables in xml files for example '<Content language="en">'
-- Slider editor now renders additional attributes not seen in editor yet like "data-transition"
+- Added the ability to add page variables in xml files for example (<Content language="en">)
+- Slider editor now renders additional attributes like ("data-transition")  (not seen in editor yet)
+- Menuitems supports additional attributes which are not visible in editor like (class="scrollTo")
+    which can be used as (<a {{ item.attributes }} href=...) in a theme
+- ImageEditor now supports additional attributes which are not visible in editor like (data-animation="fadeIn")
+    if an attribute with the name class is provided the original class will be overriden
 
 1.4.6
 -----

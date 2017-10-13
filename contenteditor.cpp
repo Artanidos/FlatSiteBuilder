@@ -414,9 +414,9 @@ void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
 void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
 {
     int i = 0;
-    while(stream->readNextStartElement())
+    while(stream->readNext())
     {
-        if(stream->name() == "Column")
+        if(stream->isStartElement() && stream->name() == "Column")
         {
             ColumnEditor *ce = new ColumnEditor();
             ce->setSpan(stream->attributes().value("span").toInt());
@@ -424,8 +424,8 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
             loadElements(stream, ce);
             stream->readNext();
         }
-        else
-            stream->skipCurrentElement();
+        else if(stream->isEndElement())
+            break;
     }
 }
 

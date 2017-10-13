@@ -19,8 +19,8 @@
 ****************************************************************************/
 
 #include "texteditor.h"
-#include "htmlhighlighter.h"
 #include "flatbutton.h"
+#include "xmlhighlighter.h"
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QTextEdit>

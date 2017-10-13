@@ -55,6 +55,8 @@ private:
     QLineEdit *m_alt;
     QLineEdit *m_title;
     QLineEdit *m_adminlabel;
+    QHash<QString,QString> m_attributes;
+
     void toString();
 };
 

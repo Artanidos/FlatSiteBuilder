@@ -180,9 +180,19 @@ void Site::loadMenus()
                         if(menu.name() == "Item")
                         {
                             MenuItem *item = new MenuItem();
-                            item->setTitle(menu.attributes().value("title").toString());
-                            item->setUrl(menu.attributes().value("url").toString());
-                            item->setIcon(menu.attributes().value("icon").toString());
+                            foreach(QXmlStreamAttribute att, menu.attributes())
+                            {
+                                QString attName = att.name().toString();
+                                QString value = att.value().toString();
+                                if(attName == "title")
+                                    item->setTitle(value);
+                                else if(attName == "url")
+                                    item->setUrl(value);
+                                else if(attName == "icon")
+                                    item->setIcon(value);
+                                else //set additional html attributes like class="scrollTo"
+                                    item->addAttribute(attName, value);
+                            }
 
                             while(menu.readNextStartElement())
                             {
@@ -190,9 +200,19 @@ void Site::loadMenus()
                                 {
                                     MenuItem *subitem = new MenuItem();
                                     subitem->setSubitem(true);
-                                    subitem->setTitle(menu.attributes().value("title").toString());
-                                    subitem->setUrl(menu.attributes().value("url").toString());
-                                    subitem->setIcon(menu.attributes().value("icon").toString());
+                                    foreach(QXmlStreamAttribute att, menu.attributes())
+                                    {
+                                        QString attName = att.name().toString();
+                                        QString value = att.value().toString();
+                                        if(attName == "title")
+                                            subitem->setTitle(value);
+                                        else if(attName == "url")
+                                            subitem->setUrl(value);
+                                        else if(attName == "icon")
+                                            subitem->setIcon(value);
+                                        else //set additional html attributes like class="scrollTo"
+                                            subitem->addAttribute(attName, value);
+                                    }
                                     item->addMenuitem(subitem);
                                     menu.readNext();
                                 }
@@ -264,12 +284,21 @@ void Site::saveMenus()
             xml.writeAttribute("title", item->title());
             xml.writeAttribute("url", item->url());
             xml.writeAttribute("icon", item->icon());
+            foreach(QString attName, item->attributes().keys())
+            {
+                xml.writeAttribute(attName, item->attributes().value(attName));
+            }
+
             foreach(MenuItem *subitem, item->items())
             {
                 xml.writeStartElement("Item");
                 xml.writeAttribute("title", subitem->title());
                 xml.writeAttribute("url", subitem->url());
                 xml.writeAttribute("icon", subitem->icon());
+                foreach(QString attName, subitem->attributes().keys())
+                {
+                    xml.writeAttribute(attName, subitem->attributes().value(attName));
+                }
                 xml.writeEndElement();
             }
             xml.writeEndElement();

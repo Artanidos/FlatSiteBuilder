@@ -22,6 +22,7 @@
 #define MENUITEM_H
 
 #include <QObject>
+#include <QHash>
 
 class MenuItem : public QObject
 {
@@ -43,6 +44,8 @@ public:
     void addMenuitem(MenuItem *item) {m_items.append(item); item->setParentItem(this);}
     void removeMenuitem(MenuItem *item) {m_items.removeOne(item); item->setParentItem(NULL);}
     QList<MenuItem *> items() {return m_items;}
+    void addAttribute(QString attName, QString value) {m_attributes.insert(attName, value);}
+    QHash<QString,QString> attributes() {return m_attributes;}
 
 private:
     QString m_title;
@@ -51,6 +54,7 @@ private:
     QList<MenuItem *> m_items;
     bool m_isSubitem;
     MenuItem *m_parentItem;
+    QHash<QString,QString> m_attributes;
 };
 
 #endif // MENUITEM_H
