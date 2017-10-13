@@ -94,6 +94,7 @@ private:
     QPropertyAnimation *m_animh;
     QWidget *m_sourcewidget;
     int m_row;
+    QHash<QString,QString> m_additionalAttributes;
 
     void addListItem(Slide *slide);
     void animate(QTableWidgetItem *item);

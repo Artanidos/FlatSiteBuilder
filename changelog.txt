@@ -1,6 +1,7 @@
 1.4.7
 -----
 - Added the ability to add page variables in xml files for example '<Content language="en">'
+- Slider editor now renders additional attributes not seen in editor yet like "data-transition"
 
 1.4.6
 -----

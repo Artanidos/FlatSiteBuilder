@@ -95,9 +95,19 @@ bool SliderEditor::eventFilter(QObject *watched, QEvent *event)
 void SliderEditor::setContent(QString content)
 {
     m_content = content;
+    m_additionalAttributes.clear();
+
     QXmlStreamReader stream(m_content);
     stream.readNextStartElement();
-    m_adminlabel->setText(stream.attributes().value("adminlabel").toString());
+    foreach(QXmlStreamAttribute att, stream.attributes())
+    {
+        QString attName = att.name().toString();
+        QString value = att.value().toString();
+        if(attName == "adminlabel")
+            m_adminlabel->setText(value);
+        else
+            m_additionalAttributes.insert(attName, value);
+    }
     m_list->setRowCount(0);
 
     while(stream.readNext())
@@ -123,7 +133,10 @@ QString SliderEditor::load(QXmlStreamReader *xml)
     if(xml->name() == "Slider")
     {
         stream.writeStartElement("Slider");
-        stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
+        foreach(QXmlStreamAttribute att, xml->attributes())
+        {
+            stream.writeAttribute(att.name().toString(), att.value().toString());
+        }
         while(xml->readNext())
         {
             if(xml->isStartElement() && xml->name() == "Slide")
@@ -150,6 +163,10 @@ void SliderEditor::closeEditor()
         m_content = "";
         QXmlStreamWriter stream(&m_content);
         stream.writeStartElement("Slider");
+        foreach(QString attName, m_additionalAttributes.keys())
+        {
+            stream.writeAttribute(attName, m_additionalAttributes.value(attName));
+        }
         stream.writeAttribute("adminlabel", m_adminlabel->text());
         for(int i = 0; i < m_list->rowCount(); i++)
         {
@@ -313,16 +330,38 @@ void SliderEditor::animationFineshedZoomOut()
 
 QString SliderEditor::getHtml(QXmlStreamReader *xml)
 {
+    QString dataTransition = "slideleft";
+    QString dataMasterspeed = "700";
+    QHash<QString,QString> attributes;
     QString html = "<div class=\"fullwidthbanner-container roundedcorners\">\n";
     html += "<div class=\"fullwidthbanner\">\n";
     html += "<ul>\n";
+
+    foreach(QXmlStreamAttribute att, xml->attributes())
+    {
+        QString attName = att.name().toString();
+        QString value = att.value().toString();
+        if(attName == "data-transition")
+            dataTransition = value;
+        else if(attName == "data-masterspeed")
+            dataMasterspeed = value;
+        else if(attName == "adminlabel")
+            ; // ignore
+        else
+            attributes.insert(attName, value);
+    }
     while(xml->readNext())
     {
         if(xml->isStartElement() && xml->name() == "Slide")
         {
             QString source = xml->attributes().value("src").toString();
             QString url = source.mid(source.indexOf("assets/images/"));
-            html += "<li data-transition=\"slideleft\" data-masterspeed=\"700\">\n";
+            html += "<li data-transition=\"" + dataTransition + "\" data-masterspeed=\"" + dataMasterspeed + "\"";
+            foreach(QString attName, attributes.keys())
+            {
+                html += " " + attName + "=\"" + attributes.value(attName) + "\"";
+            }
+            html += ">\n";
             html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
             html += xml->readElementText() + "\n";
             html += "</li>\n";
