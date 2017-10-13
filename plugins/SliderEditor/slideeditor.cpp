@@ -84,6 +84,7 @@ SlideEditor::SlideEditor()
     connect(seek, SIGNAL(clicked(bool)), this, SLOT(seek()));
     connect(m_source, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+	connect(m_innerHtml, SIGNAL(textChanged()), this, SLOT(contentChanged()));
 }
 
 void SlideEditor::setSlide(Slide *slide)
@@ -96,6 +97,7 @@ void SlideEditor::setSlide(Slide *slide)
         m_image->setImage(QImage(":/images/image_placeholder.png"));
     m_innerHtml->setPlainText(slide->innerHtml());
     m_adminlabel->setText(slide->adminLabel());
+    m_changed = false;
 }
 
 void SlideEditor::closeEditor()
