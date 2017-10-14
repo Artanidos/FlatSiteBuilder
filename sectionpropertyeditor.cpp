@@ -158,7 +158,7 @@ QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
             else
                 xml->skipCurrentElement();
         }
-        html + "</section>";
+        html += "</section>";
     }
     return html;
 }
