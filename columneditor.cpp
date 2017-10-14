@@ -192,18 +192,22 @@ void ColumnEditor::dropEvent(QDropEvent *event)
         {
             for(int i = 0; i < m_layout->count(); i++)
             {
-                ElementEditor *editor = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
-                if(editor && editor->mode() == ElementEditor::Mode::Dropzone)
+                ElementEditor *dz = dynamic_cast<ElementEditor*>(m_layout->itemAt(i)->widget());
+                if(dz && dz->mode() == ElementEditor::Mode::Dropzone)
                 {
-                    // put editor to the end of the list
-                    editor->setMode(ElementEditor::Mode::Empty);
-                    m_layout->removeWidget(editor);
-                    m_layout->addWidget(editor);
+                    // remove widget if it belongs to this layout
+                    m_layout->removeWidget(ee);
+
+                    // replace dropzone with dragged element
+                    m_layout->replaceWidget(dz, ee);
+
+                    // and put dropzone to the end of the list
+                    dz->setMode(ElementEditor::Mode::Empty);
+                    m_layout->removeWidget(dz);
+                    m_layout->addWidget(dz);
                     break;
                 }
             }
-
-            m_layout->insertWidget(0, ee, 0, Qt::AlignTop);
             ee->dropped();
             ee->show();
             ee->disconnect(SIGNAL(elementEnabled()));
