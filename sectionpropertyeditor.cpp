@@ -135,13 +135,11 @@ QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
     else
     {
         html += "<section";
-        if(!cls.isEmpty())
-            cls += " ";
-        cls += "container";
+        if(cls.isEmpty())
+            cls = "container";
+        html += " class=\"" + cls + "\"";
         if(!id.isEmpty())
             html += " id=\"" + id +"\"";
-        if(!cls.isEmpty())
-            html += " class=\"" + cls + "\"";
         if(!style.isEmpty())
             html += " style=\"" + style + "\"";
         if(!attributes.isEmpty())
