@@ -6,6 +6,8 @@ Features
 - create does not list all themes
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
 
+- Bugfix: Errorhandling parsing in generator
+
 
 Postponend
 ----------

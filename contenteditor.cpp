@@ -350,7 +350,6 @@ void ContentEditor::load()
     QXmlStreamReader stream(&file);
     if(stream.readNextStartElement())
     {
-        qDebug() << "loadContent" << stream.name();
         if(stream.name() == "Content")
         {
             m_site->loadContent(m_content, &stream);
@@ -377,7 +376,6 @@ void ContentEditor::load()
             {
                 if(stream.isStartElement())
                 {
-                    qDebug() << "loadSection" << stream.name();
                     if(stream.name() == "Section")
                     {
                         bool fullwidth = stream.attributes().value("fullwidth").toString()  == "true";
@@ -393,17 +391,19 @@ void ContentEditor::load()
                             {
                                 if(stream.isStartElement())
                                 {
-                                    qDebug() << "loadElement A::start" << stream.name();
                                     ElementEditor *ee = new ElementEditor();
                                     ee->setMode(ElementEditor::Mode::Enabled);
                                     ee->load(&stream);
                                     se->addElement(ee);
                                 }
                                 else if(stream.isEndElement())
-                                {
-                                    qDebug() << "loadElement A::end" << stream.name();
-                                    //if(stream.name() == "Section")
                                     break;
+                                else if(stream.atEnd())
+                                {
+                                    if(stream.hasError())
+                                        m_win->statusBar()->showMessage(stream.errorString() + " in line " + QString::number(stream.lineNumber()) + " column " + QString::number(stream.columnNumber()));
+                                    file.close();
+                                    return;
                                 }
                             }
                         }
@@ -413,8 +413,7 @@ void ContentEditor::load()
                     else if(stream.name().isEmpty())
                         ; // ignore
                     else
-                        qDebug() << "wrong starttag " + stream.name() + " in line" << stream.lineNumber();
-
+                        m_win->statusBar()->showMessage("Wrong starttag " + stream.name() + " in line " + QString::number(stream.lineNumber()));
                 }
                 else if(stream.isEndElement())
                     break;
@@ -430,7 +429,6 @@ void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
     {
         if(stream->isStartElement())
         {
-            qDebug() << "loadRows" << stream->name();
             if(stream->name() == "Row")
             {
                 RowEditor *re = new RowEditor();
@@ -441,7 +439,7 @@ void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
             else if(stream->name().isEmpty())
                 ; // ignore
             else
-                qDebug() << "wrong starttag " + stream->name() + " in line" << stream->lineNumber();
+                m_win->statusBar()->showMessage("Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber()));
         }
         else if(stream->isEndElement())
             break;
@@ -455,7 +453,6 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
     {
         if(stream->isStartElement())
         {
-            qDebug() << "loadColumns" << stream->name();
             if(stream->name() == "Column")
             {
                 ColumnEditor *ce = new ColumnEditor();
@@ -466,7 +463,7 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
             else if(stream->name().isEmpty())
                 ; // ignore
             else
-                qDebug() << "wrong starttag " + stream->name() + " in line" << stream->lineNumber();
+                m_win->statusBar()->showMessage("Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber()));
         }
         else if(stream->isEndElement())
             break;
@@ -479,19 +476,13 @@ void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
     {
         if(stream->isStartElement())
         {
-            qDebug() << "loadElement B::start" << stream->name();
             ElementEditor *ee = new ElementEditor();
             ee->setMode(ElementEditor::Mode::Enabled);
             ee->load(stream);
             ce->addElement(ee);
-            qDebug() << "loadElement B::middle" << stream->name();
         }
         else if(stream->isEndElement())
-        {
-            qDebug() << "loadElement B::end" << stream->name();
-            //if(stream->name() == "Column")
             return;
-        }
         else
             break;
     }
