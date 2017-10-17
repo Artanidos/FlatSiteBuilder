@@ -350,6 +350,7 @@ void ContentEditor::load()
     QXmlStreamReader stream(&file);
     if(stream.readNextStartElement())
     {
+        qDebug() << "loadContent" << stream.name();
         if(stream.name() == "Content")
         {
             m_site->loadContent(m_content, &stream);
@@ -372,41 +373,51 @@ void ContentEditor::load()
             m_menus->setCurrentText(m_content->menu());
             m_layouts->setCurrentText(m_content->layout());
 
-            while(stream.readNextStartElement())
+            while(stream.readNext())
             {
-                if(stream.name() == "Section")
+                if(stream.isStartElement())
                 {
-                    bool fullwidth = stream.attributes().value("fullwidth").toString()  == "true";
-                    SectionEditor *se = new SectionEditor(fullwidth);
-                    se->setCssClass(stream.attributes().value("cssclass").toString());
-                    se->setStyle(stream.attributes().value("style").toString());
-                    se->setAttributes(stream.attributes().value("attributes").toString());
-                    se->setId(stream.attributes().value("id").toString());
-                    pe->addSection(se);
-                    if(fullwidth)
+                    qDebug() << "loadSection" << stream.name();
+                    if(stream.name() == "Section")
                     {
-                        while(stream.readNext())
+                        bool fullwidth = stream.attributes().value("fullwidth").toString()  == "true";
+                        SectionEditor *se = new SectionEditor(fullwidth);
+                        se->setCssClass(stream.attributes().value("cssclass").toString());
+                        se->setStyle(stream.attributes().value("style").toString());
+                        se->setAttributes(stream.attributes().value("attributes").toString());
+                        se->setId(stream.attributes().value("id").toString());
+                        pe->addSection(se);
+                        if(fullwidth)
                         {
-                            if(stream.isStartElement())
+                            while(stream.readNext())
                             {
-                                ElementEditor *ee = new ElementEditor();
-                                ee->setMode(ElementEditor::Mode::Enabled);
-                                ee->load(&stream);
-                                se->addElement(ee);
-                            }
-                            else if(stream.isEndElement())
-                            {
-                                if(stream.name() == "Section")
+                                if(stream.isStartElement())
+                                {
+                                    qDebug() << "loadElement A::start" << stream.name();
+                                    ElementEditor *ee = new ElementEditor();
+                                    ee->setMode(ElementEditor::Mode::Enabled);
+                                    ee->load(&stream);
+                                    se->addElement(ee);
+                                }
+                                else if(stream.isEndElement())
+                                {
+                                    qDebug() << "loadElement A::end" << stream.name();
+                                    //if(stream.name() == "Section")
                                     break;
+                                }
                             }
                         }
+                        else
+                            loadRows(&stream, se);
                     }
+                    else if(stream.name().isEmpty())
+                        ; // ignore
                     else
-                        loadRows(&stream, se);
-                    stream.readNext();
+                        qDebug() << "wrong starttag " + stream.name() + " in line" << stream.lineNumber();
+
                 }
-                else
-                    stream.skipCurrentElement();
+                else if(stream.isEndElement())
+                    break;
             }
         }
     }
@@ -415,18 +426,25 @@ void ContentEditor::load()
 
 void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
 {
-    while(stream->readNextStartElement())
+    while(stream->readNext())
     {
-        if(stream->name() == "Row")
+        if(stream->isStartElement())
         {
-            RowEditor *re = new RowEditor();
-            re->setCssClass(stream->attributes().value("cssclass").toString());
-            se->addRow(re);
-            loadColumns(stream, re);
-            stream->readNext();
+            qDebug() << "loadRows" << stream->name();
+            if(stream->name() == "Row")
+            {
+                RowEditor *re = new RowEditor();
+                re->setCssClass(stream->attributes().value("cssclass").toString());
+                se->addRow(re);
+                loadColumns(stream, re);
+            }
+            else if(stream->name().isEmpty())
+                ; // ignore
+            else
+                qDebug() << "wrong starttag " + stream->name() + " in line" << stream->lineNumber();
         }
-        else
-            stream->skipCurrentElement();
+        else if(stream->isEndElement())
+            break;
     }
 }
 
@@ -435,13 +453,20 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
     int i = 0;
     while(stream->readNext())
     {
-        if(stream->isStartElement() && stream->name() == "Column")
+        if(stream->isStartElement())
         {
-            ColumnEditor *ce = new ColumnEditor();
-            ce->setSpan(stream->attributes().value("span").toInt());
-            re->addColumn(ce, i++);
-            loadElements(stream, ce);
-            stream->readNext();
+            qDebug() << "loadColumns" << stream->name();
+            if(stream->name() == "Column")
+            {
+                ColumnEditor *ce = new ColumnEditor();
+                ce->setSpan(stream->attributes().value("span").toInt());
+                re->addColumn(ce, i++);
+                loadElements(stream, ce);
+            }
+            else if(stream->name().isEmpty())
+                ; // ignore
+            else
+                qDebug() << "wrong starttag " + stream->name() + " in line" << stream->lineNumber();
         }
         else if(stream->isEndElement())
             break;
@@ -454,16 +479,21 @@ void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
     {
         if(stream->isStartElement())
         {
+            qDebug() << "loadElement B::start" << stream->name();
             ElementEditor *ee = new ElementEditor();
             ee->setMode(ElementEditor::Mode::Enabled);
             ee->load(stream);
             ce->addElement(ee);
+            qDebug() << "loadElement B::middle" << stream->name();
         }
         else if(stream->isEndElement())
         {
-            if(stream->name() == "Column")
-                return;
+            qDebug() << "loadElement B::end" << stream->name();
+            //if(stream->name() == "Column")
+            return;
         }
+        else
+            break;
     }
 }
 
