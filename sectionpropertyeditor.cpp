@@ -27,6 +27,7 @@
 #include <QXmlStreamReader>
 #include <QLabel>
 #include <QTest>
+#include <QStatusBar>
 
 SectionPropertyEditor::SectionPropertyEditor()
 {
@@ -101,7 +102,7 @@ void SectionPropertyEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
+QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml, QString filename)
 {
     QString id = xml->attributes().value("id").toString();
     QString cls = xml->attributes().value("cssclass").toString();
@@ -126,9 +127,12 @@ QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
                     qDebug() << "Undefined element " + pluginName;
             }
             else if(xml->isEndElement())
+                break;
+            else if(xml->atEnd())
             {
-                if(xml->name() == "Section")
-                    break;
+                if(xml->hasError())
+                    qWarning() << xml->errorString() + " in line " + QString::number(xml->lineNumber()) + " column " + QString::number(xml->columnNumber()) + " in file " + filename;
+                return "";
             }
         }
     }
@@ -146,15 +150,22 @@ QString SectionPropertyEditor::getHtml(QXmlStreamReader *xml)
             html += " " + attributes;
         html += ">\n";
 
-        while(xml->readNextStartElement())
+        while(xml->readNext())
         {
-            if(xml->name() == "Row")
+            if(xml->isStartElement())
             {
-                html += RowPropertyEditor::getHtml(xml);
-                xml->readNext();
+                if(xml->name() == "Row")
+                {
+                    html += RowPropertyEditor::getHtml(xml, filename);
+                    xml->readNext();
+                }
+                else if(xml->name().isEmpty())
+                    ; // ignore
+                else
+                    qWarning() << "Wrong starttag " + xml->name() + " in line " + QString::number(xml->lineNumber()) + " in file " + filename;
             }
-            else
-                xml->skipCurrentElement();
+            else if(xml->isEndElement() || xml->atEnd())
+                break;
         }
         html += "</section>";
     }

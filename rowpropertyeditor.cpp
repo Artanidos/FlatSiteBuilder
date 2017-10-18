@@ -26,6 +26,7 @@
 #include <QXmlStreamWriter>
 #include <QPushButton>
 #include <QLabel>
+#include <QTest>
 
 RowPropertyEditor::RowPropertyEditor()
 {
@@ -79,20 +80,26 @@ void RowPropertyEditor::setContent(QString content)
     m_changed = false;
 }
 
-QString RowPropertyEditor::getHtml(QXmlStreamReader *xml)
+QString RowPropertyEditor::getHtml(QXmlStreamReader *xml, QString filename)
 {
     QString cls = xml->attributes().value("cssclass").toString();
     QString html = "<div class=\"row" + (cls.isEmpty() ? "" : " " + cls) + "\">\n";
-    while(xml->readNextStartElement())
+    while(xml->readNext())
     {
-        if(xml->name() == "Column")
+        if(xml->isStartElement())
         {
-            Column *c = new Column();
-            html += c->getHtml(xml);
-            xml->readNext();
+            if(xml->name() == "Column")
+            {
+                Column *c = new Column();
+                html += c->getHtml(xml, filename);
+            }
+            else if(xml->name().isEmpty())
+                ; // ignore
+            else
+                qWarning() << "Wrong starttag " + xml->name() + " in line " + QString::number(xml->lineNumber()) + " in file " + filename;
         }
-        else
-            xml->skipCurrentElement();
+        else if(xml->isEndElement() || xml->atEnd())
+            break;
     }
     return html + "</div>\n";
 }

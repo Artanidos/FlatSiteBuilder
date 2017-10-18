@@ -31,7 +31,7 @@ class Column : public QObject
 public:
     Column() {}
 
-    QString getHtml(QXmlStreamReader *xml);
+    QString getHtml(QXmlStreamReader *xml, QString filename);
 };
 
 #endif // COLUMN_H

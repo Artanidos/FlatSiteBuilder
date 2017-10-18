@@ -415,7 +415,7 @@ void ContentEditor::load()
                     else
                         m_win->statusBar()->showMessage("Wrong starttag " + stream.name() + " in line " + QString::number(stream.lineNumber()));
                 }
-                else if(stream.isEndElement())
+                else if(stream.isEndElement() || stream.atEnd())
                     break;
             }
         }
@@ -439,9 +439,13 @@ void ContentEditor::loadRows(QXmlStreamReader *stream, SectionEditor *se)
             else if(stream->name().isEmpty())
                 ; // ignore
             else
-                m_win->statusBar()->showMessage("Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber()));
+            {
+                QString msg = "Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber());
+                qWarning() << msg;
+                m_win->statusBar()->showMessage(msg);
+            }
         }
-        else if(stream->isEndElement())
+        else if(stream->isEndElement() || stream->atEnd())
             break;
     }
 }
@@ -463,9 +467,13 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
             else if(stream->name().isEmpty())
                 ; // ignore
             else
-                m_win->statusBar()->showMessage("Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber()));
+            {
+                QString msg = "Wrong starttag " + stream->name() + " in line " + QString::number(stream->lineNumber());
+                qWarning() << msg;
+                m_win->statusBar()->showMessage(msg);
+            }
         }
-        else if(stream->isEndElement())
+        else if(stream->isEndElement() || stream->atEnd())
             break;
     }
 }
@@ -480,9 +488,14 @@ void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
             ee->setMode(ElementEditor::Mode::Enabled);
             ee->load(stream);
             ce->addElement(ee);
+            if(stream->hasError())
+            {
+                QString msg = stream->errorString() + " in line " + QString::number(stream->lineNumber()) + " column " + QString::number(stream->columnNumber());
+                qWarning() << msg;
+                m_win->statusBar()->showMessage(msg);
+                return;
+            }
         }
-        else if(stream->isEndElement())
-            return;
         else
             break;
     }
@@ -494,7 +507,9 @@ void ContentEditor::save()
     QFile file(m_filename);
     if(!file.open(QFile::WriteOnly))
     {
-        m_win->statusBar()->showMessage("ContentEditor::save(): Unable to open file " + m_filename);
+        QString msg = "ContentEditor::save(): Unable to open file " + m_filename;
+        qWarning() << msg;
+        m_win->statusBar()->showMessage(msg);
         return;
     }
 

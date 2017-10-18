@@ -36,7 +36,7 @@ public:
     SectionPropertyEditor();
 
     void setContent(QString content);
-    static QString getHtml(QXmlStreamReader *xml);
+    static QString getHtml(QXmlStreamReader *xml, QString filename);
 
 private slots:
     void closeEditor();

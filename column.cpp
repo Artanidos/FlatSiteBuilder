@@ -25,7 +25,7 @@
 #include <QXmlStreamReader>
 #include <QTest>
 
-QString Column::getHtml(QXmlStreamReader *xml)
+QString Column::getHtml(QXmlStreamReader *xml, QString filename)
 {
     QString span = xml->attributes().value("span").toString();
     QString html = "<div class=\"col-md-" + span + "\">\n";
@@ -40,13 +40,10 @@ QString Column::getHtml(QXmlStreamReader *xml)
                 Plugins::addUsedPlugin(pluginName);
             }
             else
-                qDebug() << "Undefined element " + pluginName;
+                qWarning() << "Undefined tag " + xml->name() + " in line " + QString::number(xml->lineNumber()) + " in file " + filename;
         }
-        else if(xml->isEndElement())
-        {
-            if(xml->name() == "Column")
-                break;
-        }
+        else if(xml->isEndElement() || xml->atEnd())
+            break;
     }
     return html + "\n</div>\n";
 }

@@ -22,6 +22,7 @@
 #include "content.h"
 #include "plugins.h"
 #include "sectionpropertyeditor.h"
+#include "mainwindow.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -30,6 +31,7 @@
 #include <QProcess>
 #include <QStack>
 #include <QXmlStreamReader>
+#include <QStatusBar>
 
 Q_DECLARE_METATYPE(QFile*)
 
@@ -231,17 +233,23 @@ void Generator::generateContent(Content *content)
         {
             if(xml.name() == "Content")
             {
-                while(xml.readNextStartElement())
+                while(xml.readNext())
                 {
-                    if(xml.name() == "Section")
+                    if(xml.isStartElement())
                     {
-                        cnt += SectionPropertyEditor::getHtml(&xml);
-                        xml.readNext();
+                        if(xml.name() == "Section")
+                            cnt += SectionPropertyEditor::getHtml(&xml, m_site->sourcePath() + "/" + subdir + "/" + content->source());
+                        else if(xml.name().isEmpty())
+                            ; // ignore
+                        else
+                        {
+                            QString msg = "Generate content failed: Wrong starttag " + xml.name() + " in line " + QString::number(xml.lineNumber()) + " in file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
+                            qWarning() << msg;
+                            m_win->statusBar()->showMessage(msg);
+                        }
                     }
-                    else
-                    {
-                        xml.skipCurrentElement();
-                    }
+                    else if(xml.isEndElement() || xml.atEnd())
+                        break;
                 }
             }
         }
@@ -277,13 +285,20 @@ void Generator::generateContent(Content *content)
             out.write(translateContent(rc, vars).toUtf8());
             out.close();
             qInfo() << "Created file " + name;
-
         }
         else
-            qWarning() << "Generator::generateSite(): Unable to create file " +  name;
+        {
+            QString msg = "Generate content failed: Unable to create file " +  name;
+            qWarning() << msg;
+            m_win->statusBar()->showMessage(msg);
+        }
     }
     else
-        qWarning() << "Generator::generateSite(): Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
+    {
+        QString msg = "Generate content failed: Unable to open file " + m_site->sourcePath() + "/" + subdir + "/" + content->source();
+        qWarning() << msg;
+        m_win->statusBar()->showMessage(msg);
+    }
 }
 
 QString Generator::translateTemplate(QString layout, Mode mode)

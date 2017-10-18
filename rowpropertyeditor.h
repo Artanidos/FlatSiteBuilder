@@ -35,7 +35,7 @@ public:
     RowPropertyEditor();
 
     void setContent(QString ele);
-    static QString getHtml(QXmlStreamReader *xml);
+    static QString getHtml(QXmlStreamReader *xml, QString filename);
 
 private slots:
     void editorClose();
