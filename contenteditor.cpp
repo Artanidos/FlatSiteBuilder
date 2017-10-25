@@ -480,10 +480,12 @@ void ContentEditor::loadColumns(QXmlStreamReader *stream, RowEditor *re)
 
 void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
 {
+    QString tag  = "";
     while(stream->readNext())
     {
         if(stream->isStartElement())
         {
+            tag = stream->name().toString();
             ElementEditor *ee = new ElementEditor();
             ee->setMode(ElementEditor::Mode::Enabled);
             ee->load(stream);
@@ -496,7 +498,12 @@ void ContentEditor::loadElements(QXmlStreamReader *stream, ColumnEditor *ce)
                 return;
             }
         }
-        else
+        else if(stream->isEndElement())
+        {
+            if(stream->name() != tag)
+                break;
+        }
+        else if(stream->atEnd())
             break;
     }
 }

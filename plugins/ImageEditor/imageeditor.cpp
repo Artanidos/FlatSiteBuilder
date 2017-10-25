@@ -89,10 +89,6 @@ QString ImageEditor::load(QXmlStreamReader *xml)
     QString content;
     QXmlStreamWriter stream(&content);
     stream.writeStartElement("Image");
-    //stream.writeAttribute("src", xml->attributes().value("src").toString());
-    //stream.writeAttribute("alt", xml->attributes().value("alt").toString());
-    //stream.writeAttribute("title", xml->attributes().value("title").toString());
-    //stream.writeAttribute("adminlabel", xml->attributes().value("adminlabel").toString());
     foreach(QXmlStreamAttribute att, xml->attributes())
     {
         stream.writeAttribute(att.name().toString(), att.value().toString());

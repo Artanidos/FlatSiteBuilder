@@ -636,6 +636,7 @@ void MainWindow::publishSite()
 
 void MainWindow::buildSite()
 {
+    m_site->loadMenus();
     if(m_site->pages().count() == 0 && m_site->posts().count() == 0)
         statusBar()->showMessage("Site has no pages or posts to build.");
     else

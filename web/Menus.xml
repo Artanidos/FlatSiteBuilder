@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Menus>
     <Menu name="default">
-        <Item title="Home" url="#wrapper" icon=""/>
-        <Item title="Slides" url="#slides" icon=""/>
-        <Item title="Portfolio" url="#portfolio" icon=""/>
-        <Item title="FAQ" url="#faq" icon=""/>
-        <Item title="Downloads" url="#downloads" icon=""/>
-        <Item title="Contact" url="#contact" icon=""/>
+        <Item title="Home" url="#wrapper" icon="" class="scrollTo"/>
+        <Item title="Slides" url="#slides" icon="" class="scrollTo"/>
+        <Item title="Portfolio" url="#portfolio" icon="" class="scrollTo"/>
+        <Item title="FAQ" url="#faq" icon="" class="scrollTo"/>
+        <Item title="Downloads" url="#downloads" icon="" class="scrollTo"/>
+        <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
     </Menu>
 </Menus>

@@ -29,20 +29,27 @@ QString Column::getHtml(QXmlStreamReader *xml, QString filename)
 {
     QString span = xml->attributes().value("span").toString();
     QString html = "<div class=\"col-md-" + span + "\">\n";
+    QString tag = "";
     while(xml->readNext())
     {
         if(xml->isStartElement())
         {
-            QString pluginName = xml->name() + "Editor";
+            tag = xml->name().toString();
+            QString pluginName = tag + "Editor";
             if(Plugins::hasElementPlugin(pluginName))
             {
                 html += Plugins::getElementPlugin(pluginName)->getHtml(xml);
                 Plugins::addUsedPlugin(pluginName);
             }
             else
-                qWarning() << "Undefined tag " + xml->name() + " in line " + QString::number(xml->lineNumber()) + " in file " + filename;
+                qWarning() << "Undefined tag " + tag + " in line " + QString::number(xml->lineNumber()) + " in file " + filename;
         }
-        else if(xml->isEndElement() || xml->atEnd())
+        else if(xml->isEndElement())
+        {
+            if(xml->name() != tag)
+                break;
+        }
+        else if(xml->atEnd())
             break;
     }
     return html + "\n</div>\n";
