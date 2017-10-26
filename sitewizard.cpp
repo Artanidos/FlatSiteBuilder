@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QXmlStreamWriter>
+#include <QDir>
 #include <QTest>
 
 SiteWizard::SiteWizard()
@@ -172,8 +173,12 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     m_themeLabel = new QLabel("&Theme");
     m_theme = new QComboBox;
     m_themeLabel->setBuddy(m_theme);
-    m_theme->addItem("default");
-    m_theme->addItem("himu");
+
+    QDir themesDir(QDir::homePath() + "/FlatSiteBuilder/themes");
+    foreach(QString theme, themesDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
+    {
+        m_theme->addItem(theme);
+    }
 
     registerField("siteName*", m_siteNameLineEdit);
     registerField("description", m_descriptionLineEdit);

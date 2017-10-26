@@ -2,8 +2,8 @@ Features
 --------
 - edit footer content
 - edit google analytics
+- edit theme (local overrides)
 - create should not override existing sources
-- create does not list all themes
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
 
 - Bugfix: Errorhandling parsing in generator

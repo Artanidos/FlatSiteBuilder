@@ -1,8 +1,8 @@
 # FlatSiteBuilder
 
-![Image](Screenshot.png)
+This desktop app is working as a content mangement system and is producing a flat file web content to use with github pages.
 
-The desktop app is working as a content mangement system and is creating a flat file web content to use with github pages.
+Have a look at our web site: https://artanidos.github.io/FlatSiteBuilder
 
 # Syntax
 The syntax for the templates is based on Django.
@@ -23,9 +23,6 @@ The syntax for the templates is based on Django.
 {% if condition %}
     do something
 {% endif %}
-
-## Sample page
-Here is a sample page created with FlatSiteBuilder: https://crowdware.github.io/gradido/gradido.html
 
 ## Contact
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com

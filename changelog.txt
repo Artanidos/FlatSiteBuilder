@@ -6,6 +6,7 @@
     which can be used as (<a {{ item.attributes }} href=...) in a theme
 - ImageEditor now supports additional attributes which are not visible in editor like (data-animation="fadeIn")
     if an attribute with the name class is provided the original class will be overriden
+- Create wizard does list all available themes now
 - Bugfix: loading menu now prior to build site in case the xml has been edited from outside
 
 1.4.6
