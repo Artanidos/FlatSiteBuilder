@@ -155,6 +155,17 @@
 </div>]]></Text></Column>
         </Row>
     </Section>
+    <Section><Row>
+            <Column span="12"><Text adminlabel="divider"><![CDATA[<div class="divider styleColor"></div>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="6"><Text adminlabel="Video"><![CDATA[<iframe width="560" height="315" src="https://www.youtube.com/embed/azD13Ie88aY" frameborder="0" allowfullscreen></iframe>]]></Text></Column>
+            <Column span="6"><Text adminlabel="Video Description"><![CDATA[<h3>FlatSiteBuilder <strong>In Action</strong></h3>
+<p class="lead">
+	This video shows how to create a website from scratch.
+</p>]]></Text></Column>
+        </Row>
+    </Section>
     <Section id="faq"><Row>
             <Column span="12"><Text adminlabel="FAQ"><![CDATA[<div class="divider styleColor"></div>
 <h3><strong>FAQ</strong></h3>
