@@ -4,10 +4,10 @@
 <!--[if gt IE 9]><!-->	<html> <!--<![endif]-->
 	<head>
 		<meta charset="utf-8" />
-<title>intro</title>
+<title>Release 1.5 for Linux</title>
 <meta name="keywords" content="HTML5,CSS3,Template" />
 <meta name="description" content="" />
-<meta name="Author" content="" />
+<meta name="Author" content="Olaf Japp" />
 
 <!-- mobile settings -->
 <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0" />
@@ -48,6 +48,7 @@
 
 	</head>
 	<body>
+
 		<!-- TOP NAV -->
 <header id="topNav"><!-- remove class="topHead" if no topHead used! -->
 	<div class="container">
@@ -59,14 +60,35 @@
 
 	<!-- Logo text or image -->
 	<a class="logo" href="#wrapper">
-		<img src="assets/images/" alt="FlatSiteBuilder" />
+		<img src="assets/images/logo.png" alt="FlatSiteBuilder" />
 	</a>
 
 	<!-- Top Nav -->
 <div class="navbar-collapse nav-main-collapse collapse pull-right">
 	<nav class="nav-main mega-menu">
 		<ul class="nav nav-pills nav-main scroll-menu" id="topMain">
-					</ul>
+									<li>
+				<a  href="index.html">Home</a>
+			</li>
+												<li>
+				<a  href="index.html#slides">Slides</a>
+			</li>
+												<li>
+				<a  href="index.html#portfolio">Portfolio</a>
+			</li>
+												<li>
+				<a  href="index.html#faq">FAQ</a>
+			</li>
+												<li>
+				<a  href="index.html#downloads">Downloads</a>
+			</li>
+												<li>
+				<a  href="news.html">News</a>
+			</li>
+												<li>
+				<a class="scrollTo" href="#contact">Contact</a>
+			</li>
+								</ul>
 	</nav>
 </div>
 <!-- Top Nav end -->
@@ -81,28 +103,56 @@
 	
 		<!-- WRAPPER -->
 <div id="wrapper">
-		
-<section class="container">
+	<div id="blog">
+		<!-- PAGE TITLE -->
+		<header id="page-title">
+			<div class="container">
+				<h1>FlatSiteBuilder News</h1>
+				<ul class="breadcrumb">
+					<li><a href="news.html">News</a></li>
+					<li class="active">Release 1.5 for Linux</li>
+				</ul>
+			</div>
+		</header>
+		<section class="container">
+			<div class="row">
+				<div class="left col-md-9">
+
+					<!-- article title -->
+					<header class="blog-post">
+						<h1>Release 1.5 for Linux</h1>
+						<small class="fsize13">
+							<a href="#" class="scrollTo label label-default light"><i class="fa fa-user"></i> Olaf Japp</a>
+							<span class="label label-default light">2017-10-30</span> 
+						</small>
+					</header>
+					<article>
+						<section class="container">
 <div class="row">
 <div class="col-md-12">
-<h3>Introduction</h3>
-<p>This version of FlatSiteBuilder is a preview to show possibilities.<br>
-It is not meant to be a ready made product.<br>
-There are still some features not implemented yet.</p>
-<p>If you for example want to change site properties like the menus just edit the Site.xml associated with the website and reload it.<br>
-Also if you want to change a theme or want to override theme assets or includes you have to do it by hand.<br>
-Have a look at ~/FlatSiteBuilder/ </p>
-<h3>Website</h3>
-<p>Find additional information on our <a href="https://artanidos.github.io/FlatSiteBuilder/">website</a>.</p>
-<h3>Wiki</h3>
-<p>Also have a look at our <a href="https://github.com/Artanidos/FlatSiteBuilder/wiki">wiki</a>.</p>
-<h3>Feature Requests</h3>
-<p>If you have any ideas or feature requests let us know. Just send an email to <a href="mailto:artanidos@gmail.com">artanidos@gmail.com</a></p>
+<h3>FlatSiteBuilder <strong>1.5</strong> for Linux has been released</h3>
+<p class="lead">
+	Here are the changes we made the last weeks.
+</p>
+<ul>
+	<li>Added the ability to add site variables in the site.xml file directly</li>
+	<li>Added the ability to add page variables in the xml files. For example <span style="font-family: courier">&lt;Content language="en"></span></li>
+	<li>Slider editor now renders additional attributes like (<span style="font-family: courier">"data-transition"</span>) which are not editable in plugin editor yet</li>
+	<li>Menuitems now supports additional attributes which are not editable in menu editor yet like <span style="font-family: courier">class="scrollTo"</span>
+    which can be used as <span style="font-family: courier">&lt;a &#123;&#123; item.attributes &#125;&#125; href=...</span> in a theme</li>
+	<li>ImageEditor now supports additional attributes which are not editable in the plugin editor yet like <span style="font-family: courier">data-animation="fadeIn"</span>
+    If an attribute with the class name is provided the original class will be overriden</li>
+	<li>Create wizard does now list all available themes</li>
+</ul>
 
 </div>
 </div>
 </section>
-	
+					</article>
+				</div>
+			</div>
+		</section>
+	</div>
 </div>
 <!-- /WRAPPER -->
 
