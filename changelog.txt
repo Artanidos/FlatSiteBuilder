@@ -1,13 +1,13 @@
 1.5
 ---
-- Added the ability to add page variables in xml files for example (<Content language="en">)
-- Slider editor now renders additional attributes like ("data-transition")  (not seen in editor yet)
-- Menuitems supports additional attributes which are not visible in editor like (class="scrollTo")
+- Added the ability to add site variables in the site.xml file directly.
+- Added the ability to add page variables in the xml files. For example (<Content language="en">)
+- Slider editor now renders additional attributes like ("data-transition")  (which are not editable in plugin editor yet)
+- Menuitems now supports additional attributes which are not editable in menu editor yet like (class="scrollTo")
     which can be used as (<a {{ item.attributes }} href=...) in a theme
-- ImageEditor now supports additional attributes which are not visible in editor like (data-animation="fadeIn")
-    if an attribute with the name class is provided the original class will be overriden
-- Create wizard does list all available themes now
-- Bugfix: loading menu now prior to build site in case the xml has been edited from outside
+- ImageEditor now supports additional attributes which are not editable in the plugin editor yet like (data-animation="fadeIn")
+    If an attribute with the class name is provided the original class will be overriden
+- Create wizard does now list all available themes
 
 1.4.6
 -----

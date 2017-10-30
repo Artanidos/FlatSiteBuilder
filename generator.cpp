@@ -151,6 +151,11 @@ void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuil
     sitevars["keywords"] = m_site->keywords();
     sitevars["author"] = m_site->author();
 
+    foreach(QString attName, m_site->attributes().keys())
+    {
+        sitevars[attName] = m_site->attributes().value(attName);
+    }
+
     ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
     if(tei)
     {

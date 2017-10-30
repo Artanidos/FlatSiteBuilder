@@ -1,12 +1,14 @@
 Features
 --------
+- after editing content in gedit, FSB does not reload it instead it overrides the content file with older content
+    or FSB should lock the content file so that it can not be edited
+	or FSB should make it possible to edit the file directly inside
 - edit footer content
 - edit google analytics
 - edit theme (local overrides)
-- create should not override existing sources
+- create wizard should not override existing sources
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
-
-- Bugfix: Errorhandling parsing in generator
+- read and write additional site vars
 
 
 Postponend

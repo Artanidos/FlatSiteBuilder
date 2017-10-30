@@ -83,6 +83,9 @@ public:
     QString createTemporaryContent(ContentType type);
     void loadContent(Content *content, QXmlStreamReader *stream);
 
+    void addAttribute(QString attName, QString value) {m_attributes.insert(attName, value);}
+    QHash<QString,QString> attributes() {return m_attributes;}
+
 private:
     MainWindow *m_win;
     QString m_filename;
@@ -98,6 +101,7 @@ private:
     QList<Content *> m_pages;
     QList<Content *> m_posts;
     QList<Menu *> m_menus;
+    QHash<QString,QString> m_attributes;
 };
 
 #endif // SITE_H

@@ -236,7 +236,7 @@ void ContentEditor::titleChanged(QString title)
 {
     if(m_isNew)
     {
-        QString source = title.toLower() + ".xml";
+        QString source = title.toLower().replace(" ", "_") + ".xml";
         m_source->setText(source);
     }
 }

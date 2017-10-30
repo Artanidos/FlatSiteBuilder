@@ -54,13 +54,27 @@ void Site::load()
     {
         if(xml.name() == "Site")
         {
-            setTheme(xml.attributes().value("theme").toString());
-            setTitle(xml.attributes().value("title").toString());
-            setDescription(xml.attributes().value("description").toString());
-            setCopyright(xml.attributes().value("copyright").toString());
-            setKeywords(xml.attributes().value("keywords").toString());
-            setAuthor(xml.attributes().value("author").toString());
-            setPublisher(xml.attributes().value("publisher").toString());
+            foreach(QXmlStreamAttribute att, xml.attributes())
+            {
+                QString attName = att.name().toString();
+                QString value = att.value().toString();
+                if(attName == "theme")
+                    setTheme(value);
+                else if(attName == "title")
+                    setTitle(value);
+                else if(attName == "description")
+                    setDescription(value);
+                else if(attName == "copyright")
+                    setCopyright(value);
+                else if(attName == "keywords")
+                    setKeywords(value);
+                else if(attName == "author")
+                    setAuthor(value);
+                else if(attName == "publisher")
+                    setPublisher(value);
+                else //set additional html attributes like class="themeAccentName"
+                    addAttribute(attName, value);
+            }
         }
     }
     file.close();
@@ -256,6 +270,10 @@ void Site::save()
     xml.writeAttribute("keywords", keywords());
     xml.writeAttribute("author", author());
     xml.writeAttribute("publisher", publisher());
+    foreach(QString attName, attributes().keys())
+    {
+        xml.writeAttribute(attName, attributes().value(attName));
+    }
     xml.writeEndElement();
     xml.writeEndDocument();
     file.close();
