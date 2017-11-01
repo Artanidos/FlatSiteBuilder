@@ -59,7 +59,7 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     m_buildButton->setToolTip("Build the website");
 
     m_info = new QLabel();
-    if(m_site)
+    if(m_site && !m_site->title().isEmpty())
         m_info->setText(m_site->title() + " loaded...");
     else
         m_info->setText("No site loaded yet...");
@@ -131,5 +131,8 @@ void Dashboard::previewClicked()
 void Dashboard::siteLoaded(Site *site)
 {
     m_site = site;
-    m_info->setText(m_site->title() + " loaded...");
+    if(m_site->title().isEmpty())
+        m_info->setText("No site loaded yet...");
+    else
+        m_info->setText(m_site->title() + " loaded...");
 }

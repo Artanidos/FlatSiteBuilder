@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow();
+    MainWindow(QString installDirectory);
 
     bool eventFilter(QObject *watched, QEvent *event);
     void reloadProject();
@@ -84,6 +84,7 @@ private:
     QTableWidget *m_list;
     QWidget *m_cellWidget;
     int m_row;
+    QString m_installDirectory;
 
 private slots:
     void dashboardExpanded(bool value);

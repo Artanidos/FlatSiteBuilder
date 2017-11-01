@@ -38,8 +38,9 @@ public:
 
     void generateSite(MainWindow *m_win, Site *site, Content *content = 0);
 
-    static QString sitesPath() {return QDir::homePath() + "/FlatSiteBuilder/sites";}
-    static QString themesPath() {return QDir::homePath() + "/FlatSiteBuilder/themes";}
+    static void setInstallDirectory(QString installDirectory) {m_installDirectory = installDirectory;}
+    static QString sitesPath() {return m_installDirectory + "/sites";}
+    static QString themesPath() {return m_installDirectory + "/themes";}
 
 #ifdef TEST
     void setSitesPath(QString path) {m_sitesPath = path;}
@@ -71,6 +72,7 @@ private:
     QVariantMap themevars;
     QString m_themePath;
     QString m_sitesPath;
+    static QString m_installDirectory;
 
     void copyPath(QString src, QString dst);
 

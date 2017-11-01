@@ -28,10 +28,11 @@
 #include <QDir>
 #include <QTest>
 
-SiteWizard::SiteWizard()
+SiteWizard::SiteWizard(QString installDirectory)
 {
+    m_installDirectory = installDirectory;
     addPage(new IntroPage);
-    addPage(new SiteInfoPage);
+    addPage(new SiteInfoPage(installDirectory));
     addPage(new ConclusionPage);
 
     setWindowTitle(tr("Site Wizard"));
@@ -42,9 +43,9 @@ void SiteWizard::accept()
     QString siteName = field("siteName").toString();
     QString description = field("description").toString();
     QString copyright = field("copyright").toString();
-    QString path = QDir::homePath() + "/FlatSiteBuilder/sources/" + siteName.toLower();
+    QString path = m_installDirectory + "/sources/" + siteName.toLower();
 
-    QDir dir(QDir::homePath() + "/FlatSiteBuilder/sources/");
+    QDir dir(m_installDirectory + "/sources/");
     dir.mkdir(siteName.toLower());
     dir.cd(siteName.toLower());
     dir.mkdir("pages");
@@ -147,7 +148,7 @@ IntroPage::IntroPage(QWidget *parent)
     setLayout(layout);
 }
 
-SiteInfoPage::SiteInfoPage(QWidget *parent)
+SiteInfoPage::SiteInfoPage(QString installDirectory, QWidget *parent)
     : QWizardPage(parent)
 {
     setTitle(tr("Site Information"));
@@ -174,7 +175,7 @@ SiteInfoPage::SiteInfoPage(QWidget *parent)
     m_theme = new QComboBox;
     m_themeLabel->setBuddy(m_theme);
 
-    QDir themesDir(QDir::homePath() + "/FlatSiteBuilder/themes");
+    QDir themesDir(installDirectory + "/themes");
     foreach(QString theme, themesDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
         m_theme->addItem(theme);

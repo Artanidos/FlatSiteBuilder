@@ -95,5 +95,6 @@
         <file>images/trash_normal.png</file>
         <file>images/theme.png</file>
         <file>images/icon.svg</file>
+        <file>images/icon_128.png</file>
     </qresource>
 </RCC>

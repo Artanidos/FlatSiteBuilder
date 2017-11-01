@@ -22,11 +22,13 @@
 #include "interfaces.h"
 #include "themechooser.h"
 #include "sitesettingseditor.h"
+#include "installdialog.h"
 #include <QCloseEvent>
 #include <QCryptographicHash>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QApplication>
+#include <QFileDialog>
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QTableWidgetItem>
@@ -61,10 +63,13 @@
 #include "menulist.h"
 #include "menueditor.h"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(QString installDirectory)
 {
     m_site = NULL;
     m_editor = NULL;
+    m_installDirectory = installDirectory;
+
+    Generator::setInstallDirectory(installDirectory);
 
     initUndoRedo();
     initGui();
@@ -92,7 +97,7 @@ MainWindow::MainWindow()
 
 void MainWindow::loadPlugins()
 {
-    QDir pluginsDir(QDir::homePath() + "/FlatSiteBuilder/plugins");
+    QDir pluginsDir(m_installDirectory + "/plugins");
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
@@ -150,13 +155,12 @@ void MainWindow::initUndoRedo()
 
 void MainWindow::install()
 {
-    QDir installDir(QDir::homePath() + "/FlatSiteBuilder");
-    if(!installDir.exists())
+    QDir installDir(m_installDirectory);
+    QDir pluginsDir(m_installDirectory + "/plugins");
+    QDir themesDir(m_installDirectory + "/themes");
+    if(!pluginsDir.exists() || !themesDir.exists())
     {
-        qDebug() << "Installing themes and demosite";
-        installDir.setPath(QDir::homePath());
-        installDir.mkdir("FlatSiteBuilder");
-        installDir.cd("FlatSiteBuilder");
+        qDebug() << "Installing themes, plugins and demosite";
         m_defaultPath = installDir.absolutePath() + "/sources/testsite";
     }
 
@@ -379,10 +383,11 @@ void MainWindow::reloadProject()
             }
         }
     }
-    if(m_site->publisher().isEmpty())
+    if(m_site->publisher().isEmpty() && Plugins::publishPluginNames().count() > 0)
+    {
         m_site->setPublisher(Plugins::publishPluginNames().at(0));
-    Plugins::setActualPublishPlugin(m_site->publisher());
-
+        Plugins::setActualPublishPlugin(m_site->publisher());
+    }
     emit siteLoaded(m_site);
 }
 
@@ -605,7 +610,7 @@ void MainWindow::animationFineshedZoomIn()
 void MainWindow::previewSite(Content *content)
 {
     QString file;
-    QString dir = QDir::homePath() + "/FlatSiteBuilder/sites";
+    QString dir = m_installDirectory + "/sites";
     QDir path(dir + "/" + m_site->title());
     if(!content)
     {
@@ -649,7 +654,7 @@ void MainWindow::buildSite()
 
 void MainWindow::createSite()
 {
-    SiteWizard *wiz = new SiteWizard();
+    SiteWizard *wiz = new SiteWizard(m_installDirectory);
     connect(wiz, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
     connect(wiz, SIGNAL(buildSite()), this, SLOT(buildSite()));
     wiz->show();

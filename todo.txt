@@ -8,8 +8,8 @@ Features
 - edit theme (local overrides)
 - create wizard should not override existing sources
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
-- read and write additional site vars
-
+- also deploy additional file to sites root like this google*.html
+- how to
 
 Postponend
 ----------

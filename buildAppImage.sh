@@ -32,7 +32,7 @@ export LD_LIBRARY_PATH=~/SourceCode/FlatSiteBuilder/AppImage/usr/lib:~/Qt/5.9.1/
 rm AppImage/AppRun
 cp AppRun AppImage
 /home/olaf/appimagetool/appimagetool-x86_64.AppImage AppImage
-mv FlatSiteBuilder-x86_64.AppImage FlatSiteBuilder-Linux-x86_64-1.5.AppImage
+mv FlatSiteBuilder-x86_64.AppImage FlatSiteBuilder-Linux-x86_64-1.5.1.AppImage
 
 # Clean up
 rm -r AppImage/*

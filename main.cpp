@@ -21,17 +21,19 @@
 #include "mainwindow.h"
 #include "site.h"
 #include "content.h"
+#include "installdialog.h"
 #include "column.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QTest>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {   
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
-    QCoreApplication::setApplicationVersion("1.5");
+    QCoreApplication::setApplicationVersion("1.5.1");
     QCoreApplication::setOrganizationName("Artanidos");
 
     QFont newFont("Sans Serif", 10);
@@ -60,7 +62,20 @@ int main(int argc, char *argv[])
 
     a.setWindowIcon(QIcon(QLatin1String(":/images/icon.svg")));
 
-    MainWindow w;
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,  QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QString installDirectory = settings.value("installDirectory").toString();
+    if(installDirectory.isEmpty())
+    {
+        InstallDialog dlg;
+        dlg.exec();
+        installDirectory = dlg.installDirectory();
+        if(installDirectory.isEmpty())
+            return 0;
+        settings.setValue("installDirectory", installDirectory);
+    }
+
+    MainWindow w(installDirectory);
     w.show();
 
     return a.exec();

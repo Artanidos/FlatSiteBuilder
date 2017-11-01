@@ -35,6 +35,8 @@
 
 Q_DECLARE_METATYPE(QFile*)
 
+QString Generator::m_installDirectory;
+
 Generator::Generator()
 {
     m_themePath = Generator::themesPath();

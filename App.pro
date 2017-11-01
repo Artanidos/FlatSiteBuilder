@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     menulist.cpp \
     menueditor.cpp \
     themechooser.cpp \
-    sitesettingseditor.cpp
+    sitesettingseditor.cpp \
+    installdialog.cpp
 
 HEADERS  += mainwindow.h \
     generator.h \
@@ -86,6 +87,7 @@ HEADERS  += mainwindow.h \
     menueditor.h \
     themechooser.h \
     sitesettingseditor.h \
+    installdialog.h
 
 DISTFILES += \
     README.md \
