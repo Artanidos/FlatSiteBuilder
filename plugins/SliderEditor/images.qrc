@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>slider.png</file>
-        <file>js/jquery.themepunch.plugins.min.js</file>
-        <file>js/jquery.themepunch.revolution.min.js</file>
         <file>js/slider_revolution.js</file>
         <file>css/settings.css</file>
         <file>assets/arrow_large_left.png</file>
@@ -42,5 +40,7 @@
         <file>assets/timerdot.png</file>
         <file>assets/transparent.jpg</file>
         <file>assets/white50.png</file>
+        <file>js/plugins/jquery.themepunch.plugins.min.js</file>
+        <file>js/plugins/jquery.themepunch.revolution.min.js</file>
     </qresource>
 </RCC>

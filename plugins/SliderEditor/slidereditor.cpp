@@ -386,7 +386,7 @@ QString SliderEditor::pluginScripts()
     QString script = "";
     script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.plugins.min.js\"></script>\n";
     script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.revolution.min.js\"></script>\n";
-    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/slider_revolution.js\"></script>\n";
+    script += "<script type=\"text/javascript\" src=\"assets/js/slider_revolution.js\"></script>\n";
     return script;
 }
 
@@ -401,7 +401,8 @@ void SliderEditor::installAssets(QString assetsPath)
     assets.mkdir("js");
     assets.mkdir("assets");
     installFiles(":/css", assetsPath + "/plugins/revolution-slider/css");
-    installFiles(":/js", assetsPath + "/plugins/revolution-slider/js");
+    installFiles(":/js", assetsPath + "/js");
+    installFiles(":/js/plugins", assetsPath + "/plugins/revolution-slider/js");
     installFiles(":/assets", assetsPath + "/plugins/revolution-slider/assets");
 }
 
