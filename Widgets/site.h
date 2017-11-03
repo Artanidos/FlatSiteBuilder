@@ -22,11 +22,13 @@
 #define SITE_H
 
 #include <QObject>
+#include <QHash>
 #include "content.h"
-#include "menu.h"
 
-class MainWindow;
+class QMainWindow;
 class QXmlStreamReader;
+class Content;
+class Menu;
 class Site : public QObject
 {
     Q_OBJECT
@@ -35,7 +37,7 @@ class Site : public QObject
 public:
     Site() {}
     Site(QObject *) {}
-    Site(MainWindow *win, QString filename);
+    Site(QMainWindow *win, QString filename);
 
     QString theme() {return m_theme;}
     void setTheme(QString theme) {m_theme = theme;}
@@ -87,7 +89,7 @@ public:
     QHash<QString,QString> attributes() {return m_attributes;}
 
 private:
-    MainWindow *m_win;
+    QMainWindow *m_win;
     QString m_filename;
     QString m_sourcePath;
     QString m_deployPath;

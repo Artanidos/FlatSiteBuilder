@@ -23,6 +23,7 @@
 
 #include "interfaces.h"
 #include "animateableeditor.h"
+#include "menuitem.h"
 
 class QUndoStack;
 class FlatButton;
@@ -76,7 +77,7 @@ class MenuEditor : public AnimateableEditor
     Q_OBJECT
 
 public:
-    MenuEditor(MainWindow *win, Menu *menu, Site *site);
+    MenuEditor(QMainWindow *win, Menu *menu, Site *site);
 
     void setContent(QString) {/* not used */}
     void registerUndoStack(QUndoStack *stack);
@@ -107,7 +108,7 @@ private slots:
     void iconClicked(ImageSelector*, Qt::MouseButton);
 
 private:
-    MainWindow *m_win;
+    QMainWindow *m_win;
     Menu *m_menu;
     FlatButton *m_close;
     FlatButton *m_undo;

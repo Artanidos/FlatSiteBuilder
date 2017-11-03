@@ -17,16 +17,7 @@
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
 QT += widgets testlib xml network
-SOURCES = testgenerator.cpp \
-    ../generator.cpp \
-    ../plugins.cpp \
-    ../sectionpropertyeditor.cpp \
-    ../rowpropertyeditor.cpp \
-    ../column.cpp \
-    ../site.cpp \
-    ../content.cpp \
-    ../menu.cpp \
-    ../menuitem.cpp
+SOURCES = testgenerator.cpp
 DEFINES += TEST
 DISTFILES += \
     pages/test.xml \
@@ -34,18 +25,6 @@ DISTFILES += \
     themes/testSiteTheme/layouts/testPageLayout.html \
     includes/de.html \
     includes/en.html
-
-HEADERS += \
-    ../generator.h \
-    ../plugins.h \
-    ../column.h \
-    ../rowpropertyeditor.h \
-    ../sectionpropertyeditor.h \
-    ../interfaces.h \
-    ../site.h \
-    ../content.h \
-    ../menu.h \
-    ../menuitem.h
 
 
 LIBS += -L$$OUT_PWD/../Widgets/ -lWidgets

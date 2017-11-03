@@ -36,7 +36,7 @@ class Generator : public QObject
 public:
     Generator();
 
-    void generateSite(MainWindow *m_win, Site *site, Content *content = 0);
+    void generateSite(QMainWindow *m_win, Site *site, Content *content = 0);
 
     static void setInstallDirectory(QString installDirectory) {m_installDirectory = installDirectory;}
     static QString sitesPath() {return m_installDirectory + "/sites";}
@@ -65,7 +65,7 @@ private:
     };
 
     Site *m_site;
-    MainWindow *m_win;
+    QMainWindow *m_win;
     QVariantMap pluginvars;
     QVariantMap pagevars;
     QVariantMap sitevars;

@@ -27,12 +27,12 @@ extern int fileVersionNumber;
 
 class ContentList;
 class ContentEditor;
-class MainWindow;
+class QMainWindow;
 class Site;
 class ChangeContentCommand : public QUndoCommand
 {
 public:
-    ChangeContentCommand(MainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent = 0);
+    ChangeContentCommand(QMainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent = 0);
     void undo() override;
     void redo() override;
 
@@ -40,7 +40,7 @@ private:
     ContentEditor *m_contentEditor;
     QString m_tempFilename;
     QString m_redoFilename;
-    MainWindow *m_win;
+    QMainWindow *m_win;
 };
 
 class DeleteContentCommand : public QUndoCommand

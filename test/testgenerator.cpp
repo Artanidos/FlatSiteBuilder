@@ -1,7 +1,8 @@
 #include <QtTest/QtTest>
 #include <QObject>
-#include "../generator.h"
-#include "../plugins.h"
+#include "generator.h"
+#include "plugins.h"
+#include "menu.h"
 
 class TestGenerator : public QObject
 {

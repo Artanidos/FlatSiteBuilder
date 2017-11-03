@@ -27,6 +27,7 @@
 #include "commands.h"
 #include "sectioneditor.h"
 #include "roweditor.h"
+#include "menu.h"
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>

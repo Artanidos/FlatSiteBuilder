@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
 
-QT       += widgets
+QT       += widgets testlib
 
 TARGET = Widgets
 TEMPLATE = lib
@@ -29,7 +29,16 @@ SOURCES += \
     imageselector.cpp \
     tablecellbuttons.cpp \
     undoableeditor.cpp \
-    xmlhighlighter.cpp
+    xmlhighlighter.cpp \
+    site.cpp \
+    generator.cpp \
+    content.cpp \
+    menu.cpp \
+    menuitem.cpp \
+    plugins.cpp \
+    sectionpropertyeditor.cpp \
+    rowpropertyeditor.cpp \
+    column.cpp
 
 HEADERS +=\
     flatbutton.h \
@@ -38,7 +47,17 @@ HEADERS +=\
     tablecellbuttons.h \
     undoableeditor.h \
     animateableeditor.h \
-    xmlhighlighter.h
+    xmlhighlighter.h \
+    site.h \
+    generator.h \
+    content.h \
+    interfaces.h \
+    menu.h \
+    menuitem.h \
+    plugins.h \
+    sectionpropertyeditor.h \
+    rowpropertyeditor.h \
+    column.h
 
 unix {
     target.path = /usr/lib

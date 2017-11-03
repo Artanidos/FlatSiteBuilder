@@ -21,7 +21,6 @@
 #include "column.h"
 #include "plugins.h"
 #include "interfaces.h"
-#include "mainwindow.h"
 #include <QXmlStreamReader>
 #include <QTest>
 

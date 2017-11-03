@@ -30,7 +30,7 @@
 #include <QDir>
 #include <QTest>
 
-ChangeContentCommand::ChangeContentCommand(MainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent)
+ChangeContentCommand::ChangeContentCommand(QMainWindow *win, ContentEditor *ce, QString text, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_win = win;

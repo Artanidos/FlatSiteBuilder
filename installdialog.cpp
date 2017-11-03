@@ -25,6 +25,8 @@
 #include <QLineEdit>
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QTest>
 
 InstallDialog::InstallDialog()
 {
@@ -63,6 +65,13 @@ InstallDialog::InstallDialog()
 
 void InstallDialog::installClicked()
 {
+    QDir installDir(m_path->text());
+    if(installDir.exists() && !installDir.isEmpty())
+    {
+        int rc = QMessageBox::question(this, "Warning", "The folder already exists and is not empty. Do you really want to use this directory to install FlatSiteBuilder?");
+        if(rc != QMessageBox::Yes)
+            return;
+    }
     m_installDirectory = m_path->text();
     close();
 }

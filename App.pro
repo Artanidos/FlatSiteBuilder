@@ -25,13 +25,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    generator.cpp \
     expander.cpp \
     hyperlink.cpp \
-    site.cpp \
-    column.cpp \
     dashboard.cpp \
-    content.cpp \
     contenteditor.cpp \
     contentlist.cpp \
     sectioneditor.cpp \
@@ -43,13 +39,8 @@ SOURCES += main.cpp\
     dropzone.cpp \
     columnsdialog.cpp \
     moduldialog.cpp \
-    menu.cpp \
-    menuitem.cpp \
-    rowpropertyeditor.cpp \
-    sectionpropertyeditor.cpp \
     sitewizard.cpp \
     commands.cpp \
-    plugins.cpp \
     menulist.cpp \
     menueditor.cpp \
     themechooser.cpp \
@@ -57,13 +48,9 @@ SOURCES += main.cpp\
     installdialog.cpp
 
 HEADERS  += mainwindow.h \
-    generator.h \
     expander.h \
     hyperlink.h \
-    site.h \
-    column.h \
     dashboard.h \
-    content.h \
     contenteditor.h \
     contentlist.h \
     sectioneditor.h \
@@ -75,14 +62,8 @@ HEADERS  += mainwindow.h \
     dropzone.h \
     columnsdialog.h \
     moduldialog.h \
-    menu.h \
-    menuitem.h \
-    interfaces.h \
-    rowpropertyeditor.h \
-    sectionpropertyeditor.h \
     sitewizard.h \
     commands.h \
-    plugins.h \
     menulist.h \
     menueditor.h \
     themechooser.h \

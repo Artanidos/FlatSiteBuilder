@@ -1,3 +1,7 @@
+1.5.2
+---
+- Added an override warning after choosing install folder.
+
 1.5.1
 ---
 - The install directory can now be choosen prior to install FlatSiteBuilder

@@ -20,14 +20,16 @@
 
 #include "site.h"
 #include "generator.h"
-#include "mainwindow.h"
+#include <QMainWindow>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QStatusBar>
 #include <QTemporaryFile>
+#include "content.h"
+#include "menu.h"
 #include <QTest>
 
-Site::Site(MainWindow *win, QString filename)
+Site::Site(QMainWindow *win, QString filename)
 {
     QFileInfo info(filename);
     m_filename = info.fileName();

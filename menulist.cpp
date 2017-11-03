@@ -21,6 +21,7 @@
 #include "menulist.h"
 #include "mainwindow.h"
 #include "menueditor.h"
+#include "menu.h"
 #include "commands.h"
 #include "flatbutton.h"
 #include <QStatusBar>

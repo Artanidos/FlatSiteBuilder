@@ -23,6 +23,7 @@
 #include "imageselector.h"
 #include "generator.h"
 #include "commands.h"
+#include "menu.h"
 #include <QUndoStack>
 #include <QFileDialog>
 #include <QStandardPaths>
@@ -36,7 +37,7 @@
 #include <QStatusBar>
 #include <QTest>
 
-MenuEditor::MenuEditor(MainWindow *win, Menu *menu, Site *site)
+MenuEditor::MenuEditor(QMainWindow *win, Menu *menu, Site *site)
 {
     m_win = win;
     m_site = site;

@@ -20,14 +20,17 @@
 
 #include "generator.h"
 #include "content.h"
+#include "menu.h"
+#include "menuitem.h"
+#include "inttypes.h"
 #include "plugins.h"
 #include "sectionpropertyeditor.h"
-#include "mainwindow.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
 #include <QDir>
 #include <QStringList>
+#include <QMainWindow>
 #include <QProcess>
 #include <QStack>
 #include <QXmlStreamReader>
@@ -47,7 +50,7 @@ Generator::Generator()
  * Parses all *.xml files for a gives path
  * and translates them to html into a directory named "site".
  */
-void Generator::generateSite(MainWindow *win, Site *site, Content *contentToBuild)
+void Generator::generateSite(QMainWindow *win, Site *site, Content *contentToBuild)
 {
     m_win = win;
     m_site = site;

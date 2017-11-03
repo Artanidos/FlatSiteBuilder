@@ -20,7 +20,6 @@
 
 #include "rowpropertyeditor.h"
 #include "column.h"
-#include "mainwindow.h"
 #include "flatbutton.h"
 #include <QGridLayout>
 #include <QXmlStreamWriter>

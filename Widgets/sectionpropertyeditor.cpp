@@ -20,7 +20,6 @@
 
 #include "sectionpropertyeditor.h"
 #include "rowpropertyeditor.h"
-#include "mainwindow.h"
 #include "flatbutton.h"
 #include "plugins.h"
 #include <QPushButton>
