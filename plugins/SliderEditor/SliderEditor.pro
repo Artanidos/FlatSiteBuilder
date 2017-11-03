@@ -22,10 +22,10 @@ CONFIG       += plugin
 TARGET		  = SliderEditor
 INCLUDEPATH  += ../../
 SOURCES		 += slidereditor.cpp \
-    slideeditor.cpp
-HEADERS		 += slidereditor.h \
-    ../../interfaces.h \
-    slideeditor.h
+                 slideeditor.cpp
+HEADERS		 += slidereditor.h
+                slideeditor.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
 }

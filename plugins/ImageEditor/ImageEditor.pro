@@ -22,8 +22,8 @@ CONFIG       += plugin
 TARGET		  = ImageEditor
 INCLUDEPATH  += ../../
 SOURCES		 += imageeditor.cpp
-HEADERS		 += imageeditor.h \
-    ../../interfaces.h
+HEADERS		 += imageeditor.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
 }

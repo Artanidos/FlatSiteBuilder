@@ -22,8 +22,8 @@ CONFIG       += plugin
 TARGET		  = SampleEditor
 INCLUDEPATH  += ../../
 SOURCES		 += sampleeditor.cpp
-HEADERS		 += sampleeditor.h \
-    ../../interfaces.h
+HEADERS		 += sampleeditor.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
 }

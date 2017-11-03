@@ -22,8 +22,8 @@ CONFIG       += plugin
 TARGET		  = TextEditor
 INCLUDEPATH  += ../../
 SOURCES		 += texteditor.cpp
-HEADERS		 += texteditor.h \
-    ../../interfaces.h
+HEADERS		 += texteditor.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
 }

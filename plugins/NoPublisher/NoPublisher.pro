@@ -22,8 +22,8 @@ CONFIG       += plugin
 TARGET		  = NoPublisher
 INCLUDEPATH  += ../../
 SOURCES		 += nopublisher.cpp
-HEADERS		 += nopublisher.h \
-    ../../interfaces.h
+HEADERS		 += nopublisher.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
 }

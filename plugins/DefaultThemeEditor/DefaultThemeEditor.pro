@@ -22,8 +22,7 @@ CONFIG       += plugin
 TARGET		  = DefaultThemeEditor
 INCLUDEPATH  += ../../
 SOURCES		 += defaultthemeeditor.cpp
-HEADERS		 += defaultthemeeditor.h \
-    ../../interfaces.h
+HEADERS		 += defaultthemeeditor.h
 
 CONFIG(debug, debug|release) {
     DESTDIR = ~/FlatSiteBuilder/plugins
