@@ -1,6 +1,8 @@
 1.5.2
 ---
 - Added an override warning after choosing install folder.
+- SliderEditor has been converted to bootstrap 4 carousel.
+- default theme is now bootstrap 4
 
 1.5.1
 ---

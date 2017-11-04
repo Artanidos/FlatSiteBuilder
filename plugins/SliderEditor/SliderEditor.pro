@@ -23,7 +23,7 @@ TARGET		  = SliderEditor
 INCLUDEPATH  += ../../
 SOURCES		 += slidereditor.cpp \
                  slideeditor.cpp
-HEADERS		 += slidereditor.h
+HEADERS		 += slidereditor.h \
                 slideeditor.h
 
 CONFIG(debug, debug|release) {

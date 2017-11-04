@@ -330,90 +330,70 @@ void SliderEditor::animationFineshedZoomOut()
 
 QString SliderEditor::getHtml(QXmlStreamReader *xml)
 {
-    QString dataTransition = "slideleft";
-    QString dataMasterspeed = "700";
     QHash<QString,QString> attributes;
-    QString html = "<div class=\"fullwidthbanner-container roundedcorners\">\n";
-    html += "<div class=\"fullwidthbanner\">\n";
-    html += "<ul>\n";
+    QStringList urls;
+
+    QString html = "<div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n";
+    html += "<ol class=\"carousel-indicators\">\n";
 
     foreach(QXmlStreamAttribute att, xml->attributes())
     {
         QString attName = att.name().toString();
         QString value = att.value().toString();
-        if(attName == "data-transition")
-            dataTransition = value;
-        else if(attName == "data-masterspeed")
-            dataMasterspeed = value;
-        else if(attName == "adminlabel")
+        if(attName == "adminlabel")
             ; // ignore
         else
             attributes.insert(attName, value);
     }
+
     while(xml->readNext())
     {
         if(xml->isStartElement() && xml->name() == "Slide")
         {
             QString source = xml->attributes().value("src").toString();
             QString url = source.mid(source.indexOf("assets/images/"));
-            html += "<li data-transition=\"" + dataTransition + "\" data-masterspeed=\"" + dataMasterspeed + "\"";
-            foreach(QString attName, attributes.keys())
-            {
-                html += " " + attName + "=\"" + attributes.value(attName) + "\"";
-            }
-            html += ">\n";
-            html += "<img src=\"" + url + "\" alt=\"\" data-bgfit=\"cover\" data-bgposition=\"center top\" data-bgrepeat=\"no-repeat\">\n";
-            html += xml->readElementText() + "\n";
-            html += "</li>\n";
+            urls.append(url);
         }
         else if(xml->isEndElement() && xml->name() == "Slider")
             break;
     }
-    html += "</ul>\n";
-    html += "<div class=\"tp-bannertimer\"></div>\n";
+
+    int pos = 0;
+    foreach(QString url, urls)
+    {
+        html += "<li data-target=\"#myCarousel\" data-slide-to=\"" + QString::number(pos) + "\"" + (pos == 0 ? " class=\"active\"" : "") + "></li>\n";
+        pos++;
+    }
+    html += "</ol>\n";
+    html += "<div class=\"carousel-inner\">\n";
+
+    pos = 0;
+    foreach(QString url, urls)
+    {
+        html += "<div class=\"carousel-item";
+        if(pos == 0)
+            html += " active";
+        html += "\">\n";
+        html += "<img class=\"d-block w-100\" src=\"" + url + "\" alt=\"\"";
+        foreach(QString attName, attributes.keys())
+        {
+            html += " " + attName + "=\"" + attributes.value(attName) + "\"";
+        }
+        html += ">\n";
+        html += xml->readElementText() + "\n";
+        html += "</div>\n";
+        pos++;
+    }
+
     html += "</div>\n";
+    html += "<a class=\"carousel-control-prev\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\">\n";
+    html += "<span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n";
+    html += "<span class=\"sr-only\">Previous</span>\n";
+    html += "</a>\n";
+    html += "<a class=\"carousel-control-next\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\">\n";
+    html += "<span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n";
+    html += "<span class=\"sr-only\">Next</span>\n";
+    html += "</a>\n";
     html += "</div>\n";
     return html;
-}
-
-QString SliderEditor::pluginStyles()
-{
-    return "<link href=\"assets/plugins/revolution-slider/css/settings.css\" rel=\"stylesheet\" type=\"text/css\"/>\n";
-}
-
-QString SliderEditor::pluginScripts()
-{
-    QString script = "";
-    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.plugins.min.js\"></script>\n";
-    script += "<script type=\"text/javascript\" src=\"assets/plugins/revolution-slider/js/jquery.themepunch.revolution.min.js\"></script>\n";
-    script += "<script type=\"text/javascript\" src=\"assets/js/slider_revolution.js\"></script>\n";
-    return script;
-}
-
-void SliderEditor::installAssets(QString assetsPath)
-{
-    QDir assets(assetsPath);
-    assets.mkdir("plugins");
-    assets.cd("plugins");
-    assets.mkdir("revolution-slider");
-    assets.cd("revolution-slider");
-    assets.mkdir("css");
-    assets.mkdir("js");
-    assets.mkdir("assets");
-    installFiles(":/css", assetsPath + "/plugins/revolution-slider/css");
-    installFiles(":/js", assetsPath + "/js");
-    installFiles(":/js/plugins", assetsPath + "/plugins/revolution-slider/js");
-    installFiles(":/assets", assetsPath + "/plugins/revolution-slider/assets");
-}
-
-void SliderEditor::installFiles(QString sourcedir, QString targetdir)
-{
-    QDir source(sourcedir);
-    if(!source.exists())
-        return;
-
-    foreach (QString filename, source.entryList(QDir::Files))
-    {
-        QFile::copy(sourcedir + QDir::separator() + filename, targetdir + QDir::separator() + filename);
-    }
 }
