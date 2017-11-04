@@ -332,8 +332,11 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
 {
     QHash<QString,QString> attributes;
     QStringList urls;
+    QStringList inner;
+    QString id = "main-carousel";
 
-    QString html = "<div id=\"myCarousel\" class=\"carousel slide\" data-ride=\"carousel\">\n";
+    QString html = "<section id=\"home\">\n";
+    html += "<div id=\"" + id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n";
     html += "<ol class=\"carousel-indicators\">\n";
 
     foreach(QXmlStreamAttribute att, xml->attributes())
@@ -353,6 +356,8 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
             QString source = xml->attributes().value("src").toString();
             QString url = source.mid(source.indexOf("assets/images/"));
             urls.append(url);
+
+            inner.append(xml->readElementText());
         }
         else if(xml->isEndElement() && xml->name() == "Slider")
             break;
@@ -361,7 +366,7 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
     int pos = 0;
     foreach(QString url, urls)
     {
-        html += "<li data-target=\"#myCarousel\" data-slide-to=\"" + QString::number(pos) + "\"" + (pos == 0 ? " class=\"active\"" : "") + "></li>\n";
+        html += "<li data-target=\"#" + id + "\" data-slide-to=\"" + QString::number(pos) + "\"" + (pos == 0 ? " class=\"active\"" : "") + "></li>\n";
         pos++;
     }
     html += "</ol>\n";
@@ -370,30 +375,24 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
     pos = 0;
     foreach(QString url, urls)
     {
-        html += "<div class=\"carousel-item";
+        html += "<div class=\"item";
         if(pos == 0)
             html += " active";
-        html += "\">\n";
-        html += "<img class=\"d-block w-100\" src=\"" + url + "\" alt=\"\"";
+        html += "\" ";
+        html += "style=\"background-image: url(" + url + ")\"";
         foreach(QString attName, attributes.keys())
         {
             html += " " + attName + "=\"" + attributes.value(attName) + "\"";
         }
         html += ">\n";
-        html += xml->readElementText() + "\n";
+        html += inner.at(pos) + "\n";
         html += "</div>\n";
         pos++;
     }
-
     html += "</div>\n";
-    html += "<a class=\"carousel-control-prev\" href=\"#myCarousel\" role=\"button\" data-slide=\"prev\">\n";
-    html += "<span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n";
-    html += "<span class=\"sr-only\">Previous</span>\n";
-    html += "</a>\n";
-    html += "<a class=\"carousel-control-next\" href=\"#myCarousel\" role=\"button\" data-slide=\"next\">\n";
-    html += "<span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n";
-    html += "<span class=\"sr-only\">Next</span>\n";
-    html += "</a>\n";
+    html += "<a class=\"carousel-left member-carousel-control hidden-xs\" href=\"#" + id + "\" data-slide=\"prev\"><i class=\"fa fa-angle-left\"></i></a>\n";
+    html += "<a class=\"carousel-right member-carousel-control hidden-xs\" href=\"#" + id + "\" data-slide=\"next\"><i class=\"fa fa-angle-right\"></i></a>\n";
     html += "</div>\n";
+    html += "</section>\n";
     return html;
 }
