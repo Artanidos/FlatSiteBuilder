@@ -234,7 +234,10 @@ DISTFILES += \
     default.svg \
     AppRun \
     themes/default/assets/js/vendor/popper.min.js \
-    themes/himu/assets/js/vendor/popper.min.js
+    themes/himu/assets/js/vendor/popper.min.js \
+    testsite/assets/images/slide1.jpg \
+    testsite/assets/images/slide2.jpg \
+    testsite/assets/images/slide3.jpg
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -29,6 +29,7 @@
 #include <QStandardPaths>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QTest>
 
 SlideEditor::SlideEditor()
 {
