@@ -232,7 +232,9 @@ DISTFILES += \
     themes/himu/sample.html \
     default.desktop \
     default.svg \
-    AppRun
+    AppRun \
+    themes/default/assets/js/vendor/popper.min.js \
+    themes/himu/assets/js/vendor/popper.min.js
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
