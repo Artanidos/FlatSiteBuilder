@@ -350,7 +350,10 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
         if(attName == "adminlabel")
             ; // ignore
         else if(attName == "id")
-            id = value;
+        {
+            if(!value.isEmpty())
+                id = value;
+        }
         else
             attributes.insert(attName, value);
     }
