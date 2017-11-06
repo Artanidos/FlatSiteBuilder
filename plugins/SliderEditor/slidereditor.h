@@ -82,6 +82,7 @@ private slots:
 
 private:
     QLineEdit *m_adminlabel;
+    QLineEdit *m_id;
     QTableWidget *m_list;
     SlideEditor *m_editor;
     QParallelAnimationGroup *m_animationgroup;

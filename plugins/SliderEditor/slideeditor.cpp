@@ -75,9 +75,10 @@ SlideEditor::SlideEditor()
     grid->addWidget(seek, 2, 2);
     grid->addWidget(m_image, 3, 0, 1, 2);
     grid->setRowStretch(3, 1);
-    grid->addWidget(m_innerHtml, 4, 0, 1, 3);
-    grid->addWidget(new QLabel("Admin Label"), 5, 0);
-    grid->addWidget(m_adminlabel, 6, 0);
+    grid->addWidget(new QLabel("Inner HTML"), 4, 0);
+    grid->addWidget(m_innerHtml, 5, 0, 1, 3);
+    grid->addWidget(new QLabel("Admin Label"), 6, 0);
+    grid->addWidget(m_adminlabel, 7, 0);
     setLayout(grid);
 
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));

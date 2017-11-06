@@ -42,6 +42,8 @@ SliderEditor::SliderEditor()
     QGridLayout *grid = new QGridLayout();
     grid->setMargin(0);
 
+    m_id = new QLineEdit;
+    m_id->setMaximumWidth(200);
     m_adminlabel = new QLineEdit;
     m_adminlabel->setMaximumWidth(200);
     QLabel *titleLabel = new QLabel("Slider Module");
@@ -70,13 +72,16 @@ SliderEditor::SliderEditor()
     grid->addWidget(close, 0, 2, 1, 1, Qt::AlignRight);
     grid->addWidget(addSlide, 1, 0);
     grid->addWidget(m_list, 2, 0, 1, 3);
-    grid->addWidget(new QLabel("Admin Label"), 4, 0);
-    grid->addWidget(m_adminlabel, 5, 0);
+    grid->addWidget(new QLabel("Id"), 4, 0);
+    grid->addWidget(m_id, 5, 0);
+    grid->addWidget(new QLabel("Admin Label"), 6, 0);
+    grid->addWidget(m_adminlabel, 7, 0);
 
     setLayout(grid);
 
     connect(addSlide, SIGNAL(clicked(bool)), this, SLOT(addSlide()));
     connect(m_adminlabel, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
+    connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
     connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(tableDoubleClicked(int, int)));
 
@@ -105,6 +110,8 @@ void SliderEditor::setContent(QString content)
         QString value = att.value().toString();
         if(attName == "adminlabel")
             m_adminlabel->setText(value);
+        else if(attName == "id")
+            m_id->setText(value);
         else
             m_additionalAttributes.insert(attName, value);
     }
@@ -167,6 +174,7 @@ void SliderEditor::closeEditor()
         {
             stream.writeAttribute(attName, m_additionalAttributes.value(attName));
         }
+        stream.writeAttribute("id", m_id->text());
         stream.writeAttribute("adminlabel", m_adminlabel->text());
         for(int i = 0; i < m_list->rowCount(); i++)
         {
@@ -335,19 +343,20 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
     QStringList inner;
     QString id = "main-carousel";
 
-    QString html = "<section id=\"home\">\n";
-    html += "<div id=\"" + id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n";
-    html += "<ol class=\"carousel-indicators\">\n";
-
     foreach(QXmlStreamAttribute att, xml->attributes())
     {
         QString attName = att.name().toString();
         QString value = att.value().toString();
         if(attName == "adminlabel")
             ; // ignore
+        else if(attName == "id")
+            id = value;
         else
             attributes.insert(attName, value);
     }
+
+    QString html = "<div id=\"" + id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n";
+    html += "<ol class=\"carousel-indicators\">\n";
 
     while(xml->readNext())
     {
@@ -379,20 +388,25 @@ QString SliderEditor::getHtml(QXmlStreamReader *xml)
         if(pos == 0)
             html += " active";
         html += "\" ";
-        html += "style=\"background-image: url(" + url + ")\"";
         foreach(QString attName, attributes.keys())
         {
             html += " " + attName + "=\"" + attributes.value(attName) + "\"";
         }
         html += ">\n";
+        html += "<img src=\"" + url + "\" style=\"width:100%\">\n";
         html += inner.at(pos) + "\n";
         html += "</div>\n";
         pos++;
     }
     html += "</div>\n";
-    html += "<a class=\"carousel-left member-carousel-control hidden-xs\" href=\"#" + id + "\" data-slide=\"prev\"><i class=\"fa fa-angle-left\"></i></a>\n";
-    html += "<a class=\"carousel-right member-carousel-control hidden-xs\" href=\"#" + id + "\" data-slide=\"next\"><i class=\"fa fa-angle-right\"></i></a>\n";
+    html += "<a class=\"left carousel-control\" href=\"#" + id + "\" data-slide=\"prev\">\n";
+    html += "<span class=\"glyphicon glyphicon-chevron-left\"></span>\n";
+    html += "<span class=\"sr-only\">Previous</span>\n";
+    html += "</a>\n";
+    html += "<a class=\"right carousel-control\" href=\"#" + id + "\" data-slide=\"next\">\n";
+    html += "<span class=\"glyphicon glyphicon-chevron-right\"></span>\n";
+    html += "<span class=\"sr-only\">Next</span>\n";
+    html += "</a>\n";
     html += "</div>\n";
-    html += "</section>\n";
     return html;
 }
