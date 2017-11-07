@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="News" menu="post" author="Olaf Japp" layout="post" keywords="" date="30.10.2017" logo="logo.png">
+    <Section><Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[{% for post in site.posts %}
+<!-- blog item -->
+<div class="item">
+	<!-- article title -->
+	<div class="item-title">
+	<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+	<a href="#" class="scrollTo label label-default light"><i class="fa fa-user"></i> {{ post.author() }}</a>
+	<span class="label label-default light">{{ post.date }}</span> 
+</div>
+
+<!-- blog short preview -->
+<p>
+{{ post.excerpt }}.
+</p>
+
+<!-- read more button -->
+<a href="{{ post.url }}" class="btn btn-xs"><i class="fa fa-sign-out"></i> READ MORE</a>
+</div>
+<!-- /blog item -->
+{% endfor %}
+]]></Text></Column>
+        </Row>
+    </Section>
+</Content>
