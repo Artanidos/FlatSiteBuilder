@@ -48,6 +48,7 @@
 #include <QDesktopServices>
 #include <QStatusBar>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
 #include "hyperlink.h"
 #include "generator.h"
 #include "commands.h"
@@ -383,11 +384,12 @@ void MainWindow::reloadProject()
             }
         }
     }
-    if(m_site->publisher().isEmpty() && Plugins::publishPluginNames().count() > 0)
+    if(m_site->publisher().isEmpty())
     {
-        m_site->setPublisher(Plugins::publishPluginNames().at(0));
-        Plugins::setActualPublishPlugin(m_site->publisher());
+        if(Plugins::publishPluginNames().count() > 0)
+            m_site->setPublisher(Plugins::publishPluginNames().at(0));
     }
+    Plugins::setActualPublishPlugin(m_site->publisher());
     emit siteLoaded(m_site);
 }
 
@@ -631,11 +633,18 @@ void MainWindow::previewSite(Content *content)
 void MainWindow::publishSite()
 {   
     QString pluginName = Plugins::actualPublishPlugin();
-    PublisherInterface *pi = Plugins::getPublishPlugin(pluginName);
-    if(pi)
+    if(pluginName.isEmpty())
     {
-        setCentralWidget(pi);
-        pi->setSitePath(m_site->deployPath());
+        QMessageBox::warning(this, "FlatSiteBuilder", "This site has not configured a publisher plugin. Please go to site settings and pick a plugin from the list.");
+    }
+    else
+    {
+        PublisherInterface *pi = Plugins::getPublishPlugin(pluginName);
+        if(pi)
+        {
+            setCentralWidget(pi);
+            pi->setSitePath(m_site->deployPath());
+        }
     }
 }
 

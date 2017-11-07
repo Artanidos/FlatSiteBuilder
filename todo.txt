@@ -1,5 +1,6 @@
 Features
 --------
+- direct access to github
 - after editing content in gedit, FSB does not reload it instead it overrides the content file with older content
     or FSB should lock the content file so that it can not be edited
 	or FSB should make it possible to edit the file directly inside

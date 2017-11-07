@@ -48,7 +48,8 @@ SiteSettingsEditor::SiteSettingsEditor(MainWindow *win, Site *site)
     foreach(QString key, Plugins::publishPluginNames())
     {
         PublisherInterface *pi = Plugins::getPublishPlugin(key);
-        m_publisher->addItem(pi->displayName(), key);
+        if(pi)
+            m_publisher->addItem(pi->displayName(), key);
     }
 
     QVBoxLayout *vbox = new QVBoxLayout;
