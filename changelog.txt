@@ -2,6 +2,10 @@
 ---
 - Added an override warning after choosing install folder.
 - SliderEditor has been converted to bootstrap 3 carousel because of license issues.
+- News will be displayed on the dashboard now.
+- Additional files and folders under <project>/content/* will also be copied to the deploy directory while building the site.
+    This makes it possible to deploy for example robots.txt, google<id>.html and other files.
+- Added a warning when SiteWizard will override an already existing site
 
 1.5.1
 ---

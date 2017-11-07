@@ -28,6 +28,8 @@
 #include <QScrollArea>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
 
 Dashboard::Dashboard(Site *site, QString defaultPath)
 {
@@ -42,6 +44,9 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     fnt.setPointSize(20);
     fnt.setBold(true);
     title->setFont(fnt);
+
+    m_browser = new QTextBrowser();
+    m_browser->setOpenLinks(false);
 
     m_loadButton = new FlatButton(":/images/load_normal.png", ":/images/load_hover.png", ":/images/load_pressed.png");
     m_loadButton->setToolTip("Load an existing website project");
@@ -80,7 +85,8 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     layout->addWidget(m_previewButton, 5, 0, 1, 1, Qt::AlignCenter);
     layout->addWidget(m_buildButton, 5, 1, 1, 1, Qt::AlignCenter);
     vbox->addLayout(layout);
-    vbox->addStretch();
+    vbox->addSpacing(40);
+    vbox->addWidget(m_browser);
     setLayout(vbox);
 
     connect(m_loadButton, SIGNAL(clicked()), this, SLOT(loadClicked()));
@@ -88,6 +94,21 @@ Dashboard::Dashboard(Site *site, QString defaultPath)
     connect(m_publishButton, SIGNAL(clicked()), this, SLOT(publishClicked()));
     connect(m_previewButton, SIGNAL(clicked()), this, SLOT(previewClicked()));
     connect(m_buildButton, SIGNAL(clicked()), this, SLOT(buildClicked()));
+
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileIsReady(QNetworkReply*)));
+    manager->get(QNetworkRequest(QUrl("https://artanidos.github.io/FlatSiteBuilder/news.html")));
+}
+
+void Dashboard::fileIsReady( QNetworkReply *reply)
+{
+    m_browser->setHtml(reply->readAll());
+    connect(m_browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
+}
+
+void Dashboard::anchorClicked(QUrl url)
+{
+    QDesktopServices::openUrl(url);
 }
 
 void Dashboard::loadClicked()

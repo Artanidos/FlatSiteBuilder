@@ -633,18 +633,11 @@ void MainWindow::previewSite(Content *content)
 void MainWindow::publishSite()
 {   
     QString pluginName = Plugins::actualPublishPlugin();
-    if(pluginName.isEmpty())
+    PublisherInterface *pi = Plugins::getPublishPlugin(pluginName);
+    if(pi)
     {
-        QMessageBox::warning(this, "FlatSiteBuilder", "This site has not configured a publisher plugin. Please go to site settings and pick a plugin from the list.");
-    }
-    else
-    {
-        PublisherInterface *pi = Plugins::getPublishPlugin(pluginName);
-        if(pi)
-        {
-            setCentralWidget(pi);
-            pi->setSitePath(m_site->deployPath());
-        }
+        setCentralWidget(pi);
+        pi->setSitePath(m_site->deployPath());
     }
 }
 

@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Content title="News" menu="post" author="Olaf Japp" layout="post" keywords="" date="30.10.2017" logo="logo.png">
+<Content title="news" menu="default" author="" layout="simple" keywords="" date="07.11.2017">
     <Section><Row>
-            <Column span="12"><Text adminlabel=""><![CDATA[{% for post in site.posts %}
-<!-- blog item -->
-<div class="item">
-	<!-- article title -->
-	<div class="item-title">
-	<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-	<a href="#" class="scrollTo label label-default light"><i class="fa fa-user"></i> {{ post.author() }}</a>
-	<span class="label label-default light">{{ post.date }}</span> 
-</div>
+            <Column span="12"><Text adminlabel=""><![CDATA[<h1>News</h1>
+<ul>
+	<li><a href="https://github.com/Artanidos/FlatSiteBuilder/releases/tag/v1.5">Release 1.5 for Linux</a></li>
+</ul>
 
-<!-- blog short preview -->
+<h1>Feature Requests</h1>
 <p>
-{{ post.excerpt }}.
-</p>
-
-<!-- read more button -->
-<a href="{{ post.url }}" class="btn btn-xs"><i class="fa fa-sign-out"></i> READ MORE</a>
-</div>
-<!-- /blog item -->
-{% endfor %}
-]]></Text></Column>
+	If you have any feature request or questions don't hasitate to contact me at <a href="mailto:artanidos@gmail.com">artanidos@gmail.com</a>.
+</p>]]></Text></Column>
         </Row>
     </Section>
 </Content>

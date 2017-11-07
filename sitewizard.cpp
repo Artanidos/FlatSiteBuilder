@@ -50,6 +50,7 @@ void SiteWizard::accept()
     dir.cd(siteName.toLower());
     dir.mkdir("pages");
     dir.mkdir("posts");
+    dir.mkdir("content");
     dir.mkdir("includes");
     dir.mkdir("layouts");
     dir.mkdir("assets");
@@ -151,6 +152,7 @@ IntroPage::IntroPage(QWidget *parent)
 SiteInfoPage::SiteInfoPage(QString installDirectory, QWidget *parent)
     : QWizardPage(parent)
 {
+    m_installDirectory = installDirectory;
     setTitle(tr("Site Information"));
     setSubTitle(tr("Specify basic information about the site for which you "
                    "want to generate site files."));
@@ -186,6 +188,9 @@ SiteInfoPage::SiteInfoPage(QString installDirectory, QWidget *parent)
     registerField("copyright", m_copyrightLineEdit);
     registerField("theme", m_theme, "currentText");
 
+    m_warning = new QLabel("");
+    m_warning->setStyleSheet("QLabel { color : orange; }");
+
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(m_siteNameLabel, 0, 0);
     layout->addWidget(m_siteNameLineEdit, 0, 1);
@@ -195,7 +200,19 @@ SiteInfoPage::SiteInfoPage(QString installDirectory, QWidget *parent)
     layout->addWidget(m_copyrightLineEdit, 2, 1);
     layout->addWidget(m_themeLabel, 3, 0);
     layout->addWidget(m_theme, 3, 1);
+    layout->addWidget(m_warning, 4, 0, 1, 2);
     setLayout(layout);
+
+    connect(m_siteNameLineEdit, SIGNAL(textChanged(QString)), this, SLOT(siteNameChanged(QString)));
+}
+
+void SiteInfoPage::siteNameChanged(QString name)
+{
+    QDir dir(m_installDirectory + "/sources/" + name.toLower());
+    if(dir.exists() && !name.isEmpty())
+        m_warning->setText("WARNING<br/>A site with the name " + name.toLower() + " already exists.<br/>If you continue this site will be overridden.");
+    else
+        m_warning->setText("");
 }
 
 ConclusionPage::ConclusionPage(QWidget *parent)

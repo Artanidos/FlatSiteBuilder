@@ -7,9 +7,7 @@ Features
 - edit footer content
 - edit google analytics
 - edit theme (local overrides)
-- create wizard should not override existing sources
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
-- also deploy additional file to sites root like this google*.html
 - how to
 
 Postponend

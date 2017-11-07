@@ -57,14 +57,10 @@ void Generator::generateSite(QMainWindow *win, Site *site, Content *contentToBui
 
     if(contentToBuild == 0)
     {
+        // clear directory
         QDir old;
-        old.setPath(m_sitesPath + "/" + m_site->title() + "/assets");
+        old.setPath(m_sitesPath + "/" + m_site->title());
         old.removeRecursively();
-        old.cdUp();
-        foreach(QString file, old.entryList(QDir::NoDotAndDotDot | QDir::Files))
-        {
-            old.remove(file);
-        }
     }
 
     QVariantList pages;
@@ -181,6 +177,7 @@ void Generator::generateSite(QMainWindow *win, Site *site, Content *contentToBui
     {
         // first copy assets from site, they will not be overridden by theme assets
         copyPath(m_site->sourcePath() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
+        copyPath(m_site->sourcePath() + "/content", m_sitesPath + "/" + m_site->title());
         copyPath(m_themePath + "/" + m_site->theme() + "/assets", m_sitesPath + "/" + m_site->title() + "/assets");
 
         foreach (Content *page, m_site->pages())
@@ -717,7 +714,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
             return pagevars.value(exp.mid(5));
         else
             return "";
-        //return pagevars[exp.mid(5)];
     }
     else if(exp.startsWith("site."))
     {
@@ -727,7 +723,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
                 return sitevars.value(exp.mid(5));
             else
                 return "";
-            //return sitevars[exp.mid(5)];
         }
         else
         {
@@ -741,7 +736,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
             }
             else
                 return "";
-            //return sitevars[exp.mid(5)].toMap()[indexValue];
         }
     }
     else if(exp.startsWith("plugin."))
@@ -750,7 +744,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
             return pluginvars.value(exp.mid(7));
         else
             return "";
-        //return pluginvars[exp.mid(7)];
     }
     else if(exp.startsWith("theme."))
     {
@@ -768,7 +761,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
                 return pagevars.value(exp);
             else
                 return "";
-            //return pagevars[exp];
         }
         QString var = exp.mid(0, dot);
         QString value = exp.mid(dot + 1);
@@ -778,7 +770,6 @@ QVariant Generator::translateVar(QString exp, QVariantMap loopvars)
             return map.value(value);
         else
             return "";
-        //return map[value];
     }
 }
 

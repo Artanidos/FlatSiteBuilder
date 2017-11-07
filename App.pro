@@ -18,7 +18,7 @@
 
 QT += core gui
 QT += testlib
-QT += widgets
+QT += widgets network
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app

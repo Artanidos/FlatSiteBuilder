@@ -70,7 +70,11 @@ private:
     QLineEdit *m_descriptionLineEdit;
     QLabel *m_themeLabel;
     QComboBox *m_theme;
+    QLabel *m_warning;
+    QString m_installDirectory;
 
+private slots:
+    void siteNameChanged(QString name);
 };
 
 class ConclusionPage : public QWizardPage
