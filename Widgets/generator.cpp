@@ -58,9 +58,14 @@ void Generator::generateSite(QMainWindow *win, Site *site, Content *contentToBui
     if(contentToBuild == 0)
     {
         // clear directory
-        QDir old;
-        old.setPath(m_sitesPath + "/" + m_site->title());
-        old.removeRecursively();
+        QDir dir(m_sitesPath + "/" + m_site->title());
+        foreach(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Hidden | QDir::System | QDir::AllDirs | QDir::Files, QDir::DirsFirst))
+        {
+            if (info.isDir() && info.fileName() != ".git")
+                QDir(info.absoluteFilePath()).removeRecursively();
+            else
+                QFile::remove(info.absoluteFilePath());
+        }
     }
 
     QVariantList pages;
