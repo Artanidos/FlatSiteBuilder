@@ -46,6 +46,15 @@ Generator::Generator()
     m_sitesPath = Generator::sitesPath();
 }
 
+bool postLaterThan(const QVariant &post1, const QVariant &post2)
+{
+    QVariantMap map1 = post1.toMap();
+    QVariantMap map2 = post2.toMap();
+    QDate date1 = map1["date"].toDate();
+    QDate date2 = map2["date"].toDate();
+    return date1 > date2;
+}
+
 /*
  * Parses all *.xml files for a gives path
  * and translates them to html into a directory named "site".
@@ -146,6 +155,9 @@ void Generator::generateSite(QMainWindow *win, Site *site, Content *contentToBui
         }
         menus[menu->name()] = items;
     }
+
+    qStableSort(posts.begin(), posts.end(), postLaterThan);
+
     sitevars["menus"] = menus;
     sitevars["pages"] = pages;
     sitevars["posts"] = posts;
