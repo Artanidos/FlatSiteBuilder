@@ -2,6 +2,26 @@
 <Content title="FlatSiteBuilder" menu="default" author="" layout="default" keywords="" date="26.09.2017" logo="logo.png">
     <Section fullwidth="true"><RevolutionSlider adminlabel="" fullwidth="true" fullscreen="false"><Slide src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/tagcloud.png" adminlabel=""><![CDATA[]]></Slide></RevolutionSlider></Section>
     <Section><Row>
+            <Column span="12"><Text adminlabel="Welcome"><![CDATA[<!-- welcome -->
+<h1>
+	<strong>Welcome</strong> to {{ site.title }}
+</h1>
+<p class="lead">Did you know that you are able to host your project website on Github-Pages for free?</p>
+<p class="lead">
+	The FlatSiteBuilder is a very easy to use content management system (CMS) and content 
+	creation tool running as a desktop application on Linux.
+	You are able to build web content which you can host on github pages for free or any 
+	other web space provider.
+	Because all of the pages are beeing build on the desktop it is the fastest content 
+	management system available. No code is executed on the web server.
+</p>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>
+]]></Text></Column>
+        </Row>
+    </Section>
+    <Section><Row>
             <Column span="4"><Image src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/Dashboard.png" alt="" title="" adminlabel=""/></Column>
             <Column span="8"><Text adminlabel="FlatSiteBuilder"><![CDATA[<h3><strong>FlatSiteBuilder</strong></h3>
 <p class="lead">The FlatSiteBuilder is a very easy to use content management system and content creation tool running as a desktop application on Linux.</p>
@@ -189,26 +209,6 @@ s.setAttribute('data-timestamp', +new Date());
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
                             ]]></Text></Column>
-        </Row>
-    </Section>
-    <Section><Row>
-            <Column span="12"><Text adminlabel="Welcome"><![CDATA[<!-- welcome -->
-<h1>
-	<strong>Welcome</strong> to {{ site.title }}
-</h1>
-<p class="lead">Did you knew that you are able to host your project website on Github-Pages for free?</p>
-<p class="lead">
-	The FlatSiteBuilder is a very easy to use content management system (CMS) and content 
-	creation tool running as a desktop application on Linux.
-	You are able to build web content which you can host on github pages for free or any 
-	other web space provider.
-	Because all of the pages are beeing build on the desktop it is the fastest content 
-	management system available. No code is executed on the web server.
-</p>]]></Text></Column>
-        </Row>
-        <Row>
-            <Column span="12"><Text adminlabel="Divider"><![CDATA[<div class="divider styleColor"/>
-]]></Text></Column>
         </Row>
     </Section>
 </Content>

@@ -76,6 +76,7 @@ private slots:
     void titleChanged(QString title);
     void sourceChanged();
     void excerptChanged();
+    void dateChanged();
     void authorChanged();
     void keywordsChanged();
     void menuChanged(QString);
@@ -103,10 +104,12 @@ private:
     QLineEdit *m_title;
     QLineEdit *m_source;
     QLineEdit *m_excerpt;
+    QLineEdit *m_date;
     QScrollArea *m_scroll;
     QGridLayout *m_layout;
     QVBoxLayout *m_vbox;
     QLabel *m_excerptLabel;
+    QLabel *m_datelabel;
     Hyperlink *m_previewLink;
     QWidget *m_animationPanel;
     AnimateableEditor *m_editor;

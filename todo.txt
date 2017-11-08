@@ -9,6 +9,7 @@ Features
 - edit theme (local overrides)
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
 - how to
+- sorting site.posts based on the date (post date should be editable)
 
 Postponend
 ----------

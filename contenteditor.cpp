@@ -72,6 +72,7 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     m_source = new QLineEdit;
     m_source->setPlaceholderText("*.xml");
     m_excerpt = new QLineEdit;
+    m_date = new QLineEdit;
     m_labelPermalink = new QLabel("Permalink");
     m_labelTitle = new QLabel("Title");
     m_labelAuthor = new QLabel("Author");
@@ -144,7 +145,11 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     {
         m_excerptLabel = new QLabel("Excerpt");
         m_layout->addWidget(m_excerptLabel, 5, 0);
-        m_layout->addWidget(m_excerpt, 6, 0, 1, 4);
+        m_layout->addWidget(m_excerpt, 6, 0, 1, 2);
+
+        m_datelabel = new QLabel("Date");
+        m_layout->addWidget(m_datelabel, 5, 2, 0);
+        m_layout->addWidget(m_date, 6, 2, 1, 2);
     }
 
     m_filename = m_site->sourcePath() + (content->contentType() == ContentType::Page ? "/pages/" : "/posts/") + content->source();
@@ -158,6 +163,7 @@ ContentEditor::ContentEditor(MainWindow *win, Site *site, Content *content)
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(titleChanged(QString)));
     connect(m_source, SIGNAL(editingFinished()), this, SLOT(sourceChanged()));
     connect(m_excerpt, SIGNAL(editingFinished()), this, SLOT(excerptChanged()));
+    connect(m_date, SIGNAL(editingFinished()), this, SLOT(dateChanged()));
     connect(m_author, SIGNAL(editingFinished()), this, SLOT(authorChanged()));
     connect(m_keywords, SIGNAL(editingFinished()), this, SLOT(keywordsChanged()));
     connect(m_menus, SIGNAL(currentIndexChanged(QString)), this, SLOT(menuChanged(QString)));
@@ -249,7 +255,6 @@ void ContentEditor::titleChanged()
         if(m_isNew)
             sourceChanged();
 
-        m_content->setDate(QDate::currentDate());
         m_content->setTitle(m_title->text());
         emit contentChanged(m_content);
         editChanged("Titel Changed");
@@ -286,10 +291,19 @@ void ContentEditor::excerptChanged()
 {
     if(m_excerpt->text() != m_content->excerpt())
     {
-        m_content->setDate(QDate::currentDate());
         m_content->setExcerpt(m_excerpt->text());
         emit contentChanged(m_content);
         editChanged("Excerpt Changed");
+    }
+}
+
+void ContentEditor::dateChanged()
+{
+    if(m_date->text() != m_content->date().toString("dd.MM.yyyy"))
+    {
+        m_content->setDate(QDate::fromString(m_date->text(), "dd.MM.yyyy"));
+        emit contentChanged(m_content);
+        editChanged("Date Changed");
     }
 }
 
@@ -297,7 +311,6 @@ void ContentEditor::authorChanged()
 {
     if(m_author->text() != m_content->author())
     {
-        m_content->setDate(QDate::currentDate());
         m_content->setAuthor(m_author->text());
         emit contentChanged(m_content);
         editChanged("Author Changed");
@@ -308,7 +321,6 @@ void ContentEditor::keywordsChanged()
 {
     if(m_keywords->text() != m_content->keywords())
     {
-        m_content->setDate(QDate::currentDate());
         m_content->setKeywords(m_keywords->text());
         emit contentChanged(m_content);
         editChanged("Keywords Changed");
@@ -319,7 +331,6 @@ void ContentEditor::menuChanged(QString menu)
 {
     if(menu != m_content->menu())
     {
-        m_content->setDate(QDate::currentDate());
         m_content->setMenu(menu);
         emit contentChanged(m_content);
         editChanged("Menu Changed");
@@ -330,7 +341,6 @@ void ContentEditor::layoutChanged(QString layout)
 {
     if(layout != m_content->layout())
     {
-        m_content->setDate(QDate::currentDate());
         m_content->setLayout(layout);
         emit contentChanged(m_content);
         editChanged("Layout Changed");
@@ -355,7 +365,10 @@ void ContentEditor::load()
         {
             m_site->loadContent(m_content, &stream);
             if(m_content->contentType() == ContentType::Post)
+            {
                 m_excerpt->setText(m_content->excerpt());
+                m_date->setText(m_content->date().toString("dd.MM.yyyy"));
+            }
 
             if(!m_content->title().isEmpty())
                 m_titleLabel->setText(m_content->contentType() == ContentType::Page ? "Edit Page" : "Edit Post");
