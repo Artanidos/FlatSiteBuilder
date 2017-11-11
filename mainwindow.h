@@ -89,6 +89,8 @@ private:
     QWebEngineView *m_webView;
     QString m_methodAfterAnimation;
     Content *m_contentAfterAnimation;
+    QDockWidget *m_navigationdock;
+    FlatButton *m_showDock;
 
 private slots:
     void dashboardExpanded(bool value);
@@ -117,6 +119,8 @@ private slots:
     void contentChanged(Content *content);
     void menuChanged(Menu *menu);
     void webViewLoadFinished(bool success);
+    void showMenu();
+    void dockVisibilityChanged(bool visible);
 };
 
 #endif // MAINWINDOW_H

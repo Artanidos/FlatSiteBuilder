@@ -280,12 +280,16 @@ void MainWindow::initGui()
     scroll->setMaximumWidth(200);
     scroll->setMinimumWidth(200);
 
-    QDockWidget *navigationdock = new QDockWidget(tr("Navigation"), this);
-    navigationdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    navigationdock->setWidget(scroll);
-    navigationdock->setObjectName("Navigation");
+    m_navigationdock = new QDockWidget(tr("Navigation"), this);
+    m_navigationdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_navigationdock->setWidget(scroll);
+    m_navigationdock->setObjectName("Navigation");
 
-    addDockWidget(Qt::LeftDockWidgetArea, navigationdock);
+    addDockWidget(Qt::LeftDockWidgetArea, m_navigationdock);
+
+    m_showDock = new FlatButton(":/images/edit_normal.png", ":/images/edit_hover.png");
+    m_showDock->setToolTip("Show Navigation");
+    statusBar()->addPermanentWidget(m_showDock);
 
     connect(m_dashboardExpander, SIGNAL(expanded(bool)), this, SLOT(dashboardExpanded(bool)));
     connect(m_content, SIGNAL(expanded(bool)), this, SLOT(contentExpanded(bool)));
@@ -300,6 +304,18 @@ void MainWindow::initGui()
     connect(themesButton, SIGNAL(clicked()), this, SLOT(showThemes()));
     connect(m_themeSettingsButton, SIGNAL(clicked()), this, SLOT(showThemesSettings()));
     connect(m_settings, SIGNAL(clicked()), this, SLOT(showSettings()));
+    connect(m_showDock, SIGNAL(clicked()), this, SLOT(showMenu()));
+    connect(m_navigationdock, SIGNAL(visibilityChanged(bool)), this, SLOT(dockVisibilityChanged(bool)));
+}
+
+void MainWindow::showMenu()
+{
+    m_navigationdock->setVisible(true);
+}
+
+void MainWindow::dockVisibilityChanged(bool visible)
+{
+    m_showDock->setVisible(!visible);
 }
 
 void MainWindow::dashboardExpanded(bool value)

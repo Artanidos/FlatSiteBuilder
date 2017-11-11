@@ -11,6 +11,7 @@ Features
 - how to
 - sitemap generieren
 - theme builder
+- show menu after closing it
 
 Postponend
 ----------
