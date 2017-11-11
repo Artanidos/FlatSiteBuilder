@@ -36,6 +36,7 @@ class QTableWidgetItem;
 class ContentEditor;
 class ContentList;
 class QTableWidget;
+class QWebEngineView;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -85,6 +86,9 @@ private:
     QWidget *m_cellWidget;
     int m_row;
     QString m_installDirectory;
+    QWebEngineView *m_webView;
+    QString m_methodAfterAnimation;
+    Content *m_contentAfterAnimation;
 
 private slots:
     void dashboardExpanded(bool value);
@@ -112,6 +116,7 @@ private slots:
     void animationFineshedZoomOut();
     void contentChanged(Content *content);
     void menuChanged(Menu *menu);
+    void webViewLoadFinished(bool success);
 };
 
 #endif // MAINWINDOW_H

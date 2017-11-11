@@ -27,13 +27,14 @@
 #include <QStyleFactory>
 #include <QTest>
 #include <QSettings>
+#include <QWebEngineSettings>
 
 int main(int argc, char *argv[])
 {   
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("FlatSiteBuilder");
-    QCoreApplication::setApplicationVersion("1.5.3");
+    QCoreApplication::setApplicationVersion("1.5.4");
     QCoreApplication::setOrganizationName("Artanidos");
 
     QFont newFont("Sans Serif", 10);

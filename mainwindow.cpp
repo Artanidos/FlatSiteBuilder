@@ -21,9 +21,13 @@
 #include "mainwindow.h"
 #include "interfaces.h"
 #include "themechooser.h"
+#include "webview.h"
 #include "sitesettingseditor.h"
 #include "installdialog.h"
 #include <QCloseEvent>
+#include <QTimer>
+#include <QWebEngineSettings>
+#include <QWebEngineProfile>
 #include <QCryptographicHash>
 #include <QSettings>
 #include <QCoreApplication>
@@ -69,6 +73,7 @@ MainWindow::MainWindow(QString installDirectory)
     m_site = NULL;
     m_editor = NULL;
     m_installDirectory = installDirectory;
+    m_contentAfterAnimation = NULL;
 
     Generator::setInstallDirectory(installDirectory);
 
@@ -450,6 +455,12 @@ void MainWindow::readSettings()
 
 void MainWindow::showDashboard()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showDashboard";
+        editorClosed();
+        return;
+    }
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
     connect(db, SIGNAL(loadSite(QString)), this, SLOT(loadProject(QString)));
     connect(db, SIGNAL(previewSite(Content *)), this, SLOT(previewSite(Content *)));
@@ -462,6 +473,12 @@ void MainWindow::showDashboard()
 
 void MainWindow::showPosts()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showPosts";
+        editorClosed();
+        return;
+    }
     ContentList *list = new ContentList(m_site, ContentType::Post);
     connect(list, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editContent(QTableWidgetItem *)));
     setCentralWidget(list);
@@ -469,6 +486,12 @@ void MainWindow::showPosts()
 
 void MainWindow::showPages()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showPages";
+        editorClosed();
+        return;
+    }
     ContentList *list = new ContentList(m_site, ContentType::Page);
     connect(list, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editContent(QTableWidgetItem*)));
     setCentralWidget(list);
@@ -476,6 +499,12 @@ void MainWindow::showPages()
 
 void MainWindow::showMenus()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showMenus";
+        editorClosed();
+        return;
+    }
     MenuList *edit = new MenuList(this, m_site);
     connect(edit, SIGNAL(editContent(QTableWidgetItem*)), this, SLOT(editMenu(QTableWidgetItem*)));
     setCentralWidget(edit);
@@ -483,6 +512,12 @@ void MainWindow::showMenus()
 
 void MainWindow::showThemes()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showThemes";
+        editorClosed();
+        return;
+    }
     ThemeChooser *tc = new ThemeChooser(this, m_site);
     setCentralWidget(tc);
 }
@@ -492,6 +527,12 @@ void MainWindow::showThemesSettings()
     ThemeEditorInterface *tei = Plugins::getThemePlugin(Plugins::actualThemeEditorPlugin());
     if(tei)
     {
+        if(m_editor)
+        {
+            m_methodAfterAnimation = "showThemesSettings";
+            editorClosed();
+            return;
+        }
         QString path = m_site->sourcePath();
         tei->setWindow(this);
         tei->setSourcePath(path);
@@ -503,6 +544,12 @@ void MainWindow::showThemesSettings()
 
 void MainWindow::showSettings()
 {
+    if(m_editor)
+    {
+        m_methodAfterAnimation = "showSettings";
+        editorClosed();
+        return;
+    }
     SiteSettingsEditor *sse = new SiteSettingsEditor(this, m_site);
     setCentralWidget(sse);
 }
@@ -611,6 +658,13 @@ void MainWindow::animationFineshedZoomIn()
 
 void MainWindow::previewSite(Content *content)
 {
+    if(m_editor && content)
+    {
+        m_contentAfterAnimation = content;
+        editorClosed();
+        return;
+    }
+
     QString file;
     QString dir = m_installDirectory + "/sites";
     QDir path(dir + "/" + m_site->title());
@@ -624,10 +678,33 @@ void MainWindow::previewSite(Content *content)
     if(content)
     {
         file = content->url();
-        QDesktopServices::openUrl(QUrl(path.absoluteFilePath(file)));
+
+        QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+
+        m_webView = new WebView;
+        WebPage *webPage = new WebPage(QWebEngineProfile::defaultProfile(), m_webView);
+        m_webView->setPage(webPage);
+        connect(m_webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
+        m_webView->setUrl(QUrl("file:///" + path.absoluteFilePath(file)));
+        setCursor(Qt::WaitCursor);
     }
     else
         statusBar()->showMessage("Site has no pages or posts to preview.");
+}
+
+void MainWindow::webViewLoadFinished(bool success)
+{
+    if(success)
+    {
+        setCentralWidget(m_webView);
+        disconnect(m_webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
+    }
+    else
+    {
+        QMessageBox::warning(this, "FlatSiteBuilder", "Unable to open webpage.");
+        delete m_webView;
+    }
+    setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::publishSite()
@@ -689,13 +766,26 @@ void MainWindow::animationFineshedZoomOut()
 
     delete m_editor;
     m_editor = NULL;
+
+    if(!m_methodAfterAnimation.isEmpty())
+    {
+        QMetaObject::invokeMethod(this, m_methodAfterAnimation.toUtf8(), Qt::DirectConnection);
+        m_methodAfterAnimation = "";
+    }
+    if(m_contentAfterAnimation)
+    {
+        previewSite(m_contentAfterAnimation);
+        m_contentAfterAnimation = NULL;
+    }
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if(watched == this && event->type() == QEvent::Resize && m_editor)
     {
-        m_editor->resize(centralWidget()->size());
+        QWidget *w = centralWidget();
+        if(w)
+            m_editor->resize(w->size());
     }
     return false;
 }

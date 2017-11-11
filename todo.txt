@@ -10,6 +10,7 @@ Features
 - warning if expression does not end like: "{% else", atm the content will be cutted if included
 - how to
 - sitemap generieren
+- theme builder
 
 Postponend
 ----------

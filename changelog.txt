@@ -1,3 +1,7 @@
+1.5.4
+---
+- Preview is now shown in the embedded webview
+
 1.5.3
 ---
 - The post.date is now editable and will not be updated if only the content has changed

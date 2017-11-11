@@ -18,7 +18,7 @@
 
 QT += core gui
 QT += testlib
-QT += widgets network
+QT += widgets network webenginewidgets
 
 TARGET = FlatSiteBuilder
 TEMPLATE = app
@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     menueditor.cpp \
     themechooser.cpp \
     sitesettingseditor.cpp \
-    installdialog.cpp
+    installdialog.cpp \
+    webview.cpp
 
 HEADERS  += mainwindow.h \
     expander.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     menueditor.h \
     themechooser.h \
     sitesettingseditor.h \
-    installdialog.h
+    installdialog.h \
+    webview.h
 
 DISTFILES += \
     README.md \
