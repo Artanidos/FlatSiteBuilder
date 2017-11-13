@@ -66,6 +66,7 @@ public:
     QString displayName() {return "Slider";}
     QString tagName() {return "Slider";}
     QImage icon() {return QImage(":/slider.png");}
+    QString version() override {return "1.5.4";}
     QString getHtml(QXmlStreamReader *xml);
     void setContent(QString content);
     QString load(QXmlStreamReader *xml) override;

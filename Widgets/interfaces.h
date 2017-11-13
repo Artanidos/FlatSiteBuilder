@@ -44,6 +44,7 @@ public:
     virtual QString displayName() = 0;
     virtual QString tagName() = 0;
     virtual QImage icon() = 0;
+    virtual QString version() = 0;
     virtual QString getHtml(QXmlStreamReader *) = 0;
     virtual QString load(QXmlStreamReader *) = 0;
     virtual QString pluginStyles() {return "";}
@@ -58,6 +59,7 @@ public:
     virtual QString className() = 0;
     virtual QString displayName() = 0;
     virtual QString themeName() = 0;
+    virtual QString version() = 0;
     virtual void setSourcePath(QString path) = 0;
     virtual QVariantMap themeVars() = 0;
 };
@@ -69,6 +71,7 @@ public:
     virtual ~PublisherInterface() {}
     virtual QString className() = 0;
     virtual QString displayName() = 0;
+    virtual QString version() = 0;
     virtual void setSitePath(QString path) = 0;
 };
 

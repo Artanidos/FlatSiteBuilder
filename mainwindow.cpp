@@ -118,7 +118,7 @@ void MainWindow::loadPlugins()
                 if(ae)
                 {
                     Plugins::insert(iEditor->className(), iEditor);
-                    qDebug() << "Plugin loaded" << fileName;
+                    qDebug() << "Plugin loaded" << fileName << iEditor->version();
                 }
                 else
                     qDebug() << "Plugin does not implement AnimateableEditor " << fileName;
@@ -130,7 +130,7 @@ void MainWindow::loadPlugins()
                 if(w)
                 {
                     Plugins::insert(iThemeEditor->className(), iThemeEditor);
-                    qDebug() << "Plugin loaded" << fileName;
+                    qDebug() << "Plugin loaded" << fileName << iThemeEditor->version();
                 }
                 else
                     qDebug() << "Plugin does not implement QWidget " << fileName;
@@ -139,7 +139,7 @@ void MainWindow::loadPlugins()
             if(iPublisher)
             {
                 Plugins::insert(iPublisher->className(), iPublisher);
-                qDebug() << "Plugin loaded" << fileName;
+                qDebug() << "Plugin loaded" << fileName << iPublisher->version();
             }
         }
         else
@@ -579,6 +579,7 @@ void MainWindow::setCentralWidget(QWidget *widget)
     if(!tei && !pi && oldWidget)
         delete oldWidget;
     QMainWindow::setCentralWidget(widget);
+    widget->show();
 }
 
 void MainWindow::editContent(QTableWidgetItem *item)

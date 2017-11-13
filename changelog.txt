@@ -2,6 +2,7 @@
 ---
 - Preview is now shown in the embedded webview
 - Added a button showing after closing the navigation to reopen it
+- Plugins do have a version now which will be displayed after loading the plugin
 
 
 1.5.3

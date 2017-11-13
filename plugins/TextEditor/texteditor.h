@@ -40,6 +40,7 @@ public:
     QString className() override {return "TextEditor";}
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}
+    QString version() override {return "1.5.4";}
     QImage icon() override {return QImage(":/images/text.png");}
     QString getHtml(QXmlStreamReader *xml) override;
     QString load(QXmlStreamReader *xml) override;

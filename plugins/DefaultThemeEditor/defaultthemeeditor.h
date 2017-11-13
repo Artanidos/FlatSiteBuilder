@@ -39,6 +39,7 @@ public:
     QString className() override {return "DefaultThemeEditor";}
     QString displayName() override {return "Default Theme Editor";}
     QString themeName() override {return "default";}
+    QString version() override {return "1.5.4";}
     void setSourcePath(QString path) override {m_filename = path + "/DefaultTheme.xml"; load();}
     QVariantMap themeVars();
     void load() override;

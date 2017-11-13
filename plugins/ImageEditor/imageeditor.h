@@ -40,6 +40,7 @@ public:
     QString displayName() {return "Image";}
     QString tagName() {return "Image";}
     QImage icon() {return QImage(":/image.png");}
+    QString version() override {return "1.5.4";}
     QString getHtml(QXmlStreamReader *xml);
     void setContent(QString content);
     QString load(QXmlStreamReader *xml) override;

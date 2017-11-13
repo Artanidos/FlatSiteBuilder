@@ -37,6 +37,7 @@ public:
     NoPublisher();
     QString className() override {return "NoPublisher";}
     QString displayName() override {return "Not really a publisher but a description";}
+    QString version() override {return "1.5.4";}
     void setSitePath(QString path) override;
 
 private:

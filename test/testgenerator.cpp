@@ -27,6 +27,7 @@ public:
     QString displayName() override {return "Text";}
     QString tagName() override {return "Text";}
     QImage icon() override {return QImage(":/images/text.png");}
+    QString version() override {return "1.5.4";}
     QString getHtml(QXmlStreamReader *) {return "<h1>testPageTitle</h1>";}
     QString load(QXmlStreamReader *) override {return "";}
 

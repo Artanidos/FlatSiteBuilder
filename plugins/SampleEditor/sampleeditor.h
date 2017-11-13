@@ -38,6 +38,7 @@ public:
     QString displayName() {return "Sample";}
     QString tagName() {return "Sample";}
     QImage icon() {return QImage(":/sample.png");}
+    QString version() override {return "1.5.4";}
     QString getHtml(QXmlStreamReader *xml);
     void setContent(QString content);
     QString load(QXmlStreamReader *xml) override;
