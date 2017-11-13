@@ -47,6 +47,7 @@ signals:
 
 public slots:
     void contentChanged() {m_changed = true;}
+    virtual void closeEditor() = 0;
 
 protected:
     bool m_changed;

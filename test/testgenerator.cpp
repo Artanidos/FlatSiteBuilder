@@ -19,6 +19,7 @@ private slots:
 
 class TextEditor : public ElementEditorInterface
 {
+    Q_OBJECT
 public:
     TextEditor() {}
     void setContent(QString) {}
@@ -28,6 +29,9 @@ public:
     QImage icon() override {return QImage(":/images/text.png");}
     QString getHtml(QXmlStreamReader *) {return "<h1>testPageTitle</h1>";}
     QString load(QXmlStreamReader *) override {return "";}
+
+public slots:
+    void closeEditor() override {}
 };
 
 void TestGenerator::initTestCase()

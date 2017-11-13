@@ -165,6 +165,9 @@ QString SliderEditor::load(QXmlStreamReader *xml)
 
 void SliderEditor::closeEditor()
 {
+    if(m_editor)
+        m_editor->closeEditor();
+
     if(m_changed)
     {
         m_content = "";

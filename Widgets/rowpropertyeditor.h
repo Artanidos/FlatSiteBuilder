@@ -37,8 +37,8 @@ public:
     void setContent(QString ele);
     static QString getHtml(QXmlStreamReader *xml, QString filename);
 
-private slots:
-    void editorClose();
+public slots:
+    void closeEditor() override;
 
 private:
     QLineEdit *m_cssclass;

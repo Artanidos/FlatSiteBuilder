@@ -39,11 +39,13 @@ public:
     void setSlide(Slide *slide);
     Slide *slide() {return m_slide;}
 
+public slots:
+    void closeEditor() override;
+
 signals:
     void close();
 
 private slots:
-    void closeEditor();
     void seek();
 
 private:

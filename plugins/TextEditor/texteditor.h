@@ -44,11 +44,11 @@ public:
     QString getHtml(QXmlStreamReader *xml) override;
     QString load(QXmlStreamReader *xml) override;
 
+public slots:
+    void closeEditor() override;
+
 signals:
     void close();
-
-private slots:
-    void closeEditor();
 
 private:
     QTextEdit *m_html;

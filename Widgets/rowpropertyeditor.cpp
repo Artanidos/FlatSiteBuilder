@@ -53,11 +53,11 @@ RowPropertyEditor::RowPropertyEditor()
     m_grid->addLayout(vbox, 3, 0);
     setLayout(m_grid);
 
-    connect(close, SIGNAL(clicked()), this, SLOT(editorClose()));
+    connect(close, SIGNAL(clicked()), this, SLOT(closeEditor()));
     connect(m_cssclass, SIGNAL(textChanged(QString)), this, SLOT(contentChanged()));
 }
 
-void RowPropertyEditor::editorClose()
+void RowPropertyEditor::closeEditor()
 {
     if(m_changed)
     {

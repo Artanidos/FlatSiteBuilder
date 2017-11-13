@@ -474,7 +474,7 @@ void MainWindow::showDashboard()
     if(m_editor)
     {
         m_methodAfterAnimation = "showDashboard";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     Dashboard *db = new Dashboard(m_site, m_defaultPath);
@@ -492,7 +492,7 @@ void MainWindow::showPosts()
     if(m_editor)
     {
         m_methodAfterAnimation = "showPosts";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     ContentList *list = new ContentList(m_site, ContentType::Post);
@@ -505,7 +505,7 @@ void MainWindow::showPages()
     if(m_editor)
     {
         m_methodAfterAnimation = "showPages";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     ContentList *list = new ContentList(m_site, ContentType::Page);
@@ -518,7 +518,7 @@ void MainWindow::showMenus()
     if(m_editor)
     {
         m_methodAfterAnimation = "showMenus";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     MenuList *edit = new MenuList(this, m_site);
@@ -531,7 +531,7 @@ void MainWindow::showThemes()
     if(m_editor)
     {
         m_methodAfterAnimation = "showThemes";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     ThemeChooser *tc = new ThemeChooser(this, m_site);
@@ -546,7 +546,7 @@ void MainWindow::showThemesSettings()
         if(m_editor)
         {
             m_methodAfterAnimation = "showThemesSettings";
-            editorClosed();
+            m_editor->closeEditor();
             return;
         }
         QString path = m_site->sourcePath();
@@ -563,7 +563,7 @@ void MainWindow::showSettings()
     if(m_editor)
     {
         m_methodAfterAnimation = "showSettings";
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
     SiteSettingsEditor *sse = new SiteSettingsEditor(this, m_site);
@@ -677,7 +677,7 @@ void MainWindow::previewSite(Content *content)
     if(m_editor && content)
     {
         m_contentAfterAnimation = content;
-        editorClosed();
+        m_editor->closeEditor();
         return;
     }
 

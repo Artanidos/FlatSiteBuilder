@@ -70,8 +70,10 @@ public:
     void setContent(QString content);
     QString load(QXmlStreamReader *xml) override;
 
+public slots:
+    void closeEditor() override;
+
 private slots:
-    void closeEditor();
     void addSlide();
     void tableDoubleClicked(int r, int);
     void animationFineshedZoomIn();

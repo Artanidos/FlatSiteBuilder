@@ -62,7 +62,7 @@ public:
 public slots:
     void editChanged(QString text);
     void save();
-    void closeEditor();
+    void closeEditor() override;
     void contentRenamed(QString name);
 
 private slots:

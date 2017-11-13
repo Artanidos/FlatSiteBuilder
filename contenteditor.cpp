@@ -212,6 +212,10 @@ void ContentEditor::redo()
 
 void ContentEditor::closeEditor()
 {
+    if(m_editor)
+    {
+        m_editor->closeEditor();
+    }
     emit close();
 }
 
@@ -765,5 +769,12 @@ void ContentEditor::animationFineshedZoomOut()
     // parent has to be set to NULL, otherwise the plugin will be dropped by parent
     m_editor->setParent(NULL);
     disconnect(m_editor, SIGNAL(close()), this, SLOT(editorClose()));
+    // only delete Row- and SectionPropertyEditor the other editor are plugins
+    RowPropertyEditor *rpe = dynamic_cast<RowPropertyEditor*>(m_editor);
+    if(rpe)
+        delete rpe;
+    SectionPropertyEditor *spe = dynamic_cast<SectionPropertyEditor*>(m_editor);
+    if(spe)
+        delete spe;
     m_editor = NULL;
 }

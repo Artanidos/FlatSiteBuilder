@@ -1,6 +1,8 @@
 1.5.4
 ---
 - Preview is now shown in the embedded webview
+- Added a button showing after closing the navigation to reopen it
+
 
 1.5.3
 ---

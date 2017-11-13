@@ -33,17 +33,15 @@ WebView::WebView(QWidget *parent)
 {
     connect(this, &QWebEngineView::loadProgress, [this](int progress)
     {
-        qDebug() << "loadProgress" << progress;
+        //qDebug() << "loadProgress" << progress;
     });
 
     connect(this, &QWebEngineView::loadFinished, [this](bool success)
     {
         if (!success)
         {
-            qDebug() << "loadFinished no";
+            qDebug() << "unable to open webpage";
         }
-        else
-            qDebug() << "loadFinished yes";
     });
 
     connect(this, &QWebEngineView::renderProcessTerminated,
