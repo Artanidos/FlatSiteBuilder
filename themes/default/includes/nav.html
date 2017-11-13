@@ -2,23 +2,33 @@
  <nav class="navbar navbar-inverse navbar-fixed-top">
    <div class="container">
      <div class="navbar-header">
-	   <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	     <span class="sr-only">Toggle navigation</span>
+	   <button type="button" class="navbar-toggle collapse" data-toggle="collapse" data-target=".navbar-responsive-collapse">
 		 <span class="icon-bar"></span>
 		 <span class="icon-bar"></span>
 		 <span class="icon-bar"></span>
 		</button>
 	   <a class="navbar-brand" href="index.html">{{ site.title }}</a>
 	 </div>
-	 <div id="navbar" class="navbar-collapse collapse">
+	 <div class="navbar-collapse collapse navbar-responsive-collapse">
 	   <ul class="nav navbar-nav">
-		{% for item in site.menus[page.menu] %} 
-		 <li {% if item.url == page.url %}class="active"{% endif %}>
+		{% for item in site.menus[page.menu] %}
+		{% if item.hasItems == "true" %}
+		<li class="dropdown">
+		<a href="{{ item.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ item.title }} <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+		{% for subitem in item.items %}
+		<li><a href="{{ subitem.url }}">{{ subitem.title }}</a></li>
+		{% endfor %}
+		</ul>
+		</li>
+		{% else %}
+		<li {% if item.url == page.url %}class="active"{% endif %}>
 		       <a href="{{ item.url }}">
 			       {{ item.title }}
 			   </a>
-		 </li>
-		 {% endfor %}
+		</li>
+		{% endif %}
+		{% endfor %}
 		</ul>
 	 </div>
    </div>

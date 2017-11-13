@@ -24,6 +24,7 @@ cp ../build-FlatSiteBuilder-Desktop_Qt_5_9_1_GCC_64bit-Release/plugins/SliderEdi
 #Themes
 cp --parents -r themes/default/* AppImage
 cp --parents -r themes/himu/* AppImage
+cp --parents -r themes/slate/* AppImage
 #Testsite
 cp --parents -r testsite/* AppImage
 
