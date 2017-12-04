@@ -6,7 +6,7 @@
         <Item title="Portfolio" url="#portfolio" icon="" class="scrollTo"/>
         <Item title="FAQ" url="#faq" icon="" class="scrollTo"/>
         <Item title="Downloads" url="#downloads" icon="" class="scrollTo"/>
-        <Item title="News" url="blog.html" icon=""/>
+        <Item title="Blog" url="blog.html" icon=""/>
         <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
     </Menu>
     <Menu name="post">
@@ -15,7 +15,7 @@
         <Item title="Portfolio" url="index.html#portfolio" icon=""/>
         <Item title="FAQ" url="index.html#faq" icon=""/>
         <Item title="Downloads" url="index.html#downloads" icon=""/>
-        <Item title="News" url="blog.html" icon=""/>
+        <Item title="Blog" url="blog.html" icon=""/>
         <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
     </Menu>
 </Menus>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="CrowdFunding" menu="post" author="Olaf Japp" layout="post" keywords="" excerpt="CrowdFunding my company" date="01.12.2017" logo="logo.png">
+    <Section><Row>
+            <Column span="4"><AdvancedImage src="/home/olaf/SourceCode/FlatSiteBuilder/web/assets/images/campaign.png" alt="" title="" url="https://igg.me/at/ennoVvUc298/x/17781610" animation="bounceInLeft" adminlabel=""/></Column>
+            <Column span="8"><Text adminlabel=""><![CDATA[<h3>My newly created company <strong><a href="https://crowdware.github.io/web/">CrowdWare</a></strong> is collecting funds</h3>
+<p class="lead">I want to create a company to support the FlatSiteBuilder and I need a small budget to make this happen.</p>
+<p class="lead">Here is a list of things I need money for.</p>
+<ul>
+	<li>Registering a non profit company</li>
+	<li>Buying hardware to also port FlatSiteBuilder to MacOS and Windows</li>
+	<li>Pay for Qt licenses</li>
+	<li>Pay for Appstore fees</li>
+	<li>Buy the Atropos theme license to be able to package it with FlatSiteBuilder (commercial)</li>
+	<li>Buy a license for revolution slider to package it with the new SliderEditorPlugin (commercial)</li>
+</ul>
+]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<p>
+	To be able to support the FlatSiteBuilder and to develop it further I need a budget, so I decided to also release
+	commercial licenses for Windows and MacOS.
+	And therefore I have to register my company and I also need a small budget to survive.
+</p>
+<p>
+	There will be a few aditional plugins available in the commercial license.
+</p>
+<ul>
+	<li>Wysiwyg text editor</li>
+	<li>Enhanced version of the image editor. (Support for animations)</li>
+	<li>Enhanced version of the slider editor. (Support for revolution slider)</li>
+	<li>...and more to come</li>
+</ul>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<!-- CALLOUT -->
+<div class="bs-callout text-center styleBackground">
+	<h3>Do you like to <strong>support</strong> my company.<a href="https://igg.me/at/ennoVvUc298/x/17781610" target="_self" class="btn btn-primary btn-lg">IndieGoGo</a></h3>
+</div>
+<!-- /CALLOUT -->]]></Text></Column>
+        </Row>
+    </Section>
+</Content>

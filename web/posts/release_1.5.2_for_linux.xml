@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="Release 1.5.2 for Linux" menu="post" author="Olaf Japp" layout="post" keywords="cms content management system" excerpt="FlatSiteBuilder 1.5.2 for Linux has been released" date="07.11.2017" logo="logo.png">
+    <Section><Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<h3>FlatSiteBuilder <strong>1.5.2</strong> for Linux has been released</h3>
+<p class="lead">
+	Here are the changes we made the last weeks.
+</p>
+<ul>
+	<li>SliderEditor has been converted to bootstrap 3 carousel because of license issues.</li>
+	<li>News will be displayed on the dashboard now.</li>
+	<li>Additional files and folders under /content/* will also be copied to the deploy directory while building the site.
+		This makes it possible to deploy for example robots.txt, google.html and other files.</li>
+	<li>The install directory can now be choosen prior to install FlatSiteBuilder</li>
+	<li>Added a warning when SiteWizard will override an already existing site</li>
+</ul>
+]]></Text></Column>
+        </Row>
+    </Section>
+</Content>

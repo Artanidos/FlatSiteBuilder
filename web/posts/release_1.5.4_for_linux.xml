@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="Release 1.5.4 for Linux" menu="default" author="Olaf Japp" layout="post" keywords="cms content management system" excerpt="Release 1.5.4 for Linux" date="15.11.2017">
+    <Section><Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<h3>FlatSiteBuilder <strong>1.5.4</strong> for Linux has been released</h3>
+<p class="lead">
+	Here are the changes we made the last weeks.
+</p>
+<ul>
+	<li>Preview is now shown in the embedded webview</li>
+	<li>Added a button showing after closing the navigation to reopen it</li>
+	<li>Plugins do have a version now which will be displayed after loading the plugin</li>
+	<li>Default theme enhanced</li>
+	<li>Slate theme added</li>
+</ul>]]></Text></Column>
+        </Row>
+    </Section>
+</Content>
