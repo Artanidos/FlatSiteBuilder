@@ -4,6 +4,8 @@ This desktop app is working as a content mangement system and is producing a fla
 
 Have a look at our web site: https://artanidos.github.io/FlatSiteBuilder
 
+This project is also ported to Python to support more Django features have a look https://github.com/Artanidos/FlatSiteBuilderPython
+
 # Syntax
 The syntax for the templates is based on Django.
 
